@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WebSocket Protocol Lab</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f172a;--surface:#1e293b;--surface2:#263245;--border:#334155;
+  --text:#e2e8f0;--text2:#94a3b8;--accent:#38bdf8;--accent2:#0ea5e9;
+  --green:#4ade80;--red:#f87171;--amber:#fbbf24;--purple:#a78bfa;
+  --orange:#fb923c;--pink:#f472b6;
+  --font:'Segoe UI',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;line-height:1.5}
+
+/* ── Top bar ──────────────────────────────────────────────────────── */
+#topbar{
+  padding:10px 18px;background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+#topbar h1{font-size:1rem;font-weight:700;color:var(--accent);margin-right:6px}
+#server-url{
+  background:var(--surface2);border:1px solid var(--border);border-radius:6px;
+  color:var(--text);padding:5px 10px;font-size:.82rem;width:210px;outline:none;
+}
+#server-url:focus{border-color:var(--accent)}
+#connect-btn{
+  background:var(--accent2);color:#fff;border:none;border-radius:6px;
+  padding:5px 12px;cursor:pointer;font-size:.82rem;font-weight:600;transition:opacity .15s;
+}
+#connect-btn:hover{opacity:.85}
+#conn-status{
+  font-size:.75rem;padding:2px 8px;border-radius:12px;font-weight:600;
+}
+#conn-status.connected{background:rgba(74,222,128,.15);color:var(--green)}
+#conn-status.connecting{background:rgba(251,191,36,.15);color:var(--amber)}
+#conn-status.disconnected{background:rgba(248,113,113,.15);color:var(--red)}
+.spacer{flex:1}
+
+/* ── Main layout ─────────────────────────────────────────────────── */
+#main{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr;height:calc(100vh - 46px);gap:0}
+
+/* ── Panel shared ────────────────────────────────────────────────── */
+.panel{
+  border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.panel-title{
+  padding:8px 14px;background:var(--surface);border-bottom:1px solid var(--border);
+  font-weight:700;font-size:.8rem;color:var(--text2);letter-spacing:.05em;
+  text-transform:uppercase;display:flex;align-items:center;gap:8px;flex-shrink:0;
+}
+.panel-title .badge{
+  font-size:.7rem;background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;padding:1px 7px;color:var(--text2);font-weight:400;
+  text-transform:none;letter-spacing:0;
+}
+
+/* ── Send panel ──────────────────────────────────────────────────── */
+#send-panel{grid-column:1;grid-row:1;min-height:200px;max-height:260px}
+
+.mode-tabs{display:flex;gap:2px;padding:8px 14px 0;flex-shrink:0}
+.tab{
+  padding:4px 12px;border-radius:6px 6px 0 0;cursor:pointer;font-size:.8rem;
+  background:var(--surface2);color:var(--text2);border:1px solid var(--border);border-bottom:none;
+  transition:background .15s,color .15s;
+}
+.tab.active{background:var(--surface);color:var(--accent);font-weight:700;border-color:var(--border)}
+.mode-body{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:8px 14px 10px}
+
+/* Text mode */
+#text-mode,#binary-mode,#bench-mode,#lat-mode{
+  display:none;flex:1;flex-direction:column;gap:6px;
+}
+#text-mode.active,#binary-mode.active,#bench-mode.active,#lat-mode.active{display:flex}
+
+.row{display:flex;align-items:center;gap:8px}
+.row label{font-size:.78rem;color:var(--text2);white-space:nowrap}
+textarea.msg{
+  flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:6px;
+  color:var(--text);padding:7px 10px;font-family:var(--mono);font-size:.82rem;outline:none;resize:none;
+}
+textarea.msg:focus{border-color:var(--accent)}
+input.nb{
+  width:72px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;
+  color:var(--text);padding:5px 8px;font-size:.82rem;outline:none;text-align:center;
+}
+input.nb:focus{border-color:var(--accent)}
+select.sel{
+  background:var(--surface2);border:1px solid var(--border);border-radius:6px;
+  color:var(--text);padding:5px 8px;font-size:.82rem;outline:none;
+}
+.btn-send{
+  background:var(--accent2);color:#fff;border:none;border-radius:6px;
+  padding:6px 14px;cursor:pointer;font-size:.82rem;font-weight:600;transition:opacity .15s;white-space:nowrap;
+}
+.btn-send:hover{opacity:.85}
+.btn-send:disabled{opacity:.35;cursor:not-allowed}
+.btn-secondary{
+  background:var(--surface2);color:var(--text2);border:1px solid var(--border);border-radius:6px;
+  padding:6px 10px;cursor:pointer;font-size:.82rem;transition:background .15s;white-space:nowrap;
+}
+.btn-secondary:hover{background:var(--surface);color:var(--text)}
+
+/* ── Stats bar ────────────────────────────────────────────────────── */
+#stats-row{
+  display:flex;gap:0;border-top:1px solid var(--border);padding:6px 14px;
+  background:var(--surface);flex-shrink:0;flex-wrap:wrap;gap:12px;
+}
+.stat-item{display:flex;flex-direction:column;align-items:center}
+.stat-val{font-size:1rem;font-weight:700;color:var(--accent);font-family:var(--mono)}
+.stat-lbl{font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
+
+/* ── Frame log ────────────────────────────────────────────────────── */
+#frame-panel{grid-column:2;grid-row:1/3;border-right:none;max-height:100%}
+
+#frame-log{
+  flex:1;overflow-y:auto;font-family:var(--mono);font-size:.78rem;
+}
+#frame-log::-webkit-scrollbar{width:5px}
+#frame-log::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+.frame-entry{
+  border-bottom:1px solid rgba(51,65,85,.5);padding:5px 14px;
+  cursor:pointer;transition:background .1s;
+}
+.frame-entry:hover{background:var(--surface2)}
+.frame-entry.expanded{background:var(--surface2)}
+.frame-dir{
+  display:inline-block;width:18px;text-align:center;
+  font-weight:700;margin-right:4px;
+}
+.frame-dir.tx{color:var(--accent)}
+.frame-dir.rx{color:var(--green)}
+.frame-op{
+  display:inline-block;padding:1px 5px;border-radius:3px;
+  font-size:.72rem;font-weight:700;margin-right:5px;
+}
+.op-text{background:rgba(56,189,248,.15);color:var(--accent)}
+.op-binary{background:rgba(167,139,250,.15);color:var(--purple)}
+.op-ping{background:rgba(251,191,36,.15);color:var(--amber)}
+.op-pong{background:rgba(74,222,128,.15);color:var(--green)}
+.op-close{background:rgba(248,113,113,.15);color:var(--red)}
+.op-cont{background:rgba(100,116,139,.15);color:var(--text2)}
+.frame-meta{color:var(--text2)}
+.frame-ts{color:var(--text2);font-size:.7rem;float:right}
+.frame-detail{
+  margin-top:6px;padding:6px 8px;background:var(--bg);border-radius:6px;
+  border:1px solid var(--border);display:none;
+}
+.frame-entry.expanded .frame-detail{display:block}
+.bit-row{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:4px}
+.bit{
+  width:18px;height:18px;display:flex;align-items:center;justify-content:center;
+  border-radius:3px;font-size:.7rem;font-weight:700;font-family:var(--mono);
+}
+.bit.fin{background:rgba(74,222,128,.2);color:var(--green)}
+.bit.rsv{background:rgba(100,116,139,.2);color:var(--text2)}
+.bit.op{background:rgba(56,189,248,.2);color:var(--accent)}
+.bit.mask{background:rgba(251,191,36,.2);color:var(--amber)}
+.bit.len{background:rgba(167,139,250,.2);color:var(--purple)}
+.bit.pay{background:rgba(148,163,184,.1);color:var(--text2)}
+.field-table{font-size:.75rem;width:100%;border-collapse:collapse;margin-top:4px}
+.field-table td{padding:2px 6px;border-bottom:1px solid rgba(51,65,85,.4)}
+.field-table td:first-child{color:var(--text2);width:50%}
+.field-table td:last-child{font-family:var(--mono);color:var(--text)}
+.payload-preview{
+  margin-top:4px;padding:4px 6px;background:rgba(15,23,42,.6);border-radius:4px;
+  color:var(--text2);word-break:break-all;white-space:pre-wrap;max-height:80px;overflow-y:auto;
+  font-size:.75rem;
+}
+#log-controls{
+  display:flex;gap:6px;padding:4px 14px 6px;flex-shrink:0;
+  border-bottom:1px solid var(--border);align-items:center;
+}
+#log-controls label{font-size:.75rem;color:var(--text2);display:flex;align-items:center;gap:4px;cursor:pointer}
+.frame-count{margin-left:auto;font-size:.72rem;color:var(--text2)}
+
+/* ── Charts panel ────────────────────────────────────────────────── */
+#charts-panel{grid-column:1;grid-row:2;border-bottom:none}
+
+#charts-area{
+  flex:1;overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:12px;
+}
+#charts-area::-webkit-scrollbar{width:5px}
+#charts-area::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+.chart-wrap{
+  background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+  padding:8px 12px 6px;
+}
+.chart-label{
+  font-size:.72rem;font-weight:700;color:var(--text2);text-transform:uppercase;
+  letter-spacing:.05em;margin-bottom:4px;display:flex;justify-content:space-between;
+  align-items:baseline;
+}
+.chart-label span{color:var(--accent);font-family:var(--mono);font-size:.85rem;font-weight:700;text-transform:none;letter-spacing:0}
+canvas.chart{width:100%;height:70px;display:block}
+
+/* Comparison table */
+#compare-table{
+  width:100%;border-collapse:collapse;font-size:.78rem;
+  background:var(--surface2);border-radius:8px;overflow:hidden;
+  border:1px solid var(--border);
+}
+#compare-table th{
+  background:var(--surface);padding:6px 10px;text-align:left;color:var(--text2);
+  font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;
+  border-bottom:1px solid var(--border);
+}
+#compare-table td{
+  padding:5px 10px;border-bottom:1px solid rgba(51,65,85,.3);color:var(--text);
+  font-family:var(--mono);font-size:.8rem;
+}
+#compare-table tr:last-child td{border-bottom:none}
+#compare-table td:first-child{color:var(--text2);font-family:var(--font)}
+.good{color:var(--green)!important}
+.bad{color:var(--red)!important}
+.mid{color:var(--amber)!important}
+
+/* Lat histogram */
+#lat-hist{
+  display:flex;align-items:flex-end;gap:1px;height:60px;padding:0 2px;
+}
+.lat-bar{
+  flex:1;background:var(--accent2);border-radius:1px 1px 0 0;min-height:2px;
+  transition:height .2s;
+}
+.lat-bar:hover{background:var(--accent);cursor:default}
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div id="topbar">
+  <h1>⚗ Protocol Lab</h1>
+  <input id="server-url" type="text" value="ws://localhost:3002" spellcheck="false">
+  <button id="connect-btn">Kết nối</button>
+  <div id="conn-status" class="disconnected">Chưa kết nối</div>
+  <div class="spacer"></div>
+  <div id="stats-row">
+    <div class="stat-item"><div class="stat-val" id="s-msgs">0</div><div class="stat-lbl">Frames</div></div>
+    <div class="stat-item"><div class="stat-val" id="s-rate">0</div><div class="stat-lbl">msg/s</div></div>
+    <div class="stat-item"><div class="stat-val" id="s-brate">0</div><div class="stat-lbl">KB/s</div></div>
+    <div class="stat-item"><div class="stat-val" id="s-lat">—</div><div class="stat-lbl">Lat avg</div></div>
+    <div class="stat-item"><div class="stat-val" id="s-p95">—</div><div class="stat-lbl">P95</div></div>
+    <div class="stat-item"><div class="stat-val" id="s-text">0</div><div class="stat-lbl">Text</div></div>
+    <div class="stat-item"><div class="stat-val" id="s-bin">0</div><div class="stat-lbl">Binary</div></div>
+  </div>
+</div>
+
+<div id="main">
+
+  <!-- ── Send panel ──────────────────────────────────────────────── -->
+  <div class="panel" id="send-panel">
+    <div class="panel-title">Gửi Frame</div>
+    <div class="mode-tabs">
+      <div class="tab active" data-mode="text">Text</div>
+      <div class="tab" data-mode="binary">Binary</div>
+      <div class="tab" data-mode="bench">Benchmark</div>
+      <div class="tab" data-mode="lat">Latency</div>
+    </div>
+    <div class="mode-body">
+      <!-- Text mode -->
+      <div id="text-mode" class="active">
+        <textarea class="msg" id="text-payload" rows="3" placeholder='{"type":"echo","payload":"hello","sentAt":0}'>{&quot;type&quot;:&quot;echo&quot;,&quot;payload&quot;:&quot;hello WebSocket!&quot;,&quot;sentAt&quot;:0}</textarea>
+        <div class="row">
+          <label>Kích thước:</label>
+          <select class="sel" id="text-preset">
+            <option value="">Tự nhập</option>
+            <option value="64">64 B</option>
+            <option value="256">256 B</option>
+            <option value="1024">1 KB</option>
+            <option value="4096">4 KB</option>
+            <option value="16384">16 KB</option>
+          </select>
+          <button class="btn-send" id="send-text-btn" disabled>Gửi Text</button>
+          <button class="btn-secondary" id="auto-text-btn" disabled>Auto ▶</button>
+        </div>
+      </div>
+
+      <!-- Binary mode -->
+      <div id="binary-mode">
+        <div class="row">
+          <label>Kích thước (bytes):</label>
+          <input class="nb" id="bin-size" type="number" value="256" min="1" max="65536">
+          <select class="sel" id="bin-pattern">
+            <option value="random">Random</option>
+            <option value="zeros">All zeros</option>
+            <option value="counter">Counter</option>
+            <option value="lorem">UTF-8 text</option>
+          </select>
+          <button class="btn-send" id="send-bin-btn" disabled>Gửi Binary</button>
+        </div>
+        <div class="row">
+          <label>Số lần:</label>
+          <input class="nb" id="bin-count" type="number" value="10" min="1" max="10000">
+          <label>Delay (ms):</label>
+          <input class="nb" id="bin-delay" type="number" value="100" min="0" max="5000">
+          <button class="btn-secondary" id="burst-bin-btn" disabled>Burst</button>
+        </div>
+      </div>
+
+      <!-- Benchmark mode -->
+      <div id="bench-mode">
+        <div class="row">
+          <label>Server gửi N messages:</label>
+          <input class="nb" id="bench-count" type="number" value="1000" min="1" max="10000">
+          <label>Kích thước:</label>
+          <input class="nb" id="bench-size" type="number" value="256" min="1" max="65536">
+        </div>
+        <div class="row">
+          <button class="btn-send" id="start-bench-btn" disabled>▶ Chạy Bench</button>
+          <div id="bench-result" style="font-size:.8rem;color:var(--text2)"></div>
+        </div>
+      </div>
+
+      <!-- Latency mode -->
+      <div id="lat-mode">
+        <div class="row">
+          <label>Số ping:</label>
+          <input class="nb" id="lat-count" type="number" value="100" min="1" max="1000">
+          <label>Interval (ms):</label>
+          <input class="nb" id="lat-interval" type="number" value="50" min="10" max="5000">
+          <button class="btn-send" id="start-lat-btn" disabled>▶ Đo Latency</button>
+        </div>
+        <div id="lat-hist"></div>
+        <div id="lat-summary" style="font-size:.75rem;color:var(--text2);margin-top:4px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Frame log (right, full height) ─────────────────────────── -->
+  <div class="panel" id="frame-panel">
+    <div class="panel-title">
+      Frame Inspector
+      <span class="badge" id="frame-badge">0 frames</span>
+    </div>
+    <div id="log-controls">
+      <label><input type="checkbox" id="chk-tx" checked> TX (sent)</label>
+      <label><input type="checkbox" id="chk-rx" checked> RX (received)</label>
+      <label><input type="checkbox" id="chk-stats"> Stats frames</label>
+      <label><input type="checkbox" id="chk-bench"> Bench frames</label>
+      <button class="btn-secondary" id="clear-log-btn" style="padding:2px 8px;font-size:.72rem">Xóa log</button>
+      <label style="margin-left:auto"><input type="checkbox" id="chk-scroll" checked> Auto scroll</label>
+    </div>
+    <div id="frame-log"></div>
+  </div>
+
+  <!-- ── Charts panel (bottom left) ────────────────────────────── -->
+  <div class="panel" id="charts-panel">
+    <div class="panel-title">Metrics &amp; Biểu đồ</div>
+    <div id="charts-area">
+      <div class="chart-wrap">
+        <div class="chart-label">Throughput (msg/s) <span id="cv-msgs">0</span></div>
+        <canvas class="chart" id="chart-msgs"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-label">Throughput (KB/s) <span id="cv-kbs">0</span></div>
+        <canvas class="chart" id="chart-kbs"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-label">Latency RTT (ms) <span id="cv-lat">—</span></div>
+        <canvas class="chart" id="chart-lat"></canvas>
+      </div>
+
+      <div style="font-size:.72rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-top:4px">
+        Text vs Binary vs Compressed
+      </div>
+      <table id="compare-table">
+        <thead>
+          <tr>
+            <th>Loại</th><th>Frames</th><th>Bytes sent</th><th>Avg size</th><th>Avg RTT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr id="cmp-text"><td>Text</td><td>0</td><td>0</td><td>—</td><td>—</td></tr>
+          <tr id="cmp-binary"><td>Binary</td><td>0</td><td>0</td><td>—</td><td>—</td></tr>
+          <tr id="cmp-compressed"><td>Compressed</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+'use strict';
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let ws = null;
+let frameCount = 0;
+const MAX_FRAMES = 500;
+const MAX_CHART_POINTS = 60;
+
+// Chart data buffers
+const chartData = {
+  msgs: new Array(MAX_CHART_POINTS).fill(0),
+  kbs:  new Array(MAX_CHART_POINTS).fill(0),
+  lat:  new Array(MAX_CHART_POINTS).fill(0),
+};
+
+// Comparison stats
+const cmpStats = {
+  text:       { frames: 0, bytes: 0, totalRtt: 0, rttCount: 0 },
+  binary:     { frames: 0, bytes: 0, totalRtt: 0, rttCount: 0 },
+  compressed: { frames: 0, bytes: 0, totalRtt: 0, rttCount: 0 },
+};
+
+let latPingId = 0;
+const latPending = new Map(); // id → sentAt
+
+let autoTextTimer = null;
+let isAutoText = false;
+
+let benchStart = 0;
+let benchReceived = 0;
+let benchTotal = 0;
+
+// ─── DOM refs ─────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const connBtn    = $('connect-btn');
+const urlInput   = $('server-url');
+const connStatus = $('conn-status');
+const frameLog   = $('frame-log');
+const frameBadge = $('frame-badge');
+
+function setStatus(cls, txt) { connStatus.className = cls; connStatus.textContent = txt; }
+
+// ─── Connect ──────────────────────────────────────────────────────────────────
+connBtn.addEventListener('click', () => {
+  if (ws && ws.readyState === WebSocket.OPEN) { ws.close(1000); return; }
+  const url = urlInput.value.trim() || 'ws://localhost:3002';
+  connect(url);
+});
+
+function connect(url) {
+  setStatus('connecting', 'Đang kết nối…');
+  try { ws = new WebSocket(url); }
+  catch { setStatus('disconnected', 'URL không hợp lệ'); return; }
+
+  ws.binaryType = 'arraybuffer';
+
+  ws.onopen = () => {
+    setStatus('connected', 'Đã kết nối');
+    connBtn.textContent = 'Ngắt kết nối';
+    setAllBtns(false);
+    logFrame('tx', 'OPEN', '— WebSocket handshake complete —', 0, true);
+  };
+
+  ws.onclose = e => {
+    setStatus('disconnected', `Đã ngắt (${e.code})`);
+    connBtn.textContent = 'Kết nối';
+    setAllBtns(true);
+    logFrame('rx', 'CLOSE', `code=${e.code} reason="${e.reason}"`, 2, true);
+  };
+
+  ws.onerror = () => setStatus('disconnected', 'Lỗi kết nối');
+
+  ws.onmessage = e => {
+    if (e.data instanceof ArrayBuffer) {
+      handleBinaryRx(e.data);
+      return;
+    }
+    handleTextRx(e.data);
+  };
+}
+
+function setAllBtns(disabled) {
+  ['send-text-btn','auto-text-btn','send-bin-btn','burst-bin-btn','start-bench-btn','start-lat-btn']
+    .forEach(id => $(id).disabled = disabled);
+}
+
+// ─── Frame handling ───────────────────────────────────────────────────────────
+function handleTextRx(raw) {
+  let msg;
+  try { msg = JSON.parse(raw); } catch {
+    logFrame('rx', 'TEXT', raw.slice(0, 100), Buffer.byteLength ? Buffer.byteLength(raw) : raw.length, false);
+    return;
+  }
+
+  const bytes = new TextEncoder().encode(raw).length;
+
+  switch (msg.type) {
+    case 'stats':
+      updateStats(msg);
+      if (!$('chk-stats').checked) return; // skip logging stats frames
+      logFrame('rx', 'TEXT', `[stats] msgs=${msg.msgCount} rate=${msg.msgRate}/s lat=${msg.latAvg}ms`, bytes, false, { rtt: null });
+      break;
+
+    case 'echo':
+      if (msg.sentAt) {
+        const rtt = Date.now() - msg.sentAt;
+        cmpStats.text.rttCount++;
+        cmpStats.text.totalRtt += rtt;
+        logFrame('rx', 'TEXT', `[echo] "${(msg.payload||'').slice(0,60)}" rtt=${rtt}ms`, bytes, false, { rtt });
+      } else {
+        logFrame('rx', 'TEXT', `[echo] "${(msg.payload||'').slice(0,60)}"`, bytes, false);
+      }
+      break;
+
+    case 'pong-lat': {
+      const rtt = Date.now() - msg.sentAt;
+      latPending.delete(msg.id);
+      updateLatHistogram(rtt);
+      logFrame('rx', 'TEXT', `[pong-lat] id=${msg.id} rtt=${rtt}ms`, bytes, false, { rtt });
+      break;
+    }
+
+    case 'bench-chunk':
+      benchReceived++;
+      if (!$('chk-bench').checked) return;
+      logFrame('rx', 'TEXT', `[bench] seq=${msg.seq} data=${(msg.data||'').length}B`, bytes, false);
+      break;
+
+    case 'bench-done':
+      finishBench();
+      logFrame('rx', 'TEXT', `[bench-done] total=${msg.total}`, bytes, false);
+      break;
+
+    default:
+      logFrame('rx', 'TEXT', raw.slice(0, 120), bytes, false);
+  }
+}
+
+function handleBinaryRx(buf) {
+  const bytes = buf.byteLength;
+  cmpStats.binary.frames++;
+  cmpStats.binary.bytes += bytes;
+  updateCmpTable();
+
+  const preview = hexPreview(buf, 16);
+  logFrame('rx', 'BINARY', `${bytes} bytes  ${preview}`, bytes, false);
+}
+
+// ─── Frame log ────────────────────────────────────────────────────────────────
+function logFrame(dir, opLabel, summary, bytes, isControl, extra = {}) {
+  if (!$('chk-tx').checked && dir === 'tx') return;
+  if (!$('chk-rx').checked && dir === 'rx') return;
+
+  frameCount++;
+  frameBadge.textContent = `${frameCount} frames`;
+
+  // Trim log
+  while (frameLog.children.length >= MAX_FRAMES) frameLog.removeChild(frameLog.firstChild);
+
+  const opcode = opcodeNum(opLabel);
+  const entry = document.createElement('div');
+  entry.className = 'frame-entry';
+
+  const ts = new Date().toISOString().slice(11, 23);
+  const opClass = opCssClass(opLabel);
+
+  entry.innerHTML = `
+    <span class="frame-dir ${dir}">${dir === 'tx' ? '↑' : '↓'}</span>
+    <span class="frame-op ${opClass}">${opLabel}</span>
+    <span class="frame-meta">${escHtml(summary)}</span>
+    <span class="frame-ts">${ts}</span>
+    <div class="frame-detail">
+      ${renderFrameDetail(dir, opLabel, opcode, bytes, extra)}
+    </div>
+  `;
+
+  entry.addEventListener('click', () => {
+    entry.classList.toggle('expanded');
+  });
+
+  frameLog.appendChild(entry);
+
+  if ($('chk-scroll').checked) entry.scrollIntoView({ block: 'end', behavior: 'instant' });
+}
+
+function renderFrameDetail(dir, opLabel, opcode, bytes, extra) {
+  const isMasked = dir === 'tx'; // client→server must be masked
+  const fin = 1;
+  const rsv = [0, 0, 0];
+  const op = opcode & 0xF;
+
+  // Build bit visualization: byte 0 (FIN RSV1 RSV2 RSV3 OP OP OP OP)
+  const bits0 = [
+    { v: fin,    cls: 'fin', title: 'FIN' },
+    { v: rsv[0], cls: 'rsv', title: 'RSV1' },
+    { v: rsv[1], cls: 'rsv', title: 'RSV2' },
+    { v: rsv[2], cls: 'rsv', title: 'RSV3' },
+    { v: (op >> 3) & 1, cls: 'op', title: 'OP3' },
+    { v: (op >> 2) & 1, cls: 'op', title: 'OP2' },
+    { v: (op >> 1) & 1, cls: 'op', title: 'OP1' },
+    { v: (op >> 0) & 1, cls: 'op', title: 'OP0' },
+  ];
+
+  let payloadLenDisplay;
+  let headerBytes = 2;
+  if (bytes < 126) {
+    payloadLenDisplay = bytes + ' (7-bit)';
+  } else if (bytes < 65536) {
+    payloadLenDisplay = bytes + ' (126 + uint16)';
+    headerBytes = 4;
+  } else {
+    payloadLenDisplay = bytes + ' (127 + uint64)';
+    headerBytes = 10;
+  }
+  if (isMasked) headerBytes += 4; // masking key
+
+  const bitsHtml = bits0.map(b =>
+    `<div class="bit ${b.cls}" title="${b.title}">${b.v}</div>`
+  ).join('');
+
+  const rttLine = extra.rtt != null ? `<tr><td>RTT</td><td>${extra.rtt} ms</td></tr>` : '';
+
+  return `
+    <div class="bit-row">${bitsHtml}</div>
+    <table class="field-table">
+      <tr><td>Direction</td><td>${dir === 'tx' ? 'Client → Server (TX)' : 'Server → Client (RX)'}</td></tr>
+      <tr><td>Opcode</td><td>0x${opcode.toString(16).toUpperCase()} — ${opcodeDesc(opLabel)}</td></tr>
+      <tr><td>FIN bit</td><td>1 (final fragment)</td></tr>
+      <tr><td>MASK bit</td><td>${isMasked ? '1 (client→server, required by RFC 6455)' : '0 (server→client, unmasked)'}</td></tr>
+      <tr><td>Payload length</td><td>${payloadLenDisplay}</td></tr>
+      <tr><td>Header size</td><td>${headerBytes} bytes</td></tr>
+      <tr><td>Total frame</td><td>${bytes + headerBytes} bytes (${headerBytes}B header + ${bytes}B payload)</td></tr>
+      ${rttLine}
+    </table>`;
+}
+
+function opcodeNum(label) {
+  const map = { TEXT: 0x1, BINARY: 0x2, CLOSE: 0x8, PING: 0x9, PONG: 0xA, OPEN: 0x1, CONT: 0x0 };
+  return map[label] ?? 0x1;
+}
+function opcodeDesc(label) {
+  const map = { TEXT: 'Text Frame', BINARY: 'Binary Frame', CLOSE: 'Connection Close', PING: 'Ping', PONG: 'Pong', OPEN: 'Connection Established', CONT: 'Continuation' };
+  return map[label] ?? label;
+}
+function opCssClass(label) {
+  const map = { TEXT: 'op-text', BINARY: 'op-binary', PING: 'op-ping', PONG: 'op-pong', CLOSE: 'op-close', OPEN: 'op-text', CONT: 'op-cont' };
+  return map[label] ?? 'op-text';
+}
+
+$('clear-log-btn').addEventListener('click', () => {
+  frameLog.innerHTML = '';
+  frameCount = 0;
+  frameBadge.textContent = '0 frames';
+});
+
+// ─── Stats update ─────────────────────────────────────────────────────────────
+function updateStats(msg) {
+  $('s-msgs').textContent  = msg.msgCount;
+  $('s-rate').textContent  = msg.msgRate;
+  $('s-brate').textContent = (msg.byteRate / 1024).toFixed(1);
+  $('s-lat').textContent   = msg.latAvg > 0 ? msg.latAvg + 'ms' : '—';
+  $('s-p95').textContent   = msg.latP95 > 0 ? msg.latP95 + 'ms' : '—';
+  $('s-text').textContent  = msg.textFrames;
+  $('s-bin').textContent   = msg.binaryFrames;
+
+  // Update chart data
+  chartData.msgs.push(msg.msgRate);
+  chartData.msgs.shift();
+  chartData.kbs.push(msg.byteRate / 1024);
+  chartData.kbs.shift();
+  chartData.lat.push(msg.latAvg || 0);
+  chartData.lat.shift();
+
+  drawChart('chart-msgs', chartData.msgs, '#38bdf8');
+  drawChart('chart-kbs',  chartData.kbs,  '#4ade80');
+  drawChart('chart-lat',  chartData.lat,  '#a78bfa');
+
+  $('cv-msgs').textContent = msg.msgRate + '/s';
+  $('cv-kbs').textContent  = (msg.byteRate / 1024).toFixed(1) + ' KB/s';
+  $('cv-lat').textContent  = msg.latAvg > 0 ? msg.latAvg + 'ms' : '—';
+}
+
+// ─── Mini sparkline charts ────────────────────────────────────────────────────
+function drawChart(canvasId, data, color) {
+  const canvas = $(canvasId);
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  if (w === 0) return;
+  canvas.width  = w * dpr;
+  canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const max = Math.max(...data, 0.001);
+  const len = data.length;
+  const step = w / (len - 1);
+
+  // Gradient fill
+  const grad = ctx.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0, color + '55');
+  grad.addColorStop(1, color + '05');
+
+  ctx.beginPath();
+  ctx.moveTo(0, h);
+  data.forEach((v, i) => {
+    const x = i * step;
+    const y = h - (v / max) * (h - 4) - 2;
+    if (i === 0) ctx.lineTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.lineTo((len - 1) * step, h);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  data.forEach((v, i) => {
+    const x = i * step;
+    const y = h - (v / max) * (h - 4) - 2;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+}
+
+// ─── Comparison table ─────────────────────────────────────────────────────────
+function updateCmpTable() {
+  ['text','binary'].forEach(type => {
+    const s = cmpStats[type];
+    const row = $('cmp-' + type);
+    if (!row) return;
+    const tds = row.querySelectorAll('td');
+    tds[1].textContent = s.frames;
+    tds[2].textContent = formatSize(s.bytes);
+    tds[3].textContent = s.frames > 0 ? formatSize(Math.round(s.bytes / s.frames)) : '—';
+    tds[4].textContent = s.rttCount > 0 ? (s.totalRtt / s.rttCount).toFixed(1) + 'ms' : '—';
+  });
+}
+
+// ─── Latency histogram ────────────────────────────────────────────────────────
+const latSamples = [];
+const LAT_BUCKETS = 20;
+let latBuckets = new Array(LAT_BUCKETS).fill(0);
+
+function updateLatHistogram(rtt) {
+  latSamples.push(rtt);
+  if (latSamples.length > 200) latSamples.shift();
+
+  // Rebuild buckets
+  const max = Math.max(...latSamples, 1);
+  latBuckets = new Array(LAT_BUCKETS).fill(0);
+  latSamples.forEach(v => {
+    const idx = Math.min(Math.floor((v / max) * LAT_BUCKETS), LAT_BUCKETS - 1);
+    latBuckets[idx]++;
+  });
+
+  const hist = $('lat-hist');
+  hist.innerHTML = '';
+  const maxBkt = Math.max(...latBuckets, 1);
+  latBuckets.forEach((v, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'lat-bar';
+    const pct = (v / maxBkt) * 100;
+    bar.style.height = Math.max(pct, 2) + '%';
+    const bucketMs = ((i + 1) / LAT_BUCKETS * max).toFixed(0);
+    bar.title = `≤${bucketMs}ms: ${v} samples`;
+    hist.appendChild(bar);
+  });
+
+  // Summary
+  const avg = latSamples.reduce((s, v) => s + v, 0) / latSamples.length;
+  const sorted = [...latSamples].sort((a, b) => a - b);
+  const p50 = sorted[Math.floor(sorted.length * 0.5)];
+  const p95 = sorted[Math.floor(sorted.length * 0.95)];
+  const p99 = sorted[Math.floor(sorted.length * 0.99)];
+  $('lat-summary').textContent =
+    `n=${latSamples.length}  avg=${avg.toFixed(1)}ms  p50=${p50}ms  p95=${p95}ms  p99=${p99||p95}ms  max=${sorted[sorted.length-1]}ms`;
+}
+
+// ─── Send actions ─────────────────────────────────────────────────────────────
+function sendText(payload) {
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  const bytes = new TextEncoder().encode(payload).length;
+  ws.send(payload);
+  cmpStats.text.frames++;
+  cmpStats.text.bytes += bytes;
+  updateCmpTable();
+  logFrame('tx', 'TEXT', payload.slice(0, 100), bytes, false);
+}
+
+function sendBinaryBuf(buf) {
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  ws.send(buf);
+  cmpStats.binary.frames++;
+  cmpStats.binary.bytes += buf.byteLength;
+  updateCmpTable();
+  const preview = hexPreview(buf, 8);
+  logFrame('tx', 'BINARY', `${buf.byteLength} bytes  ${preview}`, buf.byteLength, false);
+}
+
+$('send-text-btn').addEventListener('click', () => {
+  const preset = $('text-preset').value;
+  let payload;
+  if (preset) {
+    const n = parseInt(preset);
+    payload = JSON.stringify({ type: 'echo', payload: 'A'.repeat(n - 40), sentAt: Date.now() });
+  } else {
+    let raw = $('text-payload').value;
+    // Auto-inject sentAt
+    try {
+      const obj = JSON.parse(raw);
+      obj.sentAt = Date.now();
+      payload = JSON.stringify(obj);
+    } catch { payload = raw; }
+  }
+  sendText(payload);
+});
+
+$('auto-text-btn').addEventListener('click', () => {
+  if (isAutoText) {
+    clearInterval(autoTextTimer);
+    isAutoText = false;
+    $('auto-text-btn').textContent = 'Auto ▶';
+    $('auto-text-btn').style.background = '';
+  } else {
+    isAutoText = true;
+    $('auto-text-btn').textContent = 'Stop ■';
+    $('auto-text-btn').style.background = 'var(--red)';
+    autoTextTimer = setInterval(() => {
+      const payload = JSON.stringify({ type: 'echo', payload: 'auto', sentAt: Date.now() });
+      sendText(payload);
+    }, 200);
+  }
+});
+
+$('send-bin-btn').addEventListener('click', () => {
+  const size = Math.max(1, parseInt($('bin-size').value) || 256);
+  const buf = makeBinaryBuf(size, $('bin-pattern').value);
+  sendBinaryBuf(buf);
+});
+
+$('burst-bin-btn').addEventListener('click', async () => {
+  const count = Math.min(parseInt($('bin-count').value) || 10, 10000);
+  const delay = parseInt($('bin-delay').value) || 100;
+  const size  = Math.max(1, parseInt($('bin-size').value) || 256);
+  const pattern = $('bin-pattern').value;
+
+  $('burst-bin-btn').disabled = true;
+  for (let i = 0; i < count; i++) {
+    if (!ws || ws.readyState !== WebSocket.OPEN) break;
+    sendBinaryBuf(makeBinaryBuf(size, pattern));
+    if (delay > 0) await sleep(delay);
+  }
+  $('burst-bin-btn').disabled = false;
+});
+
+$('start-bench-btn').addEventListener('click', () => {
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  const count = Math.min(parseInt($('bench-count').value) || 1000, 10000);
+  const size  = Math.min(parseInt($('bench-size').value) || 256, 65536);
+  benchStart = Date.now();
+  benchReceived = 0;
+  benchTotal = count;
+  $('bench-result').textContent = `Đang chạy: 0/${count}…`;
+  const payload = JSON.stringify({ type: 'bench', count, size });
+  sendText(payload);
+});
+
+function finishBench() {
+  const elapsed = Date.now() - benchStart;
+  const rate = benchReceived / (elapsed / 1000);
+  $('bench-result').textContent =
+    `✓ ${benchReceived} msgs in ${elapsed}ms → ${rate.toFixed(0)} msg/s`;
+}
+
+$('start-lat-btn').addEventListener('click', async () => {
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  const count    = Math.min(parseInt($('lat-count').value) || 100, 1000);
+  const interval = Math.max(10, parseInt($('lat-interval').value) || 50);
+
+  $('start-lat-btn').disabled = true;
+  for (let i = 0; i < count; i++) {
+    if (!ws || ws.readyState !== WebSocket.OPEN) break;
+    const id = ++latPingId;
+    const sentAt = Date.now();
+    latPending.set(id, sentAt);
+    const payload = JSON.stringify({ type: 'ping-lat', id, sentAt });
+    sendText(payload);
+    await sleep(interval);
+  }
+  $('start-lat-btn').disabled = false;
+});
+
+// ─── Mode tabs ────────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.mode-body > div').forEach(d => d.classList.remove('active'));
+    tab.classList.add('active');
+    $(tab.dataset.mode + '-mode').classList.add('active');
+  });
+});
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function makeBinaryBuf(size, pattern) {
+  const buf = new Uint8Array(size);
+  switch (pattern) {
+    case 'random':  crypto.getRandomValues(buf); break;
+    case 'zeros':   buf.fill(0); break;
+    case 'counter': for (let i = 0; i < size; i++) buf[i] = i & 0xFF; break;
+    case 'lorem': {
+      const enc = new TextEncoder();
+      const text = ('Lorem ipsum dolor sit amet '.repeat(Math.ceil(size / 28))).slice(0, size);
+      const bytes = enc.encode(text);
+      buf.set(bytes.slice(0, size));
+      break;
+    }
+  }
+  return buf.buffer;
+}
+
+function hexPreview(buf, n) {
+  const bytes = new Uint8Array(buf, 0, Math.min(n, buf.byteLength));
+  return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join(' ') +
+    (buf.byteLength > n ? ' …' : '');
+}
+
+function formatSize(n) {
+  if (n < 1024) return n + ' B';
+  if (n < 1048576) return (n / 1024).toFixed(1) + ' KB';
+  return (n / 1048576).toFixed(1) + ' MB';
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+</script>
+</body>
+</html>

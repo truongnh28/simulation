@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WebSocket Chat Room</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f172a;--surface:#1e293b;--surface2:#263245;--border:#334155;
+  --text:#e2e8f0;--text2:#94a3b8;--accent:#38bdf8;--accent2:#0ea5e9;
+  --green:#4ade80;--red:#f87171;--amber:#fbbf24;--purple:#a78bfa;
+  --msg-bg:#1e293b;--own-bg:#1e3a5f;--sys-bg:#0f2236;
+  --font:'Segoe UI',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px}
+
+/* ── Layout ──────────────────────────────────────────────────────── */
+#app{display:flex;height:100vh}
+
+/* ── Left sidebar ────────────────────────────────────────────────── */
+#sidebar{
+  width:220px;min-width:180px;flex-shrink:0;
+  background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+#brand{
+  padding:14px 16px 10px;font-weight:700;font-size:1rem;color:var(--accent);
+  border-bottom:1px solid var(--border);letter-spacing:.03em;flex-shrink:0;
+}
+.sb-section{flex-shrink:0}
+.sb-label{
+  padding:10px 16px 4px;font-size:.7rem;font-weight:700;letter-spacing:.08em;
+  color:var(--text2);text-transform:uppercase;
+}
+.room-item{
+  display:flex;align-items:center;gap:6px;padding:6px 16px;cursor:pointer;
+  color:var(--text2);border-radius:0;transition:background .15s,color .15s;
+  font-size:.88rem;
+}
+.room-item:hover{background:var(--surface2);color:var(--text)}
+.room-item.active{background:rgba(56,189,248,.12);color:var(--accent);font-weight:600}
+.room-item .hash{opacity:.5;font-size:.95em}
+#room-input-wrap{padding:6px 12px 10px;display:flex;gap:6px}
+#room-input{
+  flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:6px;
+  color:var(--text);padding:5px 8px;font-size:.82rem;outline:none;
+}
+#room-input:focus{border-color:var(--accent)}
+#room-join-btn{
+  background:var(--accent2);color:#fff;border:none;border-radius:6px;
+  padding:5px 9px;cursor:pointer;font-size:.82rem;transition:opacity .15s;
+}
+#room-join-btn:hover{opacity:.85}
+
+.sb-divider{height:1px;background:var(--border);margin:4px 0}
+
+.user-item{
+  display:flex;align-items:center;gap:8px;padding:5px 16px;
+  font-size:.82rem;color:var(--text2);cursor:pointer;
+}
+.user-item:hover{background:var(--surface2);color:var(--text)}
+.dot{
+  width:7px;height:7px;border-radius:50%;flex-shrink:0;
+  background:var(--green);
+}
+.dot.offline{background:var(--text2);opacity:.4}
+#me-tag{
+  padding:10px 16px;border-top:1px solid var(--border);
+  font-size:.8rem;color:var(--text2);flex-shrink:0;margin-top:auto;
+}
+#me-tag strong{color:var(--accent)}
+
+/* ── Connect overlay ────────────────────────────────────────────── */
+#connect-overlay{
+  position:fixed;inset:0;background:rgba(15,23,42,.9);
+  display:flex;align-items:center;justify-content:center;z-index:100;
+  backdrop-filter:blur(4px);
+}
+#connect-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:28px 32px;width:320px;display:flex;flex-direction:column;gap:14px;
+}
+#connect-card h2{font-size:1.15rem;color:var(--accent);font-weight:700}
+#connect-card label{font-size:.82rem;color:var(--text2);margin-bottom:2px;display:block}
+#connect-card input{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  border-radius:6px;padding:8px 10px;color:var(--text);outline:none;font-size:.9rem;
+}
+#connect-card input:focus{border-color:var(--accent)}
+#connect-btn{
+  background:var(--accent2);color:#fff;border:none;border-radius:8px;
+  padding:10px;font-size:.95rem;font-weight:600;cursor:pointer;transition:opacity .15s;
+}
+#connect-btn:hover{opacity:.85}
+
+/* ── Main chat area ──────────────────────────────────────────────── */
+#main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+
+#chat-header{
+  padding:10px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+  background:var(--surface);
+}
+#chat-header .room-title{font-weight:700;font-size:1rem;color:var(--text)}
+#chat-header .room-title .hash{color:var(--accent);margin-right:2px}
+#online-count{font-size:.78rem;color:var(--text2)}
+#conn-status{
+  margin-left:auto;font-size:.75rem;padding:2px 8px;border-radius:12px;font-weight:600;
+}
+#conn-status.connected{background:rgba(74,222,128,.15);color:var(--green)}
+#conn-status.connecting{background:rgba(251,191,36,.15);color:var(--amber)}
+#conn-status.disconnected{background:rgba(248,113,113,.15);color:var(--red)}
+
+#messages{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:3px}
+#messages::-webkit-scrollbar{width:6px}
+#messages::-webkit-scrollbar-track{background:transparent}
+#messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* Message bubbles */
+.msg{
+  display:flex;flex-direction:column;padding:6px 10px;border-radius:8px;
+  background:var(--msg-bg);border:1px solid transparent;max-width:680px;
+  animation:fadein .15s ease;
+}
+@keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.msg.own{background:var(--own-bg);align-self:flex-end;border-color:rgba(56,189,248,.15)}
+.msg.system{
+  background:var(--sys-bg);color:var(--text2);font-style:italic;
+  font-size:.8rem;align-self:center;border-color:var(--border);max-width:none;
+}
+.msg.dm{background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.25)}
+.msg-header{display:flex;align-items:baseline;gap:8px;margin-bottom:2px}
+.msg-from{font-weight:600;font-size:.82rem;color:var(--accent)}
+.msg.own .msg-from{color:#60d0ff}
+.msg.dm .msg-from{color:var(--purple)}
+.msg-ts{font-size:.7rem;color:var(--text2)}
+.msg-text{font-size:.9rem;line-height:1.55;word-break:break-word;white-space:pre-wrap}
+.dm-label{font-size:.7rem;color:var(--purple);margin-bottom:2px;font-weight:600}
+
+/* File message */
+.file-msg{
+  display:flex;align-items:center;gap:10px;padding:6px 10px;
+  background:var(--surface2);border-radius:6px;border:1px solid var(--border);
+  margin-top:4px;max-width:340px;
+}
+.file-icon{font-size:1.4rem;flex-shrink:0}
+.file-info{flex:1;min-width:0}
+.file-name{font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-size{font-size:.72rem;color:var(--text2)}
+.file-dl{
+  background:var(--accent2);color:#fff;border:none;border-radius:5px;
+  padding:4px 9px;cursor:pointer;font-size:.78rem;flex-shrink:0;transition:opacity .15s;
+  text-decoration:none;display:inline-block;
+}
+.file-dl:hover{opacity:.85}
+.file-progress{
+  height:3px;background:var(--border);border-radius:2px;margin-top:4px;overflow:hidden;
+}
+.file-progress-bar{height:100%;background:var(--accent2);width:0%;transition:width .1s}
+
+/* Typing indicator */
+#typing-area{
+  min-height:18px;padding:2px 16px 4px;font-size:.75rem;color:var(--text2);
+  font-style:italic;flex-shrink:0;
+}
+
+/* Input bar */
+#input-bar{
+  padding:10px 14px;border-top:1px solid var(--border);
+  display:flex;align-items:flex-end;gap:8px;flex-shrink:0;
+  background:var(--surface);
+}
+#msg-input{
+  flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+  color:var(--text);padding:9px 12px;font-size:.9rem;outline:none;resize:none;
+  font-family:var(--font);line-height:1.5;max-height:120px;
+}
+#msg-input:focus{border-color:var(--accent)}
+#send-btn{
+  background:var(--accent2);color:#fff;border:none;border-radius:8px;
+  padding:9px 14px;cursor:pointer;font-size:.9rem;transition:opacity .15s;
+  font-weight:600;flex-shrink:0;
+}
+#send-btn:hover{opacity:.85}
+#send-btn:disabled{opacity:.4;cursor:not-allowed}
+#file-btn{
+  background:var(--surface2);border:1px solid var(--border);color:var(--text2);
+  border-radius:8px;padding:9px 10px;cursor:pointer;font-size:1rem;transition:background .15s;
+  flex-shrink:0;
+}
+#file-btn:hover{background:var(--surface);color:var(--text)}
+
+/* Drop overlay */
+#drop-overlay{
+  display:none;position:absolute;inset:0;background:rgba(56,189,248,.08);
+  border:3px dashed var(--accent);border-radius:0;z-index:50;
+  align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;
+  color:var(--accent);pointer-events:none;
+}
+#drop-overlay.active{display:flex}
+#main{position:relative}
+
+/* Right panel — file preview area */
+#right-panel{
+  width:0;overflow:hidden;border-left:1px solid var(--border);
+  background:var(--surface);flex-shrink:0;transition:width .25s;
+  display:flex;flex-direction:column;
+}
+#right-panel.open{width:240px}
+#right-panel-title{
+  padding:10px 14px;font-weight:700;font-size:.85rem;color:var(--text2);
+  border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;
+}
+#right-panel-close{
+  background:none;border:none;color:var(--text2);cursor:pointer;font-size:1.1rem;
+}
+#right-panel-close:hover{color:var(--text)}
+#right-panel-body{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.preview-img{width:100%;border-radius:6px;border:1px solid var(--border);display:block}
+</style>
+</head>
+<body>
+
+<!-- Connect overlay -->
+<div id="connect-overlay">
+  <div id="connect-card">
+    <h2>WebSocket Chat Room</h2>
+    <div>
+      <label>Tên của bạn</label>
+      <input id="name-input" type="text" placeholder="Enter your name..." value="User1" maxlength="32">
+    </div>
+    <div>
+      <label>Phòng chat</label>
+      <input id="room-input-init" type="text" placeholder="general" value="general" maxlength="32">
+    </div>
+    <div>
+      <label>WebSocket server</label>
+      <input id="server-input" type="text" value="ws://localhost:3001">
+    </div>
+    <button id="connect-btn">Kết nối</button>
+  </div>
+</div>
+
+<div id="app">
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div id="brand">💬 WS Chat</div>
+    <div class="sb-section">
+      <div class="sb-label">Phòng chat</div>
+      <div id="room-list"></div>
+      <div id="room-input-wrap">
+        <input id="room-input" type="text" placeholder="new-room" maxlength="32">
+        <button id="room-join-btn">+</button>
+      </div>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-section" style="flex:1;overflow-y:auto">
+      <div class="sb-label">Online</div>
+      <div id="user-list"></div>
+    </div>
+    <div id="me-tag">Bạn: <strong id="me-name">—</strong></div>
+  </div>
+
+  <!-- Main chat -->
+  <div id="main">
+    <div id="drop-overlay">📁 Thả file để gửi</div>
+    <div id="chat-header">
+      <div class="room-title"><span class="hash">#</span><span id="room-name-display">—</span></div>
+      <div id="online-count"></div>
+      <div id="conn-status" class="disconnected">Chưa kết nối</div>
+    </div>
+    <div id="messages"></div>
+    <div id="typing-area"></div>
+    <div id="input-bar">
+      <input type="file" id="file-input" style="display:none" multiple>
+      <button id="file-btn" title="Gửi file">📎</button>
+      <textarea id="msg-input" rows="1" placeholder="Nhập tin nhắn… (Enter gửi, Shift+Enter xuống dòng)"></textarea>
+      <button id="send-btn" disabled>Gửi</button>
+    </div>
+  </div>
+
+  <!-- Right panel (file previews) -->
+  <div id="right-panel">
+    <div id="right-panel-title">
+      <span>File nhận</span>
+      <button id="right-panel-close">✕</button>
+    </div>
+    <div id="right-panel-body"></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let ws = null;
+let myId = null;
+let myName = '';
+let myRoom = '';
+let reconnectTimer = null;
+let reconnectDelay = 1000;
+let serverUrl = '';
+
+/** @type {Map<string, {name:string,online:boolean}>} id → user info */
+const users = new Map();
+
+/** @type {Set<string>} room names we have joined in this session */
+const knownRooms = new Set();
+
+/** @type {Map<number, {el:HTMLElement, chunks:Blob[], mime:string, received:number, total:number}>} transferId → state */
+const incomingFiles = new Map();
+
+/** @type {Map<string, string>} user id → typing timeout */
+const typingUsers = new Map();
+
+let typingDebounce = null;
+let iAmTyping = false;
+
+// ─── DOM refs ─────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const connectOverlay = $('connect-overlay');
+const nameInput      = $('name-input');
+const roomInitInput  = $('room-input-init');
+const serverInput    = $('server-input');
+const connectBtn     = $('connect-btn');
+const connStatus     = $('conn-status');
+const messagesEl     = $('messages');
+const msgInput       = $('msg-input');
+const sendBtn        = $('send-btn');
+const roomList       = $('room-list');
+const userList       = $('user-list');
+const meNameEl       = $('me-name');
+const typingArea     = $('typing-area');
+const roomNameDisp   = $('room-name-display');
+const onlineCount    = $('online-count');
+const fileBtn        = $('file-btn');
+const fileInput      = $('file-input');
+const dropOverlay    = $('drop-overlay');
+const roomInputSb    = $('room-input');
+const roomJoinBtn    = $('room-join-btn');
+const rightPanel     = $('right-panel');
+const rightPanelBody = $('right-panel-body');
+const rightClose     = $('right-panel-close');
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function formatSize(n) {
+  if (n < 1024) return n + ' B';
+  if (n < 1048576) return (n / 1024).toFixed(1) + ' KB';
+  return (n / 1048576).toFixed(1) + ' MB';
+}
+
+function formatTime(ts) {
+  const d = new Date(ts);
+  return d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+}
+
+function scrollToBottom(force = false) {
+  const el = messagesEl;
+  const threshold = 80;
+  const atBottom = el.scrollHeight - el.clientHeight - el.scrollTop < threshold;
+  if (atBottom || force) el.scrollTop = el.scrollHeight;
+}
+
+function setStatus(state, label) {
+  connStatus.className = state;
+  connStatus.textContent = label;
+}
+
+// ─── Connect overlay ──────────────────────────────────────────────────────────
+connectBtn.addEventListener('click', () => {
+  const name = nameInput.value.trim() || 'Anonymous';
+  const room = roomInitInput.value.trim() || 'general';
+  serverUrl  = serverInput.value.trim() || 'ws://localhost:3001';
+  myName = name;
+  myRoom = room;
+  connectOverlay.style.display = 'none';
+  connect();
+});
+
+nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') connectBtn.click(); });
+roomInitInput.addEventListener('keydown', e => { if (e.key === 'Enter') connectBtn.click(); });
+serverInput.addEventListener('keydown', e => { if (e.key === 'Enter') connectBtn.click(); });
+
+// ─── WebSocket ────────────────────────────────────────────────────────────────
+function connect() {
+  setStatus('connecting', 'Đang kết nối…');
+  try {
+    ws = new WebSocket(serverUrl);
+    ws.binaryType = 'arraybuffer';
+  } catch (err) {
+    setStatus('disconnected', 'Lỗi URL');
+    return;
+  }
+
+  ws.onopen = () => {
+    setStatus('connected', 'Đã kết nối');
+    reconnectDelay = 1000;
+    sendJson({ type: 'join', name: myName, room: myRoom });
+    sendBtn.disabled = false;
+  };
+
+  ws.onclose = e => {
+    setStatus('disconnected', 'Mất kết nối');
+    sendBtn.disabled = true;
+    ws = null;
+    if (e.code !== 1000) scheduleReconnect();
+  };
+
+  ws.onerror = () => {
+    setStatus('disconnected', 'Lỗi kết nối');
+  };
+
+  ws.onmessage = e => {
+    if (e.data instanceof ArrayBuffer) {
+      handleBinary(e.data);
+      return;
+    }
+    let msg;
+    try { msg = JSON.parse(e.data); } catch { return; }
+    handleMessage(msg);
+  };
+}
+
+function sendJson(obj) {
+  if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(obj));
+}
+
+function scheduleReconnect() {
+  clearTimeout(reconnectTimer);
+  // Exponential backoff + jitter (cap 30s)
+  const jitter = Math.random() * 0.3 * reconnectDelay;
+  const delay = Math.min(reconnectDelay + jitter, 30000);
+  reconnectDelay = Math.min(reconnectDelay * 2, 30000);
+  setStatus('connecting', `Kết nối lại sau ${(delay / 1000).toFixed(1)}s…`);
+  reconnectTimer = setTimeout(() => connect(), delay);
+}
+
+// ─── Message handling ─────────────────────────────────────────────────────────
+function handleMessage(msg) {
+  switch (msg.type) {
+    case 'welcome':
+      myId = msg.id;
+      myRoom = msg.room;
+      meNameEl.textContent = myName;
+      roomNameDisp.textContent = msg.room;
+      knownRooms.add(msg.room);
+      renderRooms();
+
+      users.clear();
+      msg.users.forEach(u => users.set(u.id, { name: u.name, online: true }));
+      renderUsers();
+      onlineCount.textContent = `${msg.users.length} online`;
+      break;
+
+    case 'history':
+      messagesEl.innerHTML = '';
+      msg.messages.forEach(m => appendMessage(m));
+      scrollToBottom(true);
+      break;
+
+    case 'message':
+      appendMessage(msg);
+      scrollToBottom();
+      break;
+
+    case 'private':
+      appendDM(msg);
+      scrollToBottom();
+      break;
+
+    case 'presence':
+      if (msg.online) {
+        users.set(msg.id, { name: msg.name, online: true });
+      } else {
+        if (users.has(msg.id)) users.get(msg.id).online = false;
+        // Keep in map for DM reference; they'll be cleaned on reconnect
+      }
+      renderUsers();
+      const onlineUsers = [...users.values()].filter(u => u.online);
+      onlineCount.textContent = `${onlineUsers.length} online`;
+      break;
+
+    case 'typing':
+      if (msg.isTyping) {
+        typingUsers.set(msg.id, msg.name);
+        clearTimeout(typingUsers._timer?.[msg.id]);
+        if (!typingUsers._timer) typingUsers._timer = {};
+        typingUsers._timer[msg.id] = setTimeout(() => {
+          typingUsers.delete(msg.id);
+          renderTyping();
+        }, 3000);
+      } else {
+        typingUsers.delete(msg.id);
+      }
+      renderTyping();
+      break;
+
+    case 'file-start':
+      startIncomingFile(msg);
+      break;
+
+    case 'file-end':
+      finishIncomingFile(msg.transferId);
+      break;
+
+    case 'error':
+      appendSysMsg(`⚠ ${msg.message}`);
+      break;
+  }
+}
+
+function handleBinary(buf) {
+  // First 4 bytes = transferId (uint32 LE)
+  const view = new DataView(buf);
+  const transferId = view.getUint32(0, true);
+  const chunk = buf.slice(4);
+
+  const ft = incomingFiles.get(transferId);
+  if (!ft) return;
+
+  ft.chunks.push(new Blob([chunk]));
+  ft.received += chunk.byteLength;
+
+  // Update progress bar
+  if (ft.total > 0) {
+    const pct = Math.min(100, (ft.received / ft.total) * 100);
+    const bar = ft.el?.querySelector('.file-progress-bar');
+    if (bar) bar.style.width = pct + '%';
+  }
+}
+
+// ─── Message rendering ────────────────────────────────────────────────────────
+function appendMessage(msg) {
+  if (msg.system) {
+    appendSysMsg(msg.text);
+    return;
+  }
+  const isOwn = msg.senderId === myId;
+  const div = document.createElement('div');
+  div.className = 'msg' + (isOwn ? ' own' : '');
+  div.innerHTML = `
+    <div class="msg-header">
+      <span class="msg-from">${escHtml(isOwn ? 'Bạn' : msg.from)}</span>
+      <span class="msg-ts">${formatTime(msg.ts)}</span>
+    </div>
+    <div class="msg-text">${escHtml(msg.text)}</div>
+  `;
+  messagesEl.appendChild(div);
+}
+
+function appendDM(msg) {
+  const isOwn = msg.fromId === myId || msg.to !== undefined;
+  const div = document.createElement('div');
+  div.className = 'msg dm' + (isOwn ? ' own' : '');
+  const label = isOwn ? `→ DM to ${escHtml(msg.toName || 'them')}` : '← Tin nhắn riêng';
+  div.innerHTML = `
+    <div class="dm-label">${label}</div>
+    <div class="msg-header">
+      <span class="msg-from">${escHtml(isOwn ? 'Bạn' : msg.from)}</span>
+      <span class="msg-ts">${formatTime(msg.ts)}</span>
+    </div>
+    <div class="msg-text">${escHtml(msg.text)}</div>
+  `;
+  messagesEl.appendChild(div);
+}
+
+function appendSysMsg(text) {
+  const div = document.createElement('div');
+  div.className = 'msg system';
+  div.textContent = text;
+  messagesEl.appendChild(div);
+}
+
+function appendFileMsg(from, fileName, fileSize, mime, transferId, isOwn) {
+  const msgDiv = document.createElement('div');
+  msgDiv.className = 'msg' + (isOwn ? ' own' : '');
+  msgDiv.innerHTML = `
+    <div class="msg-header">
+      <span class="msg-from">${escHtml(isOwn ? 'Bạn' : from)}</span>
+      <span class="msg-ts">${formatTime(Date.now())}</span>
+    </div>`;
+
+  const fileDiv = document.createElement('div');
+  fileDiv.className = 'file-msg';
+  fileDiv.dataset.transferId = transferId;
+  fileDiv.innerHTML = `
+    <div class="file-icon">${fileIcon(mime)}</div>
+    <div class="file-info">
+      <div class="file-name">${escHtml(fileName)}</div>
+      <div class="file-size">${formatSize(fileSize)}</div>
+      <div class="file-progress"><div class="file-progress-bar"></div></div>
+    </div>
+    <a class="file-dl" style="display:none">↓</a>
+  `;
+  msgDiv.appendChild(fileDiv);
+  messagesEl.appendChild(msgDiv);
+  return fileDiv;
+}
+
+function fileIcon(mime) {
+  if (!mime) return '📄';
+  if (mime.startsWith('image/')) return '🖼';
+  if (mime.startsWith('video/')) return '🎬';
+  if (mime.startsWith('audio/')) return '🎵';
+  if (mime.includes('pdf')) return '📕';
+  if (mime.includes('zip') || mime.includes('compressed')) return '📦';
+  return '📄';
+}
+
+// ─── File transfer — outgoing ─────────────────────────────────────────────────
+const CHUNK_SIZE = 16 * 1024; // 16 KB
+
+async function sendFile(file, toId = null) {
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+
+  appendSysMsg(`📤 Đang gửi: ${file.name} (${formatSize(file.size)})`);
+
+  const meta = { type: 'file-start', name: file.name, size: file.size, mime: file.type || 'application/octet-stream' };
+  if (toId) meta.to = toId;
+  sendJson(meta);
+
+  const buf = await file.arrayBuffer();
+  let offset = 0;
+  while (offset < buf.byteLength) {
+    const end = Math.min(offset + CHUNK_SIZE, buf.byteLength);
+    ws.send(buf.slice(offset, end));
+    offset = end;
+    // Backpressure: wait if buffer is too full
+    if (ws.bufferedAmount > 256 * 1024) {
+      await new Promise(r => setTimeout(r, 50));
+    }
+  }
+
+  sendJson({ type: 'file-end' });
+  appendSysMsg(`✅ Đã gửi: ${file.name}`);
+}
+
+// ─── File transfer — incoming ─────────────────────────────────────────────────
+function startIncomingFile(msg) {
+  const el = appendFileMsg(msg.from, msg.name, msg.size, msg.mime, msg.transferId, false);
+  incomingFiles.set(msg.transferId, {
+    el,
+    chunks: [],
+    mime: msg.mime,
+    name: msg.name,
+    received: 0,
+    total: msg.size,
+  });
+  scrollToBottom();
+}
+
+function finishIncomingFile(transferId) {
+  const ft = incomingFiles.get(transferId);
+  if (!ft) return;
+
+  const blob = new Blob(ft.chunks, { type: ft.mime });
+  const url = URL.createObjectURL(blob);
+
+  // Update download link
+  const dlBtn = ft.el?.querySelector('.file-dl');
+  if (dlBtn) {
+    dlBtn.href = url;
+    dlBtn.download = ft.name;
+    dlBtn.style.display = 'inline-block';
+  }
+  const bar = ft.el?.querySelector('.file-progress-bar');
+  if (bar) bar.style.width = '100%';
+
+  // Show image preview in right panel if it's an image
+  if (ft.mime.startsWith('image/')) {
+    rightPanel.classList.add('open');
+    const img = document.createElement('img');
+    img.src = url;
+    img.className = 'preview-img';
+    img.alt = ft.name;
+    const label = document.createElement('div');
+    label.style.cssText = 'font-size:.75rem;color:var(--text2)';
+    label.textContent = ft.name;
+    rightPanelBody.appendChild(label);
+    rightPanelBody.appendChild(img);
+    rightPanelBody.scrollTop = rightPanelBody.scrollHeight;
+  }
+
+  appendSysMsg(`📥 Nhận xong: ${ft.name} (${formatSize(blob.size)})`);
+  incomingFiles.delete(transferId);
+  scrollToBottom();
+}
+
+// ─── Typing indicator ─────────────────────────────────────────────────────────
+function renderTyping() {
+  const names = [...typingUsers.values()];
+  if (names.length === 0) { typingArea.textContent = ''; return; }
+  if (names.length === 1) typingArea.textContent = `${names[0]} đang nhập…`;
+  else typingArea.textContent = `${names.join(', ')} đang nhập…`;
+}
+
+msgInput.addEventListener('input', () => {
+  autoResize();
+  if (!iAmTyping) {
+    iAmTyping = true;
+    sendJson({ type: 'typing', isTyping: true });
+  }
+  clearTimeout(typingDebounce);
+  typingDebounce = setTimeout(() => {
+    iAmTyping = false;
+    sendJson({ type: 'typing', isTyping: false });
+  }, 2000);
+});
+
+// ─── Sidebar rendering ────────────────────────────────────────────────────────
+function renderRooms() {
+  roomList.innerHTML = '';
+  for (const room of knownRooms) {
+    const div = document.createElement('div');
+    div.className = 'room-item' + (room === myRoom ? ' active' : '');
+    div.innerHTML = `<span class="hash">#</span>${escHtml(room)}`;
+    div.addEventListener('click', () => joinRoom(room));
+    roomList.appendChild(div);
+  }
+}
+
+function renderUsers() {
+  userList.innerHTML = '';
+  const sorted = [...users.entries()].sort((a, b) => {
+    // Online first, then alphabetical
+    if (a[1].online !== b[1].online) return a[1].online ? -1 : 1;
+    return a[1].name.localeCompare(b[1].name);
+  });
+  for (const [id, u] of sorted) {
+    const div = document.createElement('div');
+    div.className = 'user-item';
+    div.title = `DM ${u.name}`;
+    div.innerHTML = `<div class="dot${u.online ? '' : ' offline'}"></div>${escHtml(u.name)}${id === myId ? ' (bạn)' : ''}`;
+    if (id !== myId && u.online) {
+      div.addEventListener('click', () => {
+        const text = prompt(`Gửi tin nhắn riêng cho ${u.name}:`);
+        if (text && text.trim()) sendJson({ type: 'private', to: id, text: text.trim() });
+      });
+    }
+    userList.appendChild(div);
+  }
+}
+
+// ─── Room navigation ──────────────────────────────────────────────────────────
+function joinRoom(room) {
+  if (room === myRoom) return;
+  myRoom = room;
+  knownRooms.add(room);
+  messagesEl.innerHTML = '';
+  typingUsers.clear();
+  renderTyping();
+  sendJson({ type: 'join', name: myName, room });
+  renderRooms();
+  roomNameDisp.textContent = room;
+}
+
+roomJoinBtn.addEventListener('click', () => {
+  const room = roomInputSb.value.trim().replace(/[^a-zA-Z0-9-_]/g, '');
+  if (!room) return;
+  roomInputSb.value = '';
+  knownRooms.add(room);
+  joinRoom(room);
+});
+roomInputSb.addEventListener('keydown', e => { if (e.key === 'Enter') roomJoinBtn.click(); });
+
+// ─── Send message ─────────────────────────────────────────────────────────────
+function sendMessage() {
+  const text = msgInput.value.trim();
+  if (!text || !ws || ws.readyState !== WebSocket.OPEN) return;
+
+  sendJson({ type: 'message', text });
+
+  // Stop typing indicator
+  clearTimeout(typingDebounce);
+  if (iAmTyping) { iAmTyping = false; sendJson({ type: 'typing', isTyping: false }); }
+
+  msgInput.value = '';
+  autoResize();
+}
+
+sendBtn.addEventListener('click', sendMessage);
+msgInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+// ─── File UI ──────────────────────────────────────────────────────────────────
+fileBtn.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', () => {
+  [...fileInput.files].forEach(f => sendFile(f));
+  fileInput.value = '';
+});
+
+// Drag-and-drop
+const mainEl = document.getElementById('main');
+let dragCounter = 0;
+
+mainEl.addEventListener('dragenter', e => {
+  e.preventDefault(); e.stopPropagation();
+  if (++dragCounter > 0) dropOverlay.classList.add('active');
+});
+mainEl.addEventListener('dragleave', e => {
+  e.preventDefault(); e.stopPropagation();
+  if (--dragCounter <= 0) { dragCounter = 0; dropOverlay.classList.remove('active'); }
+});
+mainEl.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); });
+mainEl.addEventListener('drop', e => {
+  e.preventDefault(); e.stopPropagation();
+  dragCounter = 0; dropOverlay.classList.remove('active');
+  [...e.dataTransfer.files].forEach(f => sendFile(f));
+});
+
+// ─── Right panel ──────────────────────────────────────────────────────────────
+rightClose.addEventListener('click', () => rightPanel.classList.remove('open'));
+
+// ─── Textarea auto-resize ─────────────────────────────────────────────────────
+function autoResize() {
+  msgInput.style.height = 'auto';
+  msgInput.style.height = Math.min(msgInput.scrollHeight, 120) + 'px';
+}
+
+// ─── XSS safety ──────────────────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ─── Boot ─────────────────────────────────────────────────────────────────────
+// Pre-populate rooms
+['general','random','dev'].forEach(r => knownRooms.add(r));
+renderRooms();
+</script>
+</body>
+</html>

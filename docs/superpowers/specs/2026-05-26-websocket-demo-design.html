@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>WebSocket Deep Dive — Design Spec</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#fff;color:#1e293b;line-height:1.75;padding:2.5rem 2rem}
+.container{max-width:900px;margin:0 auto}
+h1{font-size:1.9rem;color:#0f172a;margin-bottom:.25rem;font-weight:700}
+h2{font-size:1.15rem;color:#0369a1;margin:2.25rem 0 .65rem;border-bottom:2px solid #e0f2fe;padding-bottom:.35rem;font-weight:700}
+h3{font-size:.95rem;color:#0f4c81;margin:1.25rem 0 .4rem;font-weight:600}
+.meta{color:#64748b;font-size:.85rem;margin-bottom:2.25rem}
+p{margin-bottom:.65rem;color:#334155}
+pre{background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #0ea5e9;border-radius:0 8px 8px 0;padding:.9rem 1.1rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#0f4c81;line-height:1.7;margin:.65rem 0 1rem}
+code{background:#f0f9ff;color:#0369a1;padding:.15em .45em;border-radius:4px;font-size:.86em;font-family:'JetBrains Mono',monospace;border:1px solid #bae6fd}
+table{width:100%;border-collapse:collapse;margin:.65rem 0 1rem;font-size:.87rem}
+th{background:#f0f9ff;color:#0369a1;padding:.55rem .9rem;text-align:left;font-weight:700;border-bottom:2px solid #bae6fd}
+td{padding:.5rem .9rem;border-bottom:1px solid #f1f5f9;color:#334155}
+ul,ol{padding-left:1.5rem;margin-bottom:.65rem}
+li{margin-bottom:.3rem;color:#334155}
+.section-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:1rem 1.1rem;margin:.65rem 0 1rem}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>WebSocket Deep Dive — Design Spec</h1>
+<div class="meta">Ngày: <strong>2026-05-26</strong> · Stack: Node.js + ws@8 · Format: HTML + SVG diagrams · Ngôn ngữ: Tiếng Việt</div>
+
+<h2>1. Deliverables</h2>
+<table>
+<tr><th>File</th><th>Mô tả</th></tr>
+<tr><td><code>docs/websocket-deep-dive.html</code></td><td>14-section reference doc, white bg, inline SVG, sticky sidebar</td></tr>
+<tr><td><code>chat-room/server.js</code></td><td>Node.js + ws, rooms, broadcast, history, file transfer</td></tr>
+<tr><td><code>chat-room/index.html</code></td><td>Chat client: rooms, typing indicator, presence, file send/receive</td></tr>
+<tr><td><code>protocol-lab/server.js</code></td><td>Echo + metrics server</td></tr>
+<tr><td><code>protocol-lab/index.html</code></td><td>Frame inspector + throughput/latency charts, text vs binary vs compressed</td></tr>
+</table>
+
+<h2>2. websocket-deep-dive.html — 14 Sections</h2>
+<table>
+<tr><th>#</th><th>Title</th><th>Key content</th><th>SVG</th></tr>
+<tr><td>s1</td><td>WebSocket là gì?</td><td>RFC 6455, full-duplex TCP, OSI position, use cases</td><td>Overview flow</td></tr>
+<tr><td>s2</td><td>HTTP Upgrade Handshake</td><td>GET headers, 101 response, Sec-WebSocket-Key/Accept SHA-1</td><td>Sequence diagram</td></tr>
+<tr><td>s3</td><td>Framing Layer (RFC 6455)</td><td>Bit-level frame, opcode table, masking, payload length, fragmentation</td><td>Frame layout</td></tr>
+<tr><td>s4</td><td>Control Frames</td><td>Ping/Pong, Close status codes, close handshake flow</td><td>—</td></tr>
+<tr><td>s5</td><td>Extensions</td><td>permessage-deflate negotiation, context takeover, RSV1 bit</td><td>—</td></tr>
+<tr><td>s6</td><td>Subprotocols</td><td>Sec-WebSocket-Protocol, STOMP/MQTT/WAMP/graphql-ws</td><td>—</td></tr>
+<tr><td>s7</td><td>Browser WebSocket API</td><td>Constructor, readyState enum, send/close, binaryType, bufferedAmount</td><td>State machine</td></tr>
+<tr><td>s8</td><td>Server-Side Patterns</td><td>Broadcast, rooms, heartbeat, graceful shutdown, auth (Node.js + ws)</td><td>—</td></tr>
+<tr><td>s9</td><td>Security (WSS)</td><td>TLS, Origin validation, CSRF, rate limiting, DoS vectors</td><td>—</td></tr>
+<tr><td>s10</td><td>Reconnection &amp; Heartbeat</td><td>Exponential backoff + jitter, ping/pong keepalive pattern</td><td>Backoff timeline</td></tr>
+<tr><td>s11</td><td>Binary Messaging</td><td>ArrayBuffer vs Blob, MessagePack/Protobuf, chunked file transfer</td><td>—</td></tr>
+<tr><td>s12</td><td>Performance &amp; Scaling</td><td>Frame overhead vs HTTP, H-scaling (sticky sessions / Redis pub-sub), nginx</td><td>—</td></tr>
+<tr><td>s13</td><td>WebSocket vs Alternatives</td><td>Long-polling, SSE, HTTP/2 push — comparison table + visual</td><td>Comparison diagram</td></tr>
+<tr><td>s14</td><td>Production Checklist</td><td>Security + reliability + scaling + testing items</td><td>—</td></tr>
+</table>
+
+<h2>3. Chat Room Demo</h2>
+<div class="section-card">
+<ul>
+<li><strong>Server (server.js):</strong> Node.js http + ws@8, no Express. Connection registry <code>Map&lt;ws, {id,name,room}&gt;</code>, rooms <code>Map&lt;room, Set&lt;ws&gt;&gt;</code>, history <code>Map&lt;room, msg[]&gt;</code> (50 msgs max)</li>
+<li><strong>Client (index.html):</strong> Sidebar (room list, online users) + message area + typing indicator + file drop zone</li>
+<li><strong>Message types:</strong> join, message, private, typing, file-start, file-chunk (ArrayBuffer), file-end, history (server), presence (server), error (server)</li>
+<li><strong>File transfer:</strong> Binary frames, 16KB chunks, reassemble via Blob + URL.createObjectURL()</li>
+<li><strong>History:</strong> Server sends last 50 messages on join. Reconnect restores conversation.</li>
+</ul>
+</div>
+
+<h2>4. Protocol Lab Demo</h2>
+<div class="section-card">
+<ul>
+<li><strong>Server (server.js):</strong> Echo server + per-connection metrics (msg count, bytes, latency samples)</li>
+<li><strong>Frame Inspector panel:</strong> Shows each received/sent frame with FIN/opcode/mask/payload-len breakdown</li>
+<li><strong>Live Metrics panel:</strong> Throughput chart (msg/s, KB/s), latency histogram (RTT), text vs binary vs compressed comparison</li>
+<li><strong>Test modes:</strong> send text, send binary ArrayBuffer, send compressed (permessage-deflate), adjust message size + rate</li>
+</ul>
+</div>
+
+<h2>5. Stack</h2>
+<pre>Node.js built-in http  +  ws@8  (no Express, no other deps)
+Implementation order:  deep-dive doc  →  chat-room  →  protocol-lab</pre>
+
+</div>
+</body>
+</html>

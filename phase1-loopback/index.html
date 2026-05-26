@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebRTC Loopback Demo — Phase 1</title>
+<style>
+/* ══════════════════════════════════════
+   RESET & VARS
+══════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #f8fafc;
+  --white:     #ffffff;
+  --border:    #e2e8f0;
+  --muted:     #94a3b8;
+  --text:      #1e293b;
+  --text2:     #334155;
+  --text3:     #64748b;
+
+  --a:         #6d28d9;
+  --a-bg:      #faf5ff;
+  --a-border:  #c4b5fd;
+
+  --b:         #15803d;
+  --b-bg:      #f0fdf4;
+  --b-border:  #86efac;
+
+  --blue:      #0369a1;
+  --blue-bg:   #f0f9ff;
+  --blue-bd:   #bae6fd;
+
+  --amber:     #92400e;
+  --amber-bg:  #fffbeb;
+
+  --ok:        #16a34a;
+  --ok-bg:     #dcfce7;
+
+  --mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+html, body { height: 100%; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════
+   HEADER
+══════════════════════════════════════ */
+.app-header {
+  height: 50px;
+  min-height: 50px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 1.25rem;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  z-index: 10;
+}
+.app-header h1 { font-size: 0.95rem; font-weight: 700; color: #0f172a; }
+.app-header a  { font-size: 0.78rem; color: var(--blue); text-decoration: none; margin-left: 0.25rem; }
+.app-header a:hover { text-decoration: underline; }
+
+.badge {
+  padding: 0.18rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.badge-phase { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-bd); }
+.badge-a     { background: var(--a-bg); color: var(--a); border: 1px solid var(--a-border); }
+.badge-b     { background: var(--b-bg); color: var(--b); border: 1px solid var(--b-border); }
+.badge-ice   { background: #dbeafe; color: #1d4ed8; }
+.badge-sdp   { background: #fef3c7; color: var(--amber); }
+.badge-dc    { background: #fce7f3; color: #9d174d; }
+.badge-ok    { background: var(--ok-bg); color: var(--ok); }
+.badge-sig   { background: #f1f5f9; color: #475569; }
+.badge-err   { background: #fee2e2; color: #dc2626; }
+
+.conn-status {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  color: var(--text3);
+}
+.conn-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  transition: background 0.3s;
+}
+.conn-dot.connecting { background: #f59e0b; animation: blink 1s infinite; }
+.conn-dot.connected  { background: #22c55e; box-shadow: 0 0 0 3px #dcfce7; }
+.conn-dot.failed     { background: #ef4444; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+/* ══════════════════════════════════════
+   3-COLUMN GRID
+══════════════════════════════════════ */
+.main-area {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 278px 1fr 298px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.col {
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--border);
+}
+.col:last-child { border-right: none; }
+
+.col-header {
+  padding: 0.55rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+.col-role { font-size: 0.72rem; color: var(--text3); }
+
+.ice-state {
+  margin-left: auto;
+  font-size: 0.68rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 4px;
+  background: #f1f5f9;
+  color: var(--text3);
+  font-family: var(--mono);
+  transition: all 0.3s;
+}
+.ice-state.checking     { background: #dbeafe; color: #1d4ed8; }
+.ice-state.connected,
+.ice-state.completed    { background: var(--ok-bg); color: var(--ok); }
+.ice-state.disconnected { background: #fef3c7; color: var(--amber); }
+.ice-state.failed       { background: #fee2e2; color: #dc2626; }
+
+/* ── Video ── */
+.video-wrap {
+  position: relative;
+  background: #0f172a;
+  flex-shrink: 0;
+}
+.video-wrap video {
+  width: 100%;
+  height: 165px;
+  object-fit: cover;
+  display: block;
+}
+.video-tag {
+  position: absolute;
+  top: 5px; left: 6px;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  font-size: 0.65rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 3px;
+}
+
+/* ── Section label ── */
+.sec-label {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+  background: #fafbfc;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* ── Buttons ── */
+.btn-row {
+  padding: 0.6rem 0.9rem;
+  display: flex;
+  gap: 0.4rem;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+}
+.btn {
+  padding: 0.42rem 0.7rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  white-space: nowrap;
+}
+.btn:disabled { opacity: 0.38; cursor: not-allowed; }
+.btn-blue:not(:disabled)  { background: #2563eb; color: #fff; }
+.btn-blue:not(:disabled):hover { background: #1d4ed8; }
+.btn-red:not(:disabled)   { background: #dc2626; color: #fff; }
+.btn-red:not(:disabled):hover  { background: #b91c1c; }
+.btn-ghost { background: #f1f5f9; color: #475569; border: 1px solid var(--border); }
+.btn-ghost:not(:disabled):hover { background: #e2e8f0; }
+.btn-sm { padding: 0.3rem 0.65rem; font-size: 0.72rem; flex-shrink: 0; }
+.btn-full { flex: 1; }
+
+/* ── Chat ── */
+.chat-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.chat-log {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  min-height: 0;
+}
+.chat-msg     { margin-bottom: 0.25rem; }
+.from-a-name  { color: var(--a); font-weight: 700; }
+.from-b-name  { color: var(--b); font-weight: 700; }
+.chat-text    { color: var(--text2); }
+.chat-input-row {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.45rem 0.6rem;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+input.chat-in {
+  flex: 1;
+  padding: 0.32rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  outline: none;
+  font-family: inherit;
+  background: var(--white);
+}
+input.chat-in:focus { border-color: #93c5fd; }
+
+/* ── Stats (Peer B) ── */
+.stats-section { border-top: 1px solid var(--border); flex-shrink: 0; }
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 0.45rem 0.9rem 0.5rem;
+  gap: 0.1rem 0;
+}
+.stat-cell { padding: 0.2rem 0; }
+.stat-key  { font-size: 0.7rem; color: var(--text3); }
+.stat-val  { font-size: 0.72rem; font-weight: 600; color: var(--text); font-family: var(--mono); }
+.stat-placeholder { color: var(--muted); font-size: 0.75rem; padding: 0.5rem 0.9rem; font-style: italic; }
+
+/* ══════════════════════════════════════
+   CENTER COLUMN
+══════════════════════════════════════ */
+.center-col { background: #fafbfc; }
+
+/* ── Steps ── */
+.steps-wrap {
+  flex-shrink: 0;
+  padding: 0.65rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--white);
+}
+.steps-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.55rem;
+}
+.step-list { list-style: none; }
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.25rem 0;
+  position: relative;
+}
+.step-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 11px; top: 26px;
+  height: calc(100% + 2px);
+  width: 2px;
+  background: var(--border);
+  transition: background 0.4s;
+}
+.step-item.done::after   { background: var(--b-border); }
+.step-item.active::after { background: var(--blue-bd); }
+
+.step-num {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.68rem; font-weight: 700;
+  flex-shrink: 0;
+  z-index: 1;
+  border: 2px solid var(--border);
+  background: #f1f5f9;
+  color: var(--muted);
+  transition: all 0.35s;
+}
+.step-item.active .step-num {
+  border-color: #93c5fd; background: #dbeafe; color: #1d4ed8;
+  animation: pulse-num 1.5s infinite;
+}
+.step-item.done .step-num {
+  border-color: var(--b-border); background: var(--ok-bg); color: var(--ok);
+}
+@keyframes pulse-num {
+  0%,100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.45); }
+  50%     { box-shadow: 0 0 0 5px rgba(59,130,246,0); }
+}
+
+.step-body  { flex: 1; min-width: 0; }
+.step-title { font-size: 0.77rem; font-weight: 600; color: var(--text2); font-family: var(--mono); }
+.step-desc  { font-size: 0.69rem; color: var(--muted); line-height: 1.35; margin-top: 0.05rem; }
+.step-item.active .step-title { color: #1d4ed8; }
+.step-item.done   .step-title { color: var(--ok); }
+
+/* ── Event Log ── */
+.log-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.log-hdr {
+  padding: 0.38rem 0.9rem;
+  display: flex;
+  align-items: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+  background: var(--white);
+  flex-shrink: 0;
+  gap: 0.4rem;
+}
+.clear-btn {
+  margin-left: auto;
+  background: none; border: none;
+  font-size: 0.7rem; color: var(--muted); cursor: pointer;
+}
+.clear-btn:hover { color: var(--text3); }
+
+.log-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.4rem 0.5rem;
+  min-height: 0;
+}
+.log-entry {
+  margin-bottom: 0.42rem;
+  padding: 0.32rem 0.6rem;
+  border-left: 3px solid var(--border);
+  border-radius: 0 5px 5px 0;
+  background: var(--white);
+}
+.log-entry.from-a { border-left-color: var(--a-border); }
+.log-entry.from-b { border-left-color: var(--b-border); }
+.log-entry.is-ok  { border-left-color: var(--b-border); background: #f0fdf4; }
+.log-entry.is-sig { background: #f8fafc; }
+.log-entry.is-err { border-left-color: #fca5a5; background: #fef2f2; }
+
+.log-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 0.18rem;
+  flex-wrap: wrap;
+}
+.log-ts   { font-size: 0.63rem; color: var(--muted); font-family: var(--mono); }
+.log-raw  { font-family: var(--mono); font-size: 0.71rem; color: #0f4c81; word-break: break-all; line-height: 1.4; }
+.log-exp  { font-size: 0.71rem; color: var(--text2); margin-top: 0.18rem; padding-top: 0.18rem; border-top: 1px dashed var(--border); line-height: 1.4; }
+.log-why  { font-size: 0.68rem; color: var(--text3); font-style: italic; margin-top: 0.1rem; line-height: 1.4; }
+
+/* ══════════════════════════════════════
+   SDP INSPECTOR
+══════════════════════════════════════ */
+.sdp-bar {
+  min-height: 38px;
+  border-top: 2px solid var(--border);
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  gap: 0.65rem;
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+}
+.sdp-bar-title { font-size: 0.78rem; font-weight: 700; color: var(--text2); }
+.sdp-tabs-row  { display: flex; gap: 0.3rem; }
+.sdp-tab {
+  padding: 0.12rem 0.65rem;
+  border-radius: 4px;
+  font-size: 0.7rem; font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  color: var(--text3); background: #f8fafc;
+  transition: background 0.15s;
+}
+.sdp-tab.active { background: #fef3c7; color: var(--amber); border-color: #fde68a; }
+.sdp-chevron { margin-left: auto; font-size: 0.72rem; color: var(--muted); transition: transform 0.22s; }
+.sdp-chevron.open { transform: rotate(180deg); }
+
+.sdp-content {
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  overflow-y: auto;
+  max-height: 0;
+  transition: max-height 0.3s ease;
+  flex-shrink: 0;
+}
+.sdp-content.open { max-height: 230px; }
+
+.sdp-code {
+  padding: 0.7rem 1rem;
+  font-family: var(--mono);
+  font-size: 0.71rem;
+  line-height: 1.75;
+  white-space: pre;
+  overflow-x: auto;
+  min-height: 40px;
+}
+.sdp-line { display: block; padding: 0 0.2rem; border-radius: 2px; }
+.sdp-line:hover { background: #f8fafc; }
+.c-session { color: #475569; }
+.c-media   { color: var(--a); font-weight: 700; }
+.c-codec   { color: var(--blue); }
+.c-ice     { color: var(--b); }
+.c-dtls    { color: var(--amber); font-weight: 600; }
+.c-dir     { color: #1d4ed8; font-weight: 600; }
+.c-other   { color: #64748b; }
+.sdp-tip {
+  display: inline;
+  background: #fef9c3; color: #713f12;
+  border: 1px solid #fde047; border-radius: 3px;
+  padding: 0 0.3rem; font-size: 0.62rem;
+  margin-left: 0.4rem;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-weight: normal; font-style: normal; white-space: normal;
+}
+.sdp-placeholder { color: var(--muted); font-style: italic; }
+
+/* ══════════════════════════════════════
+   SCROLLBARS
+══════════════════════════════════════ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+</style>
+</head>
+<body>
+
+<!-- ══════ HEADER ══════ -->
+<header class="app-header">
+  <h1>WebRTC Loopback Demo</h1>
+  <span class="badge badge-phase">Phase 1 — Standalone</span>
+  <a href="../docs/webrtc-deep-dive.html" title="Tham khảo: WebRTC Deep Dive">📖 Deep Dive</a>
+  <div class="conn-status">
+    <span class="conn-dot" id="connDot"></span>
+    <span id="connText">Chưa kết nối</span>
+  </div>
+</header>
+
+<!-- ══════ 3-COL MAIN ══════ -->
+<div class="main-area">
+
+  <!-- ── Peer A ── -->
+  <div class="col">
+    <div class="col-header">
+      <span class="badge badge-a">Peer A</span>
+      <span class="col-role">Offerer · Caller</span>
+      <span class="ice-state" id="stateA">new</span>
+    </div>
+    <div class="video-wrap">
+      <video id="localVideo" autoplay muted playsinline></video>
+      <span class="video-tag">Local Camera</span>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-blue btn-full" id="btnStart">▶ Start Demo</button>
+      <button class="btn btn-red btn-full" id="btnStop" disabled>■ Stop</button>
+    </div>
+    <div class="chat-section">
+      <div class="sec-label">DataChannel Chat — từ A</div>
+      <div class="chat-log" id="chatLogA"></div>
+      <div class="chat-input-row">
+        <input class="chat-in" id="chatInA" placeholder="Gửi từ Peer A…" disabled>
+        <button class="btn btn-ghost btn-sm" id="btnSendA" disabled>Gửi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Center ── -->
+  <div class="col center-col">
+    <div class="steps-wrap">
+      <div class="steps-title">Luồng kết nối WebRTC — 7 bước</div>
+      <ol class="step-list" id="stepList"></ol>
+    </div>
+    <div class="log-section">
+      <div class="log-hdr">
+        Event Log
+        <span id="logCount" style="font-weight:400;color:var(--muted);font-size:0.65rem;"></span>
+        <button class="clear-btn" id="btnClearLog">xóa</button>
+      </div>
+      <div class="log-body" id="logBody"></div>
+    </div>
+  </div>
+
+  <!-- ── Peer B ── -->
+  <div class="col">
+    <div class="col-header">
+      <span class="badge badge-b">Peer B</span>
+      <span class="col-role">Answerer · Receiver</span>
+      <span class="ice-state" id="stateB">new</span>
+    </div>
+    <div class="video-wrap">
+      <video id="remoteVideo" autoplay playsinline></video>
+      <span class="video-tag">Remote (từ Peer A)</span>
+    </div>
+    <div class="stats-section">
+      <div class="sec-label">getStats() — Live</div>
+      <div id="statsBody"><div class="stat-placeholder">Chờ kết nối…</div></div>
+    </div>
+    <div class="chat-section" style="border-top:1px solid var(--border)">
+      <div class="sec-label">DataChannel Chat — từ B</div>
+      <div class="chat-log" id="chatLogB"></div>
+      <div class="chat-input-row">
+        <input class="chat-in" id="chatInB" placeholder="Gửi từ Peer B…" disabled>
+        <button class="btn btn-ghost btn-sm" id="btnSendB" disabled>Gửi</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════ SDP INSPECTOR ══════ -->
+<div class="sdp-bar" id="sdpBar">
+  <span class="sdp-bar-title">SDP Inspector</span>
+  <div class="sdp-tabs-row">
+    <span class="sdp-tab active" data-tab="offer">Offer (A→B)</span>
+    <span class="sdp-tab" data-tab="answer">Answer (B→A)</span>
+  </div>
+  <span class="sdp-chevron" id="sdpChevron">▲</span>
+</div>
+<div class="sdp-content" id="sdpContent">
+  <div class="sdp-code" id="sdpCode">
+    <span class="sdp-placeholder">SDP sẽ hiển thị sau khi kết nối. Nhấn ▶ Start Demo để bắt đầu.</span>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* ══════════════════════════════════════
+   STEPS CONFIG
+══════════════════════════════════════ */
+const STEPS = [
+  { id:1, title:'getUserMedia()',    desc:'Thu thập camera + mic từ thiết bị' },
+  { id:2, title:'createOffer()',     desc:'Peer A tạo SDP offer: codec, ICE credentials, DTLS fingerprint' },
+  { id:3, title:'setLocalDesc (A)',  desc:'ICE Agent bắt đầu thu thập candidates (host → srflx → relay)' },
+  { id:4, title:'Offer → Peer B',   desc:'Signaling: chuyển SDP offer (JS call; Phase 2: WebSocket)' },
+  { id:5, title:'createAnswer (B)', desc:'Peer B tạo answer, ICE gathering của B bắt đầu' },
+  { id:6, title:'Answer → Peer A',  desc:'Peer A nhận answer + setRemoteDesc. ICE checks bắt đầu' },
+  { id:7, title:'ICE Connected ✓',  desc:'Candidate pair nominated, DTLS done, SRTP media flowing' },
+];
+
+/* ══════════════════════════════════════
+   DOM REFS
+══════════════════════════════════════ */
+const localVideo = document.getElementById('localVideo');
+const remoteVideo = document.getElementById('remoteVideo');
+const btnStart   = document.getElementById('btnStart');
+const btnStop    = document.getElementById('btnStop');
+const btnSendA   = document.getElementById('btnSendA');
+const btnSendB   = document.getElementById('btnSendB');
+const chatInA    = document.getElementById('chatInA');
+const chatInB    = document.getElementById('chatInB');
+const chatLogA   = document.getElementById('chatLogA');
+const chatLogB   = document.getElementById('chatLogB');
+const logBody    = document.getElementById('logBody');
+const logCount   = document.getElementById('logCount');
+const stepList   = document.getElementById('stepList');
+const connDot    = document.getElementById('connDot');
+const connText   = document.getElementById('connText');
+const stateA     = document.getElementById('stateA');
+const stateB     = document.getElementById('stateB');
+const statsBody  = document.getElementById('statsBody');
+const sdpBar     = document.getElementById('sdpBar');
+const sdpChevron = document.getElementById('sdpChevron');
+const sdpContent = document.getElementById('sdpContent');
+const sdpCode    = document.getElementById('sdpCode');
+
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
+let pcA, pcB, localStream, dcA, dcB;
+let statsInterval;
+let startTime = 0;
+let logEntryCount = 0;
+const sdpStore  = { offer: '', answer: '' };
+let currentTab  = 'offer';
+const statsPrev = {};
+let sdpOpen = false;
+
+/* ══════════════════════════════════════
+   BUILD STEPS LIST
+══════════════════════════════════════ */
+STEPS.forEach(s => {
+  const li = document.createElement('li');
+  li.className = 'step-item';
+  li.id = `step-${s.id}`;
+  li.innerHTML = `
+    <span class="step-num">${s.id}</span>
+    <div class="step-body">
+      <div class="step-title">${s.title}</div>
+      <div class="step-desc">${s.desc}</div>
+    </div>`;
+  stepList.appendChild(li);
+});
+
+/* ══════════════════════════════════════
+   HELPERS
+══════════════════════════════════════ */
+function setStep(id, state) {
+  const el = document.getElementById(`step-${id}`);
+  if (el) el.className = `step-item${state === 'active' ? ' active' : state === 'done' ? ' done' : ''}`;
+}
+
+function elapsed() {
+  return `+${((Date.now() - startTime) / 1000).toFixed(3)}s`;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/*
+ addLog(opts)  — opts: { peer, tags[], raw, exp, why, cls }
+ peer: 'a'|'b'|null
+ tags: ['A','B','ICE','SDP','DC','OK','SIG','ERR']
+ raw: string
+ exp: explain string (optional)
+ why: why string (optional)
+ cls: extra class (optional)
+*/
+function addLog(opts) {
+  logEntryCount++;
+  logCount.textContent = `(${logEntryCount})`;
+
+  const peer = opts.peer;
+  const baseCls = peer === 'a' ? 'from-a' : peer === 'b' ? 'from-b' : '';
+  const entry = document.createElement('div');
+  entry.className = `log-entry ${baseCls} ${opts.cls || ''}`.trim();
+
+  const BADGE_MAP = { A:'badge-a', B:'badge-b', ICE:'badge-ice', SDP:'badge-sdp', DC:'badge-dc', OK:'badge-ok', SIG:'badge-sig', ERR:'badge-err' };
+  const tags = (opts.tags || []).map(t => `<span class="badge ${BADGE_MAP[t]||'badge-sig'}">${t}</span>`).join('');
+
+  entry.innerHTML = `
+    <div class="log-meta">${tags}<span class="log-ts">${startTime ? elapsed() : '0.000s'}</span></div>
+    <div class="log-raw">${esc(opts.raw)}</div>
+    ${opts.exp ? `<div class="log-exp">💡 ${esc(opts.exp)}</div>` : ''}
+    ${opts.why ? `<div class="log-why">→ ${esc(opts.why)}</div>` : ''}
+  `;
+  logBody.appendChild(entry);
+  logBody.scrollTop = logBody.scrollHeight;
+}
+
+function candExplain(c) {
+  if (c.includes('typ host'))  return 'HOST: địa chỉ LAN trực tiếp. Priority cao nhất — thử trước tiên.';
+  if (c.includes('typ srflx')) return 'SRFLX (Server Reflexive): public IP/port qua STUN. Đại diện cho địa chỉ sau NAT.';
+  if (c.includes('typ relay')) return 'RELAY: địa chỉ TURN server. Fallback khi P2P direct không thể kết nối.';
+  return 'ICE candidate';
+}
+
+function setConnStatus(state, text) {
+  connDot.className  = `conn-dot ${state}`;
+  connText.textContent = text;
+}
+
+function enableChat()  { chatInA.disabled = btnSendA.disabled = false; }
+function enableChatB() { chatInB.disabled = btnSendB.disabled = false; }
+function disableChat() {
+  [chatInA, chatInB, btnSendA, btnSendB].forEach(el => el.disabled = true);
+}
+
+/* ══════════════════════════════════════
+   MAIN DEMO START
+══════════════════════════════════════ */
+async function startDemo() {
+  btnStart.disabled = true;
+  startTime = Date.now();
+
+  try {
+    /* ── Step 1: getUserMedia ── */
+    setStep(1, 'active');
+    setConnStatus('connecting', 'Đang khởi tạo…');
+    addLog({
+      peer: 'a', tags: ['A'],
+      raw: 'navigator.mediaDevices.getUserMedia({ video: true, audio: true })',
+      exp: 'Yêu cầu quyền truy cập camera và microphone. Trả về MediaStream chứa VideoTrack và AudioTrack.',
+      why: 'WebRTC phải có media tracks trước khi tạo SDP offer để biết mình sẽ gửi gì.'
+    });
+
+    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    localVideo.srcObject = localStream;
+    setStep(1, 'done');
+
+    const trackInfo = localStream.getTracks().map(t => `${t.kind}(${t.label.substring(0,25)})`).join(', ');
+    addLog({
+      peer: 'a', tags: ['A', 'OK'],
+      raw: `MediaStream acquired: ${trackInfo}`,
+    });
+
+    /* ── Create RTCPeerConnections ── */
+    const iceConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+    pcA = new RTCPeerConnection(iceConfig);
+    pcB = new RTCPeerConnection(iceConfig);
+
+    addLog({
+      tags: ['A', 'B'],
+      raw: 'new RTCPeerConnection({ iceServers: [{urls:"stun:stun.l.google.com:19302"}] }) × 2',
+      exp: 'Tạo 2 RTCPeerConnection trong cùng 1 tab. Signaling giữa chúng là direct JS function calls (loopback).',
+    });
+
+    /* ── ICE connection state monitors ── */
+    pcA.oniceconnectionstatechange = () => {
+      stateA.textContent = pcA.iceConnectionState;
+      stateA.className   = `ice-state ${pcA.iceConnectionState}`;
+      if (pcA.iceConnectionState === 'connected' || pcA.iceConnectionState === 'completed') {
+        setStep(7, 'done');
+        setConnStatus('connected', 'Kết nối P2P thành công ✓');
+        startStatsPolling();
+        btnStop.disabled = false;
+        addLog({
+          tags: ['ICE', 'OK'], cls: 'is-ok',
+          raw: `pcA.iceConnectionState → "${pcA.iceConnectionState}"`,
+          exp: 'ICE đã nominated candidate pair tốt nhất. DTLS handshake hoàn tất. SRTP media đang chạy P2P.',
+          why: 'Từ điểm này, video/audio đi trực tiếp qua UDP giữa 2 PeerConnections. Không qua server nào.'
+        });
+      }
+      if (pcA.iceConnectionState === 'failed') {
+        setConnStatus('failed', 'ICE Failed — không kết nối được');
+        addLog({ tags: ['ERR'], cls: 'is-err', raw: 'pcA ICE failed. Trong môi trường thực: cần TURN server.' });
+      }
+    };
+    pcB.oniceconnectionstatechange = () => {
+      stateB.textContent = pcB.iceConnectionState;
+      stateB.className   = `ice-state ${pcB.iceConnectionState}`;
+    };
+
+    /* ── ICE candidate forwarding (in-page signaling) ── */
+    pcA.onicecandidate = ({ candidate: c }) => {
+      if (!c) {
+        addLog({ peer:'a', tags:['A','ICE'], raw:'onicecandidate: null — ICE gathering hoàn tất (Peer A)', exp: 'ICE agent đã thử tất cả network interfaces và STUN lookups.' });
+        return;
+      }
+      const s = c.candidate;
+      addLog({ peer:'a', tags:['A','ICE'], raw: s.length > 110 ? s.substring(0,110)+'…' : s, exp: candExplain(s) });
+      pcB.addIceCandidate(c).catch(() => {});
+    };
+    pcB.onicecandidate = ({ candidate: c }) => {
+      if (!c) return;
+      const s = c.candidate;
+      addLog({ peer:'b', tags:['B','ICE'], raw: s.length > 110 ? s.substring(0,110)+'…' : s, exp: candExplain(s) });
+      pcA.addIceCandidate(c).catch(() => {});
+    };
+
+    /* ── Track → Peer B video ── */
+    pcB.ontrack = e => {
+      if (e.streams[0]) remoteVideo.srcObject = e.streams[0];
+      addLog({
+        peer:'b', tags:['B','OK'],
+        raw: `pcB.ontrack → kind="${e.track.kind}", id="${e.track.id.substring(0,20)}…"`,
+        exp: 'Peer B nhận được media track qua SRTP. srcObject được set → browser bắt đầu decode và render.',
+      });
+    };
+
+    /* ── DataChannel ── */
+    dcA = pcA.createDataChannel('chat', { ordered: true });
+    dcA.onopen = () => {
+      enableChat();
+      addLog({
+        tags:['DC','OK'], cls:'is-ok',
+        raw: 'DataChannel "chat" — open (Peer A side)',
+        exp: 'SCTP channel thiết lập thành công trên DTLS tunnel. Sẵn sàng gửi/nhận UTF-8 text và ArrayBuffer.',
+        why: 'DataChannel dùng SCTP over DTLS — cùng UDP socket với media nhưng khác protocol stack (không phải SRTP).'
+      });
+    };
+    dcA.onmessage = e => addChatMsg(chatLogA, 'B', e.data); // A receives from B
+
+    pcB.ondatachannel = e => {
+      dcB = e.channel;
+      dcB.onopen    = () => enableChatB();
+      dcB.onmessage = ev => addChatMsg(chatLogB, 'A', ev.data); // B receives from A
+      addLog({
+        peer:'b', tags:['B','DC'],
+        raw: `pcB.ondatachannel: label="${e.channel.label}", id=${e.channel.id}`,
+        exp: 'Peer B nhận được DataChannel do Peer A tạo via createDataChannel(). ondatachannel event fire khi offer được process.',
+      });
+    };
+
+    /* ── Add media tracks ── */
+    localStream.getTracks().forEach(t => pcA.addTrack(t, localStream));
+    addLog({
+      peer:'a', tags:['A'],
+      raw: 'pcA.addTrack(videoTrack, stream) + pcA.addTrack(audioTrack, stream)',
+      exp: 'Thêm video và audio tracks vào PeerConnection. SDP offer sẽ có m=video, m=audio, m=application (DataChannel) sections.',
+    });
+
+    /* ── Step 2: createOffer ── */
+    setStep(2, 'active');
+    const offer = await pcA.createOffer();
+    setStep(2, 'done');
+    addLog({
+      peer:'a', tags:['A','SDP'],
+      raw: `pcA.createOffer() → { type: "offer", sdp: [${offer.sdp.split('\n').length} lines] }`,
+      exp: 'SDP offer chứa: codec list (VP8/VP9/H264/AV1 + Opus), ICE credentials (ufrag+pwd), DTLS fingerprint (sha-256), media sections (m=video, m=audio, m=application).',
+      why: 'Offer = "tôi có thể gửi/nhận những gì". Peer B đọc offer để biết capabilities của A trước khi tạo answer.'
+    });
+
+    /* ── Step 3: setLocalDescription ── */
+    setStep(3, 'active');
+    await pcA.setLocalDescription(offer);
+    sdpStore.offer = offer.sdp;
+    displaySdp('offer');
+    setStep(3, 'done');
+    addLog({
+      peer:'a', tags:['A','SDP'],
+      raw: 'pcA.setLocalDescription(offer) ✓ → ICE gathering triggered',
+      exp: 'Sau setLocalDescription, ICE Agent kích hoạt: gửi STUN Binding Requests để discover public IP/port (srflx candidates). Xem các ICE events phía dưới.',
+      why: 'ICE cần ice-ufrag/pwd từ SDP local để tạo credentials cho STUN requests.'
+    });
+
+    /* ── Step 4: signaling (offer → Peer B) ── */
+    setStep(4, 'active');
+    addLog({
+      tags:['SIG'], cls:'is-sig',
+      raw: '── Signaling ── offer → Peer B  [demo: direct call | Phase 2: WebSocket relay]',
+      exp: 'Trong Phase 2: drone.html gửi {type:"offer", sdp:…} qua WebSocket → server.js forward → ground-station.html nhận.',
+    });
+
+    await pcB.setRemoteDescription(offer);
+    setStep(4, 'done');
+    addLog({
+      peer:'b', tags:['B','SDP'],
+      raw: 'pcB.setRemoteDescription(offer) ✓',
+      exp: 'Peer B parse SDP offer: học codec list của A, lưu ICE credentials (để verify candidates), ghi nhớ DTLS fingerprint (để verify cert sau handshake).',
+    });
+
+    /* ── Step 5: createAnswer ── */
+    setStep(5, 'active');
+    const answer = await pcB.createAnswer();
+    await pcB.setLocalDescription(answer);
+    sdpStore.answer = answer.sdp;
+    displaySdp(currentTab);
+    setStep(5, 'done');
+    addLog({
+      peer:'b', tags:['B','SDP'],
+      raw: `pcB.createAnswer() + setLocalDescription(answer) ✓  [${answer.sdp.split('\n').length} lines]`,
+      exp: 'Answer chọn codec chung (intersection offer ∩ capabilities B). setLocalDescription kích hoạt ICE gathering của Peer B.',
+      why: 'Nếu A offer H264+VP8 nhưng B chỉ support VP8 → answer chỉ có VP8. Đây là SDP negotiation — chỉ chọn giao nhau.'
+    });
+
+    /* ── Step 6: signaling (answer → Peer A) ── */
+    setStep(6, 'active');
+    addLog({
+      tags:['SIG'], cls:'is-sig',
+      raw: '── Signaling ── answer → Peer A  [demo: direct call | Phase 2: WebSocket relay]',
+      exp: 'Trong Phase 2: ground-station.html gửi {type:"answer", sdp:…} qua WebSocket → server.js forward → drone.html nhận.',
+    });
+
+    await pcA.setRemoteDescription(answer);
+    setStep(6, 'done');
+    addLog({
+      peer:'a', tags:['A','SDP'],
+      raw: 'pcA.setRemoteDescription(answer) ✓ → SDP negotiation complete',
+      exp: 'Peer A hoàn tất SDP exchange. Cả hai bên đã có đủ SDP → ICE connectivity checks bắt đầu ngay lập tức.',
+      why: 'Chỉ khi cả hai bên đã setRemoteDescription, ICE mới có thể verify candidates của nhau (cần ice-ufrag/pwd từ SDP remote).'
+    });
+
+    setStep(7, 'active');
+    addLog({
+      tags:['ICE'],
+      raw: 'ICE connectivity checks in progress…',
+      exp: 'Mỗi peer gửi STUN Binding Requests đến các candidate pairs. Pair nào nhận được response → succeeded. Pair tốt nhất → nominated. DTLS handshake bắt đầu song song.',
+    });
+
+  } catch (err) {
+    addLog({ tags:['ERR'], cls:'is-err', raw: `Lỗi: ${err.message || err}`, exp: 'Kiểm tra: browser có support WebRTC không? Camera permission có được cấp không?' });
+    btnStart.disabled = false;
+    setConnStatus('failed', 'Lỗi — xem log');
+  }
+}
+
+/* ══════════════════════════════════════
+   STOP / CLEANUP
+══════════════════════════════════════ */
+function stopDemo() {
+  clearInterval(statsInterval);
+  [dcA, dcB].forEach(dc => { try { if (dc) dc.close(); } catch(_){} });
+  [pcA, pcB].forEach(pc => { try { if (pc) pc.close(); } catch(_){} });
+  if (localStream) localStream.getTracks().forEach(t => t.stop());
+  localVideo.srcObject = remoteVideo.srcObject = null;
+  pcA = pcB = localStream = dcA = dcB = null;
+
+  STEPS.forEach(s => setStep(s.id, 'pending'));
+  setConnStatus('', 'Chưa kết nối');
+  stateA.textContent = stateB.textContent = 'new';
+  stateA.className = stateB.className = 'ice-state';
+  statsBody.innerHTML = '<div class="stat-placeholder">Chờ kết nối…</div>';
+  disableChat();
+  btnStop.disabled = true;
+  btnStart.disabled = false;
+  addLog({ tags:['SIG'], cls:'is-sig', raw: 'RTCPeerConnection.close() — kết nối đã đóng.' });
+}
+
+/* ══════════════════════════════════════
+   STATS POLLING
+══════════════════════════════════════ */
+async function startStatsPolling() {
+  statsInterval = setInterval(async () => {
+    if (!pcB) return;
+    const map = await pcB.getStats();
+    const rows = [];
+
+    map.forEach(r => {
+      if (r.type === 'inbound-rtp') {
+        const prev = statsPrev[r.id] || {};
+        const dt = prev.ts ? (r.timestamp - prev.ts) / 1000 : 0;
+        const bitrate = dt > 0 ? ((r.bytesReceived - (prev.bytes||0)) * 8 / 1000 / dt).toFixed(0) : '—';
+        statsPrev[r.id] = { ts: r.timestamp, bytes: r.bytesReceived };
+
+        if (r.kind === 'video') {
+          rows.push(['Codec',       r.decoderImplementation || '—']);
+          rows.push(['Resolusi',    `${r.frameWidth||'?'}×${r.frameHeight||'?'}`]);
+          rows.push(['FPS',         (r.framesPerSecond||0).toFixed(1)]);
+          rows.push(['Video kbps',  bitrate]);
+          rows.push(['Pkts lost',   String(r.packetsLost||0)]);
+          rows.push(['Jitter',      ((r.jitter||0)*1000).toFixed(1)+' ms']);
+        }
+        if (r.kind === 'audio') {
+          rows.push(['Audio kbps',  bitrate]);
+        }
+      }
+      if (r.type === 'candidate-pair' && r.nominated) {
+        rows.push(['RTT', ((r.currentRoundTripTime||0)*1000).toFixed(0)+' ms']);
+        rows.push(['Bytes recv', formatBytes(r.bytesReceived||0)]);
+      }
+    });
+
+    if (rows.length) {
+      statsBody.innerHTML = `<div class="stats-grid">${rows.map(([k,v]) =>
+        `<div class="stat-cell"><div class="stat-key">${k}</div><div class="stat-val">${v}</div></div>`
+      ).join('')}</div>`;
+    }
+  }, 1000);
+}
+
+function formatBytes(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
+  return (b/1024/1024).toFixed(2) + ' MB';
+}
+
+/* ══════════════════════════════════════
+   SDP DISPLAY
+══════════════════════════════════════ */
+function displaySdp(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.sdp-tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.tab === tab)
+  );
+  const sdp = sdpStore[tab];
+  if (!sdp) {
+    sdpCode.innerHTML = `<span class="sdp-placeholder">${tab === 'offer' ? 'Offer' : 'Answer'} chưa sẵn sàng…</span>`;
+    return;
+  }
+  sdpCode.innerHTML = sdp.split('\n').filter(l => l.trim()).map(line => {
+    const cls = sdpClass(line);
+    const tip = sdpTip(line);
+    const e   = line.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return `<span class="sdp-line ${cls}">${e}${tip ? `<span class="sdp-tip">${tip}</span>` : ''}</span>`;
+  }).join('');
+}
+
+function sdpClass(l) {
+  if (/^[vost]=/.test(l) || l.startsWith('b='))             return 'c-session';
+  if (l.startsWith('m='))                                     return 'c-media';
+  if (l.startsWith('a=rtpmap')||l.startsWith('a=fmtp')||l.startsWith('a=extmap')) return 'c-codec';
+  if (l.startsWith('a=ice-')||l.startsWith('a=candidate'))   return 'c-ice';
+  if (l.startsWith('a=fingerprint')||l.startsWith('a=setup')) return 'c-dtls';
+  if (/^a=(sendrecv|sendonly|recvonly|inactive)/.test(l))    return 'c-dir';
+  return 'c-other';
+}
+
+const SDP_TIPS = {
+  'a=ice-ufrag':        'ICE username fragment',
+  'a=ice-pwd':          'ICE password — giữ bí mật!',
+  'a=fingerprint':      'DTLS cert hash — xác thực peer',
+  'a=setup:actpass':    'DTLS: có thể làm client hoặc server',
+  'a=setup:active':     'DTLS client — khởi tạo handshake',
+  'a=setup:passive':    'DTLS server — chờ handshake',
+  'a=sendrecv':         'Gửi và nhận (bidirectional)',
+  'a=sendonly':         'Chỉ gửi (drone mode)',
+  'a=recvonly':         'Chỉ nhận',
+  'a=group:BUNDLE':     'Ghép tất cả media vào 1 UDP port',
+  'a=rtpmap':           'Payload type → codec name mapping',
+  'a=fmtp':             'Codec parameters',
+  'a=msid-semantic':    'Media Stream ID semantic',
+};
+function sdpTip(l) {
+  for (const [p, t] of Object.entries(SDP_TIPS)) if (l.startsWith(p)) return t;
+  return null;
+}
+
+/* ══════════════════════════════════════
+   CHAT
+══════════════════════════════════════ */
+function addChatMsg(container, fromName, text) {
+  const cls  = fromName === 'A' ? 'from-a-name' : 'from-b-name';
+  const div  = document.createElement('div');
+  div.className = 'chat-msg';
+  div.innerHTML = `<span class="${cls}">${fromName}:</span> <span class="chat-text">${esc(text)}</span>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function sendA() {
+  const text = chatInA.value.trim();
+  if (!text || !dcA || dcA.readyState !== 'open') return;
+  dcA.send(text);
+  chatInA.value = '';
+  addChatMsg(chatLogA, 'A', text); // show immediately on A's log
+  addLog({ peer:'a', tags:['DC'], raw: `DataChannel send (A): "${text}"` });
+}
+
+function sendB() {
+  const text = chatInB.value.trim();
+  if (!text || !dcB || dcB.readyState !== 'open') return;
+  dcB.send(text);
+  chatInB.value = '';
+  addChatMsg(chatLogB, 'B', text); // show immediately on B's log
+  addLog({ peer:'b', tags:['DC'], raw: `DataChannel send (B): "${text}"` });
+}
+
+/* ══════════════════════════════════════
+   SDP INSPECTOR TOGGLE
+══════════════════════════════════════ */
+sdpBar.addEventListener('click', e => {
+  if (e.target.classList.contains('sdp-tab')) return;
+  sdpOpen = !sdpOpen;
+  sdpContent.classList.toggle('open', sdpOpen);
+  sdpChevron.classList.toggle('open', sdpOpen);
+});
+
+document.querySelectorAll('.sdp-tab').forEach(tab => {
+  tab.addEventListener('click', e => {
+    e.stopPropagation();
+    displaySdp(tab.dataset.tab);
+    if (!sdpOpen) {
+      sdpOpen = true;
+      sdpContent.classList.add('open');
+      sdpChevron.classList.add('open');
+    }
+  });
+});
+
+/* ══════════════════════════════════════
+   EVENT LISTENERS
+══════════════════════════════════════ */
+btnStart.addEventListener('click', startDemo);
+btnStop.addEventListener('click', stopDemo);
+btnSendA.addEventListener('click', sendA);
+btnSendB.addEventListener('click', sendB);
+chatInA.addEventListener('keydown', e => { if (e.key === 'Enter') sendA(); });
+chatInB.addEventListener('keydown', e => { if (e.key === 'Enter') sendB(); });
+document.getElementById('btnClearLog').addEventListener('click', () => {
+  logBody.innerHTML = '';
+  logEntryCount = 0;
+  logCount.textContent = '';
+});
+
+/* ══════════════════════════════════════
+   INITIAL MESSAGE
+══════════════════════════════════════ */
+startTime = Date.now();
+addLog({
+  tags:['SIG'], cls:'is-sig',
+  raw: 'WebRTC Loopback Demo khởi tạo. Nhấn ▶ Start Demo để bắt đầu.',
+  exp: 'Demo này dùng 2 RTCPeerConnection trong cùng 1 browser tab. Signaling là direct JS function calls — không cần WebSocket. Phase 2 sẽ thêm WebSocket + 2 tab riêng biệt.',
+});
+startTime = 0;
+</script>
+</body>
+</html>

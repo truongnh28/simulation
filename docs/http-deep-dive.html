@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTTP Deep Dive</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #ffffff; --bg2: #f8fafc; --bg3: #f1f5f9; --border: #e2e8f0;
+  --text: #1e293b; --text2: #475569; --text3: #94a3b8;
+  --blue: #0369a1; --blue-l: #e0f2fe; --blue-ll: #f0f9ff;
+  --green: #15803d; --green-l: #dcfce7;
+  --orange: #c2410c; --orange-l: #fff7ed;
+  --red: #dc2626; --red-l: #fef2f2;
+  --purple: #7c3aed; --purple-l: #faf5ff;
+  --yellow: #92400e; --yellow-l: #fffbeb;
+  --accent: #0ea5e9;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.75; font-size: 15px; }
+
+.layout { display: flex; min-height: 100vh; }
+.sidebar { width: 260px; flex-shrink: 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; background: var(--bg2); border-right: 1px solid var(--border); padding: 1.5rem 0; }
+.sidebar-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text3); padding: 0 1.25rem 0.75rem; }
+.nav-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.45rem 1.25rem; font-size: 0.85rem; color: var(--text2); text-decoration: none; border-left: 3px solid transparent; transition: all 0.15s; }
+.nav-item:hover { background: var(--blue-ll); color: var(--blue); border-left-color: var(--accent); }
+.nav-item.active { background: var(--blue-ll); color: var(--blue); border-left-color: var(--accent); font-weight: 600; }
+.nav-num { font-size: 0.7rem; background: var(--bg3); color: var(--text3); border-radius: 4px; padding: 0.1rem 0.4rem; font-weight: 600; min-width: 1.6rem; text-align: center; }
+.nav-divider { height: 1px; background: var(--border); margin: 0.5rem 1.25rem; }
+.nav-group-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); padding: 0.6rem 1.25rem 0.2rem; }
+
+.main { flex: 1; max-width: 820px; padding: 3rem 3rem 6rem; }
+.page-title { font-size: 2rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem; }
+.page-sub { font-size: 1rem; color: var(--text2); margin-bottom: 2rem; line-height: 1.6; }
+
+.section { margin-bottom: 4rem; }
+.section-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; padding-bottom: 0.6rem; border-bottom: 2px solid var(--blue-l); }
+.section-num { background: var(--blue); color: white; font-weight: 800; font-size: 0.75rem; border-radius: 6px; padding: 0.25rem 0.6rem; letter-spacing: 0.05em; }
+.section-title { font-size: 1.35rem; font-weight: 700; color: #0f172a; }
+
+h3 { font-size: 1rem; font-weight: 700; color: var(--blue); margin: 1.75rem 0 0.5rem; }
+h4 { font-size: 0.85rem; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.08em; margin: 1.25rem 0 0.4rem; }
+p { color: var(--text2); margin-bottom: 0.8rem; }
+p strong { color: var(--text); }
+
+pre { background: var(--bg2); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.8rem; color: #0f4c81; line-height: 1.7; margin: 0.75rem 0 1.25rem; white-space: pre; }
+code { background: var(--blue-ll); color: var(--blue); padding: 0.15em 0.45em; border-radius: 4px; font-size: 0.85em; font-family: 'JetBrains Mono', monospace; border: 1px solid #bae6fd; }
+
+.box { border-radius: 8px; padding: 1rem 1.25rem; margin: 0.75rem 0 1.25rem; font-size: 0.9rem; }
+.box-blue   { background: var(--blue-ll);  border: 1px solid #bae6fd; color: #0c4a6e; }
+.box-green  { background: var(--green-l);  border: 1px solid #86efac; color: #14532d; }
+.box-orange { background: var(--orange-l); border: 1px solid #fdba74; color: #7c2d12; }
+.box-yellow { background: var(--yellow-l); border: 1px solid #fde68a; color: var(--yellow); }
+.box-purple { background: var(--purple-l); border: 1px solid #c4b5fd; color: #4c1d95; }
+.box-red    { background: var(--red-l);    border: 1px solid #fca5a5; color: #7f1d1d; }
+.box-title  { font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.3rem; opacity: 0.7; }
+
+table { width: 100%; border-collapse: collapse; margin: 0.75rem 0 1.25rem; font-size: 0.88rem; }
+th { background: var(--blue-ll); color: var(--blue); padding: 0.6rem 1rem; text-align: left; font-weight: 700; border-bottom: 2px solid #bae6fd; }
+td { padding: 0.55rem 1rem; border-bottom: 1px solid var(--bg3); color: var(--text2); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg2); }
+
+ul, ol { padding-left: 1.5rem; margin-bottom: 0.8rem; }
+li { margin-bottom: 0.35rem; color: var(--text2); }
+li strong { color: var(--text); }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 0.75rem 0 1.25rem; }
+@media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+.col-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.1rem; }
+.col-card h4 { margin-top: 0; }
+
+.diagram-wrap { margin: 0.75rem 0 1.25rem; overflow-x: auto; }
+svg.diagram { display: block; max-width: 100%; height: auto; }
+
+.url-anatomy { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin: 0.75rem 0 1.25rem; line-height: 2.2; }
+.url-part { padding: 0.1em 0.4em; border-radius: 3px; }
+.url-scheme  { background: #dbeafe; color: #1e40af; }
+.url-auth    { background: #fce7f3; color: #9d174d; }
+.url-host    { background: var(--blue-ll); color: var(--blue); }
+.url-port    { background: var(--green-l); color: var(--green); }
+.url-path    { background: var(--purple-l); color: var(--purple); }
+.url-query   { background: var(--yellow-l); color: var(--yellow); }
+.url-frag    { background: var(--orange-l); color: var(--orange); }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav class="sidebar">
+  <div class="sidebar-title">HTTP Deep Dive</div>
+  <div class="nav-group-label">Nền tảng</div>
+  <a class="nav-item" href="#s1"><span class="nav-num">01</span>HTTP là gì?</a>
+  <a class="nav-item" href="#s2"><span class="nav-num">02</span>HTTP/1.0</a>
+  <a class="nav-item" href="#s3"><span class="nav-num">03</span>HTTP/1.1</a>
+  <a class="nav-item" href="#s4"><span class="nav-num">04</span>Methods &amp; Semantics</a>
+  <a class="nav-item" href="#s5"><span class="nav-num">05</span>Headers &amp; Structure</a>
+  <a class="nav-item" href="#s6"><span class="nav-num">06</span>Status Codes</a>
+  <a class="nav-item" href="#s7"><span class="nav-num">07</span>URL &amp; Negotiation</a>
+  <div class="nav-divider"></div>
+  <div class="nav-group-label">Security &amp; Caching</div>
+  <a class="nav-item" href="#s8"><span class="nav-num">08</span>Caching</a>
+  <a class="nav-item" href="#s9"><span class="nav-num">09</span>Cookies &amp; Sessions</a>
+  <a class="nav-item" href="#s10"><span class="nav-num">10</span>CORS</a>
+  <a class="nav-item" href="#s11"><span class="nav-num">11</span>HTTPS &amp; PKI</a>
+  <a class="nav-item" href="#s12"><span class="nav-num">12</span>TLS Handshake</a>
+  <div class="nav-divider"></div>
+  <div class="nav-group-label">HTTP/2 &amp; HTTP/3</div>
+  <a class="nav-item" href="#s13"><span class="nav-num">13</span>HTTP/2 — Binary Framing</a>
+  <a class="nav-item" href="#s14"><span class="nav-num">14</span>Streams &amp; Multiplexing</a>
+  <a class="nav-item" href="#s15"><span class="nav-num">15</span>HPACK Compression</a>
+  <a class="nav-item" href="#s16"><span class="nav-num">16</span>Flow Control &amp; Priority</a>
+  <a class="nav-item" href="#s17"><span class="nav-num">17</span>Security Headers</a>
+  <a class="nav-item" href="#s18"><span class="nav-num">18</span>HTTP/3 &amp; QUIC</a>
+</nav>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main">
+  <h1 class="page-title">HTTP Deep Dive</h1>
+  <p class="page-sub">HTTP/1.0 → HTTP/1.1 → HTTPS → HTTP/2 → HTTP/3 — từng bước tiến hóa, từng bit trong frame. Từ <code>GET / HTTP/1.0</code> đến QUIC streams trên UDP.</p>
+
+  <!-- SVG 1: Evolution Timeline -->
+  <div class="diagram-wrap">
+  <svg class="diagram" viewBox="0 0 780 80" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L0,6 L8,3 z" fill="#94a3b8"/>
+      </marker>
+    </defs>
+    <rect x="10" y="20" width="115" height="42" rx="6" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="1.5"/>
+    <text x="67" y="38" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">HTTP/1.0</text>
+    <text x="67" y="53" text-anchor="middle" font-size="9" fill="#0369a1">1996 · RFC 1945</text>
+    <rect x="155" y="20" width="115" height="42" rx="6" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+    <text x="212" y="38" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">HTTP/1.1</text>
+    <text x="212" y="53" text-anchor="middle" font-size="9" fill="#15803d">1997 · RFC 7230</text>
+    <rect x="300" y="20" width="115" height="42" rx="6" fill="#fef3c7" stroke="#fde68a" stroke-width="1.5"/>
+    <text x="357" y="38" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">HTTPS / TLS</text>
+    <text x="357" y="53" text-anchor="middle" font-size="9" fill="#92400e">2000s · RFC 2818</text>
+    <rect x="445" y="20" width="115" height="42" rx="6" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
+    <text x="502" y="38" text-anchor="middle" font-size="11" font-weight="700" fill="#7c3aed">HTTP/2</text>
+    <text x="502" y="53" text-anchor="middle" font-size="9" fill="#7c3aed">2015 · RFC 7540</text>
+    <rect x="590" y="20" width="115" height="42" rx="6" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+    <text x="647" y="38" text-anchor="middle" font-size="11" font-weight="700" fill="#c2410c">HTTP/3</text>
+    <text x="647" y="53" text-anchor="middle" font-size="9" fill="#c2410c">2022 · RFC 9114</text>
+    <line x1="126" y1="41" x2="153" y2="41" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+    <line x1="271" y1="41" x2="298" y2="41" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+    <line x1="416" y1="41" x2="443" y2="41" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+    <line x1="561" y1="41" x2="588" y2="41" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+  </svg>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S1 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s1">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">HTTP là gì?</h2>
+    </div>
+    <p><strong>HTTP (HyperText Transfer Protocol)</strong> là giao thức tầng ứng dụng (OSI Layer 7) được thiết kế để truyền tải hypermedia — ban đầu là HTML, nay là mọi loại dữ liệu. HTTP chạy trên TCP/IP và hoạt động theo mô hình <strong>request-response</strong>: client gửi request, server trả response.</p>
+    <p>HTTP là <strong>stateless</strong> — mỗi request hoàn toàn độc lập, server không nhớ gì về request trước. Mọi state phải được truyền tường minh qua headers hoặc body. HTTP/1.x là giao thức <strong>text-based</strong> (human-readable), HTTP/2 và HTTP/3 chuyển sang binary.</p>
+    <div class="box box-blue">
+      <div class="box-title">RFC Overview</div>
+      <ul>
+        <li><strong>RFC 1945</strong> — HTTP/1.0 (1996)</li>
+        <li><strong>RFC 2616</strong> — HTTP/1.1 (1999) → thay bởi RFC 7230-7235 (2014) → RFC 9110-9112 (2022)</li>
+        <li><strong>RFC 7540</strong> — HTTP/2 (2015) → RFC 9113 (2022)</li>
+        <li><strong>RFC 9114</strong> — HTTP/3 (2022), cùng RFC 9000 (QUIC)</li>
+        <li><strong>RFC 9110</strong> — HTTP Semantics (phương thức, status codes, headers — dùng chung cho mọi version)</li>
+      </ul>
+    </div>
+    <table>
+      <tr><th>Use case</th><th>Mô tả</th><th>HTTP feature dùng</th></tr>
+      <tr><td>Web pages</td><td>Tải HTML, CSS, JS, images</td><td>GET, caching, conditional requests</td></tr>
+      <tr><td>REST API</td><td>CRUD qua JSON/XML</td><td>GET/POST/PUT/DELETE/PATCH, status codes</td></tr>
+      <tr><td>File download</td><td>Tải file lớn, resume</td><td>Range requests, Content-Disposition</td></tr>
+      <tr><td>Server-Sent Events</td><td>Server push real-time updates</td><td>Chunked transfer, EventStream</td></tr>
+      <tr><td>WebSocket upgrade</td><td>Nâng cấp lên full-duplex</td><td>Upgrade header, 101 Switching Protocols</td></tr>
+      <tr><td>Webhooks</td><td>Server notify client</td><td>POST callback</td></tr>
+    </table>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S2 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s2">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">HTTP/1.0</h2>
+    </div>
+    <p>Ra đời năm 1996 (RFC 1945), HTTP/1.0 là phiên bản chính thức đầu tiên. Mô hình rất đơn giản: mỗi request mở một TCP connection mới, nhận response, rồi đóng kết nối ngay lập tức.</p>
+    <pre>GET /index.html HTTP/1.0
+User-Agent: Mozilla/1.0
+
+HTTP/1.0 200 OK
+Content-Type: text/html
+Content-Length: 1234
+
+&lt;html&gt;...&lt;/html&gt;</pre>
+    <div class="box box-orange">
+      <div class="box-title">Vấn đề của HTTP/1.0</div>
+      <ul>
+        <li><strong>1 request = 1 TCP connection</strong> — mỗi tài nguyên (HTML, CSS, JS, image) cần một TCP 3-way handshake riêng → latency cao</li>
+        <li><strong>Không có Host header</strong> — 1 IP chỉ host được 1 website (virtual hosting không khả thi)</li>
+        <li><strong>Không có persistent connections</strong> — mọi request đều có overhead TCP setup/teardown</li>
+        <li><strong>Không có chunked encoding</strong> — server phải biết Content-Length trước khi bắt đầu gửi</li>
+        <li><strong>Không có caching headers</strong> chuẩn — các browser phải tự đoán</li>
+      </ul>
+    </div>
+    <p>Một trang web với 30 assets cần <strong>30 TCP connections</strong>, mỗi cái tốn ~1 RTT cho handshake. Với mạng 100ms RTT, chỉ riêng handshakes đã mất 3 giây.</p>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S3 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s3">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">HTTP/1.1</h2>
+    </div>
+    <p>RFC 2616 (1997) đưa ra những cải tiến căn bản. HTTP/1.1 là giao thức thống trị web trong hơn 15 năm và vẫn được dùng rộng rãi đến hôm nay.</p>
+
+    <h3>Persistent Connections (Keep-Alive)</h3>
+    <p>Mặc định trong HTTP/1.1, một TCP connection có thể phục vụ nhiều request/response liên tiếp. Client gửi <code>Connection: keep-alive</code> (hoặc không cần vì đây là default), server trả lời tương tự.</p>
+    <pre>Connection: keep-alive
+Keep-Alive: timeout=5, max=1000</pre>
+
+    <h3>Pipelining</h3>
+    <p>Client có thể gửi nhiều request mà không cần đợi response của request trước. Tuy nhiên response <strong>phải trả về theo đúng thứ tự</strong> — đây là nguyên nhân của <strong>Head-of-Line (HOL) Blocking</strong>: nếu request đầu tiên chậm, tất cả response phía sau bị block dù đã sẵn sàng.</p>
+
+    <h3>Chunked Transfer Encoding</h3>
+    <p>Server có thể bắt đầu gửi response trước khi biết tổng Content-Length. Mỗi chunk có prefix là kích thước (hex), kết thúc bằng chunk rỗng <code>0\r\n\r\n</code>.</p>
+    <pre>HTTP/1.1 200 OK
+Transfer-Encoding: chunked
+
+1a\r\n
+This is the first chunk\r\n
+0e\r\n
+second chunk!!\r\n
+0\r\n
+\r\n</pre>
+
+    <h3>Host Header (bắt buộc)</h3>
+    <p>HTTP/1.1 yêu cầu <code>Host</code> header trong mọi request — giải quyết vấn đề virtual hosting, nhiều domain trên cùng 1 IP.</p>
+
+    <!-- SVG 2: Connection Models -->
+    <div class="diagram-wrap">
+    <svg class="diagram" viewBox="0 0 720 210" xmlns="http://www.w3.org/2000/svg">
+      <text x="120" y="16" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">HTTP/1.0</text>
+      <text x="120" y="28" text-anchor="middle" font-size="9" fill="#64748b">New conn per request</text>
+      <text x="360" y="16" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">HTTP/1.1 Keep-Alive</text>
+      <text x="360" y="28" text-anchor="middle" font-size="9" fill="#64748b">Serial (HOL blocking)</text>
+      <text x="600" y="16" text-anchor="middle" font-size="11" font-weight="700" fill="#7c3aed">HTTP/2</text>
+      <text x="600" y="28" text-anchor="middle" font-size="9" fill="#64748b">Parallel streams</text>
+      <line x1="240" y1="14" x2="240" y2="210" stroke="#e2e8f0"/>
+      <line x1="480" y1="14" x2="480" y2="210" stroke="#e2e8f0"/>
+      <!-- HTTP/1.0 -->
+      <rect x="20" y="40" width="200" height="20" rx="3" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="1"/>
+      <text x="120" y="54" text-anchor="middle" font-size="8.5" fill="#0369a1">TCP conn → REQ1 → RESP1 → close</text>
+      <rect x="20" y="66" width="200" height="20" rx="3" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="1"/>
+      <text x="120" y="80" text-anchor="middle" font-size="8.5" fill="#0369a1">TCP conn → REQ2 → RESP2 → close</text>
+      <rect x="20" y="92" width="200" height="20" rx="3" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="1"/>
+      <text x="120" y="106" text-anchor="middle" font-size="8.5" fill="#0369a1">TCP conn → REQ3 → RESP3 → close</text>
+      <text x="120" y="130" text-anchor="middle" font-size="8" fill="#dc2626">3× TCP handshakes</text>
+      <!-- HTTP/1.1 -->
+      <rect x="258" y="40" width="200" height="110" rx="4" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+      <text x="358" y="56" text-anchor="middle" font-size="8.5" font-weight="700" fill="#15803d">1 TCP connection</text>
+      <rect x="268" y="62" width="55" height="16" rx="2" fill="#bbf7d0"/>
+      <text x="295" y="74" text-anchor="middle" font-size="8" fill="#15803d">REQ 1</text>
+      <rect x="268" y="81" width="55" height="16" rx="2" fill="#86efac"/>
+      <text x="295" y="93" text-anchor="middle" font-size="8" fill="#15803d">RESP 1</text>
+      <rect x="332" y="81" width="55" height="16" rx="2" fill="#bbf7d0"/>
+      <text x="359" y="93" text-anchor="middle" font-size="8" fill="#15803d">REQ 2</text>
+      <rect x="332" y="100" width="55" height="16" rx="2" fill="#86efac"/>
+      <text x="359" y="112" text-anchor="middle" font-size="8" fill="#15803d">RESP 2</text>
+      <text x="358" y="140" text-anchor="middle" font-size="8" fill="#dc2626">⚠ HOL: REQ 3 waits for RESP 1</text>
+      <!-- HTTP/2 -->
+      <rect x="498" y="40" width="200" height="110" rx="4" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1"/>
+      <text x="598" y="56" text-anchor="middle" font-size="8.5" font-weight="700" fill="#7c3aed">1 TCP connection</text>
+      <rect x="508" y="62" width="178" height="14" rx="2" fill="#c4b5fd"/>
+      <text x="597" y="73" text-anchor="middle" font-size="8" fill="#4c1d95">Stream 1: REQ 1 ──── RESP 1</text>
+      <rect x="508" y="79" width="178" height="14" rx="2" fill="#ddd6fe"/>
+      <text x="597" y="90" text-anchor="middle" font-size="8" fill="#4c1d95">Stream 3: REQ 2 ──── RESP 2</text>
+      <rect x="508" y="96" width="178" height="14" rx="2" fill="#ede9fe"/>
+      <text x="597" y="107" text-anchor="middle" font-size="8" fill="#4c1d95">Stream 5: REQ 3 ──── RESP 3</text>
+      <text x="598" y="136" text-anchor="middle" font-size="8" fill="#15803d">✓ Parallel, no HTTP-layer HOL</text>
+    </svg>
+    </div>
+
+    <div class="box box-yellow">
+      <div class="box-title">Conditional Requests</div>
+      <p>HTTP/1.1 giới thiệu <strong>If-Modified-Since</strong> và <strong>If-None-Match</strong> để validation cache, giúp server trả <code>304 Not Modified</code> thay vì gửi lại toàn bộ body.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S4 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s4">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">HTTP Methods &amp; Semantics</h2>
+    </div>
+    <p>Phương thức HTTP mô tả <strong>ý định</strong> của request. RFC 9110 định nghĩa các thuộc tính ngữ nghĩa quan trọng: <strong>safe</strong> (không có side effects) và <strong>idempotent</strong> (gọi nhiều lần = gọi 1 lần).</p>
+    <table>
+      <tr><th>Method</th><th>Safe</th><th>Idempotent</th><th>Request Body</th><th>Mô tả</th></tr>
+      <tr><td><code>GET</code></td><td>✓</td><td>✓</td><td>Không</td><td>Lấy tài nguyên</td></tr>
+      <tr><td><code>HEAD</code></td><td>✓</td><td>✓</td><td>Không</td><td>Như GET nhưng không có body response</td></tr>
+      <tr><td><code>OPTIONS</code></td><td>✓</td><td>✓</td><td>Không</td><td>Hỏi về capabilities của server/resource (CORS preflight)</td></tr>
+      <tr><td><code>POST</code></td><td>✗</td><td>✗</td><td>Có</td><td>Tạo resource mới hoặc trigger action</td></tr>
+      <tr><td><code>PUT</code></td><td>✗</td><td>✓</td><td>Có</td><td>Thay thế toàn bộ resource</td></tr>
+      <tr><td><code>PATCH</code></td><td>✗</td><td>✗*</td><td>Có</td><td>Cập nhật một phần resource</td></tr>
+      <tr><td><code>DELETE</code></td><td>✗</td><td>✓</td><td>Thường không</td><td>Xóa resource</td></tr>
+      <tr><td><code>CONNECT</code></td><td>✗</td><td>✗</td><td>Không</td><td>Tạo tunnel TCP (dùng cho HTTPS qua proxy)</td></tr>
+      <tr><td><code>TRACE</code></td><td>✓</td><td>✓</td><td>Không</td><td>Echo request (debugging, thường bị disable vì XST attack)</td></tr>
+    </table>
+    <div class="box box-blue">
+      <div class="box-title">Safe vs Idempotent</div>
+      <p><strong>Safe</strong> = không thay đổi state server (GET, HEAD, OPTIONS). Client có thể gọi bao nhiêu lần tùy ý. Search engine crawlers chỉ follow safe methods.</p>
+      <p><strong>Idempotent</strong> = gọi N lần = gọi 1 lần về mặt kết quả (GET, PUT, DELETE). Quan trọng cho retry logic — safe to retry sau network failure.</p>
+    </div>
+    <h3>PUT vs PATCH</h3>
+    <p><code>PUT /users/1</code> thay thế <em>toàn bộ</em> user 1 bằng body mới — các field không có trong body sẽ bị xóa. <code>PATCH /users/1</code> chỉ cập nhật các field được chỉ định.</p>
+    <pre>PATCH /users/1 HTTP/1.1
+Content-Type: application/merge-patch+json
+
+{"email": "new@example.com"}   ← chỉ email thay đổi, các field khác giữ nguyên</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S5 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s5">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2 class="section-title">HTTP Headers &amp; Message Structure</h2>
+    </div>
+    <p>Một HTTP message gồm 3 phần: <strong>start-line</strong>, <strong>header fields</strong> (mỗi cái trên 1 dòng), <strong>blank line</strong> (CRLF), và <strong>body</strong> (tuỳ chọn).</p>
+
+    <!-- SVG 3: Request/Response Anatomy -->
+    <div class="diagram-wrap">
+    <svg class="diagram" viewBox="0 0 700 225" xmlns="http://www.w3.org/2000/svg">
+      <text x="175" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="#0369a1">HTTP Request</text>
+      <rect x="20" y="24" width="310" height="30" rx="4" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="1.5"/>
+      <text x="175" y="44" text-anchor="middle" font-size="10" font-weight="700" fill="#0369a1">GET /api/users?page=1 HTTP/1.1</text>
+      <rect x="20" y="58" width="310" height="18" rx="2" fill="#f0f9ff" stroke="#bae6fd"/>
+      <text x="175" y="71" text-anchor="middle" font-size="9" fill="#0369a1">Host: api.example.com</text>
+      <rect x="20" y="78" width="310" height="18" rx="2" fill="#f0f9ff" stroke="#bae6fd"/>
+      <text x="175" y="91" text-anchor="middle" font-size="9" fill="#0369a1">Accept: application/json</text>
+      <rect x="20" y="98" width="310" height="18" rx="2" fill="#f0f9ff" stroke="#bae6fd"/>
+      <text x="175" y="111" text-anchor="middle" font-size="9" fill="#0369a1">Authorization: Bearer eyJhbGc...</text>
+      <rect x="20" y="118" width="310" height="18" rx="2" fill="#f0f9ff" stroke="#bae6fd"/>
+      <text x="175" y="131" text-anchor="middle" font-size="9" fill="#0369a1">User-Agent: MyApp/2.0</text>
+      <text x="28" y="152" font-size="9" fill="#94a3b8" font-style="italic">(blank line CRLF)</text>
+      <rect x="20" y="160" width="310" height="40" rx="2" fill="#f8fafc" stroke="#e2e8f0" stroke-dasharray="4 2"/>
+      <text x="175" y="185" text-anchor="middle" font-size="9" fill="#94a3b8">Body (POST/PUT/PATCH có body)</text>
+      <text x="22" y="38" font-size="8" fill="#7c3aed">start-line</text>
+      <text x="22" y="70" font-size="8" fill="#0369a1">headers</text>
+      <!-- Response -->
+      <text x="525" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="#15803d">HTTP Response</text>
+      <rect x="370" y="24" width="310" height="30" rx="4" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+      <text x="525" y="44" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d">HTTP/1.1 200 OK</text>
+      <rect x="370" y="58" width="310" height="18" rx="2" fill="#f0fdf4" stroke="#bbf7d0"/>
+      <text x="525" y="71" text-anchor="middle" font-size="9" fill="#15803d">Content-Type: application/json</text>
+      <rect x="370" y="78" width="310" height="18" rx="2" fill="#f0fdf4" stroke="#bbf7d0"/>
+      <text x="525" y="91" text-anchor="middle" font-size="9" fill="#15803d">Content-Length: 342</text>
+      <rect x="370" y="98" width="310" height="18" rx="2" fill="#f0fdf4" stroke="#bbf7d0"/>
+      <text x="525" y="111" text-anchor="middle" font-size="9" fill="#15803d">Cache-Control: max-age=3600</text>
+      <rect x="370" y="118" width="310" height="18" rx="2" fill="#f0fdf4" stroke="#bbf7d0"/>
+      <text x="525" y="131" text-anchor="middle" font-size="9" fill="#15803d">ETag: "abc123"</text>
+      <text x="378" y="152" font-size="9" fill="#94a3b8" font-style="italic">(blank line CRLF)</text>
+      <rect x="370" y="160" width="310" height="40" rx="2" fill="#f0fdf4" stroke="#86efac"/>
+      <text x="525" y="184" text-anchor="middle" font-size="9" fill="#15803d">[{"id":1,"name":"Alice"},...]</text>
+    </svg>
+    </div>
+
+    <h3>Request Headers phổ biến</h3>
+    <table>
+      <tr><th>Header</th><th>Ví dụ</th><th>Mô tả</th></tr>
+      <tr><td><code>Host</code></td><td>example.com:8080</td><td>Bắt buộc trong HTTP/1.1 — tên domain + port</td></tr>
+      <tr><td><code>Accept</code></td><td>application/json, text/html;q=0.9</td><td>Media types client chấp nhận</td></tr>
+      <tr><td><code>Accept-Encoding</code></td><td>gzip, br, zstd</td><td>Compression algorithms client hiểu</td></tr>
+      <tr><td><code>Authorization</code></td><td>Bearer &lt;token&gt;</td><td>Credentials để authenticate</td></tr>
+      <tr><td><code>Cookie</code></td><td>session=abc; theme=dark</td><td>Cookies gửi lên server</td></tr>
+      <tr><td><code>Content-Type</code></td><td>application/json; charset=utf-8</td><td>Media type của request body</td></tr>
+      <tr><td><code>If-None-Match</code></td><td>"abc123"</td><td>Conditional — trả 304 nếu ETag match</td></tr>
+      <tr><td><code>Origin</code></td><td>https://app.example.com</td><td>Origin của request (CORS)</td></tr>
+    </table>
+
+    <h3>Response Headers phổ biến</h3>
+    <table>
+      <tr><th>Header</th><th>Ví dụ</th><th>Mô tả</th></tr>
+      <tr><td><code>Content-Type</code></td><td>application/json; charset=utf-8</td><td>Media type của response body</td></tr>
+      <tr><td><code>Content-Encoding</code></td><td>gzip</td><td>Compression đã áp dụng</td></tr>
+      <tr><td><code>Cache-Control</code></td><td>max-age=86400, public</td><td>Caching directives</td></tr>
+      <tr><td><code>ETag</code></td><td>"33a64df5"</td><td>Version identifier của resource</td></tr>
+      <tr><td><code>Location</code></td><td>https://example.com/new</td><td>Redirect target (3xx) hoặc URL của resource mới tạo (201)</td></tr>
+      <tr><td><code>Set-Cookie</code></td><td>session=xyz; HttpOnly; Secure</td><td>Set cookie trên client</td></tr>
+      <tr><td><code>Strict-Transport-Security</code></td><td>max-age=31536000; includeSubDomains</td><td>Force HTTPS (HSTS)</td></tr>
+      <tr><td><code>Access-Control-Allow-Origin</code></td><td>https://app.example.com</td><td>CORS — origin được phép</td></tr>
+    </table>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S6 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s6">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2 class="section-title">Status Codes</h2>
+    </div>
+    <p>Status code là số 3 chữ số trong response start-line, truyền đạt kết quả của request. Chữ số đầu tiên xác định nhóm (class). Sau đây là các code phổ biến nhất.</p>
+
+    <h3>1xx — Informational</h3>
+    <table>
+      <tr><th>Code</th><th>Tên</th><th>Mô tả</th></tr>
+      <tr><td><code>100</code></td><td>Continue</td><td>Server đã nhận headers, client tiếp tục gửi body</td></tr>
+      <tr><td><code>101</code></td><td>Switching Protocols</td><td>Server chấp nhận upgrade (HTTP → WebSocket)</td></tr>
+    </table>
+
+    <h3>2xx — Success</h3>
+    <table>
+      <tr><th>Code</th><th>Tên</th><th>Mô tả</th></tr>
+      <tr><td><code>200</code></td><td>OK</td><td>Request thành công, response có body</td></tr>
+      <tr><td><code>201</code></td><td>Created</td><td>Resource được tạo, trả về Location header</td></tr>
+      <tr><td><code>202</code></td><td>Accepted</td><td>Request được nhận, xử lý async</td></tr>
+      <tr><td><code>204</code></td><td>No Content</td><td>Thành công, không có body (DELETE, PUT thường dùng)</td></tr>
+      <tr><td><code>206</code></td><td>Partial Content</td><td>Range request — chỉ trả một phần resource</td></tr>
+    </table>
+
+    <h3>3xx — Redirection</h3>
+    <table>
+      <tr><th>Code</th><th>Tên</th><th>Permanent?</th><th>Method preserved?</th></tr>
+      <tr><td><code>301</code></td><td>Moved Permanently</td><td>✓</td><td>✗ (POST → GET)</td></tr>
+      <tr><td><code>302</code></td><td>Found</td><td>✗</td><td>✗ (POST → GET)</td></tr>
+      <tr><td><code>303</code></td><td>See Other</td><td>✗</td><td>Luôn GET</td></tr>
+      <tr><td><code>304</code></td><td>Not Modified</td><td>—</td><td>— (cache hit)</td></tr>
+      <tr><td><code>307</code></td><td>Temporary Redirect</td><td>✗</td><td>✓ (POST stays POST)</td></tr>
+      <tr><td><code>308</code></td><td>Permanent Redirect</td><td>✓</td><td>✓ (POST stays POST)</td></tr>
+    </table>
+
+    <h3>4xx — Client Errors</h3>
+    <table>
+      <tr><th>Code</th><th>Tên</th><th>Mô tả</th></tr>
+      <tr><td><code>400</code></td><td>Bad Request</td><td>Request malformed, syntax sai</td></tr>
+      <tr><td><code>401</code></td><td>Unauthorized</td><td>Chưa authenticate — gửi credentials</td></tr>
+      <tr><td><code>403</code></td><td>Forbidden</td><td>Đã authenticate nhưng không có quyền</td></tr>
+      <tr><td><code>404</code></td><td>Not Found</td><td>Resource không tồn tại</td></tr>
+      <tr><td><code>405</code></td><td>Method Not Allowed</td><td>Method không được phép cho resource này</td></tr>
+      <tr><td><code>409</code></td><td>Conflict</td><td>State conflict (ví dụ: tạo duplicate, optimistic locking)</td></tr>
+      <tr><td><code>422</code></td><td>Unprocessable Entity</td><td>Syntax đúng nhưng semantics sai (validation errors)</td></tr>
+      <tr><td><code>429</code></td><td>Too Many Requests</td><td>Rate limit exceeded — thường có Retry-After header</td></tr>
+    </table>
+
+    <h3>5xx — Server Errors</h3>
+    <table>
+      <tr><th>Code</th><th>Tên</th><th>Mô tả</th></tr>
+      <tr><td><code>500</code></td><td>Internal Server Error</td><td>Lỗi không xác định phía server</td></tr>
+      <tr><td><code>502</code></td><td>Bad Gateway</td><td>Proxy nhận response không hợp lệ từ upstream</td></tr>
+      <tr><td><code>503</code></td><td>Service Unavailable</td><td>Server quá tải hoặc đang maintenance</td></tr>
+      <tr><td><code>504</code></td><td>Gateway Timeout</td><td>Upstream không phản hồi kịp thời</td></tr>
+    </table>
+
+    <div class="box box-yellow">
+      <div class="box-title">401 vs 403</div>
+      <p><strong>401 Unauthorized</strong> thực ra nghĩa là "unauthenticated" — client chưa gửi credentials hoặc credentials không hợp lệ. Response phải có <code>WWW-Authenticate</code> header.<br>
+      <strong>403 Forbidden</strong> nghĩa là "unauthorized" — server biết bạn là ai, nhưng bạn không có quyền. Không cần gửi lại credentials.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S7 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s7">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2 class="section-title">URL &amp; Content Negotiation</h2>
+    </div>
+
+    <h3>Cấu trúc URL</h3>
+    <p>URL (Uniform Resource Locator) theo RFC 3986 có cấu trúc phân cấp:</p>
+    <div class="url-anatomy">
+      <span class="url-part url-scheme">https</span>://<span class="url-part url-auth">user:pass</span>@<span class="url-part url-host">api.example.com</span>:<span class="url-part url-port">8080</span><span class="url-part url-path">/v2/users/42</span>?<span class="url-part url-query">sort=name&amp;page=2</span>#<span class="url-part url-frag">profile</span>
+      <br><br>
+      <span style="font-size:0.78rem;color:var(--text3)">scheme · userinfo · host · port · path · query · fragment</span>
+    </div>
+
+    <ul>
+      <li><strong>Scheme</strong> (<code>https</code>): giao thức</li>
+      <li><strong>Authority</strong> (<code>user:pass@host:port</code>): userinfo hiếm dùng, port mặc định 80/443</li>
+      <li><strong>Path</strong> (<code>/v2/users/42</code>): phân cấp bằng <code>/</code></li>
+      <li><strong>Query</strong> (<code>?sort=name&amp;page=2</code>): key=value pairs, phân tách bằng <code>&amp;</code></li>
+      <li><strong>Fragment</strong> (<code>#profile</code>): chỉ xử lý ở browser, không gửi lên server</li>
+    </ul>
+
+    <h3>Percent Encoding</h3>
+    <p>Ký tự ngoài "unreserved chars" (A-Z a-z 0-9 <code>-._~</code>) phải được encode thành <code>%XX</code> (hex byte). Ví dụ: space → <code>%20</code>, <code>/</code> trong query → <code>%2F</code>, <code>@</code> → <code>%40</code>.</p>
+
+    <h3>Content Negotiation</h3>
+    <p>Client và server thoả thuận format thông qua headers. <strong>q-values</strong> (quality factor, 0–1) thể hiện độ ưu tiên:</p>
+    <pre>Accept: text/html, application/xhtml+xml, application/json;q=0.9, */*;q=0.8
+Accept-Language: vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7
+Accept-Encoding: br, gzip;q=0.9, zstd;q=0.8, deflate;q=0.5</pre>
+    <p>Server chọn format phù hợp nhất và trả về <code>Content-Type</code>, <code>Content-Language</code>, <code>Content-Encoding</code>.</p>
+
+    <div class="box box-blue">
+      <div class="box-title">Vary Header</div>
+      <p>Nói với CDN/proxy rằng response thay đổi theo những request headers nào: <code>Vary: Accept-Encoding, Accept-Language</code>. CDN sẽ cache riêng biệt cho mỗi combination. Quan trọng để tránh server gzip response cho client không hiểu gzip.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S8 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s8">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2 class="section-title">Caching</h2>
+    </div>
+    <p>HTTP caching giúp tránh lấy lại dữ liệu không đổi, giảm latency và tải server. Cache có thể là browser cache, Service Worker, CDN edge, hoặc reverse proxy.</p>
+
+    <h3>Cache-Control Directives</h3>
+    <table>
+      <tr><th>Directive</th><th>Request / Response</th><th>Tác dụng</th></tr>
+      <tr><td><code>max-age=N</code></td><td>Cả hai</td><td>Resource có thể được cache N giây</td></tr>
+      <tr><td><code>s-maxage=N</code></td><td>Response</td><td>Như max-age nhưng chỉ cho shared cache (CDN)</td></tr>
+      <tr><td><code>no-cache</code></td><td>Cả hai</td><td>Phải revalidate với server trước khi dùng cache</td></tr>
+      <tr><td><code>no-store</code></td><td>Cả hai</td><td>Không được lưu vào cache (sensitive data)</td></tr>
+      <tr><td><code>must-revalidate</code></td><td>Response</td><td>Phải revalidate khi stale — không dùng stale response</td></tr>
+      <tr><td><code>stale-while-revalidate=N</code></td><td>Response</td><td>Serve stale trong N giây trong khi fetch mới ở background</td></tr>
+      <tr><td><code>stale-if-error=N</code></td><td>Response</td><td>Dùng stale nếu server lỗi, trong N giây</td></tr>
+      <tr><td><code>immutable</code></td><td>Response</td><td>Resource không bao giờ thay đổi — skip revalidation</td></tr>
+      <tr><td><code>private</code></td><td>Response</td><td>Chỉ browser cache, không lưu vào shared cache</td></tr>
+      <tr><td><code>public</code></td><td>Response</td><td>Có thể cache ở shared caches (CDN)</td></tr>
+    </table>
+
+    <h3>Validation (Conditional Requests)</h3>
+    <p>Khi cache stale, client gửi conditional request để kiểm tra xem resource có thay đổi không:</p>
+    <pre>GET /api/data HTTP/1.1
+If-None-Match: "33a64df5"           ← ETag từ response trước
+If-Modified-Since: Sat, 01 Jan 2025 00:00:00 GMT
+
+HTTP/1.1 304 Not Modified           ← không có body — dùng cache
+ETag: "33a64df5"</pre>
+
+    <div class="box box-blue">
+      <div class="box-title">no-cache vs no-store</div>
+      <p><strong>no-cache</strong>: có thể lưu cache, nhưng phải revalidate trước khi dùng (conditional request). Nếu server trả 304, dùng bản cached. Tốt cho nội dung thường thay đổi nhưng muốn tận dụng bandwidth saving.</p>
+      <p><strong>no-store</strong>: không lưu gì cả — không có disk cache, không có memory cache. Dùng cho thông tin nhạy cảm (banking, medical).</p>
+    </div>
+
+    <h3>Cache Layers</h3>
+    <pre>Browser Request
+   ↓ miss?
+Browser Cache (disk/memory)
+   ↓ miss?
+Service Worker Cache (if registered)
+   ↓ miss?
+CDN Edge (shared cache, nearest PoP)
+   ↓ miss?
+Origin Server</pre>
+    <p>Với <code>Cache-Control: max-age=31536000, immutable</code> (1 năm) và content-hash trong filename (<code>app.a3f9c.js</code>), static assets có thể cache vĩnh viễn — đây là kỹ thuật <strong>cache busting</strong>.</p>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S9 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s9">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <h2 class="section-title">Cookies &amp; Sessions</h2>
+    </div>
+    <p>Cookie là cơ chế chính để HTTP stateless protocol "nhớ" state. Server set cookie qua <code>Set-Cookie</code> header, browser tự động gửi lại trong mọi request đến cùng domain.</p>
+    <pre>Set-Cookie: session_id=abc123xyz; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=3600
+Set-Cookie: theme=dark; Path=/; SameSite=Lax; Max-Age=31536000</pre>
+
+    <h3>Cookie Attributes</h3>
+    <table>
+      <tr><th>Attribute</th><th>Tác dụng</th><th>Security implication</th></tr>
+      <tr><td><code>HttpOnly</code></td><td>JavaScript không đọc được cookie (<code>document.cookie</code>)</td><td>Ngăn XSS đánh cắp session cookie</td></tr>
+      <tr><td><code>Secure</code></td><td>Chỉ gửi qua HTTPS</td><td>Ngăn sniffing trên HTTP</td></tr>
+      <tr><td><code>SameSite=Strict</code></td><td>Không gửi trong cross-site requests</td><td>Bảo vệ tốt nhất chống CSRF</td></tr>
+      <tr><td><code>SameSite=Lax</code></td><td>Gửi trong same-site + top-level navigation GET</td><td>Mặc định Chrome, cân bằng security/usability</td></tr>
+      <tr><td><code>SameSite=None</code></td><td>Gửi trong mọi cross-site request</td><td>Phải đi kèm <code>Secure</code> — dùng cho third-party cookies</td></tr>
+      <tr><td><code>Domain=.example.com</code></td><td>Chia sẻ cookie cho subdomains</td><td>Mở rộng attack surface</td></tr>
+      <tr><td><code>Path=/api</code></td><td>Chỉ gửi cho requests đến /api/*</td><td>Giới hạn phạm vi</td></tr>
+      <tr><td><code>Max-Age=N</code></td><td>Sống N giây rồi expire</td><td>Không có → session cookie (xóa khi đóng browser)</td></tr>
+    </table>
+
+    <div class="box box-yellow">
+      <div class="box-title">Session Patterns</div>
+      <p><strong>Server-side sessions</strong>: server lưu session data, cookie chỉ chứa session ID. Dễ invalidate nhưng cần storage (Redis).</p>
+      <p><strong>JWT (stateless)</strong>: mọi state encode trong token, server không lưu gì. Dễ scale nhưng khó revoke trước khi expire.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S10 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s10">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <h2 class="section-title">CORS</h2>
+    </div>
+    <p><strong>Same-Origin Policy (SOP)</strong> — trình duyệt chặn JavaScript đọc response từ origin khác. Origin = scheme + host + port. <code>https://app.com</code> và <code>https://api.com</code> là cross-origin.</p>
+    <p><strong>CORS (Cross-Origin Resource Sharing)</strong> cho phép server opt-in cho phép cross-origin requests thông qua headers.</p>
+
+    <h3>Simple Requests vs Preflighted Requests</h3>
+    <div class="two-col">
+      <div class="col-card">
+        <h4>Simple Request</h4>
+        <p>Method là GET/HEAD/POST và Content-Type là <code>text/plain</code>, <code>multipart/form-data</code>, hoặc <code>application/x-www-form-urlencoded</code> — không cần preflight.</p>
+      </div>
+      <div class="col-card">
+        <h4>Preflighted Request</h4>
+        <p>Method khác (PUT/DELETE/PATCH), hoặc Content-Type là <code>application/json</code>, hoặc custom headers → browser tự động gửi OPTIONS preflight trước.</p>
+      </div>
+    </div>
+
+    <pre>OPTIONS /api/data HTTP/1.1
+Origin: https://app.example.com
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type, Authorization
+
+HTTP/1.1 204 No Content
+Access-Control-Allow-Origin: https://app.example.com
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE
+Access-Control-Allow-Headers: Content-Type, Authorization
+Access-Control-Max-Age: 86400       ← browser cache preflight result 24h</pre>
+
+    <table>
+      <tr><th>CORS Header</th><th>Direction</th><th>Ý nghĩa</th></tr>
+      <tr><td><code>Access-Control-Allow-Origin</code></td><td>Response</td><td>Origin được phép (hoặc <code>*</code>)</td></tr>
+      <tr><td><code>Access-Control-Allow-Methods</code></td><td>Response</td><td>Methods được phép</td></tr>
+      <tr><td><code>Access-Control-Allow-Headers</code></td><td>Response</td><td>Request headers được phép</td></tr>
+      <tr><td><code>Access-Control-Allow-Credentials</code></td><td>Response</td><td><code>true</code> nếu cho phép cookies/auth</td></tr>
+      <tr><td><code>Access-Control-Expose-Headers</code></td><td>Response</td><td>Response headers JS được đọc</td></tr>
+      <tr><td><code>Access-Control-Max-Age</code></td><td>Response</td><td>Cache preflight N giây</td></tr>
+    </table>
+
+    <div class="box box-red">
+      <div class="box-title">Pitfall phổ biến</div>
+      <p><code>Access-Control-Allow-Origin: *</code> không hoạt động với <code>credentials: 'include'</code> (cookies, HTTP auth). Phải specify exact origin và set <code>Access-Control-Allow-Credentials: true</code>.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S11 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s11">
+    <div class="section-header">
+      <span class="section-num">11</span>
+      <h2 class="section-title">HTTPS &amp; PKI</h2>
+    </div>
+    <p>HTTP truyền dữ liệu dạng plaintext — bất kỳ ai ở giữa (ISP, Wi-Fi router, proxy) đều có thể đọc và sửa. <strong>HTTPS = HTTP over TLS</strong>, cung cấp 3 đảm bảo:</p>
+    <ul>
+      <li><strong>Confidentiality</strong> — dữ liệu được mã hóa, chỉ client và server đọc được</li>
+      <li><strong>Integrity</strong> — dữ liệu không bị sửa đổi trong quá trình truyền (AEAD)</li>
+      <li><strong>Authenticity</strong> — client xác minh đang nói chuyện với server đúng (certificate)</li>
+    </ul>
+
+    <h3>X.509 Certificates</h3>
+    <p>Certificate là tài liệu kỹ thuật số chứng minh "public key này thuộc về domain này". Các field chính:</p>
+    <ul>
+      <li><strong>Subject</strong>: CN (Common Name) hoặc SAN (Subject Alternative Names) — domain names</li>
+      <li><strong>Issuer</strong>: Certificate Authority đã ký</li>
+      <li><strong>Validity</strong>: NotBefore, NotAfter</li>
+      <li><strong>Public Key</strong>: RSA hoặc ECDSA public key</li>
+      <li><strong>Signature</strong>: Issuer ký bằng private key của họ</li>
+    </ul>
+    <p><strong>SAN (Subject Alternative Names)</strong> thay thế CN để list nhiều domains: <code>*.example.com, example.com, api.example.com</code>.</p>
+
+    <h3>CA Chain (Certificate Chain of Trust)</h3>
+    <pre>Root CA (self-signed, trong trust store OS/browser)
+  └─ Intermediate CA (ký bởi Root CA)
+       └─ Leaf Certificate (ký bởi Intermediate CA)
+            domain: api.example.com</pre>
+    <p>Trình duyệt không cần biết Leaf cert từ trước — chỉ cần trace chain lên đến một Root CA trong trust store.</p>
+
+    <div class="box box-blue">
+      <div class="box-title">SNI — Server Name Indication</div>
+      <p>Extension của TLS cho phép client gửi domain name trong ClientHello <em>trước khi</em> TLS handshake hoàn thành. Nhờ đó, 1 IP có thể serve nhiều HTTPS websites với certificates khác nhau — giải quyết vấn đề IPv4 exhaustion.</p>
+    </div>
+
+    <div class="box box-yellow">
+      <div class="box-title">Certificate Transparency (CT)</div>
+      <p>RFC 6962 — mọi certificate phải được log vào ít nhất 2 CT logs công khai trước khi Chrome chấp nhận. SCT (Signed Certificate Timestamp) được nhúng vào cert hoặc gửi qua OCSP/TLS extension. Giúp phát hiện mis-issued certificates.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S12 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s12">
+    <div class="section-header">
+      <span class="section-num">12</span>
+      <h2 class="section-title">TLS Handshake</h2>
+    </div>
+    <p>TLS (Transport Layer Security) là giao thức bảo mật chạy giữa TCP và HTTP. TLS 1.3 (RFC 8446, 2018) là phiên bản hiện đại nhất — giảm latency từ 2 RTT (TLS 1.2) xuống còn 1 RTT, và loại bỏ toàn bộ cipher suites không an toàn.</p>
+
+    <!-- SVG 4: TLS 1.3 Handshake -->
+    <div class="diagram-wrap">
+    <svg class="diagram" viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-tls" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#64748b"/>
+        </marker>
+        <marker id="arr-green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#22c55e"/>
+        </marker>
+        <marker id="arr-amber" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#f59e0b"/>
+        </marker>
+      </defs>
+      <rect x="20" y="10" width="100" height="28" rx="5" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="1.5"/>
+      <text x="70" y="28" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">Client</text>
+      <rect x="580" y="10" width="100" height="28" rx="5" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+      <text x="630" y="28" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">Server</text>
+      <line x1="70" y1="38" x2="70" y2="395" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="4 2"/>
+      <line x1="630" y1="38" x2="630" y2="395" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="4 2"/>
+
+      <rect x="0" y="50" width="700" height="16" fill="#f1f5f9"/>
+      <text x="350" y="62" text-anchor="middle" font-size="9" font-weight="700" fill="#64748b">TLS 1.3 — 1-RTT Handshake</text>
+
+      <line x1="70" y1="88" x2="622" y2="88" stroke="#0ea5e9" stroke-width="1.5" marker-end="url(#arr-tls)"/>
+      <text x="350" y="83" text-anchor="middle" font-size="9" font-weight="700" fill="#0369a1">ClientHello</text>
+      <text x="350" y="98" text-anchor="middle" font-size="8" fill="#64748b">supported cipher suites, key_share (ECDHE pub key), SNI, session ticket</text>
+
+      <line x1="630" y1="130" x2="78" y2="130" stroke="#15803d" stroke-width="1.5" marker-end="url(#arr-tls)"/>
+      <text x="350" y="124" text-anchor="middle" font-size="9" font-weight="700" fill="#15803d">ServerHello</text>
+      <text x="350" y="141" text-anchor="middle" font-size="8" fill="#64748b">selected cipher + key_share (server ECDHE pub key) → both derive session keys</text>
+
+      <line x1="630" y1="168" x2="78" y2="168" stroke="#15803d" stroke-width="1.5" marker-end="url(#arr-tls)"/>
+      <text x="350" y="162" text-anchor="middle" font-size="9" fill="#15803d">{EncryptedExtensions + Certificate + CertificateVerify}</text>
+      <text x="350" y="179" text-anchor="middle" font-size="8" fill="#64748b">server cert + ECDSA/RSA signature over handshake transcript</text>
+
+      <line x1="630" y1="204" x2="78" y2="204" stroke="#22c55e" stroke-width="2" marker-end="url(#arr-green)"/>
+      <text x="350" y="198" text-anchor="middle" font-size="9" font-weight="700" fill="#15803d">{Finished}</text>
+      <text x="350" y="215" text-anchor="middle" font-size="8" fill="#64748b">HMAC over handshake transcript — server done</text>
+
+      <line x1="70" y1="242" x2="622" y2="242" stroke="#22c55e" stroke-width="2" marker-end="url(#arr-green)"/>
+      <text x="350" y="236" text-anchor="middle" font-size="9" font-weight="700" fill="#0369a1">{Finished}</text>
+      <text x="350" y="253" text-anchor="middle" font-size="8" fill="#64748b">client Finished — handshake complete, keys verified ✓</text>
+
+      <rect x="0" y="262" width="700" height="16" fill="#f0fdf4"/>
+      <text x="350" y="274" text-anchor="middle" font-size="9" font-weight="700" fill="#15803d">Application Data (AEAD encrypted)</text>
+
+      <line x1="70" y1="292" x2="622" y2="292" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-tls)"/>
+      <text x="350" y="286" text-anchor="middle" font-size="9" fill="#64748b">GET /api/data HTTP/2 (encrypted)</text>
+      <line x1="630" y1="315" x2="78" y2="315" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-tls)"/>
+      <text x="350" y="309" text-anchor="middle" font-size="9" fill="#64748b">HTTP/2 200 OK + body (encrypted)</text>
+
+      <rect x="0" y="334" width="700" height="16" fill="#fffbeb"/>
+      <text x="350" y="346" text-anchor="middle" font-size="9" font-weight="700" fill="#92400e">0-RTT Resumption (Session Ticket)</text>
+      <line x1="70" y1="366" x2="622" y2="366" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr-amber)"/>
+      <text x="350" y="360" text-anchor="middle" font-size="9" fill="#92400e">ClientHello + early_data (PSK from prev session) — ⚠ replay attack risk</text>
+      <line x1="630" y1="386" x2="78" y2="386" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr-amber)"/>
+      <text x="350" y="380" text-anchor="middle" font-size="9" fill="#92400e">Response (may accept early_data)</text>
+
+      <line x1="672" y1="88" x2="672" y2="242" stroke="#94a3b8" stroke-width="1"/>
+      <line x1="667" y1="88" x2="677" y2="88" stroke="#94a3b8" stroke-width="1"/>
+      <line x1="667" y1="242" x2="677" y2="242" stroke="#94a3b8" stroke-width="1"/>
+      <text x="685" y="170" font-size="9" fill="#94a3b8" writing-mode="tb">1 RTT</text>
+    </svg>
+    </div>
+
+    <h3>TLS 1.2 vs TLS 1.3</h3>
+    <table>
+      <tr><th>Khía cạnh</th><th>TLS 1.2</th><th>TLS 1.3</th></tr>
+      <tr><td>Handshake RTT</td><td>2 RTT</td><td>1 RTT (0-RTT với resumption)</td></tr>
+      <tr><td>Key exchange</td><td>RSA hoặc DHE/ECDHE (negotiated)</td><td>ECDHE bắt buộc (PFS luôn on)</td></tr>
+      <tr><td>Cipher suites</td><td>~37 suites (nhiều cái không an toàn)</td><td>5 suites (chỉ AEAD)</td></tr>
+      <tr><td>Certificate encryption</td><td>Plaintext trong handshake</td><td>Encrypted sau ServerHello</td></tr>
+      <tr><td>Renegotiation</td><td>Có (attack surface)</td><td>Bỏ</td></tr>
+    </table>
+
+    <pre>TLS 1.3 cipher suites:
+  TLS_AES_128_GCM_SHA256
+  TLS_AES_256_GCM_SHA384
+  TLS_CHACHA20_POLY1305_SHA256
+  TLS_AES_128_CCM_SHA256
+  TLS_AES_128_CCM_8_SHA256
+
+TLS 1.2 example:
+  TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256   ← key exchange + auth + cipher + hash</pre>
+
+    <div class="box box-orange">
+      <div class="box-title">0-RTT Risks</div>
+      <p>Early data (0-RTT) không có forward secrecy cho session ticket, và dễ bị <strong>replay attacks</strong> — attacker capture và replay early_data. Không nên dùng 0-RTT cho non-idempotent operations (POST, DELETE). Chỉ safe cho idempotent GET.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S13 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s13">
+    <div class="section-header">
+      <span class="section-num">13</span>
+      <h2 class="section-title">HTTP/2 — Binary Framing</h2>
+    </div>
+    <p>HTTP/2 (RFC 7540, 2015) thay đổi căn bản cách HTTP truyền dữ liệu: từ text-based sang <strong>binary framing</strong>. Mọi dữ liệu được đóng gói vào <strong>frames</strong> — đơn vị truyền tải nhỏ nhất.</p>
+
+    <!-- SVG 5: HTTP/2 Frame Layout -->
+    <div class="diagram-wrap">
+    <svg class="diagram" viewBox="0 0 700 210" xmlns="http://www.w3.org/2000/svg">
+      <text x="55" y="60" text-anchor="end" font-size="9" fill="#64748b">Byte 0–2</text>
+      <text x="55" y="98" text-anchor="end" font-size="9" fill="#64748b">Byte 3</text>
+      <text x="55" y="138" text-anchor="end" font-size="9" fill="#64748b">Byte 4</text>
+      <text x="55" y="178" text-anchor="end" font-size="9" fill="#64748b">Byte 5–8</text>
+
+      <rect x="60" y="40" width="620" height="30" rx="3" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="1.5"/>
+      <text x="370" y="60" text-anchor="middle" font-size="10" font-weight="700" fill="#0369a1">Length (24 bits) — payload size, max 16,777,214 bytes (default max 16,384)</text>
+
+      <rect x="60" y="80" width="222" height="28" rx="3" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+      <text x="171" y="99" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d">Type (8 bits)</text>
+      <rect x="290" y="80" width="222" height="28" rx="3" fill="#fef3c7" stroke="#fde68a" stroke-width="1.5"/>
+      <text x="401" y="99" text-anchor="middle" font-size="10" font-weight="700" fill="#92400e">Flags (8 bits)</text>
+
+      <rect x="60" y="118" width="25" height="30" rx="2" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1.5"/>
+      <text x="72" y="137" text-anchor="middle" font-size="8" fill="#94a3b8">R</text>
+      <rect x="89" y="118" width="591" height="30" rx="3" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="384" y="138" text-anchor="middle" font-size="10" font-weight="700" fill="#7c3aed">Stream Identifier (31 bits) — 0 = connection-level frame</text>
+
+      <rect x="60" y="158" width="620" height="30" rx="3" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="5 3"/>
+      <text x="370" y="178" text-anchor="middle" font-size="10" fill="#64748b">Payload (variable — content depends on frame type)</text>
+
+      <text x="60" y="30" font-size="8" fill="#94a3b8">bit 0</text>
+      <text x="340" y="30" text-anchor="middle" font-size="8" fill="#94a3b8">bit 15</text>
+      <text x="676" y="30" text-anchor="end" font-size="8" fill="#94a3b8">bit 31</text>
+    </svg>
+    </div>
+
+    <h3>Frame Types</h3>
+    <table>
+      <tr><th>Type</th><th>Hex</th><th>Mô tả</th></tr>
+      <tr><td><code>DATA</code></td><td>0x0</td><td>Payload của request/response body</td></tr>
+      <tr><td><code>HEADERS</code></td><td>0x1</td><td>Mở stream + gửi header fields (HPACK-encoded)</td></tr>
+      <tr><td><code>PRIORITY</code></td><td>0x2</td><td>Stream priority (deprecated RFC 9113)</td></tr>
+      <tr><td><code>RST_STREAM</code></td><td>0x3</td><td>Cancel stream ngay lập tức</td></tr>
+      <tr><td><code>SETTINGS</code></td><td>0x4</td><td>Connection parameters (window size, max streams, ...)</td></tr>
+      <tr><td><code>PUSH_PROMISE</code></td><td>0x5</td><td>Server push announcement</td></tr>
+      <tr><td><code>PING</code></td><td>0x6</td><td>Keepalive + RTT measurement</td></tr>
+      <tr><td><code>GOAWAY</code></td><td>0x7</td><td>Graceful shutdown với last stream ID</td></tr>
+      <tr><td><code>WINDOW_UPDATE</code></td><td>0x8</td><td>Flow control — tăng window size</td></tr>
+      <tr><td><code>CONTINUATION</code></td><td>0x9</td><td>Header block continuation (HEADERS quá lớn)</td></tr>
+    </table>
+
+    <pre>Connection preface (client gửi đầu tiên sau TCP+TLS):
+  PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n
+  SETTINGS frame (empty hoặc với params)
+
+Server responds:
+  SETTINGS frame
+  SETTINGS ACK</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S14 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s14">
+    <div class="section-header">
+      <span class="section-num">14</span>
+      <h2 class="section-title">HTTP/2 — Streams &amp; Multiplexing</h2>
+    </div>
+    <p>Một <strong>stream</strong> là một luồng request-response độc lập trong cùng một TCP connection. HTTP/2 cho phép hàng trăm streams chạy song song — đây là cải tiến lớn nhất so với HTTP/1.1.</p>
+
+    <h3>Stream States</h3>
+    <pre>idle ──HEADERS──→ open ──END_STREAM──→ half-closed(local)
+                    │                          │
+                    └──END_STREAM──→ half-closed(remote) ──END_STREAM──→ closed
+                    │
+                    └──RST_STREAM──→ closed</pre>
+
+    <h3>Stream IDs</h3>
+    <ul>
+      <li>Client-initiated streams: <strong>odd IDs</strong> (1, 3, 5, …)</li>
+      <li>Server-initiated streams (push): <strong>even IDs</strong> (2, 4, 6, …)</li>
+      <li>Stream ID <strong>0</strong>: connection-level frames (SETTINGS, PING, GOAWAY)</li>
+      <li>IDs không được tái sử dụng — khi hết (tới 2³¹-1), cần mở connection mới</li>
+    </ul>
+
+    <h3>HOL Blocking — HTTP/2 vs HTTP/1.1</h3>
+    <p>HTTP/2 giải quyết <strong>HTTP-layer HOL blocking</strong>: nhiều requests không còn phải xếp hàng chờ nhau. Tuy nhiên <strong>TCP-layer HOL blocking</strong> vẫn còn — nếu một TCP packet bị mất, tất cả streams trên connection đó phải đợi retransmit. HTTP/3 (QUIC) mới giải quyết được vấn đề này.</p>
+
+    <div class="box box-blue">
+      <div class="box-title">RST_STREAM vs GOAWAY</div>
+      <p><strong>RST_STREAM</strong>: cancel một stream cụ thể (ví dụ user cancel download). Connection vẫn hoạt động bình thường.</p>
+      <p><strong>GOAWAY</strong>: thông báo đóng connection, kèm last processed stream ID. Streams có ID cao hơn phải retry trên connection mới.</p>
+    </div>
+
+    <pre>SETTINGS frame params:
+  HEADER_TABLE_SIZE        = 4096   (HPACK dynamic table size)
+  ENABLE_PUSH              = 1      (server push on/off)
+  MAX_CONCURRENT_STREAMS   = 100    (max parallel streams)
+  INITIAL_WINDOW_SIZE      = 65535  (flow control)
+  MAX_FRAME_SIZE           = 16384  (max DATA frame size)
+  MAX_HEADER_LIST_SIZE     = unlimited</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S15 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s15">
+    <div class="section-header">
+      <span class="section-num">15</span>
+      <h2 class="section-title">HPACK Header Compression</h2>
+    </div>
+    <p>HTTP/1.1 gửi headers dạng plaintext mỗi request — với cookies và JWT tokens, headers có thể chiếm hàng KB. <strong>HPACK</strong> (RFC 7541) nén headers xuống còn vài bytes bằng indexing và Huffman coding.</p>
+
+    <!-- SVG 6: HPACK Table -->
+    <div class="diagram-wrap">
+    <svg class="diagram" viewBox="0 0 700 185" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr-hp" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L7,3 z" fill="#64748b"/>
+        </marker>
+        <marker id="arr-hp-g" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L7,3 z" fill="#22c55e"/>
+        </marker>
+        <marker id="arr-hp-r" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L7,3 z" fill="#ef4444"/>
+        </marker>
+      </defs>
+      <rect x="10" y="72" width="125" height="40" rx="5" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="1.5"/>
+      <text x="72" y="88" text-anchor="middle" font-size="10" font-weight="700" fill="#0369a1">Header Field</text>
+      <text x="72" y="103" text-anchor="middle" font-size="8.5" fill="#0369a1">e.g. :method: GET</text>
+      <line x1="135" y1="92" x2="168" y2="92" stroke="#64748b" marker-end="url(#arr-hp)" stroke-width="1.5"/>
+
+      <rect x="170" y="50" width="145" height="85" rx="5" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+      <text x="242" y="72" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d">Static Table</text>
+      <text x="242" y="87" text-anchor="middle" font-size="8.5" fill="#15803d">61 entries (RFC-defined)</text>
+      <text x="242" y="100" text-anchor="middle" font-size="8" fill="#64748b">idx 2 = :method GET</text>
+      <text x="242" y="112" text-anchor="middle" font-size="8" fill="#64748b">idx 4 = :path /</text>
+      <text x="242" y="124" text-anchor="middle" font-size="8" fill="#64748b">idx 31 = content-type</text>
+
+      <rect x="355" y="50" width="145" height="85" rx="5" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="427" y="72" text-anchor="middle" font-size="10" font-weight="700" fill="#7c3aed">Dynamic Table</text>
+      <text x="427" y="87" text-anchor="middle" font-size="8.5" fill="#7c3aed">FIFO, per-connection</text>
+      <text x="427" y="100" text-anchor="middle" font-size="8" fill="#64748b">idx 62+ (new headers)</text>
+      <text x="427" y="112" text-anchor="middle" font-size="8" fill="#64748b">evicted by size limit</text>
+      <text x="427" y="124" text-anchor="middle" font-size="8" fill="#64748b">default max: 4096 bytes</text>
+
+      <line x1="315" y1="92" x2="353" y2="92" stroke="#64748b" marker-end="url(#arr-hp)" stroke-width="1.5"/>
+      <text x="334" y="87" text-anchor="middle" font-size="8" fill="#dc2626">miss</text>
+
+      <rect x="540" y="32" width="145" height="26" rx="4" fill="#dcfce7" stroke="#86efac"/>
+      <text x="612" y="49" text-anchor="middle" font-size="9" font-weight="700" fill="#15803d">Indexed (1 byte) ✓</text>
+      <rect x="540" y="65" width="145" height="26" rx="4" fill="#fef3c7" stroke="#fde68a"/>
+      <text x="612" y="82" text-anchor="middle" font-size="9" font-weight="700" fill="#92400e">Literal + index</text>
+      <rect x="540" y="98" width="145" height="26" rx="4" fill="#fef2f2" stroke="#fca5a5"/>
+      <text x="612" y="111" text-anchor="middle" font-size="9" font-weight="700" fill="#dc2626">Never Index</text>
+      <rect x="540" y="131" width="145" height="26" rx="4" fill="#f1f5f9" stroke="#e2e8f0"/>
+      <text x="612" y="148" text-anchor="middle" font-size="9" fill="#64748b">Literal no index</text>
+
+      <line x1="315" y1="80" x2="538" y2="45" stroke="#15803d" stroke-dasharray="3 2" marker-end="url(#arr-hp-g)" stroke-width="1.5"/>
+      <text x="420" y="58" text-anchor="middle" font-size="8" fill="#15803d">hit</text>
+      <line x1="500" y1="92" x2="538" y2="78" stroke="#92400e" marker-end="url(#arr-hp)" stroke-width="1.5"/>
+      <line x1="427" y1="135" x2="538" y2="144" stroke="#dc2626" stroke-dasharray="3 2" marker-end="url(#arr-hp-r)" stroke-width="1.5"/>
+      <text x="380" y="175" font-size="8" fill="#dc2626">Authorization, Cookie → Never Index (sensitive!)</text>
+    </svg>
+    </div>
+
+    <h3>Encoding Types</h3>
+    <ul>
+      <li><strong>Indexed Header Field</strong>: header đã có trong static/dynamic table → encode bằng 1 byte (index với prefix bit 1)</li>
+      <li><strong>Literal with Incremental Indexing</strong>: header mới → encode literal + thêm vào dynamic table cho lần sau</li>
+      <li><strong>Literal without Indexing</strong>: encode literal, không thêm vào table (ít dùng)</li>
+      <li><strong>Literal Never Indexed</strong>: encode literal, đánh dấu không bao giờ index — dùng cho <code>Authorization</code>, <code>Cookie</code> để ngăn CRIME/BREACH-style attacks</li>
+    </ul>
+
+    <h3>Huffman Coding</h3>
+    <p>HPACK dùng Huffman table tĩnh được xây dựng từ thống kê traffic HTTP/1.1 thực tế. Mỗi byte ASCII được thay bằng bit pattern có độ dài biến thiên. Ký tự phổ biến (như <code>e</code>, <code>a</code>) = ít bits. Trung bình giảm ~30% so với ASCII.</p>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S16 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s16">
+    <div class="section-header">
+      <span class="section-num">16</span>
+      <h2 class="section-title">HTTP/2 — Flow Control &amp; Priority</h2>
+    </div>
+    <p>HTTP/2 có cơ chế <strong>flow control</strong> ở cả cấp stream lẫn connection để ngăn sender làm overwhelm receiver.</p>
+
+    <h3>Flow Control Windows</h3>
+    <p>Mỗi stream và connection có một <strong>receive window</strong> (mặc định 65,535 bytes). Sender chỉ được gửi DATA frames trong giới hạn window. Receiver gửi <code>WINDOW_UPDATE</code> để tăng window khi đã xử lý xong dữ liệu.</p>
+    <pre>WINDOW_UPDATE frame:
+  Stream ID: 0          (connection-level)
+  Window Size Increment: 1048576   (tăng thêm 1 MB)</pre>
+
+    <h3>Priority (RFC 7540 — deprecated)</h3>
+    <p>RFC 7540 định nghĩa dependency tree với weight (1–256). Tuy nhiên việc implement phức tạp và dễ gây priority inversion. RFC 9113 loại bỏ hoàn toàn, thay bằng <strong>Extensible Priorities (RFC 9218)</strong>.</p>
+
+    <div class="box box-orange">
+      <div class="box-title">Extensible Priorities (RFC 9218)</div>
+      <p>Thay thế priority tree bằng model đơn giản hơn: <strong>urgency</strong> (0–7, mặc định 3) và <strong>incremental</strong> flag. Gửi qua <code>Priority</code> header hoặc <code>PRIORITY_UPDATE</code> frame.</p>
+      <pre style="margin:0.4rem 0 0">Priority: u=1, i          ← urgency=1 (high), incremental=true</pre>
+    </div>
+
+    <p><strong>SETTINGS_INITIAL_WINDOW_SIZE</strong> ảnh hưởng đến initial window của tất cả streams mới được tạo sau SETTINGS frame đó — không ảnh hưởng retroactively đến streams hiện tại.</p>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S17 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s17">
+    <div class="section-header">
+      <span class="section-num">17</span>
+      <h2 class="section-title">Security Headers</h2>
+    </div>
+    <p>Ngoài TLS, HTTP cung cấp nhiều response headers để hardening bảo mật browser-side.</p>
+    <table>
+      <tr><th>Header</th><th>Ví dụ giá trị</th><th>Bảo vệ chống</th></tr>
+      <tr><td><code>Strict-Transport-Security</code></td><td>max-age=31536000; includeSubDomains; preload</td><td>SSL stripping, HTTP downgrade</td></tr>
+      <tr><td><code>Content-Security-Policy</code></td><td>default-src 'self'; script-src 'nonce-xxx'</td><td>XSS, data injection, clickjacking</td></tr>
+      <tr><td><code>X-Frame-Options</code></td><td>DENY hoặc SAMEORIGIN</td><td>Clickjacking (legacy, dùng CSP frame-ancestors)</td></tr>
+      <tr><td><code>X-Content-Type-Options</code></td><td>nosniff</td><td>MIME-type sniffing attacks</td></tr>
+      <tr><td><code>Referrer-Policy</code></td><td>strict-origin-when-cross-origin</td><td>Rò rỉ URL trong Referer header</td></tr>
+      <tr><td><code>Permissions-Policy</code></td><td>camera=(), microphone=(), geolocation=(self)</td><td>Lạm dụng browser APIs</td></tr>
+      <tr><td><code>Cross-Origin-Opener-Policy</code></td><td>same-origin</td><td>Cross-origin window attacks (Spectre)</td></tr>
+      <tr><td><code>Cross-Origin-Embedder-Policy</code></td><td>require-corp</td><td>SharedArrayBuffer leaks (Spectre)</td></tr>
+      <tr><td><code>Cross-Origin-Resource-Policy</code></td><td>same-origin</td><td>Cross-origin resource embedding</td></tr>
+    </table>
+
+    <h3>HSTS Preload</h3>
+    <p>Ngoài HSTS header, bạn có thể submit domain vào <strong>Chromium preload list</strong> (hstspreload.org) — browser sẽ không bao giờ kết nối HTTP đến domain này, ngay cả lần đầu tiên. Yêu cầu: <code>max-age ≥ 31536000</code>, <code>includeSubDomains</code>, <code>preload</code>. Cực kỳ khó revoke.</p>
+
+    <h3>Content Security Policy</h3>
+    <pre>Content-Security-Policy:
+  default-src 'self';
+  script-src 'self' 'nonce-r4nd0m' https://cdn.example.com;
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data: https:;
+  connect-src 'self' wss://api.example.com;
+  frame-ancestors 'none';
+  report-uri /csp-report</pre>
+    <div class="box box-red">
+      <div class="box-title">CSP Gotchas</div>
+      <ul>
+        <li><code>unsafe-inline</code> trong script-src phủ nhận hầu hết lợi ích của CSP</li>
+        <li>Dùng <strong>nonce-based</strong> hoặc <strong>hash-based</strong> CSP thay vì unsafe-inline</li>
+        <li><code>report-uri</code> (deprecated) → dùng <code>report-to</code> với Reporting API</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- S18 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s18">
+    <div class="section-header">
+      <span class="section-num">18</span>
+      <h2 class="section-title">HTTP/3 &amp; QUIC</h2>
+    </div>
+    <p>HTTP/3 (RFC 9114, 2022) chạy trên <strong>QUIC</strong> (RFC 9000) thay vì TCP. QUIC là giao thức transport mới, được implement trong user-space (không phải kernel), chạy trên UDP.</p>
+
+    <!-- SVG 7: QUIC vs TCP Stack -->
+    <div class="diagram-wrap">
+    <svg class="diagram" viewBox="0 0 700 230" xmlns="http://www.w3.org/2000/svg">
+      <text x="175" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="#0369a1">HTTP/2 over TLS/TCP</text>
+      <rect x="30" y="26" width="290" height="32" rx="4" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="1.5"/>
+      <text x="175" y="46" text-anchor="middle" font-size="10" font-weight="700" fill="#0369a1">HTTP/2 Application</text>
+      <rect x="30" y="62" width="290" height="32" rx="4" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="175" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#7c3aed">TLS 1.3</text>
+      <rect x="30" y="98" width="290" height="32" rx="4" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+      <text x="175" y="118" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d">TCP (stream-oriented, HOL blocking)</text>
+      <rect x="30" y="134" width="290" height="32" rx="4" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+      <text x="175" y="154" text-anchor="middle" font-size="10" font-weight="700" fill="#c2410c">IP</text>
+      <rect x="30" y="178" width="290" height="24" rx="4" fill="#fef2f2" stroke="#fca5a5"/>
+      <text x="175" y="194" text-anchor="middle" font-size="9" fill="#dc2626">New conn: TCP 3-way + TLS 1-RTT = 2 RTT</text>
+
+      <text x="525" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="#7c3aed">HTTP/3 over QUIC/UDP</text>
+      <rect x="380" y="26" width="290" height="32" rx="4" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="1.5"/>
+      <text x="525" y="46" text-anchor="middle" font-size="10" font-weight="700" fill="#0369a1">HTTP/3 Application</text>
+      <rect x="380" y="62" width="290" height="72" rx="4" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="525" y="84" text-anchor="middle" font-size="10" font-weight="700" fill="#7c3aed">QUIC</text>
+      <text x="525" y="99" text-anchor="middle" font-size="8.5" fill="#7c3aed">TLS 1.3 integrated · independent streams</text>
+      <text x="525" y="113" text-anchor="middle" font-size="8.5" fill="#7c3aed">no TCP HOL · connection migration (CID)</text>
+      <text x="525" y="127" text-anchor="middle" font-size="8.5" fill="#7c3aed">built-in congestion control (CUBIC/BBR)</text>
+      <rect x="380" y="138" width="290" height="32" rx="4" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+      <text x="525" y="158" text-anchor="middle" font-size="10" font-weight="700" fill="#c2410c">UDP + IP</text>
+      <rect x="380" y="178" width="290" height="24" rx="4" fill="#dcfce7" stroke="#86efac"/>
+      <text x="525" y="194" text-anchor="middle" font-size="9" fill="#15803d">New conn: 1-RTT · Resumption: 0-RTT</text>
+
+      <text x="350" y="108" text-anchor="middle" font-size="20" fill="#94a3b8">→</text>
+      <text x="350" y="124" text-anchor="middle" font-size="8" fill="#94a3b8">evolution</text>
+    </svg>
+    </div>
+
+    <h3>QUIC Features</h3>
+    <ul>
+      <li><strong>Independent stream multiplexing</strong>: mất packet trên stream 1 không block stream 2 — TCP HOL blocking biến mất</li>
+      <li><strong>0-RTT connection</strong>: với session resumption, application data được gửi ngay trong first packet</li>
+      <li><strong>Connection migration</strong>: Connection ID (không phải IP:port) định danh connection — di chuyển từ 4G sang WiFi mà không reset connection</li>
+      <li><strong>TLS 1.3 integrated</strong>: không cần separate TLS handshake — QUIC crypto handshake và transport handshake chạy song song</li>
+      <li><strong>User-space implementation</strong>: dễ iterate, không cần kernel update</li>
+    </ul>
+
+    <h3>HTTP/3 vs HTTP/2</h3>
+    <p>HTTP/3 giữ nguyên HTTP semantics (methods, status codes, headers) nhưng thay đổi transport layer:</p>
+    <ul>
+      <li><strong>HPACK → QPACK</strong>: QPACK (RFC 9204) là phiên bản HPACK được thiết kế cho QUIC — xử lý out-of-order delivery</li>
+      <li><strong>Server Push deprecated</strong>: HTTP/3 vẫn có push nhưng các browsers đã disable (Chrome 106+)</li>
+      <li><strong>Priority tree → Extensible Priorities</strong> (RFC 9218)</li>
+    </ul>
+
+    <table>
+      <tr><th>Tính năng</th><th>HTTP/1.1</th><th>HTTP/2</th><th>HTTP/3</th></tr>
+      <tr><td>Transport</td><td>TCP</td><td>TCP</td><td>QUIC (UDP)</td></tr>
+      <tr><td>Handshake</td><td>TCP + TLS = 2 RTT</td><td>TCP + TLS = 2 RTT</td><td>QUIC = 1 RTT (0-RTT resume)</td></tr>
+      <tr><td>Multiplexing</td><td>Pipelining (HOL)</td><td>Streams (TCP HOL)</td><td>Streams (no HOL)</td></tr>
+      <tr><td>Header compression</td><td>Không</td><td>HPACK</td><td>QPACK</td></tr>
+      <tr><td>Connection migration</td><td>✗</td><td>✗</td><td>✓ (Connection ID)</td></tr>
+      <tr><td>Server push</td><td>✗</td><td>✓ (deprecated)</td><td>✓ (browsers disabled)</td></tr>
+      <tr><td>Adoption (2024)</td><td>~30%</td><td>~40%</td><td>~30%</td></tr>
+    </table>
+  </section>
+
+</main>
+</div>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    const id = e.target.id;
+    const link = document.querySelector(`.nav-item[href="#${id}"]`);
+    if (link) link.classList.toggle('active', e.isIntersecting);
+  });
+}, { rootMargin: '-10% 0px -80% 0px' });
+document.querySelectorAll('.section').forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebRTC Deep Dive — Design Spec</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #ffffff;
+    color: #1e293b;
+    line-height: 1.75;
+    padding: 2.5rem 2rem;
+  }
+  .container { max-width: 980px; margin: 0 auto; }
+
+  h1 { font-size: 2rem; color: #0f172a; margin-bottom: 0.25rem; font-weight: 700; }
+  h2 {
+    font-size: 1.2rem; color: #0369a1; margin: 2.5rem 0 0.75rem;
+    border-bottom: 2px solid #e0f2fe; padding-bottom: 0.4rem;
+    font-weight: 700;
+  }
+  h3 { font-size: 1rem; color: #0f4c81; margin: 1.5rem 0 0.5rem; font-weight: 600; }
+  h4 { font-size: 0.9rem; color: #334155; margin: 1rem 0 0.4rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .meta { color: #64748b; font-size: 0.85rem; margin-bottom: 2.5rem; }
+  .meta span { color: #0369a1; font-weight: 500; }
+
+  p { margin-bottom: 0.75rem; color: #334155; }
+
+  pre {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #0ea5e9;
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 0.82rem;
+    color: #0f4c81;
+    line-height: 1.7;
+    margin: 0.75rem 0 1rem;
+  }
+
+  code {
+    background: #f0f9ff;
+    color: #0369a1;
+    padding: 0.15em 0.45em;
+    border-radius: 4px;
+    font-size: 0.86em;
+    font-family: 'JetBrains Mono', monospace;
+    border: 1px solid #bae6fd;
+  }
+
+  ul, ol { padding-left: 1.5rem; margin-bottom: 0.75rem; }
+  li { margin-bottom: 0.35rem; color: #334155; }
+  li strong { color: #0f172a; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.75rem 0 1.25rem;
+    font-size: 0.88rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th {
+    background: #f0f9ff;
+    color: #0369a1;
+    padding: 0.65rem 1rem;
+    text-align: left;
+    font-weight: 700;
+    border-bottom: 2px solid #bae6fd;
+  }
+  td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f8fafc; }
+
+  .phase-badge {
+    display: inline-block;
+    padding: 0.2rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.73rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    margin-right: 0.4rem;
+    vertical-align: middle;
+  }
+  .phase1 { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+  .phase2 { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; }
+
+  .section-card {
+    background: #fafafa;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .annotation-box {
+    background: #f0f9ff;
+    border-left: 3px solid #0ea5e9;
+    padding: 0.7rem 1rem;
+    border-radius: 0 6px 6px 0;
+    margin: 0.5rem 0;
+    font-size: 0.875rem;
+  }
+  .annotation-box .label {
+    color: #0369a1;
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.2rem;
+  }
+
+  .state-flow {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 0.75rem 0;
+  }
+  .state {
+    padding: 0.3rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+  .s-new    { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+  .s-check  { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; }
+  .s-conn   { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+  .s-disc   { background: #fff7ed; color: #c2410c; border: 1px solid #fdba74; }
+  .s-fail   { background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5; }
+  .s-closed { background: #faf5ff; color: #7c3aed; border: 1px solid #c4b5fd; }
+  .arrow    { color: #94a3b8; font-size: 1rem; }
+
+  .scope-tag {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    background: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin: 0.2rem;
+  }
+
+  .file-tree {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    line-height: 2;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+  }
+  .file-tree .dir     { color: #0369a1; font-weight: 600; }
+  .file-tree .file    { color: #0f4c81; }
+  .file-tree .comment { color: #94a3b8; font-style: italic; }
+
+  .deep-dive-section {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .deep-dive-section h3 { color: #92400e; }
+
+  .protocol-layer {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0.75rem 0;
+  }
+  .protocol-layer .layer-row {
+    display: flex;
+    align-items: stretch;
+  }
+  .layer-row .layer-name {
+    background: #f0f9ff;
+    color: #0369a1;
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 0.6rem 1rem;
+    min-width: 140px;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid #e2e8f0;
+  }
+  .layer-row .layer-desc {
+    padding: 0.6rem 1rem;
+    font-size: 0.87rem;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+    flex: 1;
+  }
+  .layer-row:last-child .layer-desc { border-bottom: none; }
+
+  .info-box {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    margin: 0.75rem 0;
+    font-size: 0.875rem;
+    color: #14532d;
+  }
+  .warn-box {
+    background: #fff7ed;
+    border: 1px solid #fdba74;
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    margin: 0.75rem 0;
+    font-size: 0.875rem;
+    color: #7c2d12;
+  }
+
+  .toc {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .toc h2 { font-size: 0.85rem; margin: 0 0 0.5rem; border: none; color: #64748b; }
+  .toc ol { margin: 0; padding-left: 1.25rem; }
+  .toc li { margin-bottom: 0.2rem; font-size: 0.85rem; }
+  .toc a { color: #0369a1; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  hr { border: none; border-top: 1px solid #e2e8f0; margin: 2rem 0; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>WebRTC Deep Dive — Demo App Design</h1>
+  <div class="meta">
+    Design Spec &nbsp;·&nbsp; <span>2026-05-26</span> &nbsp;·&nbsp;
+    Mục tiêu: hiểu sâu toàn bộ WebRTC protocol qua ứng dụng demo drone streaming
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <h2>Mục lục</h2>
+    <ol>
+      <li><a href="#webrtc-analysis">Phân tích WebRTC — Protocol Deep Dive</a></li>
+      <li><a href="#architecture">Kiến trúc ứng dụng demo</a></li>
+      <li><a href="#phase1">Phase 1 — Loopback Demo</a></li>
+      <li><a href="#phase2">Phase 2 — Drone Ground Station</a></li>
+      <li><a href="#states">Connection State Machine</a></li>
+      <li><a href="#errors">Error Handling</a></li>
+      <li><a href="#deepdive-doc">Tài liệu tham chiếu webrtc-deep-dive.html</a></li>
+    </ol>
+  </div>
+
+  <!-- ===================== WEBRTC ANALYSIS ===================== -->
+  <h2 id="webrtc-analysis">1. Phân tích WebRTC — Protocol Deep Dive</h2>
+
+  <h3>1.1 WebRTC là gì và tại sao nó phức tạp</h3>
+  <div class="section-card">
+    <p>WebRTC (Web Real-Time Communication) là tập hợp các API và protocol cho phép trình duyệt trao đổi audio, video, và data trực tiếp với nhau — <strong>không qua server trung gian</strong> cho media. Đây là điểm cốt lõi: server chỉ cần thiết cho giai đoạn "giới thiệu" ban đầu (signaling), còn media đi thẳng peer-to-peer.</p>
+    <p>Sự phức tạp xuất phát từ 3 vấn đề thực tế: <strong>NAT traversal</strong> (hầu hết thiết bị nằm sau NAT, không có IP công khai), <strong>bảo mật bắt buộc</strong> (DTLS + SRTP không thể tắt), và <strong>codec negotiation</strong> (mỗi browser hỗ trợ codec khác nhau).</p>
+  </div>
+
+  <h3>1.2 Stack protocol đầy đủ</h3>
+  <div class="protocol-layer">
+    <div class="layer-row">
+      <div class="layer-name">Application</div>
+      <div class="layer-desc">JavaScript WebRTC API — <code>RTCPeerConnection</code>, <code>RTCDataChannel</code>, <code>MediaStream</code></div>
+    </div>
+    <div class="layer-row">
+      <div class="layer-name">Media / Data</div>
+      <div class="layer-desc"><strong>SRTP</strong> — mã hóa audio/video &nbsp;|&nbsp; <strong>SCTP over DTLS</strong> — DataChannel (ordered/unordered, reliable/unreliable)</div>
+    </div>
+    <div class="layer-row">
+      <div class="layer-name">Security</div>
+      <div class="layer-desc"><strong>DTLS 1.2/1.3</strong> — TLS-over-UDP, thiết lập key exchange, xác thực certificate bằng fingerprint trong SDP</div>
+    </div>
+    <div class="layer-row">
+      <div class="layer-name">Transport</div>
+      <div class="layer-desc"><strong>ICE</strong> — chọn đường đi tốt nhất &nbsp;|&nbsp; <strong>STUN</strong> — discover public IP &nbsp;|&nbsp; <strong>TURN</strong> — relay fallback</div>
+    </div>
+    <div class="layer-row">
+      <div class="layer-name">Network</div>
+      <div class="layer-desc">UDP (preferred) hoặc TCP fallback &nbsp;|&nbsp; IPv4 / IPv6</div>
+    </div>
+  </div>
+
+  <h3>1.3 Signaling — thứ WebRTC KHÔNG định nghĩa</h3>
+  <div class="section-card">
+    <p>WebRTC chủ động <strong>không định nghĩa</strong> cơ chế signaling. Bạn có thể dùng WebSocket, HTTP polling, XMPP, carrier pigeon — miễn là 2 peer trao đổi được <strong>SDP</strong> và <strong>ICE candidates</strong> với nhau.</p>
+    <p>Signaling chỉ cần truyền 2 loại thông tin:</p>
+    <ul>
+      <li><strong>SDP Offer/Answer</strong> — mô tả capability của mỗi peer (codec, IP, port)</li>
+      <li><strong>ICE Candidates</strong> — danh sách địa chỉ mạng có thể dùng để kết nối</li>
+    </ul>
+    <div class="info-box">Sau khi signaling hoàn tất và ICE connected, signaling server có thể đóng hoàn toàn — media flow trực tiếp giữa 2 peer.</div>
+  </div>
+
+  <h3>1.4 SDP — Session Description Protocol</h3>
+  <div class="section-card">
+    <p>SDP là định dạng text mô tả "tôi có thể làm gì" — không phải protocol truyền tải, chỉ là metadata. Một SDP offer thực tế:</p>
+    <pre>v=0
+o=- 8447722553217982387 2 IN IP4 127.0.0.1
+s=-
+t=0 0
+a=group:BUNDLE 0 1          ← gộp audio + video vào 1 kết nối ICE
+a=extmap-allow-mixed
+m=video 9 UDP/TLS/RTP/SAVPF 96 97 98   ← media section: video, port 9 (ICE override)
+c=IN IP4 0.0.0.0
+a=rtcp:9 IN IP4 0.0.0.0
+a=ice-ufrag:xKkP             ← ICE username fragment (authentication)
+a=ice-pwd:bZ4tM...           ← ICE password (authentication)
+a=ice-options:trickle        ← hỗ trợ trickle ICE
+a=fingerprint:sha-256 4A:... ← DTLS certificate hash (xác thực peer)
+a=setup:actpass              ← ai sẽ làm DTLS client/server
+a=mid:0                      ← media ID cho BUNDLE
+a=sendrecv                   ← direction: gửi và nhận
+a=rtpmap:96 VP8/90000        ← codec: VP8, clock rate 90kHz
+a=rtpmap:97 rtx/90000        ← RTX: retransmission cho VP8
+a=rtpmap:98 H264/90000       ← codec: H264
+a=fmtp:98 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f
+a=ssrc:3421 cname:abc123     ← SSRC: định danh stream</pre>
+    <p>SDP Answer trả về subset của những gì offer đề xuất — codec nào được chọn, direction thực tế là gì.</p>
+  </div>
+
+  <h3>1.5 ICE — Interactive Connectivity Establishment</h3>
+  <div class="section-card">
+    <p>ICE giải quyết bài toán: "làm sao 2 peer sau NAT kết nối được với nhau?" Quá trình gồm 3 giai đoạn:</p>
+
+    <h4>Giai đoạn 1: Candidate Gathering</h4>
+    <p>Mỗi peer thu thập tất cả địa chỉ có thể kết nối:</p>
+    <ul>
+      <li><strong>host</strong> — IP local trực tiếp (<code>192.168.1.5:52341</code>). Nhanh nhất, chỉ dùng được trong LAN.</li>
+      <li><strong>srflx</strong> (Server Reflexive) — IP công khai được STUN server reflect lại (<code>203.0.113.1:48291</code>). Vượt được Full Cone NAT.</li>
+      <li><strong>relay</strong> — địa chỉ TURN server sẽ relay thay (<code>turn-server:3478</code>). Luôn hoạt động nhưng tốn băng thông và latency cao nhất.</li>
+    </ul>
+
+    <h4>Giai đoạn 2: Connectivity Checks (STUN Binding Requests)</h4>
+    <p>Hai peer gửi STUN requests cho <em>tất cả</em> candidate pairs của nhau theo thứ tự ưu tiên. Mỗi pair được check theo cả 2 chiều. Pair đầu tiên succeed là "valid pair".</p>
+
+    <h4>Giai đoạn 3: Nomination</h4>
+    <p>Controlling peer (thường là bên tạo offer) chọn candidate pair tốt nhất từ các valid pairs. Sau khi nominated, traffic chuyển sang pair đó.</p>
+
+    <div class="info-box">
+      <strong>Trickle ICE:</strong> Thay vì chờ gather xong hết mới gửi, candidates được gửi ngay khi tìm thấy (trickling). Giảm latency kết nối đáng kể — browser hiện đại đều dùng trickle ICE mặc định.
+    </div>
+  </div>
+
+  <h3>1.6 NAT Types và khả năng traversal</h3>
+  <div class="section-card">
+    <table>
+      <thead><tr><th>NAT Type</th><th>Mô tả</th><th>ICE có vượt được?</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Full Cone</strong></td><td>Bất kỳ ai biết public IP:port đều kết nối được</td><td>Có — dùng srflx</td></tr>
+        <tr><td><strong>Restricted Cone</strong></td><td>Chỉ IP đã từng liên lạc mới vào được</td><td>Có — ICE tạo "hole" trước</td></tr>
+        <tr><td><strong>Port Restricted</strong></td><td>Chỉ IP+port đã từng liên lạc mới vào được</td><td>Có — ICE tạo "hole" trước</td></tr>
+        <tr><td><strong>Symmetric</strong></td><td>Mỗi đích khác nhau nhận được port khác nhau</td><td>Khó — cần TURN relay</td></tr>
+      </tbody>
+    </table>
+    <div class="warn-box">Symmetric NAT là nguyên nhân chính khiến ICE failed. Doanh nghiệp và carrier-grade NAT thường dùng Symmetric NAT — đây là lý do hệ thống production <strong>luôn cần TURN server</strong>.</div>
+  </div>
+
+  <h3>1.7 DTLS Handshake</h3>
+  <div class="section-card">
+    <p>Sau khi ICE tìm được candidate pair, DTLS handshake thiết lập channel mã hóa. DTLS là TLS chạy trên UDP (thay vì TCP).</p>
+    <pre>Peer A (client)          Peer B (server)
+     |                        |
+     |--- ClientHello -------→|
+     |←-- ServerHello --------|
+     |←-- Certificate --------|   ← browser tự tạo self-signed cert
+     |←-- ServerHelloDone ----|
+     |--- ClientKeyExchange --→|
+     |--- ChangeCipherSpec ---→|
+     |--- Finished -----------→|
+     |←-- ChangeCipherSpec ----|
+     |←-- Finished ------------|
+     |                        |
+     |== DTLS channel ready ==|</pre>
+    <p>Certificate được xác thực <strong>không phải qua CA</strong> mà qua fingerprint trong SDP — đây là lý do SDP phải được truyền qua kênh an toàn (signaling server).</p>
+  </div>
+
+  <h3>1.8 SRTP — Secure RTP</h3>
+  <div class="section-card">
+    <p>Media (audio/video) không đi qua DTLS channel — thay vào đó, key từ DTLS handshake được dùng để thiết lập <strong>SRTP</strong> (Secure Real-time Transport Protocol) riêng biệt. Lý do: RTP cần cấu trúc packet tối ưu cho media, DTLS overhead quá lớn cho từng frame video.</p>
+    <p>SRTP cung cấp: mã hóa payload, xác thực integrity, và bảo vệ replay attack. Keys được derive từ DTLS qua cơ chế <strong>DTLS-SRTP</strong> (RFC 5764).</p>
+  </div>
+
+  <h3>1.9 Codec Negotiation</h3>
+  <div class="section-card">
+    <table>
+      <thead><tr><th>Codec</th><th>Loại</th><th>Browser support</th><th>Đặc điểm</th></tr></thead>
+      <tbody>
+        <tr><td><strong>VP8</strong></td><td>Video</td><td>Chrome, Firefox, Safari</td><td>Open source, baseline chất lượng tốt</td></tr>
+        <tr><td><strong>VP9</strong></td><td>Video</td><td>Chrome, Firefox</td><td>Nén tốt hơn VP8 ~50%, Safari hạn chế</td></tr>
+        <tr><td><strong>H264</strong></td><td>Video</td><td>Chrome, Firefox, Safari</td><td>Hardware acceleration rộng rãi, phổ biến nhất cho drone/camera</td></tr>
+        <tr><td><strong>H265/HEVC</strong></td><td>Video</td><td>Safari (hạn chế)</td><td>Nén tốt nhất nhưng WebRTC support yếu</td></tr>
+        <tr><td><strong>Opus</strong></td><td>Audio</td><td>Tất cả</td><td>Bắt buộc trong WebRTC, adaptive bitrate 6-510 kbps</td></tr>
+      </tbody>
+    </table>
+    <p>Quá trình negotiation: Offerer liệt kê tất cả codec hỗ trợ theo thứ tự ưu tiên. Answerer chọn codec đầu tiên mà cả hai đều hỗ trợ. <strong>Drone streaming nên ưu tiên H264</strong> vì hầu hết camera hardware có H264 encoder sẵn.</p>
+  </div>
+
+  <h3>1.10 DataChannel — SCTP over DTLS</h3>
+  <div class="section-card">
+    <p>DataChannel dùng <strong>SCTP</strong> (Stream Control Transmission Protocol) chạy trên DTLS channel — không liên quan đến RTP. SCTP cung cấp tính năng mà TCP và UDP thiếu:</p>
+    <table>
+      <thead><tr><th>Tính năng</th><th>TCP</th><th>UDP</th><th>SCTP (DataChannel)</th></tr></thead>
+      <tbody>
+        <tr><td>Ordered delivery</td><td>Luôn có</td><td>Không</td><td>Tùy chọn</td></tr>
+        <tr><td>Reliable delivery</td><td>Luôn có</td><td>Không</td><td>Tùy chọn</td></tr>
+        <tr><td>Multi-stream</td><td>Không</td><td>Không</td><td>Có — nhiều channels độc lập</td></tr>
+        <tr><td>Head-of-line blocking</td><td>Có</td><td>Không</td><td>Không (giữa streams)</td></tr>
+        <tr><td>Partial reliability</td><td>Không</td><td>Không</td><td>Có — maxRetransmits / maxPacketLifeTime</td></tr>
+      </tbody>
+    </table>
+    <div class="info-box">Game và telemetry thường dùng <code>ordered: false, maxRetransmits: 0</code> — nhanh như UDP nhưng vẫn qua WebRTC infrastructure. File transfer cần <code>ordered: true</code> và reliable.</div>
+  </div>
+
+  <h3>1.11 getStats() — Connection Diagnostics API</h3>
+  <div class="section-card">
+    <p><code>RTCPeerConnection.getStats()</code> trả về hàng chục loại report. Những metric quan trọng nhất:</p>
+    <table>
+      <thead><tr><th>Report Type</th><th>Key Metrics</th></tr></thead>
+      <tbody>
+        <tr><td><code>inbound-rtp</code></td><td><code>bytesReceived</code>, <code>packetsLost</code>, <code>jitter</code>, <code>framesDecoded</code>, <code>framesPerSecond</code></td></tr>
+        <tr><td><code>outbound-rtp</code></td><td><code>bytesSent</code>, <code>packetsSent</code>, <code>framesSent</code>, <code>qualityLimitationReason</code></td></tr>
+        <tr><td><code>candidate-pair</code></td><td><code>currentRoundTripTime</code>, <code>availableOutgoingBitrate</code>, <code>bytesDiscardedOnSend</code></td></tr>
+        <tr><td><code>local-candidate</code></td><td><code>candidateType</code> (host/srflx/relay), <code>ip</code>, <code>port</code>, <code>protocol</code></td></tr>
+        <tr><td><code>codec</code></td><td><code>mimeType</code> (video/H264), <code>clockRate</code>, <code>sdpFmtpLine</code></td></tr>
+      </tbody>
+    </table>
+    <p>Tính bitrate thực tế: lấy <code>bytesReceived</code> ở 2 thời điểm liên tiếp, chia cho khoảng thời gian giữa 2 lần đo.</p>
+  </div>
+
+  <hr>
+
+  <!-- ===================== ARCHITECTURE ===================== -->
+  <h2 id="architecture">2. Kiến trúc ứng dụng demo</h2>
+
+  <div class="file-tree">
+    <div><span class="dir">q/</span></div>
+    <div>&nbsp;&nbsp;├── <span class="dir">phase1-loopback/</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="file">index.html</span> &nbsp;<span class="comment"># zero-dependency, chạy thẳng trong browser</span></div>
+    <div>&nbsp;&nbsp;│</div>
+    <div>&nbsp;&nbsp;├── <span class="dir">phase2-drone/</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="file">server.js</span> &nbsp;<span class="comment"># Node.js: HTTP static + WebSocket signaling relay</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="file">package.json</span> &nbsp;<span class="comment"># dependency duy nhất: ws@8</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="file">drone.html</span> &nbsp;<span class="comment"># sender: webcam / video file → RTCPeerConnection</span></div>
+    <div>&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="file">ground-station.html</span> &nbsp;<span class="comment"># receiver: video + chat + file transfer + stats</span></div>
+    <div>&nbsp;&nbsp;│</div>
+    <div>&nbsp;&nbsp;└── <span class="dir">docs/</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="dir">superpowers/specs/</span> &nbsp;<span class="comment"># file này</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="file">webrtc-deep-dive.html</span> &nbsp;<span class="comment"># tài liệu lý thuyết offline</span></div>
+  </div>
+
+  <hr>
+
+  <!-- ===================== PHASE 1 ===================== -->
+  <h2 id="phase1">3. <span class="phase-badge phase1">Phase 1</span> Loopback Demo</h2>
+
+  <h3>Layout 3 cột</h3>
+  <div class="section-card">
+    <ul>
+      <li><strong>Trái:</strong> Peer A — controls + local video preview</li>
+      <li><strong>Giữa:</strong> Timeline — mỗi bước trong 7 bước sáng lên theo thứ tự thực tế</li>
+      <li><strong>Phải:</strong> Peer B — remote video + raw SDP/ICE log panel</li>
+    </ul>
+  </div>
+
+  <h3>7 bước được visualize</h3>
+  <pre>
+[Peer A]                  [Timeline Panel]               [Peer B]
+   |                                                         |
+   |-- 1. getUserMedia() ---→ [ Media Acquired ] -----------→|
+   |-- 2. createOffer() ----→ [ SDP Offer created ]          |
+   |-- 3. setLocalDesc() ---→ [ ICE Gathering starts ]       |
+   |                          [ ICE Candidates flowing... ]  |
+   |-- 4. SDP Offer --------→ [ Offer transferred ] --------→|
+   |                                           5. setRemoteDesc()
+   |                                           6. createAnswer()
+   |←---------- SDP Answer - [ Answer transferred ] ←--------|
+   |   7. setRemoteDesc()     [ ICE Connected ✓ ]             |
+   |←================ P2P DataChannel + Video ===============|</pre>
+
+  <h3>Annotation System</h3>
+  <p>Mỗi WebRTC event được log với 3 lớp:</p>
+  <div class="annotation-box">
+    <div class="label">Raw</div>
+    <code>onicecandidate: {candidate: "candidate:1 1 UDP 2122... 192.168.1.5 52341 typ host"}</code>
+  </div>
+  <div class="annotation-box">
+    <div class="label">Giải thích</div>
+    ICE đang thu thập địa chỉ mạng. <code>typ host</code> = địa chỉ LAN trực tiếp của máy.
+  </div>
+  <div class="annotation-box">
+    <div class="label">Tại sao</div>
+    Browser thử tất cả đường đi có thể (host → srflx → relay) trước khi chọn đường tốt nhất qua connectivity checks.
+  </div>
+
+  <h3>SDP Inspection Panel</h3>
+  <div class="section-card">
+    <p>Raw SDP offer/answer hiển thị toàn bộ, các field được highlight và annotate:</p>
+    <ul>
+      <li><code>a=ice-ufrag</code> / <code>a=ice-pwd</code> — credentials cho ICE authentication</li>
+      <li><code>a=fingerprint:sha-256</code> — hash của DTLS certificate, xác thực peer identity</li>
+      <li><code>a=setup:actpass</code> — negotiate ai làm DTLS client, ai làm server</li>
+      <li><code>m=video</code> / <code>m=audio</code> — mỗi block mô tả 1 media track</li>
+      <li><code>a=rtpmap</code> — mapping giữa payload type number và codec name</li>
+      <li><code>a=sendrecv</code> / <code>a=sendonly</code> / <code>a=recvonly</code> — direction của stream</li>
+    </ul>
+  </div>
+
+  <hr>
+
+  <!-- ===================== PHASE 2 ===================== -->
+  <h2 id="phase2">4. <span class="phase-badge phase2">Phase 2</span> Drone Ground Station</h2>
+
+  <h3>Signaling Flow</h3>
+  <pre>
+[Drone Tab]        [server.js WebSocket]      [Ground Station Tab]
+     |                      |                           |
+     |-- connect WS -------→|←-------- connect WS ------|
+     |-- {type:"offer", sdp}→|                          |
+     |                       |-- relay offer -----------→|
+     |                       |←-- {type:"answer", sdp}--|
+     |←-- relay answer ------|                          |
+     |-- {type:"ice", ...} --→|-- relay ICE ------------→|
+     |                       |←-- {type:"ice", ...} ----|
+     |←-- relay ICE ---------|                          |
+     |←============= one-way video stream ==============|
+     |←======= DataChannel: chat + file transfer =======|</pre>
+
+  <h3>server.js — Signaling Relay</h3>
+  <div class="section-card">
+    <ul>
+      <li>Node.js built-in <code>http</code> module serve static HTML — không dùng Express</li>
+      <li><code>ws@8</code> xử lý WebSocket — lightweight, readable code</li>
+      <li>Logic đơn giản: 2 clients, message từ client A forward sang client B và ngược lại</li>
+      <li>Không có message queuing, không có rooms, không có auth</li>
+    </ul>
+  </div>
+
+  <h3>drone.html — Video Sender</h3>
+  <div class="section-card">
+    <ul>
+      <li><strong>Source selector:</strong>
+        <ul>
+          <li>Webcam: <code>getUserMedia({ video: true, audio: true })</code></li>
+          <li>Video file: <code>&lt;input type="file"&gt;</code> → <code>URL.createObjectURL()</code> → <code>HTMLVideoElement.captureStream()</code></li>
+        </ul>
+      </li>
+      <li><strong>RTCPeerConnection:</strong> <code>addTrack()</code> media tracks, tạo offer, gather ICE</li>
+      <li><strong>Uplink stats:</strong> bitrate gửi (KB/s), resolution, framerate, ICE candidate type đang dùng</li>
+      <li><strong>DataChannel initiator:</strong> mở <code>chat-channel</code> (hai chiều) và <code>file-channel</code> (drone → GS)</li>
+    </ul>
+  </div>
+
+  <h3>ground-station.html — Video Receiver</h3>
+  <div class="section-card">
+    <ul>
+      <li><strong>Video display:</strong> <code>ontrack</code> event → set <code>video.srcObject = event.streams[0]</code></li>
+      <li><strong>Text chat:</strong> gửi/nhận qua <code>chat-channel</code></li>
+      <li><strong>File transfer:</strong> reassemble chunks từ <code>file-channel</code>, tạo Blob, trigger download</li>
+      <li><strong>Stats panel</strong> (poll 1s qua <code>getStats()</code>): codec, resolution, fps, RTT, packet loss %, jitter, ICE candidate pair</li>
+    </ul>
+  </div>
+
+  <h3>DataChannels</h3>
+  <table>
+    <thead><tr><th>Channel</th><th>Ordered</th><th>Reliable</th><th>Payload</th><th>Direction</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>chat</code></td><td>Có</td><td>Có</td>
+        <td>UTF-8 JSON <code>{from, text, ts}</code></td><td>Hai chiều</td>
+      </tr>
+      <tr>
+        <td><code>file</code></td><td>Có</td><td>Có</td>
+        <td>ArrayBuffer chunks 16 KB + metadata JSON</td><td>Drone → GS</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>File Transfer Protocol</h3>
+  <div class="section-card">
+    <ol>
+      <li>Drone gửi <code>{type:"file-start", name, size, totalChunks}</code></li>
+      <li>Drone gửi <code>totalChunks</code> lần ArrayBuffer (mỗi chunk ≤ 16 KB)</li>
+      <li>Drone gửi <code>{type:"file-end"}</code></li>
+      <li>GS reassemble → <code>new Blob(chunks)</code> → <code>URL.createObjectURL()</code> → trigger download</li>
+    </ol>
+  </div>
+
+  <h3>STUN / TURN Config</h3>
+  <pre>{ iceServers: [{ urls: "stun:stun.l.google.com:19302" }] }</pre>
+  <p style="color:#64748b;font-size:0.875rem;">Demo chạy 2 tab cùng máy — ICE host candidates (loopback) sẽ thành công, không cần TURN.</p>
+
+  <hr>
+
+  <!-- ===================== STATE MACHINE ===================== -->
+  <h2 id="states">5. Connection State Machine</h2>
+  <div class="section-card">
+    <div class="state-flow">
+      <span class="state s-new">new</span>
+      <span class="arrow">→</span>
+      <span class="state s-check">checking</span>
+      <span class="arrow">→</span>
+      <span class="state s-conn">connected</span>
+      <span class="arrow">→</span>
+      <span class="state s-disc">disconnected</span>
+      <span class="arrow">→</span>
+      <span class="state s-fail">failed</span>
+    </div>
+    <div class="state-flow" style="margin-top:0.25rem;">
+      <span style="color:#94a3b8;font-size:0.83rem;margin-right:0.5rem;">hoặc từ connected →</span>
+      <span class="state s-closed">closed</span>
+    </div>
+    <p style="margin-top:0.75rem;font-size:0.9rem;">Mỗi transition hiển thị: chuyện gì xảy ra, ý nghĩa là gì, kỳ vọng tiếp theo là gì.</p>
+  </div>
+
+  <hr>
+
+  <!-- ===================== ERROR HANDLING ===================== -->
+  <h2 id="errors">6. Error Handling</h2>
+  <table>
+    <thead><tr><th>Lỗi</th><th>Xử lý</th></tr></thead>
+    <tbody>
+      <tr><td><code>getUserMedia</code> bị từ chối</td><td>Hiện hướng dẫn bật quyền camera/mic trong browser</td></tr>
+      <tr><td>Không có webcam</td><td>Tự động switch sang video file mode, hiện thông báo</td></tr>
+      <tr><td>WebSocket mất kết nối</td><td>Hiện nút Reconnect — không tự reconnect ngầm</td></tr>
+      <tr><td>ICE failed</td><td>Hiện diagnostic (Symmetric NAT / firewall likely) + gợi ý dùng TURN</td></tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <!-- ===================== DEEP DIVE DOC ===================== -->
+  <h2 id="deepdive-doc">7. docs/webrtc-deep-dive.html</h2>
+  <div class="section-card">
+    <p>File HTML tĩnh, đọc offline, có diagram SVG/ASCII cho 12 chủ đề:</p>
+    <ol>
+      <li>What is WebRTC — browser-to-browser không qua media relay</li>
+      <li>NAT & vấn đề nó tạo ra — tại sao direct connection là thách thức</li>
+      <li>ICE framework — gather, check, nominate</li>
+      <li>STUN — discover public IP:port</li>
+      <li>TURN — relay fallback và khi nào cần</li>
+      <li>SDP anatomy — mọi field với ví dụ thực tế có annotation</li>
+      <li>Signaling — là gì, không phải là gì, tại sao WebRTC không define nó</li>
+      <li>DTLS handshake — TLS over UDP, certificate verification qua fingerprint</li>
+      <li>SRTP — tại sao media mã hóa riêng, key derivation từ DTLS</li>
+      <li>Codec negotiation — offer/answer flow, H264 vs VP8 vs VP9 trade-offs</li>
+      <li>DataChannel — SCTP over DTLS, ordering/reliability modes, use cases</li>
+      <li>getStats() API — các report types, tính bitrate, interpret packet loss</li>
+    </ol>
+  </div>
+
+  <hr>
+
+  <!-- ===================== OUT OF SCOPE ===================== -->
+  <h2>Ngoài phạm vi</h2>
+  <div style="margin-top:0.5rem;">
+    <span class="scope-tag">Multi-peer / SFU</span>
+    <span class="scope-tag">TURN server tự host</span>
+    <span class="scope-tag">Mobile clients</span>
+    <span class="scope-tag">Recording stream</span>
+    <span class="scope-tag">Auth trên signaling server</span>
+    <span class="scope-tag">Simulcast / SVC</span>
+  </div>
+
+</div>
+</body>
+</html>

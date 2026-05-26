@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebRTC Deep Dive</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg2: #f8fafc;
+    --bg3: #f1f5f9;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --text2: #475569;
+    --text3: #94a3b8;
+    --blue: #0369a1;
+    --blue-l: #e0f2fe;
+    --blue-ll: #f0f9ff;
+    --green: #15803d;
+    --green-l: #dcfce7;
+    --orange: #c2410c;
+    --orange-l: #fff7ed;
+    --red: #dc2626;
+    --red-l: #fef2f2;
+    --purple: #7c3aed;
+    --purple-l: #faf5ff;
+    --yellow: #92400e;
+    --yellow-l: #fffbeb;
+    --accent: #0ea5e9;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    font-size: 15px;
+  }
+
+  /* ── LAYOUT ── */
+  .layout { display: flex; min-height: 100vh; }
+
+  /* sidebar */
+  .sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 0;
+  }
+  .sidebar-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text3);
+    padding: 0 1.25rem 0.75rem;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 1.25rem;
+    font-size: 0.85rem;
+    color: var(--text2);
+    text-decoration: none;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+  }
+  .nav-item:hover { background: var(--blue-ll); color: var(--blue); border-left-color: var(--accent); }
+  .nav-item.active { background: var(--blue-ll); color: var(--blue); border-left-color: var(--accent); font-weight: 600; }
+  .nav-num {
+    font-size: 0.7rem;
+    background: var(--bg3);
+    color: var(--text3);
+    border-radius: 4px;
+    padding: 0.1rem 0.4rem;
+    font-weight: 600;
+    min-width: 1.6rem;
+    text-align: center;
+  }
+
+  /* main */
+  .main { flex: 1; max-width: 820px; padding: 3rem 3rem 6rem; }
+
+  /* ── TYPOGRAPHY ── */
+  .page-title { font-size: 2rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem; }
+  .page-sub   { font-size: 1rem; color: var(--text2); margin-bottom: 3rem; line-height: 1.6; }
+
+  .section { margin-bottom: 4rem; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--blue-l);
+  }
+  .section-num {
+    background: var(--blue);
+    color: white;
+    font-weight: 800;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    padding: 0.25rem 0.6rem;
+    letter-spacing: 0.05em;
+  }
+  .section-title { font-size: 1.35rem; font-weight: 700; color: #0f172a; }
+
+  h3 { font-size: 1rem; font-weight: 700; color: var(--blue); margin: 1.75rem 0 0.5rem; }
+  h4 { font-size: 0.85rem; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.08em; margin: 1.25rem 0 0.4rem; }
+
+  p { color: var(--text2); margin-bottom: 0.8rem; }
+  p strong { color: var(--text); }
+
+  /* ── CODE ── */
+  pre {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: #0f4c81;
+    line-height: 1.7;
+    margin: 0.75rem 0 1.25rem;
+    white-space: pre;
+  }
+  code {
+    background: var(--blue-ll);
+    color: var(--blue);
+    padding: 0.15em 0.45em;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-family: 'JetBrains Mono', monospace;
+    border: 1px solid #bae6fd;
+  }
+
+  /* ── BOXES ── */
+  .box {
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 0.75rem 0 1.25rem;
+    font-size: 0.9rem;
+  }
+  .box-blue   { background: var(--blue-ll);   border: 1px solid #bae6fd; color: #0c4a6e; }
+  .box-green  { background: var(--green-l);   border: 1px solid #86efac; color: #14532d; }
+  .box-orange { background: var(--orange-l);  border: 1px solid #fdba74; color: #7c2d12; }
+  .box-yellow { background: var(--yellow-l);  border: 1px solid #fde68a; color: var(--yellow); }
+  .box-purple { background: var(--purple-l);  border: 1px solid #c4b5fd; color: #4c1d95; }
+  .box-title  { font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.3rem; opacity: 0.7; }
+
+  /* ── TABLE ── */
+  table { width: 100%; border-collapse: collapse; margin: 0.75rem 0 1.25rem; font-size: 0.88rem; }
+  th { background: var(--blue-ll); color: var(--blue); padding: 0.6rem 1rem; text-align: left; font-weight: 700; border-bottom: 2px solid #bae6fd; }
+  td { padding: 0.55rem 1rem; border-bottom: 1px solid var(--bg3); color: var(--text2); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg2); }
+
+  /* ── UL/OL ── */
+  ul, ol { padding-left: 1.5rem; margin-bottom: 0.8rem; }
+  li { margin-bottom: 0.35rem; color: var(--text2); }
+  li strong { color: var(--text); }
+
+  /* ── PROTOCOL STACK ── */
+  .proto-stack { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 0.75rem 0 1.25rem; }
+  .proto-row { display: flex; align-items: stretch; border-bottom: 1px solid var(--bg3); }
+  .proto-row:last-child { border-bottom: none; }
+  .proto-label {
+    width: 160px;
+    flex-shrink: 0;
+    background: var(--blue-ll);
+    color: var(--blue);
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 0.7rem 1rem;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid var(--border);
+  }
+  .proto-content { padding: 0.7rem 1rem; font-size: 0.875rem; color: var(--text2); flex: 1; }
+  .proto-content strong { color: var(--text); }
+
+  /* ── STATE BADGES ── */
+  .states { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0.75rem 0; }
+  .st { padding: 0.3rem 0.85rem; border-radius: 6px; font-size: 0.82rem; font-weight: 600; }
+  .st-new    { background: var(--bg3);         color: var(--text2);  border: 1px solid var(--border); }
+  .st-check  { background: #dbeafe;            color: #1d4ed8;       border: 1px solid #93c5fd; }
+  .st-conn   { background: var(--green-l);     color: var(--green);  border: 1px solid #86efac; }
+  .st-disc   { background: var(--orange-l);    color: var(--orange); border: 1px solid #fdba74; }
+  .st-fail   { background: var(--red-l);       color: var(--red);    border: 1px solid #fca5a5; }
+  .st-closed { background: var(--purple-l);    color: var(--purple); border: 1px solid #c4b5fd; }
+  .st-arrow  { color: var(--text3); font-size: 1rem; }
+
+  /* ── ICE candidate type labels ── */
+  .ctype { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-weight: 700; margin-right: 0.25rem; }
+  .ct-host  { background: var(--green-l);  color: var(--green);  border: 1px solid #86efac; }
+  .ct-srflx { background: #dbeafe;         color: #1d4ed8;       border: 1px solid #93c5fd; }
+  .ct-relay { background: var(--orange-l); color: var(--orange); border: 1px solid #fdba74; }
+
+  /* ── DIAGRAM ── */
+  .diagram-wrap { overflow-x: auto; margin: 0.75rem 0 1.25rem; }
+
+  /* ── TWO COLUMN ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 0.75rem 0 1.25rem; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+  .col-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.1rem;
+  }
+  .col-card h4 { margin-top: 0; }
+
+  /* ── SDP ANNOTATED ── */
+  .sdp-block { font-family: 'JetBrains Mono', monospace; font-size: 0.79rem; line-height: 1.9; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; margin: 0.75rem 0 1.25rem; overflow-x: auto; }
+  .sdp-line  { display: flex; gap: 1rem; }
+  .sdp-code  { color: #0f4c81; white-space: pre; flex-shrink: 0; }
+  .sdp-note  { color: var(--text3); font-size: 0.75rem; align-self: center; white-space: nowrap; }
+  .sdp-line:hover { background: var(--blue-ll); border-radius: 4px; }
+
+  /* ── CODEC CARD ── */
+  .codec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.75rem; margin: 0.75rem 0 1.25rem; }
+  .codec-card { border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem; }
+  .codec-name { font-weight: 700; color: var(--text); font-size: 0.95rem; margin-bottom: 0.3rem; }
+  .codec-type { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 0.5rem; }
+  .codec-prop { font-size: 0.8rem; color: var(--text2); margin-bottom: 0.2rem; }
+  .codec-prop span { color: var(--blue); font-weight: 600; }
+
+  /* ── STATS TABLE ── */
+  .stats-mono td:first-child { font-family: monospace; font-size: 0.82rem; color: var(--blue); }
+
+  /* ── BACK TO TOP ── */
+  .back-top { position: fixed; bottom: 2rem; right: 2rem; background: var(--blue); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 1.1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; text-decoration: none; }
+  .back-top:hover { background: #0284c7; }
+
+  /* ── SVG DIAGRAMS ── */
+  .svg-diagram { width: 100%; height: auto; display: block; margin: 0.75rem 0 1.25rem; }
+  .svg-diagram a { text-decoration: none; cursor: pointer; }
+  .svg-caption { font-size: 0.78rem; color: var(--text3); margin-bottom: 0.4rem; font-style: italic; }
+  .flow-phase rect, .flow-phase polygon { transition: opacity 0.15s; }
+  .flow-phase:hover rect, .flow-phase:hover polygon { opacity: 0.75; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<nav class="sidebar">
+  <div class="sidebar-title">WebRTC Deep Dive</div>
+  <a class="nav-item" href="#s1"><span class="nav-num">01</span> WebRTC là gì</a>
+  <a class="nav-item" href="#s2"><span class="nav-num">02</span> NAT &amp; vấn đề</a>
+  <a class="nav-item" href="#s3"><span class="nav-num">03</span> ICE Framework</a>
+  <a class="nav-item" href="#s4"><span class="nav-num">04</span> STUN</a>
+  <a class="nav-item" href="#s5"><span class="nav-num">05</span> TURN</a>
+  <a class="nav-item" href="#s6"><span class="nav-num">06</span> SDP Anatomy</a>
+  <a class="nav-item" href="#s7"><span class="nav-num">07</span> Signaling</a>
+  <a class="nav-item" href="#s8"><span class="nav-num">08</span> DTLS Handshake</a>
+  <a class="nav-item" href="#s9"><span class="nav-num">09</span> SRTP</a>
+  <a class="nav-item" href="#s10"><span class="nav-num">10</span> Codec Negotiation</a>
+  <a class="nav-item" href="#s11"><span class="nav-num">11</span> DataChannel</a>
+  <a class="nav-item" href="#s12"><span class="nav-num">12</span> getStats() API</a>
+</nav>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<main class="main">
+
+  <div class="page-title">WebRTC Deep Dive</div>
+  <p class="page-sub">
+    Phân tích toàn bộ WebRTC protocol từ lớp network đến JavaScript API —
+    dành cho bạn muốn hiểu <em>tại sao</em> chứ không chỉ biết <em>cách dùng</em>.
+    Tài liệu offline, không cần internet.
+  </p>
+
+  <!-- ═══ FULL CONNECTION FLOW OVERVIEW ═══ -->
+  <p class="svg-caption">Toàn bộ quá trình WebRTC — từ lúc bắt đầu đến khi media chạy (click vào từng phase)</p>
+  <svg viewBox="0 0 860 108" class="svg-diagram" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="flow-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#94a3b8"/>
+      </marker>
+    </defs>
+    <!-- Phase 1: getUserMedia -->
+    <a href="#s1" class="flow-phase">
+      <rect x="4" y="24" width="122" height="60" rx="8" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="65" y="47" text-anchor="middle" font-size="11.5" font-weight="700" fill="#6d28d9" font-family="'Segoe UI',system-ui,sans-serif">1. getUserMedia</text>
+      <text x="65" y="63" text-anchor="middle" font-size="10" fill="#7c3aed" font-family="'Segoe UI',system-ui,sans-serif">Camera / Mic</text>
+      <text x="65" y="77" text-anchor="middle" font-size="10" fill="#7c3aed" font-family="'Segoe UI',system-ui,sans-serif">Video File</text>
+    </a>
+    <path d="M127,54 L146,54" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#flow-arr)"/>
+    <!-- Phase 2: SDP Negotiation -->
+    <a href="#s6" class="flow-phase">
+      <rect x="148" y="24" width="132" height="60" rx="8" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1.5"/>
+      <text x="214" y="47" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">2. SDP Negotiation</text>
+      <text x="214" y="63" text-anchor="middle" font-size="10" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">Offer / Answer</text>
+      <text x="214" y="77" text-anchor="middle" font-size="10" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">Signaling Server</text>
+    </a>
+    <path d="M281,54 L300,54" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#flow-arr)"/>
+    <!-- Phase 3: ICE Gathering -->
+    <a href="#s3" class="flow-phase">
+      <rect x="302" y="24" width="122" height="60" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+      <text x="363" y="47" text-anchor="middle" font-size="11.5" font-weight="700" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">3. ICE Gathering</text>
+      <text x="363" y="63" text-anchor="middle" font-size="10" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">host / srflx / relay</text>
+      <text x="363" y="77" text-anchor="middle" font-size="10" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">STUN / TURN</text>
+    </a>
+    <path d="M425,54 L444,54" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#flow-arr)"/>
+    <!-- Phase 4: ICE Checks -->
+    <a href="#s3" class="flow-phase">
+      <rect x="446" y="24" width="118" height="60" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+      <text x="505" y="47" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1d4ed8" font-family="'Segoe UI',system-ui,sans-serif">4. ICE Checks</text>
+      <text x="505" y="63" text-anchor="middle" font-size="10" fill="#1d4ed8" font-family="'Segoe UI',system-ui,sans-serif">Hole Punching</text>
+      <text x="505" y="77" text-anchor="middle" font-size="10" fill="#1d4ed8" font-family="'Segoe UI',system-ui,sans-serif">Nomination</text>
+    </a>
+    <path d="M565,54 L584,54" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#flow-arr)"/>
+    <!-- Phase 5: DTLS -->
+    <a href="#s8" class="flow-phase">
+      <rect x="586" y="24" width="108" height="60" rx="8" fill="#fffbeb" stroke="#fde68a" stroke-width="1.5"/>
+      <text x="640" y="47" text-anchor="middle" font-size="11.5" font-weight="700" fill="#92400e" font-family="'Segoe UI',system-ui,sans-serif">5. DTLS</text>
+      <text x="640" y="63" text-anchor="middle" font-size="10" fill="#92400e" font-family="'Segoe UI',system-ui,sans-serif">Handshake</text>
+      <text x="640" y="77" text-anchor="middle" font-size="10" fill="#92400e" font-family="'Segoe UI',system-ui,sans-serif">Key Exchange</text>
+    </a>
+    <path d="M695,54 L714,54" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#flow-arr)"/>
+    <!-- Phase 6: SRTP Media -->
+    <a href="#s9" class="flow-phase">
+      <rect x="716" y="24" width="140" height="60" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="2"/>
+      <text x="786" y="47" text-anchor="middle" font-size="11.5" font-weight="700" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">6. SRTP Stream ✓</text>
+      <text x="786" y="63" text-anchor="middle" font-size="10" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">Encrypted Video</text>
+      <text x="786" y="77" text-anchor="middle" font-size="10" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">P2P Direct</text>
+    </a>
+    <text x="430" y="102" text-anchor="middle" font-size="9" fill="#94a3b8" font-family="'Segoe UI',system-ui,sans-serif">← click từng phase để đọc chi tiết →</text>
+  </svg>
+
+  <!-- ══════════════════════════════════════
+       01  WebRTC là gì
+  ══════════════════════════════════════ -->
+  <section class="section" id="s1">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">WebRTC là gì</span>
+    </div>
+
+    <p>
+      <strong>WebRTC</strong> (Web Real-Time Communication) là tập hợp các API và protocol mở
+      cho phép trình duyệt trao đổi audio, video, và dữ liệu tùy ý trực tiếp với nhau —
+      <strong>không cần plugin, không cần server trung gian cho media</strong>.
+      Được chuẩn hóa bởi W3C và IETF, WebRTC được Chrome, Firefox, Safari, Edge hỗ trợ đầy đủ.
+    </p>
+
+    <h3>Kiến trúc tổng thể</h3>
+    <div class="proto-stack">
+      <div class="proto-row">
+        <div class="proto-label">JS API</div>
+        <div class="proto-content"><strong>RTCPeerConnection</strong> · <strong>RTCDataChannel</strong> · <strong>MediaStream</strong> · getUserMedia()</div>
+      </div>
+      <div class="proto-row">
+        <div class="proto-label">Media Engine</div>
+        <div class="proto-content"><strong>SRTP/SRTCP</strong> — mã hóa audio/video &nbsp;|&nbsp; <strong>RTCP</strong> — feedback, congestion control</div>
+      </div>
+      <div class="proto-row">
+        <div class="proto-label">Data Engine</div>
+        <div class="proto-content"><strong>SCTP</strong> — DataChannel transport, multiplexing nhiều stream</div>
+      </div>
+      <div class="proto-row">
+        <div class="proto-label">Security</div>
+        <div class="proto-content"><strong>DTLS 1.2/1.3</strong> — TLS over UDP, thiết lập session key, xác thực certificate qua fingerprint</div>
+      </div>
+      <div class="proto-row">
+        <div class="proto-label">Transport</div>
+        <div class="proto-content"><strong>ICE</strong> — chọn đường tốt nhất &nbsp;|&nbsp; <strong>STUN</strong> — discover public IP &nbsp;|&nbsp; <strong>TURN</strong> — relay fallback</div>
+      </div>
+      <div class="proto-row">
+        <div class="proto-label">Network</div>
+        <div class="proto-content">UDP (ưu tiên) · TCP fallback · IPv4 · IPv6</div>
+      </div>
+    </div>
+
+    <h3>Tại sao WebRTC phức tạp?</h3>
+    <p>Ba thách thức cốt lõi:</p>
+    <ol>
+      <li><strong>NAT traversal</strong> — hầu hết thiết bị không có IP công khai, nằm sau NAT. WebRTC phải "đục lỗ" qua NAT để 2 peer tìm thấy nhau.</li>
+      <li><strong>Bảo mật bắt buộc</strong> — DTLS và SRTP không thể tắt. Mọi kết nối WebRTC đều phải mã hóa. Đây là yêu cầu của spec, không phải tùy chọn.</li>
+      <li><strong>Codec negotiation</strong> — mỗi browser/thiết bị hỗ trợ codec khác nhau. SDP offer/answer là quá trình "thương lượng" codec, resolution, bitrate.</li>
+    </ol>
+
+    <div class="box box-blue">
+      <div class="box-title">Điểm mấu chốt</div>
+      Server chỉ cần thiết trong giai đoạn <strong>signaling</strong> (trao đổi SDP + ICE candidates).
+      Sau khi kết nối P2P thiết lập xong, media stream đi trực tiếp giữa 2 peer.
+      Server signaling có thể đóng kết nối mà không ảnh hưởng đến stream.
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       02  NAT
+  ══════════════════════════════════════ -->
+  <section class="section" id="s2">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">NAT &amp; vấn đề nó tạo ra</span>
+    </div>
+
+    <p>
+      <strong>NAT</strong> (Network Address Translation) là kỹ thuật cho phép nhiều thiết bị trong mạng LAN
+      chia sẻ một IP công khai. Router NAT duy trì một bảng ánh xạ
+      <code>(private IP, private port) ↔ (public IP, public port)</code>.
+    </p>
+
+    <h3>Tại sao NAT chặn WebRTC</h3>
+    <p class="svg-caption">Hai peer đằng sau NAT — không thể kết nối trực tiếp nếu không có STUN/ICE</p>
+    <svg viewBox="0 0 700 310" class="svg-diagram" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="nat-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#64748b"/>
+        </marker>
+        <marker id="nat-arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#0369a1"/>
+        </marker>
+        <marker id="nat-arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#dc2626"/>
+        </marker>
+        <marker id="nat-arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#15803d"/>
+        </marker>
+      </defs>
+      <!-- STUN Server -->
+      <rect x="240" y="10" width="220" height="44" rx="8" fill="#fffbeb" stroke="#fde68a" stroke-width="1.5"/>
+      <text x="350" y="29" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e" font-family="'Segoe UI',system-ui,sans-serif">STUN Server</text>
+      <text x="350" y="46" text-anchor="middle" font-size="10" fill="#92400e" font-family="'Segoe UI',system-ui,sans-serif">stun.l.google.com:19302</text>
+
+      <!-- Router A -->
+      <rect x="30" y="115" width="160" height="48" rx="8" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1.5"/>
+      <text x="110" y="136" text-anchor="middle" font-size="12" font-weight="700" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">Router A (NAT)</text>
+      <text x="110" y="153" text-anchor="middle" font-size="10" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">public: 1.2.3.4</text>
+
+      <!-- Router B -->
+      <rect x="510" y="115" width="160" height="48" rx="8" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1.5"/>
+      <text x="590" y="136" text-anchor="middle" font-size="12" font-weight="700" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">Router B (NAT)</text>
+      <text x="590" y="153" text-anchor="middle" font-size="10" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">public: 5.6.7.8</text>
+
+      <!-- Internet area -->
+      <ellipse cx="350" cy="168" rx="100" ry="26" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <text x="350" y="165" text-anchor="middle" font-size="11" fill="#94a3b8" font-family="'Segoe UI',system-ui,sans-serif">Internet</text>
+      <text x="350" y="180" text-anchor="middle" font-size="9" fill="#cbd5e1" font-family="'Segoe UI',system-ui,sans-serif">public routing</text>
+
+      <!-- Peer A -->
+      <rect x="20" y="228" width="180" height="60" rx="8" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="110" y="250" text-anchor="middle" font-size="12" font-weight="700" fill="#6d28d9" font-family="'Segoe UI',system-ui,sans-serif">Peer A / Drone</text>
+      <text x="110" y="267" text-anchor="middle" font-size="10" fill="#7c3aed" font-family="'Segoe UI',system-ui,sans-serif">private: 192.168.1.5</text>
+      <text x="110" y="281" text-anchor="middle" font-size="10" fill="#7c3aed" font-family="'Segoe UI',system-ui,sans-serif">public: ???</text>
+
+      <!-- Peer B -->
+      <rect x="500" y="228" width="180" height="60" rx="8" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="590" y="250" text-anchor="middle" font-size="12" font-weight="700" fill="#6d28d9" font-family="'Segoe UI',system-ui,sans-serif">Peer B / Ground</text>
+      <text x="590" y="267" text-anchor="middle" font-size="10" fill="#7c3aed" font-family="'Segoe UI',system-ui,sans-serif">private: 10.0.0.8</text>
+      <text x="590" y="281" text-anchor="middle" font-size="10" fill="#7c3aed" font-family="'Segoe UI',system-ui,sans-serif">public: ???</text>
+
+      <!-- Lines: Peer A ↔ Router A -->
+      <line x1="110" y1="228" x2="110" y2="163" stroke="#94a3b8" stroke-width="1.5"/>
+      <!-- Lines: Peer B ↔ Router B -->
+      <line x1="590" y1="228" x2="590" y2="163" stroke="#94a3b8" stroke-width="1.5"/>
+      <!-- Lines: Router A ↔ Internet -->
+      <line x1="190" y1="139" x2="250" y2="157" stroke="#94a3b8" stroke-width="1.5"/>
+      <!-- Lines: Router B ↔ Internet -->
+      <line x1="510" y1="139" x2="450" y2="157" stroke="#94a3b8" stroke-width="1.5"/>
+
+      <!-- STUN request from Router A -->
+      <path d="M110,115 C110,75 240,45 240,45" stroke="#0369a1" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#nat-arr-blue)"/>
+      <text x="145" y="74" font-size="9.5" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">STUN req</text>
+      <!-- STUN response to Router A: srflx = 1.2.3.4:port -->
+      <path d="M240,50 C200,55 115,100 115,115" stroke="#15803d" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#nat-arr-green)"/>
+      <text x="148" y="96" font-size="9.5" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">srflx: 1.2.3.4</text>
+
+      <!-- STUN request from Router B -->
+      <path d="M590,115 C590,75 460,45 460,45" stroke="#0369a1" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#nat-arr-blue)"/>
+      <text x="505" y="74" font-size="9.5" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">STUN req</text>
+      <!-- STUN response to Router B -->
+      <path d="M460,50 C500,55 585,100 585,115" stroke="#15803d" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#nat-arr-green)"/>
+      <text x="490" y="96" font-size="9.5" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">srflx: 5.6.7.8</text>
+
+      <!-- Hole punching arrow (dashed red ✗) -->
+      <path d="M200,258 L500,258" stroke="#dc2626" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#nat-arr-red)"/>
+      <text x="350" y="252" text-anchor="middle" font-size="10" fill="#dc2626" font-family="'Segoe UI',system-ui,sans-serif" font-weight="600">✗ Direct không được — Router B không có NAT entry</text>
+
+      <!-- ICE hole punch (green ✓) via routers -->
+      <text x="350" y="300" text-anchor="middle" font-size="10" fill="#15803d" font-weight="600" font-family="'Segoe UI',system-ui,sans-serif">✓ ICE hole punching: cả 2 peer gửi đồng thời → tạo NAT entry 2 phía → kết nối được</text>
+    </svg>
+
+    <h3>4 loại NAT và khả năng traversal</h3>
+    <table>
+      <thead><tr><th>Loại NAT</th><th>Quy tắc inbound</th><th>ICE vượt được?</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Full Cone</strong></td>
+          <td>Bất kỳ ai biết public IP:port đều gửi được vào</td>
+          <td style="color:var(--green);font-weight:600;">Có — dùng srflx</td>
+        </tr>
+        <tr>
+          <td><strong>Restricted Cone</strong></td>
+          <td>Chỉ IP đã từng gửi outbound mới vào được</td>
+          <td style="color:var(--green);font-weight:600;">Có — ICE tạo "hole" trước</td>
+        </tr>
+        <tr>
+          <td><strong>Port Restricted</strong></td>
+          <td>Chỉ IP:port đã từng gửi outbound mới vào được</td>
+          <td style="color:var(--green);font-weight:600;">Có — ICE tạo "hole" trước</td>
+        </tr>
+        <tr>
+          <td><strong>Symmetric</strong></td>
+          <td>Mỗi đích đến nhận port ngoại khác nhau; không đoán được port</td>
+          <td style="color:var(--red);font-weight:600;">Khó — cần TURN relay</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="box box-orange">
+      <div class="box-title">Thực tế production</div>
+      Mạng doanh nghiệp, carrier-grade NAT (CGN), và 4G/5G thường dùng <strong>Symmetric NAT</strong>.
+      Đây là lý do hệ thống WebRTC production <em>luôn cần TURN server</em> làm fallback.
+      Tỷ lệ kết nối thất bại mà không có TURN có thể lên đến 15–20%.
+    </div>
+
+    <h3>Hole Punching — kỹ thuật vượt NAT</h3>
+    <p>
+      ICE dùng kỹ thuật <strong>hole punching</strong>: cả 2 peer gửi packet đến nhau <em>đồng thời</em>.
+      Packet outbound từ A tạo entry trong NAT table của Router A,
+      cho phép packet từ B qua Router A đến A.
+    </p>
+
+    <!-- Step-by-step hole punching example -->
+    <p class="svg-caption">Ví dụ từng bước — Port Restricted Cone NAT (phổ biến nhất)</p>
+    <svg viewBox="0 0 700 420" class="svg-diagram" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="hp-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#475569"/>
+        </marker>
+        <marker id="hp-arr-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#0369a1"/>
+        </marker>
+        <marker id="hp-arr-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#15803d"/>
+        </marker>
+        <marker id="hp-arr-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#dc2626"/>
+        </marker>
+      </defs>
+
+      <!-- ── SHARED LAYOUT: nodes ── -->
+      <!-- Peer A -->
+      <rect x="8"   y="170" width="100" height="44" rx="7" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="58"  y="189" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9" font-family="'Segoe UI',system-ui,sans-serif">Peer A</text>
+      <text x="58"  y="205" text-anchor="middle" font-size="9.5" fill="#7c3aed" font-family="'Segoe UI',system-ui,sans-serif">192.168.1.5:5000</text>
+
+      <!-- Router A -->
+      <rect x="148" y="170" width="118" height="44" rx="7" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1.5"/>
+      <text x="207" y="189" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">Router A</text>
+      <text x="207" y="205" text-anchor="middle" font-size="9.5" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">1.2.3.4 : port?</text>
+
+      <!-- Internet gap -->
+      <text x="350" y="196" text-anchor="middle" font-size="10" fill="#94a3b8" font-family="'Segoe UI',system-ui,sans-serif">Internet</text>
+
+      <!-- Router B -->
+      <rect x="434" y="170" width="118" height="44" rx="7" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1.5"/>
+      <text x="493" y="189" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">Router B</text>
+      <text x="493" y="205" text-anchor="middle" font-size="9.5" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">5.6.7.8 : port?</text>
+
+      <!-- Peer B -->
+      <rect x="592" y="170" width="100" height="44" rx="7" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+      <text x="642" y="189" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">Peer B</text>
+      <text x="642" y="205" text-anchor="middle" font-size="9.5" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">10.0.0.8:6000</text>
+
+      <!-- ════════ STEP 0 — trạng thái ban đầu ════════ -->
+      <rect x="8" y="5" width="684" height="150" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="18" y="24" font-size="10.5" font-weight="700" fill="#334155" font-family="'Segoe UI',system-ui,sans-serif">Bước 0 — Trạng thái ban đầu: NAT table trống, 2 peer không biết port của nhau</text>
+
+      <!-- NAT A table (empty) -->
+      <rect x="148" y="32" width="148" height="55" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="222" y="48" text-anchor="middle" font-size="9.5" font-weight="700" fill="#94a3b8" font-family="'Segoe UI',system-ui,sans-serif">NAT Table A</text>
+      <text x="222" y="63" text-anchor="middle" font-size="9" fill="#cbd5e1" font-family="'Segoe UI',system-ui,sans-serif">src → dst : mapping</text>
+      <text x="222" y="78" text-anchor="middle" font-size="9" fill="#cbd5e1" font-family="'Segoe UI',system-ui,sans-serif">(trống)</text>
+
+      <!-- NAT B table (empty) -->
+      <rect x="404" y="32" width="148" height="55" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="478" y="48" text-anchor="middle" font-size="9.5" font-weight="700" fill="#94a3b8" font-family="'Segoe UI',system-ui,sans-serif">NAT Table B</text>
+      <text x="478" y="63" text-anchor="middle" font-size="9" fill="#cbd5e1" font-family="'Segoe UI',system-ui,sans-serif">src → dst : mapping</text>
+      <text x="478" y="78" text-anchor="middle" font-size="9" fill="#cbd5e1" font-family="'Segoe UI',system-ui,sans-serif">(trống)</text>
+
+      <!-- Problem label -->
+      <text x="350" y="105" text-anchor="middle" font-size="9.5" fill="#dc2626" font-family="'Segoe UI',system-ui,sans-serif" font-weight="600">✗  A muốn gửi tới 5.6.7.8 nhưng không biết port nào — Router B sẽ DROP vì không có NAT entry</text>
+      <path d="M108,192 L148,192" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#hp-arr-r)"/>
+      <path d="M266,192 L434,192" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#hp-arr-r)"/>
+      <text x="350" y="188" text-anchor="middle" font-size="9" fill="#dc2626" font-family="'Segoe UI',system-ui,sans-serif">gửi tới 5.6.7.8:??? — DROP ✗</text>
+
+      <!-- ════════ STEP 1 — A và B gửi đồng thời ════════ -->
+      <rect x="8" y="230" width="684" height="85" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+      <text x="18" y="249" font-size="10.5" font-weight="700" fill="#1d4ed8" font-family="'Segoe UI',system-ui,sans-serif">Bước 1 — A và B gửi STUN request đồng thời (ICE đã biết srflx của nhau qua signaling)</text>
+
+      <!-- A sends to B's srflx -->
+      <path d="M58,260 L207,260" stroke="#0369a1" stroke-width="2" marker-end="url(#hp-arr-b)"/>
+      <path d="M207,260 L420,260" stroke="#0369a1" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#hp-arr-b)"/>
+      <text x="130" y="256" text-anchor="middle" font-size="9" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">STUN req →</text>
+      <text x="310" y="256" text-anchor="middle" font-size="9" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">tới 5.6.7.8:srflx-port</text>
+
+      <!-- B sends to A's srflx -->
+      <path d="M642,275 L493,275" stroke="#15803d" stroke-width="2" marker-end="url(#hp-arr-g)"/>
+      <path d="M493,275 L280,275" stroke="#15803d" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#hp-arr-g)"/>
+      <text x="570" y="271" text-anchor="middle" font-size="9" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">← STUN req</text>
+      <text x="385" y="271" text-anchor="middle" font-size="9" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">tới 1.2.3.4:srflx-port</text>
+
+      <!-- Result of step 1 -->
+      <text x="350" y="300" text-anchor="middle" font-size="9.5" fill="#1d4ed8" font-family="'Segoe UI',system-ui,sans-serif">→ Router A tạo entry: 192.168.1.5:5000 ↔ 1.2.3.4:48291 (ánh xạ outbound tới B)</text>
+      <text x="350" y="313" text-anchor="middle" font-size="9.5" fill="#1d4ed8" font-family="'Segoe UI',system-ui,sans-serif">→ Router B tạo entry: 10.0.0.8:6000 ↔ 5.6.7.8:62100 (ánh xạ outbound tới A)</text>
+
+      <!-- ════════ STEP 2 — packets cross ════════ -->
+      <rect x="8" y="330" width="684" height="82" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+      <text x="18" y="349" font-size="10.5" font-weight="700" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">Bước 2 — Packets chéo nhau, NAT entries tồn tại → cả 2 chiều mở</text>
+
+      <!-- A's packet arrives at Router B — now has entry -->
+      <path d="M266,362 L434,362" stroke="#0369a1" stroke-width="2" marker-end="url(#hp-arr-b)"/>
+      <path d="M434,362 L592,362" stroke="#0369a1" stroke-width="2" marker-end="url(#hp-arr-b)"/>
+      <text x="350" y="357" text-anchor="middle" font-size="9.5" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">A → B: Router B có entry → FORWARD ✓</text>
+
+      <!-- B's packet arrives at Router A — now has entry -->
+      <path d="M434,378 L266,378" stroke="#15803d" stroke-width="2" marker-end="url(#hp-arr-g)"/>
+      <path d="M266,378 L108,378" stroke="#15803d" stroke-width="2" marker-end="url(#hp-arr-g)"/>
+      <text x="350" y="374" text-anchor="middle" font-size="9.5" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">B → A: Router A có entry → FORWARD ✓</text>
+
+      <!-- Success -->
+      <text x="350" y="403" text-anchor="middle" font-size="10.5" font-weight="700" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">✓ Hole punched — STUN Binding Response thành công → ICE valid pair → P2P connected</text>
+    </svg>
+
+    <div class="box box-yellow">
+      <div class="box-title">Tại sao phải "đồng thời"?</div>
+      Nếu A gửi trước và B chưa gửi, packet của A đến Router B nhưng Router B <em>chưa có entry</em>
+      cho IP của A → DROP. B phải gửi ra trước để tạo entry ở Router B, tạo "cửa sổ" cho packet của A đi vào.
+      ICE sử dụng STUN credentials (ice-ufrag/ice-pwd) để xác thực cả 2 phía đang trong cùng 1 session.
+    </div>
+
+    <pre>
+  Ví dụ thực tế — Port Restricted Cone NAT:
+
+  Signaling đã trao đổi srflx:
+    A biết B tại: 5.6.7.8:62100
+    B biết A tại: 1.2.3.4:48291
+
+  T=0ms  A gửi: src=1.2.3.4:48291  dst=5.6.7.8:62100
+         Router A tạo: {192.168.1.5:5000 → 5.6.7.8:62100} ← NAT entry A
+         Packet đến Router B → DROP (chưa có entry cho 1.2.3.4:48291)
+
+  T=0ms  B gửi: src=5.6.7.8:62100  dst=1.2.3.4:48291
+         Router B tạo: {10.0.0.8:6000 → 1.2.3.4:48291} ← NAT entry B
+         Packet đến Router A → DROP (chưa có entry cho 5.6.7.8:62100)
+
+  T=1ms  Packet của A đến Router B lần 2 (ICE retransmit)
+         Router B tra bảng: có entry cho 1.2.3.4:48291 → FORWARD → Peer B nhận được ✓
+
+  T=1ms  Packet của B đến Router A lần 2 (ICE retransmit)
+         Router A tra bảng: có entry cho 5.6.7.8:62100 → FORWARD → Peer A nhận được ✓
+
+  → STUN Binding Response gửi về → ICE marks pair as "valid" → Nomination → P2P ✓</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       03  ICE
+  ══════════════════════════════════════ -->
+  <section class="section" id="s3">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">ICE Framework</span>
+    </div>
+
+    <p>
+      <strong>ICE</strong> (Interactive Connectivity Establishment — RFC 8445) là framework
+      tổng hợp giải quyết bài toán NAT traversal. ICE không phải một protocol đơn lẻ
+      mà là quy trình phối hợp STUN, TURN, và hole punching để tìm đường kết nối tốt nhất.
+    </p>
+
+    <h3>Ba giai đoạn ICE</h3>
+
+    <h4>Giai đoạn 1 — Candidate Gathering</h4>
+    <p>Mỗi peer thu thập tất cả địa chỉ có thể kết nối — gọi là <strong>candidates</strong>:</p>
+    <div class="box box-blue">
+      <div style="margin-bottom:0.5rem;">
+        <span class="ctype ct-host">host</span>
+        <strong>192.168.1.5:52341</strong> — IP LAN trực tiếp. Lấy từ network interface. Nhanh nhất, chỉ dùng được trong LAN.
+      </div>
+      <div style="margin-bottom:0.5rem;">
+        <span class="ctype ct-srflx">srflx</span>
+        <strong>203.0.113.1:48291</strong> — Server Reflexive. IP công khai được STUN server trả về. Dùng để vượt Full/Restricted Cone NAT.
+      </div>
+      <div>
+        <span class="ctype ct-relay">relay</span>
+        <strong>turn.example.com:3478</strong> — Relay. Địa chỉ TURN server sẽ forward thay. Luôn hoạt động, latency cao nhất, tốn băng thông server.
+      </div>
+    </div>
+
+    <p>Mỗi candidate có <strong>priority</strong> số — host > srflx > relay. ICE thử candidates theo thứ tự priority giảm dần.</p>
+
+    <p class="svg-caption">Ba loại ICE candidate — priority từ cao xuống thấp, và ma trận candidate pairs</p>
+    <svg viewBox="0 0 700 260" class="svg-diagram" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="ice-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#64748b"/>
+        </marker>
+      </defs>
+      <!-- Priority bar background -->
+      <rect x="10" y="8" width="680" height="8" rx="4" fill="#f1f5f9"/>
+      <rect x="10" y="8" width="440" height="8" rx="4" fill="#86efac"/>
+      <rect x="10" y="8" width="240" height="8" rx="4" fill="#4ade80"/>
+      <rect x="10" y="8" width="60" height="8" rx="4" fill="#15803d"/>
+      <text x="10" y="30" font-size="10" fill="#64748b" font-family="'Segoe UI',system-ui,sans-serif">Priority (cao → thấp)</text>
+      <text x="688" y="30" text-anchor="end" font-size="10" fill="#64748b" font-family="'Segoe UI',system-ui,sans-serif">→</text>
+
+      <!-- Column 1: host -->
+      <rect x="10" y="38" width="200" height="110" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+      <rect x="10" y="38" width="200" height="32" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="2"/>
+      <rect x="10" y="62" width="200" height="8" rx="0" fill="#dcfce7"/>
+      <text x="110" y="59" text-anchor="middle" font-size="13" font-weight="700" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">host</text>
+      <text x="110" y="86" text-anchor="middle" font-size="10.5" fill="#14532d" font-family="'Segoe UI',system-ui,sans-serif">192.168.1.5:52341</text>
+      <text x="110" y="103" text-anchor="middle" font-size="10" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">IP LAN trực tiếp</text>
+      <text x="110" y="118" text-anchor="middle" font-size="10" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">priority ≈ 2,122,194,943</text>
+      <text x="110" y="136" text-anchor="middle" font-size="9.5" fill="#64748b" font-family="'Segoe UI',system-ui,sans-serif">Nhanh nhất · LAN only</text>
+
+      <!-- Column 2: srflx -->
+      <rect x="250" y="38" width="200" height="110" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+      <rect x="250" y="38" width="200" height="32" rx="8" fill="#dbeafe" stroke="#bfdbfe" stroke-width="2"/>
+      <rect x="250" y="62" width="200" height="8" rx="0" fill="#dbeafe"/>
+      <text x="350" y="59" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8" font-family="'Segoe UI',system-ui,sans-serif">srflx</text>
+      <text x="350" y="86" text-anchor="middle" font-size="10.5" fill="#1e3a8a" font-family="'Segoe UI',system-ui,sans-serif">203.0.113.1:48291</text>
+      <text x="350" y="103" text-anchor="middle" font-size="10" fill="#1d4ed8" font-family="'Segoe UI',system-ui,sans-serif">IP công khai (STUN reflect)</text>
+      <text x="350" y="118" text-anchor="middle" font-size="10" fill="#1d4ed8" font-family="'Segoe UI',system-ui,sans-serif">priority ≈ 1,686,052,607</text>
+      <text x="350" y="136" text-anchor="middle" font-size="9.5" fill="#64748b" font-family="'Segoe UI',system-ui,sans-serif">Vượt được Full/Restricted NAT</text>
+
+      <!-- Column 3: relay -->
+      <rect x="490" y="38" width="200" height="110" rx="8" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+      <rect x="490" y="38" width="200" height="32" rx="8" fill="#fed7aa" stroke="#fdba74" stroke-width="2"/>
+      <rect x="490" y="62" width="200" height="8" rx="0" fill="#fed7aa"/>
+      <text x="590" y="59" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c" font-family="'Segoe UI',system-ui,sans-serif">relay</text>
+      <text x="590" y="86" text-anchor="middle" font-size="10.5" fill="#7c2d12" font-family="'Segoe UI',system-ui,sans-serif">turn.example.com:3478</text>
+      <text x="590" y="103" text-anchor="middle" font-size="10" fill="#c2410c" font-family="'Segoe UI',system-ui,sans-serif">Địa chỉ TURN server</text>
+      <text x="590" y="118" text-anchor="middle" font-size="10" fill="#c2410c" font-family="'Segoe UI',system-ui,sans-serif">priority ≈ 16,777,215</text>
+      <text x="590" y="136" text-anchor="middle" font-size="9.5" fill="#64748b" font-family="'Segoe UI',system-ui,sans-serif">Luôn hoạt động · latency cao</text>
+
+      <!-- Candidate pair matrix label -->
+      <text x="10" y="172" font-size="11" font-weight="700" fill="#334155" font-family="'Segoe UI',system-ui,sans-serif">Candidate Pair Matrix (A × B) — ICE thử theo thứ tự ưu tiên:</text>
+
+      <!-- Matrix: 3x3 grid -->
+      <!-- Headers -->
+      <text x="168" y="192" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">B:host</text>
+      <text x="298" y="192" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8" font-family="'Segoe UI',system-ui,sans-serif">B:srflx</text>
+      <text x="428" y="192" text-anchor="middle" font-size="10" font-weight="700" fill="#c2410c" font-family="'Segoe UI',system-ui,sans-serif">B:relay</text>
+      <text x="78" y="211" text-anchor="end" font-size="10" font-weight="700" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">A:host</text>
+      <text x="78" y="231" text-anchor="end" font-size="10" font-weight="700" fill="#1d4ed8" font-family="'Segoe UI',system-ui,sans-serif">A:srflx</text>
+      <text x="78" y="251" text-anchor="end" font-size="10" font-weight="700" fill="#c2410c" font-family="'Segoe UI',system-ui,sans-serif">A:relay</text>
+      <!-- Priority 1 (highest): host-host -->
+      <rect x="88" y="197" width="160" height="18" rx="3" fill="#dcfce7" stroke="#86efac"/>
+      <text x="168" y="210" text-anchor="middle" font-size="9.5" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">① Highest priority</text>
+      <!-- host-srflx -->
+      <rect x="218" y="197" width="160" height="18" rx="3" fill="#eff6ff" stroke="#bfdbfe"/>
+      <text x="298" y="210" text-anchor="middle" font-size="9.5" fill="#1d4ed8" font-family="'Segoe UI',system-ui,sans-serif">②</text>
+      <!-- host-relay -->
+      <rect x="348" y="197" width="160" height="18" rx="3" fill="#fff7ed" stroke="#fdba74"/>
+      <text x="428" y="210" text-anchor="middle" font-size="9.5" fill="#c2410c" font-family="'Segoe UI',system-ui,sans-serif">④</text>
+      <!-- srflx-host -->
+      <rect x="88" y="218" width="160" height="18" rx="3" fill="#eff6ff" stroke="#bfdbfe"/>
+      <text x="168" y="231" text-anchor="middle" font-size="9.5" fill="#1d4ed8" font-family="'Segoe UI',system-ui,sans-serif">③</text>
+      <!-- srflx-srflx -->
+      <rect x="218" y="218" width="160" height="18" rx="3" fill="#eff6ff" stroke="#bfdbfe"/>
+      <text x="298" y="231" text-anchor="middle" font-size="9.5" fill="#1d4ed8" font-family="'Segoe UI',system-ui,sans-serif">⑤</text>
+      <!-- srflx-relay -->
+      <rect x="348" y="218" width="160" height="18" rx="3" fill="#fff7ed" stroke="#fdba74"/>
+      <text x="428" y="231" text-anchor="middle" font-size="9.5" fill="#c2410c" font-family="'Segoe UI',system-ui,sans-serif">⑦</text>
+      <!-- relay rows -->
+      <rect x="88" y="239" width="160" height="18" rx="3" fill="#fff7ed" stroke="#fdba74"/>
+      <text x="168" y="252" text-anchor="middle" font-size="9.5" fill="#c2410c" font-family="'Segoe UI',system-ui,sans-serif">⑥</text>
+      <rect x="218" y="239" width="160" height="18" rx="3" fill="#fff7ed" stroke="#fdba74"/>
+      <text x="298" y="252" text-anchor="middle" font-size="9.5" fill="#c2410c" font-family="'Segoe UI',system-ui,sans-serif">⑧</text>
+      <rect x="348" y="239" width="160" height="18" rx="3" fill="#fef2f2" stroke="#fca5a5"/>
+      <text x="428" y="252" text-anchor="middle" font-size="9.5" fill="#dc2626" font-family="'Segoe UI',system-ui,sans-serif">⑨ Lowest</text>
+    </svg>
+
+    <h4>Giai đoạn 2 — Connectivity Checks</h4>
+    <p>
+      Hai peer trao đổi candidate lists qua signaling, sau đó tạo tất cả <strong>candidate pairs</strong>
+      (candidate của A × candidate của B). Mỗi pair được check bằng STUN Binding Request theo cả 2 chiều.
+    </p>
+    <pre>
+  Peer A candidates: [host-A, srflx-A, relay-A]
+  Peer B candidates: [host-B, srflx-B, relay-B]
+
+  Candidate pairs (sắp theo priority):
+  1. host-A   ↔ host-B    (ưu tiên cao nhất)
+  2. host-A   ↔ srflx-B
+  3. srflx-A  ↔ host-B
+  4. host-A   ↔ relay-B
+  5. srflx-A  ↔ srflx-B
+  ...
+
+  Mỗi pair: A gửi STUN request → B, B gửi STUN request → A
+  Pair nào nhận được response hợp lệ → "valid pair"</pre>
+
+    <h4>Giai đoạn 3 — Nomination</h4>
+    <p>
+      <strong>Controlling peer</strong> (bên tạo offer) chọn valid pair tốt nhất và gửi
+      STUN request với flag <code>USE-CANDIDATE</code>. Đây là "nominated pair" — traffic
+      chuyển sang pair này.
+    </p>
+
+    <h3>Trickle ICE — tại sao quan trọng</h3>
+    <p>
+      <strong>Trickle ICE</strong> cho phép gửi candidates ngay khi tìm thấy, không cần chờ
+      gather xong tất cả. Điều này giảm thời gian kết nối đáng kể vì:
+    </p>
+    <div class="two-col">
+      <div class="col-card">
+        <h4>Không có Trickle (slow)</h4>
+        <ol style="font-size:0.85rem;color:var(--text2);">
+          <li>Gather tất cả candidates (có thể mất 2–5s)</li>
+          <li>Gửi toàn bộ qua signaling</li>
+          <li>Bắt đầu checks</li>
+        </ol>
+      </div>
+      <div class="col-card">
+        <h4>Trickle ICE (fast)</h4>
+        <ol style="font-size:0.85rem;color:var(--text2);">
+          <li>Tìm được host candidate → gửi ngay</li>
+          <li>Check bắt đầu ngay, song song với gathering</li>
+          <li>Thường connected trước khi gather xong</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="box box-green">
+      <div class="box-title">Browser hiện đại</div>
+      Chrome, Firefox, Safari đều dùng Trickle ICE mặc định. SDP sẽ có <code>a=ice-options:trickle</code>.
+      Candidates được gửi qua signaling channel dưới dạng các message riêng biệt, không cần gửi lại SDP.
+    </div>
+
+    <h3>ICE Restart</h3>
+    <p>
+      Khi kết nối bị <code>disconnected</code> (ví dụ đổi WiFi sang 4G), ICE có thể
+      <strong>restart</strong> bằng cách tạo offer mới với <code>iceRestart: true</code>.
+      Credentials ICE mới được tạo, quá trình gathering/checking lặp lại.
+      Media stream <em>không bị gián đoạn</em> nếu restart thành công đủ nhanh.
+    </p>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       04  STUN
+  ══════════════════════════════════════ -->
+  <section class="section" id="s4">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title">STUN — Session Traversal Utilities for NAT</span>
+    </div>
+
+    <p>
+      <strong>STUN</strong> (RFC 8489) là protocol đơn giản: client gửi request đến STUN server,
+      server trả về IP:port mà <em>server thấy</em> — tức là IP:port công khai sau NAT.
+    </p>
+
+    <pre>
+  [Peer A]                         [STUN Server]
+  private: 192.168.1.5:52341
+  public: ???
+       |                                |
+       |-- STUN Binding Request ------->|
+       |                                |   Server thấy packet đến từ:
+       |<-- STUN Binding Response ------|   203.0.113.1:48291
+       |    XOR-MAPPED-ADDRESS:         |
+       |    203.0.113.1:48291           |
+       |                                |
+  → Peer A biết public IP:port của mình là 203.0.113.1:48291
+  → Tạo srflx candidate: "candidate:2 1 UDP ... 203.0.113.1 48291 typ srflx"</pre>
+
+    <h3>STUN Message Format</h3>
+    <table>
+      <thead><tr><th>Field</th><th>Size</th><th>Mô tả</th></tr></thead>
+      <tbody>
+        <tr><td><code>Message Type</code></td><td>2 bytes</td><td>Binding Request (0x0001) hoặc Binding Response (0x0101)</td></tr>
+        <tr><td><code>Message Length</code></td><td>2 bytes</td><td>Độ dài phần attributes</td></tr>
+        <tr><td><code>Magic Cookie</code></td><td>4 bytes</td><td>Cố định: 0x2112A442 — dùng để phân biệt STUN với RTP</td></tr>
+        <tr><td><code>Transaction ID</code></td><td>12 bytes</td><td>Random ID để match request với response</td></tr>
+        <tr><td><code>Attributes</code></td><td>variable</td><td>Key-value: XOR-MAPPED-ADDRESS, USERNAME, MESSAGE-INTEGRITY...</td></tr>
+      </tbody>
+    </table>
+
+    <h3>STUN cho ICE Connectivity Checks</h3>
+    <p>
+      STUN không chỉ dùng để discover IP. Trong ICE, STUN Binding Request còn là
+      cơ chế <strong>connectivity check</strong> — peer gửi STUN request có chứa
+      <code>USERNAME</code> (ice-ufrag kết hợp) và <code>MESSAGE-INTEGRITY</code> (HMAC-SHA1).
+      Điều này vừa verify kết nối, vừa authenticate peer đang kết nối.
+    </p>
+
+    <div class="box box-yellow">
+      <div class="box-title">STUN server miễn phí</div>
+      <code>stun:stun.l.google.com:19302</code> — Google cung cấp free cho development.
+      Production nên tự host hoặc dùng dịch vụ như Twilio / Cloudflare Calls để có SLA.
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       05  TURN
+  ══════════════════════════════════════ -->
+  <section class="section" id="s5">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title">TURN — Traversal Using Relays around NAT</span>
+    </div>
+
+    <p>
+      <strong>TURN</strong> (RFC 8656) là fallback cuối cùng khi direct P2P và STUN-based
+      connection đều thất bại. TURN server đứng giữa, <strong>relay toàn bộ traffic</strong>.
+      Peer gửi data đến TURN, TURN forward đến peer kia.
+    </p>
+
+    <pre>
+  [Peer A]                [TURN Server]               [Peer B]
+      |                        |                           |
+      |-- Allocate Request --→ |                           |
+      |←- Allocate Response -- |  relay addr: 1.2.3.4:50000|
+      |-- CreatePermission --> |  (allow B to send)        |
+      |                        |←-- Connect/Send from B --|
+      |←- Data from B ---------|                           |
+      |-- Send to B --------→ |-- Forward to B ----------→|
+
+  Mọi packet đều đi qua TURN server.
+  Không còn P2P, nhưng luôn hoạt động kể cả Symmetric NAT.</pre>
+
+    <h3>Khi nào cần TURN?</h3>
+    <ul>
+      <li>Một hoặc cả hai peer đằng sau <strong>Symmetric NAT</strong></li>
+      <li>Mạng doanh nghiệp có <strong>firewall chặn UDP</strong> outbound</li>
+      <li><strong>Carrier-grade NAT</strong> (CGN) trên mạng mobile 4G/5G</li>
+    </ul>
+
+    <h3>Chi phí TURN</h3>
+    <div class="two-col">
+      <div class="col-card">
+        <h4>Latency</h4>
+        <p style="font-size:0.88rem;">Thêm 1 hop → tăng RTT. Nếu TURN server đặt gần người dùng, overhead chỉ ~10–30ms thêm vào.</p>
+      </div>
+      <div class="col-card">
+        <h4>Bandwidth</h4>
+        <p style="font-size:0.88rem;">TURN server phải xử lý <em>toàn bộ</em> traffic media. 1 video call 1080p30 ≈ 3–5 Mbps qua TURN.</p>
+      </div>
+    </div>
+
+    <div class="box box-purple">
+      <div class="box-title">TURN với DTLS</div>
+      TURN chỉ relay packets — nó <strong>không thể đọc nội dung</strong> vì DTLS/SRTP vẫn được mã hóa
+      end-to-end. TURN server chỉ thấy encrypted bytes. Đây là lý do WebRTC an toàn ngay cả khi buộc phải dùng TURN.
+    </div>
+
+    <h3>Cấu hình ICEServer với TURN</h3>
+    <pre>
+  {
+    iceServers: [
+      { urls: "stun:stun.l.google.com:19302" },
+      {
+        urls: "turn:turn.example.com:3478",
+        username: "user",
+        credential: "password"
+      },
+      {
+        urls: "turns:turn.example.com:5349",  // TURN over TLS (TCP)
+        username: "user",
+        credential: "password"
+      }
+    ]
+  }</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       06  SDP
+  ══════════════════════════════════════ -->
+  <section class="section" id="s6">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-title">SDP Anatomy — Session Description Protocol</span>
+    </div>
+
+    <p>
+      <strong>SDP</strong> (RFC 8866) là định dạng text mô tả "tôi có thể làm gì" —
+      không phải protocol truyền tải, chỉ là metadata được trao đổi qua signaling.
+      SDP dùng format <code>type=value</code>, mỗi dòng 1 attribute.
+    </p>
+
+    <h3>SDP Offer thực tế — annotated</h3>
+    <div class="sdp-block">
+      <div class="sdp-line"><span class="sdp-code">v=0</span><span class="sdp-note">← version, luôn là 0</span></div>
+      <div class="sdp-line"><span class="sdp-code">o=- 8447722553217982387 2 IN IP4 127.0.0.1</span><span class="sdp-note">← origin: session ID, version</span></div>
+      <div class="sdp-line"><span class="sdp-code">s=-</span><span class="sdp-note">← session name (unused)</span></div>
+      <div class="sdp-line"><span class="sdp-code">t=0 0</span><span class="sdp-note">← timing: 0 0 = không có thời hạn</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=group:BUNDLE 0 1</span><span class="sdp-note">← gộp audio + video vào 1 ICE connection</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=msid-semantic: WMS stream1</span><span class="sdp-note">← WebRTC MediaStream semantic</span></div>
+      <div class="sdp-line"><span class="sdp-code">&nbsp;</span></div>
+      <div class="sdp-line"><span class="sdp-code">m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99</span><span class="sdp-note">← media: video, payload types 96-99</span></div>
+      <div class="sdp-line"><span class="sdp-code">c=IN IP4 0.0.0.0</span><span class="sdp-note">← connection (overridden bởi ICE candidates)</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=ice-ufrag:xKkPaZ3m</span><span class="sdp-note">← ICE username fragment (8 ký tự, dùng authentication)</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=ice-pwd:bZ4tMnop7QrsXyz123456789</span><span class="sdp-note">← ICE password (22+ ký tự)</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=ice-options:trickle</span><span class="sdp-note">← hỗ trợ gửi candidates từng cái (Trickle ICE)</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=fingerprint:sha-256 4A:3B:...</span><span class="sdp-note">← hash của DTLS cert để xác thực peer</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=setup:actpass</span><span class="sdp-note">← "tôi có thể làm cả DTLS client lẫn server"</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=mid:0</span><span class="sdp-note">← media ID (dùng với BUNDLE group)</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=sendrecv</span><span class="sdp-note">← direction: gửi VÀ nhận (alternatives: sendonly, recvonly, inactive)</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=rtcp-mux</span><span class="sdp-note">← gộp RTP và RTCP vào cùng 1 port</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=rtpmap:96 VP8/90000</span><span class="sdp-note">← payload type 96 = VP8, clock rate 90kHz</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=rtpmap:97 rtx/90000</span><span class="sdp-note">← payload type 97 = RTX (retransmission cho VP8)</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=fmtp:97 apt=96</span><span class="sdp-note">← RTX liên kết với VP8 (payload 96)</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=rtpmap:98 H264/90000</span><span class="sdp-note">← payload type 98 = H264</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=fmtp:98 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f</span><span class="sdp-note">← H264 profile: Baseline, Level 3.1</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=ssrc:3421698765 cname:abc123def456</span><span class="sdp-note">← SSRC: định danh track, CNAME: canonical name</span></div>
+      <div class="sdp-line"><span class="sdp-code">&nbsp;</span></div>
+      <div class="sdp-line"><span class="sdp-code">m=audio 9 UDP/TLS/RTP/SAVPF 111</span><span class="sdp-note">← audio section</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=rtpmap:111 opus/48000/2</span><span class="sdp-note">← Opus, 48kHz, stereo</span></div>
+      <div class="sdp-line"><span class="sdp-code">a=fmtp:111 minptime=10;useinbandfec=1</span><span class="sdp-note">← Opus FEC (forward error correction)</span></div>
+    </div>
+
+    <h3>Offer/Answer Model</h3>
+    <p>SDP negotiation dùng mô hình <strong>Offer/Answer</strong> (RFC 3264):</p>
+    <ol>
+      <li>Peer A gọi <code>createOffer()</code> → browser tạo SDP liệt kê tất cả capability</li>
+      <li>Peer A gọi <code>setLocalDescription(offer)</code> → ICE gathering bắt đầu</li>
+      <li>Peer A gửi offer qua signaling đến Peer B</li>
+      <li>Peer B gọi <code>setRemoteDescription(offer)</code></li>
+      <li>Peer B gọi <code>createAnswer()</code> → chọn subset capability từ offer</li>
+      <li>Peer B gọi <code>setLocalDescription(answer)</code></li>
+      <li>Peer B gửi answer về Peer A</li>
+      <li>Peer A gọi <code>setRemoteDescription(answer)</code> → negotiation hoàn tất</li>
+    </ol>
+
+    <div class="box box-orange">
+      <div class="box-title">Lỗi phổ biến</div>
+      Thứ tự gọi API phải đúng: <code>setLocalDescription</code> trước khi ICE gathering,
+      <code>setRemoteDescription</code> trước khi <code>createAnswer</code>.
+      Sai thứ tự → <code>InvalidStateError</code>.
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       07  SIGNALING
+  ══════════════════════════════════════ -->
+  <section class="section" id="s7">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="section-title">Signaling — Thứ WebRTC KHÔNG định nghĩa</span>
+    </div>
+
+    <p>
+      Signaling là quá trình 2 peer trao đổi thông tin để thiết lập kết nối — cụ thể là
+      <strong>SDP offer/answer</strong> và <strong>ICE candidates</strong>.
+      WebRTC chủ động <em>không định nghĩa</em> cơ chế signaling.
+    </p>
+
+    <div class="box box-blue">
+      <div class="box-title">Tại sao không định nghĩa signaling?</div>
+      Vì signaling chỉ cần truyền text — bất kỳ channel nào cũng làm được: WebSocket, HTTP,
+      XMPP, SIP, QR code, copy-paste tay. WebRTC để ngỏ để phù hợp với mọi use case.
+    </div>
+
+    <h3>Signaling Sequence Diagram — toàn bộ flow</h3>
+    <p class="svg-caption">Từ WebSocket connect đến P2P video stream — mọi message theo đúng thứ tự thực tế</p>
+    <svg viewBox="0 0 700 630" class="svg-diagram" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI',system-ui,sans-serif">
+      <defs>
+        <marker id="seq-arr"        viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,1.5 L9,5 L0,8.5 Z" fill="#475569"/></marker>
+        <marker id="seq-arr-green"  viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,1.5 L9,5 L0,8.5 Z" fill="#15803d"/></marker>
+        <marker id="seq-arr-blue"   viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,1.5 L9,5 L0,8.5 Z" fill="#0369a1"/></marker>
+        <marker id="seq-arr-indigo" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,1.5 L9,5 L0,8.5 Z" fill="#4338ca"/></marker>
+        <marker id="seq-arr-amber"  viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,1.5 L9,5 L0,8.5 Z" fill="#92400e"/></marker>
+        <marker id="seq-arr-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,1.5 L9,5 L0,8.5 Z" fill="#7c3aed"/></marker>
+      </defs>
+
+      <!-- ── Actor boxes ── -->
+      <rect x="10"  y="8" width="150" height="46" rx="8" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="85"  y="28" text-anchor="middle" font-size="12" font-weight="700" fill="#6d28d9">Drone / Peer A</text>
+      <text x="85"  y="45" text-anchor="middle" font-size="10" fill="#7c3aed">drone.html</text>
+
+      <rect x="275" y="8" width="150" height="46" rx="8" fill="#fffbeb" stroke="#fde68a" stroke-width="1.5"/>
+      <text x="350" y="28" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">Signaling Server</text>
+      <text x="350" y="45" text-anchor="middle" font-size="10" fill="#b45309">server.js WebSocket</text>
+
+      <rect x="540" y="8" width="150" height="46" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+      <text x="615" y="28" text-anchor="middle" font-size="12" font-weight="700" fill="#15803d">Ground Station</text>
+      <text x="615" y="45" text-anchor="middle" font-size="10" fill="#15803d">ground-station.html</text>
+
+      <!-- ── Lifelines ── -->
+      <line x1="85"  y1="54" x2="85"  y2="622" stroke="#c4b5fd" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <line x1="350" y1="54" x2="350" y2="622" stroke="#fde68a" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <line x1="615" y1="54" x2="615" y2="622" stroke="#86efac" stroke-width="1.5" stroke-dasharray="5,4"/>
+
+      <!-- ══════ STEP 1: WebSocket Connect (y=62) ══════ -->
+      <rect x="0" y="62" width="700" height="20" rx="0" fill="#f8fafc"/>
+      <text x="350" y="76" text-anchor="middle" font-size="10" font-weight="700" fill="#64748b">① WebSocket Connect</text>
+
+      <path d="M95,92 L340,92"  stroke="#94a3b8" stroke-width="1.5" marker-end="url(#seq-arr)"/>
+      <text x="213" y="88" text-anchor="middle" font-size="10" fill="#475569">connect WS</text>
+      <path d="M605,108 L360,108" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#seq-arr)"/>
+      <text x="488" y="104" text-anchor="middle" font-size="10" fill="#475569">connect WS</text>
+
+      <!-- ══════ STEP 2: SDP Offer (y=130) ══════ -->
+      <rect x="0" y="126" width="700" height="20" rx="0" fill="#f0f9ff"/>
+      <text x="350" y="140" text-anchor="middle" font-size="10" font-weight="700" fill="#0369a1">② SDP Offer — createOffer() → setLocalDescription()</text>
+
+      <rect x="46" y="150" width="78" height="16" rx="4" fill="#e0f2fe" stroke="#bae6fd"/>
+      <text x="85" y="162" text-anchor="middle" font-size="9.5" fill="#0369a1">createOffer()</text>
+
+      <path d="M95,178 L340,178"  stroke="#0369a1" stroke-width="1.5" marker-end="url(#seq-arr-blue)"/>
+      <text x="213" y="174" text-anchor="middle" font-size="10" fill="#0369a1">{type:"offer", sdp:…}</text>
+      <path d="M360,194 L605,194" stroke="#0369a1" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#seq-arr-blue)"/>
+      <text x="488" y="190" text-anchor="middle" font-size="10" fill="#0369a1">relay offer →</text>
+
+      <!-- ══════ STEP 3: SDP Answer (y=214) ══════ -->
+      <rect x="0" y="212" width="700" height="20" rx="0" fill="#f0fdf4"/>
+      <text x="350" y="226" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d">③ SDP Answer — setRemoteDescription() → createAnswer()</text>
+
+      <rect x="577" y="236" width="76" height="16" rx="4" fill="#dcfce7" stroke="#86efac"/>
+      <text x="615" y="248" text-anchor="middle" font-size="9.5" fill="#15803d">createAnswer()</text>
+
+      <path d="M605,264 L360,264" stroke="#15803d" stroke-width="1.5" marker-end="url(#seq-arr-green)"/>
+      <text x="488" y="260" text-anchor="middle" font-size="10" fill="#15803d">{type:"answer", sdp:…}</text>
+      <path d="M340,280 L95,280"  stroke="#15803d" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#seq-arr-green)"/>
+      <text x="213" y="276" text-anchor="middle" font-size="10" fill="#15803d">← relay answer</text>
+
+      <!-- ══════ STEP 4: ICE Trickle (y=300) ══════ -->
+      <rect x="0" y="298" width="700" height="20" rx="0" fill="#f8fafc"/>
+      <text x="350" y="312" text-anchor="middle" font-size="10" font-weight="700" fill="#64748b">④ Trickle ICE Candidates (đồng thời 2 chiều, qua server relay)</text>
+
+      <path d="M95,328 L340,328"  stroke="#475569" stroke-width="1.2" marker-end="url(#seq-arr)"/>
+      <text x="213" y="324" text-anchor="middle" font-size="9.5" fill="#475569">candidate: host (192.168.x.x)</text>
+      <path d="M360,328 L605,328" stroke="#475569" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#seq-arr)"/>
+
+      <path d="M605,346 L360,346" stroke="#475569" stroke-width="1.2" marker-end="url(#seq-arr)"/>
+      <text x="488" y="342" text-anchor="middle" font-size="9.5" fill="#475569">candidate: host (10.0.0.x)</text>
+      <path d="M340,346 L95,346"  stroke="#475569" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#seq-arr)"/>
+
+      <path d="M95,364 L340,364"  stroke="#475569" stroke-width="1.2" marker-end="url(#seq-arr)"/>
+      <text x="213" y="360" text-anchor="middle" font-size="9.5" fill="#475569">candidate: srflx (1.2.3.4)</text>
+      <path d="M360,364 L605,364" stroke="#475569" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#seq-arr)"/>
+
+      <path d="M605,382 L360,382" stroke="#475569" stroke-width="1.2" marker-end="url(#seq-arr)"/>
+      <text x="488" y="378" text-anchor="middle" font-size="9.5" fill="#475569">candidate: srflx (5.6.7.8)</text>
+      <path d="M340,382 L95,382"  stroke="#475569" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#seq-arr)"/>
+
+      <!-- ══════ STEP 5: ICE Checks P2P (y=402) ══════ -->
+      <rect x="0" y="400" width="700" height="20" rx="0" fill="#eff6ff"/>
+      <text x="350" y="414" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">⑤ ICE Connectivity Checks — trực tiếp P2P, không qua server</text>
+
+      <path d="M95,430 L605,430"  stroke="#4338ca" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#seq-arr-indigo)"/>
+      <text x="350" y="426" text-anchor="middle" font-size="10" fill="#4338ca">STUN Binding Request (hole punching)</text>
+      <path d="M605,448 L95,448"  stroke="#4338ca" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#seq-arr-indigo)"/>
+      <text x="350" y="444" text-anchor="middle" font-size="10" fill="#4338ca">STUN Binding Response</text>
+      <text x="350" y="462" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d">✓ ICE Connected — nominated pair</text>
+
+      <!-- ══════ STEP 6: DTLS (y=476) ══════ -->
+      <rect x="0" y="474" width="700" height="20" rx="0" fill="#fffbeb"/>
+      <text x="350" y="488" text-anchor="middle" font-size="10" font-weight="700" fill="#92400e">⑥ DTLS Handshake — P2P, server không nhìn thấy</text>
+
+      <path d="M95,504 L605,504"  stroke="#92400e" stroke-width="1.5" marker-end="url(#seq-arr-amber)"/>
+      <text x="350" y="500" text-anchor="middle" font-size="10" fill="#92400e">ClientHello → ServerHello → Certificate → KeyExchange…</text>
+      <path d="M605,520 L95,520"  stroke="#92400e" stroke-width="1.5" marker-end="url(#seq-arr-amber)"/>
+      <text x="350" y="532" text-anchor="middle" font-size="10" font-weight="700" fill="#92400e">✓ DTLS Channel established — SRTP keys derived</text>
+
+      <!-- ══════ STEP 7: SRTP + DataChannel (y=546) ══════ -->
+      <rect x="0" y="544" width="700" height="20" rx="0" fill="#dcfce7"/>
+      <text x="350" y="558" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d">⑦ Media Stream — P2P trực tiếp, signaling server không liên quan</text>
+
+      <!-- X trên lifeline server -->
+      <line x1="340" y1="566" x2="360" y2="586" stroke="#dc2626" stroke-width="2"/>
+      <line x1="360" y1="566" x2="340" y2="586" stroke="#dc2626" stroke-width="2"/>
+
+      <path d="M95,574 L605,574"  stroke="#15803d" stroke-width="3" marker-end="url(#seq-arr-green)"/>
+      <text x="350" y="570" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">══ Encrypted Video Stream (SRTP) ══▶</text>
+
+      <path d="M95,592 L605,592"  stroke="#7c3aed" stroke-width="1.8" stroke-dasharray="8,3" marker-end="url(#seq-arr-purple)"/>
+      <text x="350" y="607" text-anchor="middle" font-size="10" font-weight="600" fill="#7c3aed">─ ─ DataChannel: chat + file transfer ─ ─▶</text>
+
+      <!-- Server note box -->
+      <rect x="276" y="614" width="148" height="14" rx="5" fill="#fef9c3" stroke="#fde047"/>
+      <text x="350" y="625" text-anchor="middle" font-size="9" font-weight="700" fill="#713f12">Server chỉ relay SDP + ICE, không thấy media ✗</text>
+    </svg>
+
+    <h3>Demo App Architecture</h3>
+    <p class="svg-caption">Kiến trúc hai giai đoạn của ứng dụng demo</p>
+    <svg viewBox="0 0 700 300" class="svg-diagram" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arch-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#475569"/>
+        </marker>
+        <marker id="arch-arr-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#15803d"/>
+        </marker>
+        <marker id="arch-arr-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#0369a1"/>
+        </marker>
+        <marker id="arch-arr-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#7c3aed"/>
+        </marker>
+      </defs>
+
+      <!-- Phase 1 label -->
+      <rect x="5" y="5" width="690" height="120" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+      <text x="16" y="24" font-size="11" font-weight="700" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">Phase 1 — Loopback (index.html, zero-dependency)</text>
+
+      <!-- Browser box -->
+      <rect x="20" y="32" width="660" height="84" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+      <text x="350" y="50" text-anchor="middle" font-size="10.5" fill="#64748b" font-family="'Segoe UI',system-ui,sans-serif">Browser Tab (1 file HTML)</text>
+
+      <!-- PeerA box -->
+      <rect x="38" y="56" width="180" height="50" rx="6" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="128" y="76" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9" font-family="'Segoe UI',system-ui,sans-serif">RTCPeerConnection A</text>
+      <text x="128" y="92" text-anchor="middle" font-size="9.5" fill="#7c3aed" font-family="'Segoe UI',system-ui,sans-serif">getUserMedia() → tracks</text>
+
+      <!-- JS signaling label -->
+      <text x="350" y="77" text-anchor="middle" font-size="10" fill="#94a3b8" font-family="'Segoe UI',system-ui,sans-serif">JS signaling</text>
+      <text x="350" y="90" text-anchor="middle" font-size="9.5" fill="#cbd5e1" font-family="'Segoe UI',system-ui,sans-serif">(function calls)</text>
+      <path d="M219,76 L310,76" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arch-arr)"/>
+      <path d="M390,82 L481,82" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arch-arr)"/>
+
+      <!-- PeerB box -->
+      <rect x="482" y="56" width="180" height="50" rx="6" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+      <text x="572" y="76" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">RTCPeerConnection B</text>
+      <text x="572" y="92" text-anchor="middle" font-size="9.5" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">ontrack → &lt;video&gt;</text>
+
+      <!-- Loopback media arrow -->
+      <path d="M128,106 C128,116 572,116 572,106" stroke="#15803d" stroke-width="2" fill="none" marker-end="url(#arch-arr-g)"/>
+      <text x="350" y="114" text-anchor="middle" font-size="9.5" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">loopback ICE / SRTP media</text>
+
+      <!-- Phase 2 label -->
+      <rect x="5" y="138" width="690" height="155" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+      <text x="16" y="157" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif">Phase 2 — Drone Streaming (Node.js + 2 tabs)</text>
+      <text x="185" y="157" font-size="11" font-weight="700" fill="#0369a1" font-family="'Segoe UI',system-ui,sans-serif"></text>
+
+      <!-- Drone box -->
+      <rect x="18" y="163" width="185" height="118" rx="8" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="110" y="182" text-anchor="middle" font-size="11.5" font-weight="700" fill="#6d28d9" font-family="'Segoe UI',system-ui,sans-serif">drone.html</text>
+      <rect x="28" y="187" width="165" height="18" rx="4" fill="#ede9fe" stroke="#c4b5fd"/>
+      <text x="110" y="200" text-anchor="middle" font-size="9.5" fill="#6d28d9" font-family="'Segoe UI',system-ui,sans-serif">📷 Webcam / Video File</text>
+      <text x="110" y="220" text-anchor="middle" font-size="9.5" fill="#7c3aed" font-family="'Segoe UI',system-ui,sans-serif">captureStream()</text>
+      <text x="110" y="235" text-anchor="middle" font-size="9.5" fill="#7c3aed" font-family="'Segoe UI',system-ui,sans-serif">addTrack() → RTCPeerConn</text>
+      <text x="110" y="250" text-anchor="middle" font-size="9.5" fill="#7c3aed" font-family="'Segoe UI',system-ui,sans-serif">DataChannel initiator</text>
+      <text x="110" y="270" text-anchor="middle" font-size="9" fill="#94a3b8" font-family="'Segoe UI',system-ui,sans-serif">sendonly + uplink stats</text>
+
+      <!-- Server box -->
+      <rect x="258" y="163" width="185" height="118" rx="8" fill="#fffbeb" stroke="#fde68a" stroke-width="1.5"/>
+      <text x="350" y="182" text-anchor="middle" font-size="11.5" font-weight="700" fill="#92400e" font-family="'Segoe UI',system-ui,sans-serif">server.js</text>
+      <text x="350" y="200" text-anchor="middle" font-size="9.5" fill="#b45309" font-family="'Segoe UI',system-ui,sans-serif">Node.js http + ws@8</text>
+      <text x="350" y="218" text-anchor="middle" font-size="9.5" fill="#b45309" font-family="'Segoe UI',system-ui,sans-serif">Serve static HTML files</text>
+      <text x="350" y="235" text-anchor="middle" font-size="9.5" fill="#b45309" font-family="'Segoe UI',system-ui,sans-serif">WebSocket signaling relay</text>
+      <text x="350" y="252" text-anchor="middle" font-size="9.5" fill="#b45309" font-family="'Segoe UI',system-ui,sans-serif">Forward SDP + ICE only</text>
+      <text x="350" y="270" text-anchor="middle" font-size="9" fill="#94a3b8" font-family="'Segoe UI',system-ui,sans-serif">30 lines of code</text>
+
+      <!-- Ground Station box -->
+      <rect x="498" y="163" width="185" height="118" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+      <text x="590" y="182" text-anchor="middle" font-size="11.5" font-weight="700" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">ground-station.html</text>
+      <text x="590" y="200" text-anchor="middle" font-size="9.5" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">ontrack → &lt;video&gt; display</text>
+      <text x="590" y="218" text-anchor="middle" font-size="9.5" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">Text chat (DataChannel)</text>
+      <text x="590" y="235" text-anchor="middle" font-size="9.5" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">File receive + download</text>
+      <text x="590" y="252" text-anchor="middle" font-size="9.5" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">getStats() panel 1s</text>
+      <text x="590" y="270" text-anchor="middle" font-size="9" fill="#94a3b8" font-family="'Segoe UI',system-ui,sans-serif">recvonly + downlink stats</text>
+
+      <!-- Arrows: drone ↔ server (SDP/ICE) -->
+      <path d="M203,200 L258,200" stroke="#b45309" stroke-width="1.5" marker-end="url(#arch-arr)"/>
+      <text x="230" y="196" text-anchor="middle" font-size="8.5" fill="#b45309" font-family="'Segoe UI',system-ui,sans-serif">SDP/ICE</text>
+      <path d="M258,210 L203,210" stroke="#b45309" stroke-width="1.5" marker-end="url(#arch-arr)"/>
+
+      <!-- Arrows: server ↔ ground (SDP/ICE) -->
+      <path d="M443,200 L498,200" stroke="#b45309" stroke-width="1.5" marker-end="url(#arch-arr)"/>
+      <text x="470" y="196" text-anchor="middle" font-size="8.5" fill="#b45309" font-family="'Segoe UI',system-ui,sans-serif">SDP/ICE</text>
+      <path d="M498,210 L443,210" stroke="#b45309" stroke-width="1.5" marker-end="url(#arch-arr)"/>
+
+      <!-- SRTP P2P arrow (drone → ground, below boxes) -->
+      <path d="M110,281 C110,295 590,295 590,281" stroke="#15803d" stroke-width="2.5" fill="none" marker-end="url(#arch-arr-g)"/>
+      <text x="350" y="292" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">SRTP video stream (P2P — bypasses server)</text>
+    </svg>
+
+    <h3>Signaling chỉ truyền 2 loại data</h3>
+    <div class="two-col">
+      <div class="col-card">
+        <h4>SDP Offer / Answer</h4>
+        <p style="font-size:0.87rem;">Chuỗi text mô tả capability. Gửi 1 lần duy nhất khi bắt đầu negotiation.</p>
+        <pre style="margin:0.5rem 0 0;font-size:0.75rem;">
+{
+  "type": "offer",
+  "sdp": "v=0\r\no=-..."
+}</pre>
+      </div>
+      <div class="col-card">
+        <h4>ICE Candidates</h4>
+        <p style="font-size:0.87rem;">Địa chỉ mạng tìm được. Gửi từng cái khi tìm thấy (Trickle ICE).</p>
+        <pre style="margin:0.5rem 0 0;font-size:0.75rem;">
+{
+  "type": "ice",
+  "candidate": {
+    "candidate": "candidate:...",
+    "sdpMid": "0"
+  }
+}</pre>
+      </div>
+    </div>
+
+    <h3>Signaling server tối giản — WebSocket relay</h3>
+    <pre>
+// server.js — 30 dòng là đủ
+const http = require('http');
+const { WebSocketServer } = require('ws');
+
+const server = http.createServer((req, res) => {
+  // serve static files
+});
+
+const wss = new WebSocketServer({ server });
+const clients = new Set();
+
+wss.on('connection', (ws) => {
+  clients.add(ws);
+  ws.on('message', (data) => {
+    // forward message đến tất cả clients còn lại
+    for (const client of clients) {
+      if (client !== ws && client.readyState === 1) {
+        client.send(data);
+      }
+    }
+  });
+  ws.on('close', () => clients.delete(ws));
+});
+
+server.listen(3000);</pre>
+
+    <h3>Sau khi signaling xong</h3>
+    <p>
+      Khi <code>iceConnectionState === "connected"</code>, media flow đi P2P.
+      Signaling server <strong>không liên quan</strong> đến media nữa.
+      Có thể đóng WebSocket connection mà video stream vẫn chạy bình thường.
+    </p>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       08  DTLS
+  ══════════════════════════════════════ -->
+  <section class="section" id="s8">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <span class="section-title">DTLS Handshake</span>
+    </div>
+
+    <p>
+      <strong>DTLS</strong> (Datagram TLS — RFC 6347) là TLS chạy trên UDP.
+      Sau khi ICE tìm được candidate pair, DTLS handshake thiết lập
+      channel mã hóa và xác thực 2 peer với nhau.
+    </p>
+
+    <h3>DTLS vs TLS</h3>
+    <table>
+      <thead><tr><th></th><th>TLS</th><th>DTLS</th></tr></thead>
+      <tbody>
+        <tr><td>Transport</td><td>TCP (reliable)</td><td>UDP (unreliable)</td></tr>
+        <tr><td>Retransmission</td><td>TCP tự handle</td><td>DTLS tự retransmit handshake packets</td></tr>
+        <tr><td>Record layer</td><td>Sequential</td><td>Có epoch + sequence number để handle reorder</td></tr>
+        <tr><td>Latency</td><td>Cao hơn (TCP 3-way handshake)</td><td>Thấp hơn (UDP)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>DTLS Handshake Flow</h3>
+    <pre>
+  Peer A (DTLS Client)              Peer B (DTLS Server)
+       |                                    |
+       |--- ClientHello ------------------>|  (cipher suites, random)
+       |<-- HelloVerifyRequest ------------|  (cookie, tránh DoS)
+       |--- ClientHello (with cookie) ---->|
+       |<-- ServerHello --------------------|  (chosen cipher)
+       |<-- Certificate --------------------|  (self-signed cert)
+       |<-- ServerKeyExchange --------------|  (ECDH params)
+       |<-- CertificateRequest ------------|
+       |<-- ServerHelloDone ----------------|
+       |--- Certificate ------------------->|  (Peer A's self-signed cert)
+       |--- ClientKeyExchange ------------->|  (ECDH public key)
+       |--- CertificateVerify ------------->|  (signature với private key)
+       |--- ChangeCipherSpec -------------->|
+       |--- Finished ---------------------->|  (HMAC của toàn bộ handshake)
+       |<-- ChangeCipherSpec ---------------|
+       |<-- Finished -----------------------|
+       |                                    |
+       |====== DTLS Channel Established =====|</pre>
+
+    <h3>Xác thực Certificate qua Fingerprint</h3>
+    <p>
+      Browser tự tạo <strong>self-signed certificate</strong> cho mỗi RTCPeerConnection —
+      không cần CA (Certificate Authority). Certificate được xác thực qua
+      <strong>fingerprint trong SDP</strong>:
+    </p>
+    <ol>
+      <li>Peer A tạo self-signed cert, hash nó → fingerprint</li>
+      <li>Đặt fingerprint vào SDP: <code>a=fingerprint:sha-256 4A:3B:...</code></li>
+      <li>SDP được gửi qua signaling channel (WebSocket — có thể trust)</li>
+      <li>Trong DTLS handshake, Peer A gửi cert</li>
+      <li>Peer B verify: hash của cert nhận được <em>phải khớp</em> fingerprint trong SDP</li>
+      <li>Nếu không khớp → <strong>reject kết nối</strong> (man-in-the-middle attack)</li>
+    </ol>
+
+    <div class="box box-green">
+      <div class="box-title">Tại sao an toàn</div>
+      Kẻ tấn công có thể relay ICE traffic nhưng <em>không thể giả mạo cert</em>
+      vì không biết private key. Fingerprint trong SDP được gửi qua kênh signaling
+      mà attacker không control → MITM không thể thành công.
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       09  SRTP
+  ══════════════════════════════════════ -->
+  <section class="section" id="s9">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <span class="section-title">SRTP — Secure Real-time Transport Protocol</span>
+    </div>
+
+    <p>
+      Media (audio/video) không đi qua DTLS channel mà đi qua <strong>SRTP</strong> (RFC 3711).
+      Lý do: DTLS record layer có overhead lớn, không phù hợp cho hàng nghìn packets/giây của video.
+    </p>
+
+    <h3>DTLS-SRTP Key Derivation</h3>
+    <p>Keys cho SRTP được <em>derive</em> từ DTLS handshake qua cơ chế <strong>DTLS-SRTP</strong> (RFC 5764):</p>
+    <pre>
+  DTLS Master Secret
+       |
+       ↓ DTLS-SRTP key derivation (RFC 5705 exporter)
+       |
+  ┌────┴────────────────────────────────┐
+  │  Client SRTP Master Key  (16 bytes) │
+  │  Server SRTP Master Key  (16 bytes) │
+  │  Client SRTP Master Salt (14 bytes) │
+  │  Server SRTP Master Salt (14 bytes) │
+  └─────────────────────────────────────┘
+       |
+       ↓ KDF (AES Counter Mode)
+       |
+  ┌────┴──────────────────────────────────────┐
+  │  Cipher Key   (AES-128-CM hoặc AES-256-CM) │
+  │  Authentication Key  (HMAC-SHA1, 160-bit)  │
+  │  Salting Key  (thêm vào IV)                │
+  └────────────────────────────────────────────┘</pre>
+
+    <h3>SRTP Packet Structure</h3>
+    <pre>
+  ┌─────────────────────────────────────────────────────┐
+  │  RTP Header (12+ bytes) — KHÔNG MÃ HÓA              │
+  │  [V=2][P][X][CC][M][PT][Sequence Number][Timestamp] │
+  │  [SSRC] [CSRC list]                                 │
+  ├─────────────────────────────────────────────────────┤
+  │  RTP Payload — MÃ HÓA (AES-128-CTR)                 │
+  │  (H264 NAL units, VP8 frames, Opus frames...)       │
+  ├─────────────────────────────────────────────────────┤
+  │  Authentication Tag (HMAC-SHA1, 80-bit) — THÊM VÀO  │
+  └─────────────────────────────────────────────────────┘</pre>
+
+    <ul>
+      <li><strong>Sequence Number</strong> trong header không mã hóa → receiver có thể detect reorder/replay</li>
+      <li><strong>Payload mã hóa</strong> bằng AES-CTR → TURN server không đọc được nội dung</li>
+      <li><strong>Auth Tag</strong> verify integrity — detect packet tampering</li>
+    </ul>
+
+    <h3>SRTP vs DTLS cho Media</h3>
+    <div class="two-col">
+      <div class="col-card">
+        <h4>Nếu dùng DTLS cho media</h4>
+        <ul style="font-size:0.85rem;color:var(--text2);">
+          <li>Record layer overhead: ~13 bytes/packet</li>
+          <li>Phải track sequence riêng</li>
+          <li>Fragmentation phức tạp</li>
+          <li>~1000 packets/s × 13 bytes = 13 KB/s overhead không cần thiết</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <h4>DTLS-SRTP (thực tế)</h4>
+        <ul style="font-size:0.85rem;color:var(--text2);">
+          <li>DTLS chỉ dùng để exchange keys 1 lần</li>
+          <li>SRTP dùng RTP header sẵn có</li>
+          <li>Overhead chỉ thêm auth tag 10 bytes</li>
+          <li>Latency thấp, throughput cao</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       10  CODEC NEGOTIATION
+  ══════════════════════════════════════ -->
+  <section class="section" id="s10">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <span class="section-title">Codec Negotiation</span>
+    </div>
+
+    <p>
+      Codec negotiation xác định <em>ngôn ngữ chung</em> giữa 2 peer.
+      Offerer liệt kê tất cả codec hỗ trợ theo thứ tự ưu tiên.
+      Answerer chọn codec đầu tiên trong danh sách mà cả hai đều hỗ trợ.
+    </p>
+
+    <h3>Video Codecs</h3>
+    <div class="codec-grid">
+      <div class="codec-card">
+        <div class="codec-name">H264 / AVC</div>
+        <div class="codec-type">Video</div>
+        <div class="codec-prop">Support: <span>Chrome, Firefox, Safari, Edge</span></div>
+        <div class="codec-prop">Hardware enc: <span>Rộng rãi nhất</span></div>
+        <div class="codec-prop">Latency: <span>Thấp</span></div>
+        <div class="codec-prop">Drone use: <span>Tốt nhất — camera hardware H264</span></div>
+      </div>
+      <div class="codec-card">
+        <div class="codec-name">VP8</div>
+        <div class="codec-type">Video</div>
+        <div class="codec-prop">Support: <span>Chrome, Firefox, Safari</span></div>
+        <div class="codec-prop">Hardware enc: <span>Ít hơn H264</span></div>
+        <div class="codec-prop">Chất lượng: <span>Tốt ở bitrate thấp</span></div>
+        <div class="codec-prop">License: <span>Royalty-free</span></div>
+      </div>
+      <div class="codec-card">
+        <div class="codec-name">VP9</div>
+        <div class="codec-type">Video</div>
+        <div class="codec-prop">Support: <span>Chrome, Firefox</span></div>
+        <div class="codec-prop">Nén: <span>~50% tốt hơn VP8</span></div>
+        <div class="codec-prop">CPU: <span>Cao hơn VP8</span></div>
+        <div class="codec-prop">Safari: <span>Hạn chế</span></div>
+      </div>
+      <div class="codec-card">
+        <div class="codec-name">AV1</div>
+        <div class="codec-type">Video</div>
+        <div class="codec-prop">Support: <span>Chrome 90+, Firefox</span></div>
+        <div class="codec-prop">Nén: <span>Tốt nhất hiện tại</span></div>
+        <div class="codec-prop">CPU: <span>Rất cao</span></div>
+        <div class="codec-prop">WebRTC: <span>Thêm gần đây</span></div>
+      </div>
+    </div>
+
+    <h3>Audio Codecs</h3>
+    <table>
+      <thead><tr><th>Codec</th><th>Bitrate</th><th>Đặc điểm</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Opus</strong></td><td>6–510 kbps</td><td><strong>Bắt buộc trong WebRTC.</strong> Adaptive bitrate, FEC, DTX. Tốt nhất cho mọi use case.</td></tr>
+        <tr><td><strong>G.711 (PCMU/PCMA)</strong></td><td>64 kbps</td><td>Legacy, dùng cho interop với SIP/PSTN.</td></tr>
+        <tr><td><strong>G.722</strong></td><td>64 kbps</td><td>Wideband, chất lượng tốt hơn G.711.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Force codec trong JavaScript</h3>
+    <pre>
+  // Ưu tiên H264 cho drone streaming
+  async function preferH264(pc) {
+    const offer = await pc.createOffer();
+    const sdp = offer.sdp.replace(
+      /m=video (\d+) UDP\/TLS\/RTP\/SAVPF ([\d ]+)/,
+      (match, port, payloads) => {
+        const lines = offer.sdp.split('\n');
+        // tìm payload type của H264
+        const h264 = lines
+          .filter(l => l.includes('H264'))
+          .map(l => l.match(/a=rtpmap:(\d+)/)?.[1])
+          .filter(Boolean);
+        const rest = payloads.split(' ').filter(p => !h264.includes(p));
+        return `m=video ${port} UDP/TLS/RTP/SAVPF ${[...h264, ...rest].join(' ')}`;
+      }
+    );
+    await pc.setLocalDescription({ type: 'offer', sdp });
+  }</pre>
+
+    <div class="box box-blue">
+      <div class="box-title">Drone streaming recommendation</div>
+      Ưu tiên <strong>H264 Baseline Profile</strong> (profile-level-id=42e01f).
+      Hầu hết camera module (Raspberry Pi, GoPro, DJI) có hardware H264 encoder,
+      zero CPU overhead. VP8/VP9 cần software encoding, tốn CPU pin của drone.
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       11  DataChannel
+  ══════════════════════════════════════ -->
+  <section class="section" id="s11">
+    <div class="section-header">
+      <span class="section-num">11</span>
+      <span class="section-title">DataChannel — SCTP over DTLS</span>
+    </div>
+
+    <p>
+      <strong>DataChannel</strong> cho phép truyền arbitrary data (text, binary) qua WebRTC.
+      Không dùng RTP — thay vào đó dùng <strong>SCTP</strong> (RFC 4960) chạy trên DTLS channel.
+    </p>
+
+    <h3>SCTP vs TCP vs UDP</h3>
+    <table>
+      <thead><tr><th>Tính năng</th><th>TCP</th><th>UDP</th><th>SCTP (DataChannel)</th></tr></thead>
+      <tbody>
+        <tr><td>Ordered delivery</td><td>Luôn có</td><td>Không</td><td><strong>Tùy chọn</strong></td></tr>
+        <tr><td>Reliable delivery</td><td>Luôn có</td><td>Không</td><td><strong>Tùy chọn</strong></td></tr>
+        <tr><td>Multi-stream</td><td>Không</td><td>Không</td><td><strong>Có</strong> — nhiều channels, không block nhau</td></tr>
+        <tr><td>Head-of-line blocking</td><td>Có (giữa messages)</td><td>Không</td><td><strong>Không</strong> (giữa channels)</td></tr>
+        <tr><td>Partial reliability</td><td>Không</td><td>Không</td><td><strong>Có</strong> — maxRetransmits / maxPacketLifeTime</td></tr>
+        <tr><td>Message boundaries</td><td>Stream, không có boundary</td><td>Có</td><td><strong>Có</strong> — message framing</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Các chế độ DataChannel</h3>
+    <pre>
+  // Reliable + Ordered (mặc định) — dùng cho: chat, commands, file transfer
+  const channel = pc.createDataChannel("chat");
+
+  // Unreliable + Unordered — dùng cho: game state, telemetry (giống UDP)
+  const channel = pc.createDataChannel("telemetry", {
+    ordered: false,
+    maxRetransmits: 0
+  });
+
+  // Reliable nhưng có timeout — dùng cho: sensor data có deadline
+  const channel = pc.createDataChannel("sensor", {
+    ordered: false,
+    maxPacketLifeTime: 100  // ms — discard nếu chưa gửi được sau 100ms
+  });</pre>
+
+    <h3>File Transfer qua DataChannel</h3>
+    <pre>
+  // Sender
+  async function sendFile(channel, file) {
+    const CHUNK = 16384; // 16KB — max chunk size an toàn
+    channel.send(JSON.stringify({ type:'file-start', name:file.name, size:file.size }));
+
+    const buffer = await file.arrayBuffer();
+    for (let offset = 0; offset &lt; buffer.byteLength; offset += CHUNK) {
+      // throttle nếu buffer đầy
+      if (channel.bufferedAmount > channel.bufferedAmountLowThreshold) {
+        await new Promise(r => channel.onbufferedamountlow = r);
+      }
+      channel.send(buffer.slice(offset, offset + CHUNK));
+    }
+    channel.send(JSON.stringify({ type:'file-end' }));
+  }
+
+  // Receiver
+  let chunks = [], meta = null;
+  channel.onmessage = (e) => {
+    if (typeof e.data === 'string') {
+      const msg = JSON.parse(e.data);
+      if (msg.type === 'file-start') meta = msg;
+      if (msg.type === 'file-end') {
+        const blob = new Blob(chunks);
+        const url = URL.createObjectURL(blob);
+        const a = Object.assign(document.createElement('a'), { href:url, download:meta.name });
+        a.click();
+        chunks = []; meta = null;
+      }
+    } else {
+      chunks.push(e.data); // ArrayBuffer chunk
+    }
+  };</pre>
+
+    <div class="box box-yellow">
+      <div class="box-title">Lưu ý bufferedAmount</div>
+      DataChannel có buffer nội bộ. Gửi quá nhanh mà không check <code>bufferedAmount</code>
+      sẽ làm tràn buffer → browser crash hoặc data loss.
+      Luôn throttle bằng <code>bufferedAmountLowThreshold</code>.
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       12  getStats
+  ══════════════════════════════════════ -->
+  <section class="section" id="s12">
+    <div class="section-header">
+      <span class="section-num">12</span>
+      <span class="section-title">getStats() API — Connection Diagnostics</span>
+    </div>
+
+    <p>
+      <code>RTCPeerConnection.getStats()</code> trả về <code>Map</code> của hàng chục
+      <strong>RTCStats objects</strong>, mỗi object là một "report" về một khía cạnh
+      của kết nối. Đây là công cụ chẩn đoán mạnh nhất của WebRTC.
+    </p>
+
+    <h3>Các report type quan trọng</h3>
+    <table class="stats-mono">
+      <thead><tr><th>Report Type</th><th>Metrics quan trọng</th><th>Dùng để</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>inbound-rtp</td>
+          <td><code>bytesReceived</code>, <code>packetsLost</code>, <code>jitter</code>, <code>framesDecoded</code>, <code>framesPerSecond</code></td>
+          <td>Tính bitrate nhận, packet loss %, framerate thực tế</td>
+        </tr>
+        <tr>
+          <td>outbound-rtp</td>
+          <td><code>bytesSent</code>, <code>packetsSent</code>, <code>retransmittedPacketsSent</code>, <code>qualityLimitationReason</code></td>
+          <td>Bitrate gửi, retransmit rate, lý do giảm chất lượng</td>
+        </tr>
+        <tr>
+          <td>candidate-pair</td>
+          <td><code>currentRoundTripTime</code>, <code>availableOutgoingBitrate</code>, <code>bytesDiscardedOnSend</code></td>
+          <td>RTT, estimated bandwidth, dropped packets</td>
+        </tr>
+        <tr>
+          <td>local-candidate</td>
+          <td><code>candidateType</code>, <code>ip</code>, <code>port</code>, <code>protocol</code></td>
+          <td>Xem đang dùng host/srflx/relay, UDP hay TCP</td>
+        </tr>
+        <tr>
+          <td>codec</td>
+          <td><code>mimeType</code>, <code>clockRate</code>, <code>sdpFmtpLine</code></td>
+          <td>Verify codec đang dùng (video/H264, audio/opus)</td>
+        </tr>
+        <tr>
+          <td>media-source</td>
+          <td><code>frameWidth</code>, <code>frameHeight</code>, <code>framesPerSecond</code></td>
+          <td>Resolution và fps của local camera/source</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Tính bitrate thực tế</h3>
+    <pre>
+  let prevBytes = 0, prevTime = 0;
+
+  setInterval(async () => {
+    const stats = await pc.getStats();
+    const now = Date.now();
+
+    for (const [, report] of stats) {
+      if (report.type === 'inbound-rtp' && report.kind === 'video') {
+        const bytes = report.bytesReceived;
+        const dt = (now - prevTime) / 1000; // seconds
+
+        const bitrateKbps = ((bytes - prevBytes) * 8 / dt / 1000).toFixed(1);
+        console.log(`Video bitrate: ${bitrateKbps} kbps`);
+        console.log(`Packet loss: ${report.packetsLost}`);
+        console.log(`Jitter: ${(report.jitter * 1000).toFixed(1)} ms`);
+        console.log(`FPS: ${report.framesPerSecond}`);
+
+        prevBytes = bytes;
+        prevTime = now;
+      }
+
+      if (report.type === 'candidate-pair' && report.nominated) {
+        console.log(`RTT: ${(report.currentRoundTripTime * 1000).toFixed(0)} ms`);
+        console.log(`Available bandwidth: ${(report.availableOutgoingBitrate/1000).toFixed(0)} kbps`);
+      }
+    }
+  }, 1000);</pre>
+
+    <h3>qualityLimitationReason — tại sao video giảm chất lượng</h3>
+    <table>
+      <thead><tr><th>Value</th><th>Nghĩa</th></tr></thead>
+      <tbody>
+        <tr><td><code>"none"</code></td><td>Đang gửi ở chất lượng tối đa</td></tr>
+        <tr><td><code>"bandwidth"</code></td><td>Mạng không đủ — encoder giảm bitrate/resolution</td></tr>
+        <tr><td><code>"cpu"</code></td><td>CPU không đủ — encoder giảm fps/resolution</td></tr>
+        <tr><td><code>"other"</code></td><td>Lý do khác (ví dụ: encoder constraint)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Connection State Machine</h3>
+    <p class="svg-caption">RTCPeerConnection state machine — tất cả transitions và nguyên nhân</p>
+    <svg viewBox="0 0 700 260" class="svg-diagram" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="sm-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#475569"/>
+        </marker>
+        <marker id="sm-arr-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#15803d"/>
+        </marker>
+        <marker id="sm-arr-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#dc2626"/>
+        </marker>
+        <marker id="sm-arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#c2410c"/>
+        </marker>
+        <marker id="sm-arr-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#7c3aed"/>
+        </marker>
+      </defs>
+
+      <!-- State: new -->
+      <rect x="10" y="90" width="90" height="40" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="2"/>
+      <text x="55" y="107" text-anchor="middle" font-size="12" font-weight="700" fill="#475569" font-family="'Segoe UI',system-ui,sans-serif">new</text>
+      <text x="55" y="122" text-anchor="middle" font-size="9" fill="#94a3b8" font-family="'Segoe UI',system-ui,sans-serif">RTCPeerConn created</text>
+
+      <!-- State: checking -->
+      <rect x="160" y="90" width="108" height="40" rx="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="2"/>
+      <text x="214" y="107" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8" font-family="'Segoe UI',system-ui,sans-serif">checking</text>
+      <text x="214" y="122" text-anchor="middle" font-size="9" fill="#1d4ed8" font-family="'Segoe UI',system-ui,sans-serif">ICE candidates checking</text>
+
+      <!-- State: connected -->
+      <rect x="330" y="90" width="108" height="40" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="2.5"/>
+      <text x="384" y="107" text-anchor="middle" font-size="12" font-weight="700" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">connected</text>
+      <text x="384" y="122" text-anchor="middle" font-size="9" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">P2P link + DTLS ✓</text>
+
+      <!-- State: disconnected -->
+      <rect x="500" y="50" width="118" height="40" rx="8" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+      <text x="559" y="67" text-anchor="middle" font-size="12" font-weight="700" fill="#c2410c" font-family="'Segoe UI',system-ui,sans-serif">disconnected</text>
+      <text x="559" y="82" text-anchor="middle" font-size="9" fill="#c2410c" font-family="'Segoe UI',system-ui,sans-serif">connection lost / switch</text>
+
+      <!-- State: failed -->
+      <rect x="500" y="140" width="108" height="40" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
+      <text x="554" y="157" text-anchor="middle" font-size="12" font-weight="700" fill="#dc2626" font-family="'Segoe UI',system-ui,sans-serif">failed</text>
+      <text x="554" y="172" text-anchor="middle" font-size="9" fill="#dc2626" font-family="'Segoe UI',system-ui,sans-serif">ICE / DTLS failed</text>
+
+      <!-- State: closed -->
+      <rect x="330" y="195" width="108" height="40" rx="8" fill="#faf5ff" stroke="#c4b5fd" stroke-width="2"/>
+      <text x="384" y="212" text-anchor="middle" font-size="12" font-weight="700" fill="#7c3aed" font-family="'Segoe UI',system-ui,sans-serif">closed</text>
+      <text x="384" y="227" text-anchor="middle" font-size="9" fill="#7c3aed" font-family="'Segoe UI',system-ui,sans-serif">pc.close() called</text>
+
+      <!-- Arrows -->
+      <!-- new → checking -->
+      <path d="M100,110 L160,110" stroke="#475569" stroke-width="1.5" marker-end="url(#sm-arr)"/>
+      <text x="130" y="105" text-anchor="middle" font-size="8.5" fill="#64748b" font-family="'Segoe UI',system-ui,sans-serif">setLocalDesc</text>
+
+      <!-- checking → connected -->
+      <path d="M268,110 L330,110" stroke="#15803d" stroke-width="1.5" marker-end="url(#sm-arr-g)"/>
+      <text x="299" y="105" text-anchor="middle" font-size="8.5" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">ICE nominated</text>
+
+      <!-- connected → disconnected -->
+      <path d="M438,100 C465,80 498,75 500,70" stroke="#c2410c" stroke-width="1.5" fill="none" marker-end="url(#sm-arr-o)"/>
+      <text x="470" y="80" text-anchor="middle" font-size="8.5" fill="#c2410c" font-family="'Segoe UI',system-ui,sans-serif">network lost</text>
+
+      <!-- disconnected → connected (ICE restart) -->
+      <path d="M500,78 C465,88 440,100 438,108" stroke="#15803d" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#sm-arr-g)"/>
+      <text x="455" y="102" text-anchor="middle" font-size="8" fill="#15803d" font-family="'Segoe UI',system-ui,sans-serif">ICE restart</text>
+
+      <!-- disconnected → failed -->
+      <path d="M559,90 L559,140" stroke="#dc2626" stroke-width="1.5" marker-end="url(#sm-arr-r)"/>
+      <text x="573" y="120" font-size="8.5" fill="#dc2626" font-family="'Segoe UI',system-ui,sans-serif">timeout</text>
+
+      <!-- checking → failed -->
+      <path d="M214,130 C214,180 490,170 500,160" stroke="#dc2626" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#sm-arr-r)"/>
+      <text x="360" y="180" text-anchor="middle" font-size="8.5" fill="#dc2626" font-family="'Segoe UI',system-ui,sans-serif">all candidates failed / Symmetric NAT</text>
+
+      <!-- connected → closed -->
+      <path d="M384,130 L384,195" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#sm-arr-p)"/>
+      <text x="398" y="168" font-size="8.5" fill="#7c3aed" font-family="'Segoe UI',system-ui,sans-serif">pc.close()</text>
+
+      <!-- failed → closed -->
+      <path d="M500,165 C470,185 440,205 438,205" stroke="#7c3aed" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#sm-arr-p)"/>
+    </svg>
+
+    <p>Theo dõi bằng <code>pc.oniceconnectionstatechange</code> và <code>pc.onconnectionstatechange</code>.
+    Hai event này độc lập — ICE có thể <code>connected</code> trong khi DTLS vẫn đang handshake.</p>
+
+    <div class="box box-green">
+      <div class="box-title">Debug tip</div>
+      Chrome có built-in WebRTC debugger tại <code>chrome://webrtc-internals</code> —
+      hiển thị toàn bộ getStats() theo real-time với biểu đồ. Công cụ chẩn đoán mạnh nhất
+      để phân tích WebRTC issues trong production.
+    </div>
+  </section>
+
+</main>
+</div>
+
+<a href="#" class="back-top" title="Về đầu trang">↑</a>
+
+<script>
+  // Highlight active nav item on scroll
+  const sections = document.querySelectorAll('.section');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navItems.forEach(item => {
+          item.classList.toggle('active', item.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

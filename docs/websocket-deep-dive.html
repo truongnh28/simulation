@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebSocket Deep Dive</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg2: #f8fafc;
+    --bg3: #f1f5f9;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --text2: #475569;
+    --text3: #94a3b8;
+    --blue: #0369a1;
+    --blue-l: #e0f2fe;
+    --blue-ll: #f0f9ff;
+    --green: #15803d;
+    --green-l: #dcfce7;
+    --orange: #c2410c;
+    --orange-l: #fff7ed;
+    --red: #dc2626;
+    --red-l: #fef2f2;
+    --purple: #7c3aed;
+    --purple-l: #faf5ff;
+    --yellow: #92400e;
+    --yellow-l: #fffbeb;
+    --accent: #0ea5e9;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    font-size: 15px;
+  }
+
+  /* ── LAYOUT ── */
+  .layout { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 0;
+  }
+  .sidebar-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text3);
+    padding: 0 1.25rem 0.75rem;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 1.25rem;
+    font-size: 0.85rem;
+    color: var(--text2);
+    text-decoration: none;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+  }
+  .nav-item:hover { background: var(--blue-ll); color: var(--blue); border-left-color: var(--accent); }
+  .nav-item.active { background: var(--blue-ll); color: var(--blue); border-left-color: var(--accent); font-weight: 600; }
+  .nav-num {
+    font-size: 0.7rem;
+    background: var(--bg3);
+    color: var(--text3);
+    border-radius: 4px;
+    padding: 0.1rem 0.4rem;
+    font-weight: 600;
+    min-width: 1.6rem;
+    text-align: center;
+  }
+  .nav-divider { height: 1px; background: var(--border); margin: 0.5rem 1.25rem; }
+  .nav-group-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    padding: 0.6rem 1.25rem 0.2rem;
+  }
+
+  .main { flex: 1; max-width: 820px; padding: 3rem 3rem 6rem; }
+
+  /* ── TYPOGRAPHY ── */
+  .page-title { font-size: 2rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem; }
+  .page-sub   { font-size: 1rem; color: var(--text2); margin-bottom: 3rem; line-height: 1.6; }
+
+  .section { margin-bottom: 4rem; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--blue-l);
+  }
+  .section-num {
+    background: var(--blue);
+    color: white;
+    font-weight: 800;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    padding: 0.25rem 0.6rem;
+    letter-spacing: 0.05em;
+  }
+  .section-title { font-size: 1.35rem; font-weight: 700; color: #0f172a; }
+
+  h3 { font-size: 1rem; font-weight: 700; color: var(--blue); margin: 1.75rem 0 0.5rem; }
+  h4 { font-size: 0.85rem; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.08em; margin: 1.25rem 0 0.4rem; }
+
+  p { color: var(--text2); margin-bottom: 0.8rem; }
+  p strong { color: var(--text); }
+
+  /* ── CODE ── */
+  pre {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: #0f4c81;
+    line-height: 1.7;
+    margin: 0.75rem 0 1.25rem;
+    white-space: pre;
+  }
+  code {
+    background: var(--blue-ll);
+    color: var(--blue);
+    padding: 0.15em 0.45em;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-family: 'JetBrains Mono', monospace;
+    border: 1px solid #bae6fd;
+  }
+
+  /* ── BOXES ── */
+  .box {
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 0.75rem 0 1.25rem;
+    font-size: 0.9rem;
+  }
+  .box-blue   { background: var(--blue-ll);   border: 1px solid #bae6fd; color: #0c4a6e; }
+  .box-green  { background: var(--green-l);   border: 1px solid #86efac; color: #14532d; }
+  .box-orange { background: var(--orange-l);  border: 1px solid #fdba74; color: #7c2d12; }
+  .box-yellow { background: var(--yellow-l);  border: 1px solid #fde68a; color: var(--yellow); }
+  .box-purple { background: var(--purple-l);  border: 1px solid #c4b5fd; color: #4c1d95; }
+  .box-red    { background: var(--red-l);     border: 1px solid #fca5a5; color: #7f1d1d; }
+  .box-title  { font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.3rem; opacity: 0.7; }
+
+  /* ── TABLE ── */
+  table { width: 100%; border-collapse: collapse; margin: 0.75rem 0 1.25rem; font-size: 0.88rem; }
+  th { background: var(--blue-ll); color: var(--blue); padding: 0.6rem 1rem; text-align: left; font-weight: 700; border-bottom: 2px solid #bae6fd; }
+  td { padding: 0.55rem 1rem; border-bottom: 1px solid var(--bg3); color: var(--text2); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg2); }
+
+  /* ── UL/OL ── */
+  ul, ol { padding-left: 1.5rem; margin-bottom: 0.8rem; }
+  li { margin-bottom: 0.35rem; color: var(--text2); }
+  li strong { color: var(--text); }
+
+  /* ── PROTOCOL STACK ── */
+  .proto-stack { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 0.75rem 0 1.25rem; }
+  .proto-row { display: flex; align-items: stretch; border-bottom: 1px solid var(--bg3); }
+  .proto-row:last-child { border-bottom: none; }
+  .proto-label {
+    width: 160px;
+    flex-shrink: 0;
+    background: var(--blue-ll);
+    color: var(--blue);
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 0.7rem 1rem;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid var(--border);
+  }
+  .proto-content { padding: 0.7rem 1rem; font-size: 0.875rem; color: var(--text2); flex: 1; }
+  .proto-content strong { color: var(--text); }
+
+  /* ── OPCODE / STATUS BADGES ── */
+  .op { display: inline-block; padding: 0.12rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-weight: 700; margin-right: 0.25rem; font-family: 'JetBrains Mono', monospace; }
+  .op-text   { background: var(--blue-ll);  color: var(--blue);   border: 1px solid #bae6fd; }
+  .op-bin    { background: var(--purple-l); color: var(--purple); border: 1px solid #c4b5fd; }
+  .op-ctrl   { background: var(--yellow-l); color: var(--yellow); border: 1px solid #fde68a; }
+  .op-rsv    { background: var(--bg3);      color: var(--text3);  border: 1px solid var(--border); }
+
+  /* ── readyState badges ── */
+  .rs { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 6px; font-size: 0.82rem; font-weight: 600; margin: 0 0.2rem; }
+  .rs-connecting { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; }
+  .rs-open       { background: var(--green-l); color: var(--green); border: 1px solid #86efac; }
+  .rs-closing    { background: var(--yellow-l); color: var(--yellow); border: 1px solid #fde68a; }
+  .rs-closed     { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
+  .rs-arrow      { color: var(--text3); font-size: 1rem; }
+
+  /* ── TWO-COL ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 0.75rem 0 1.25rem; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+  .col-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.1rem; }
+  .col-card h4 { margin-top: 0; }
+
+  /* ── CHECKLIST ── */
+  .checklist { list-style: none; padding: 0; margin: 0.75rem 0 1.25rem; }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding: 0.45rem 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+    color: var(--text2);
+    background: var(--bg2);
+    border: 1px solid var(--border);
+  }
+  .checklist li::before {
+    content: '□';
+    font-size: 1rem;
+    color: var(--text3);
+    flex-shrink: 0;
+    margin-top: -0.05rem;
+  }
+  .checklist li strong { color: var(--text); }
+
+  /* ── CHECKLIST GROUP HEADER ── */
+  .check-group { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--blue); margin: 1.25rem 0 0.4rem; }
+
+  /* ── DIAGRAM ── */
+  .diagram-wrap { overflow-x: auto; margin: 0.75rem 0 1.25rem; }
+  .svg-diagram { width: 100%; height: auto; display: block; margin: 0.75rem 0 1.25rem; }
+  .svg-diagram a { text-decoration: none; cursor: pointer; }
+  .svg-caption { font-size: 0.78rem; color: var(--text3); margin-bottom: 0.4rem; font-style: italic; }
+  .flow-phase rect { transition: opacity 0.15s; }
+  .flow-phase:hover rect { opacity: 0.75; }
+
+  /* ── BACK TOP ── */
+  .back-top {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: var(--blue); color: white;
+    border: none; border-radius: 50%;
+    width: 40px; height: 40px;
+    cursor: pointer; font-size: 1.1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none;
+  }
+  .back-top:hover { background: #0284c7; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- ════════════════ SIDEBAR ════════════════ -->
+<nav class="sidebar">
+  <div class="sidebar-title">WebSocket Deep Dive</div>
+  <div class="nav-group-label">Nền tảng</div>
+  <a class="nav-item" href="#s1"><span class="nav-num">01</span> WebSocket là gì</a>
+  <a class="nav-item" href="#s2"><span class="nav-num">02</span> HTTP Upgrade</a>
+  <a class="nav-item" href="#s3"><span class="nav-num">03</span> Framing (RFC 6455)</a>
+  <a class="nav-item" href="#s4"><span class="nav-num">04</span> Control Frames</a>
+  <a class="nav-item" href="#s5"><span class="nav-num">05</span> Extensions</a>
+  <a class="nav-item" href="#s6"><span class="nav-num">06</span> Subprotocols</a>
+  <div class="nav-divider"></div>
+  <div class="nav-group-label">API &amp; Patterns</div>
+  <a class="nav-item" href="#s7"><span class="nav-num">07</span> Browser API</a>
+  <a class="nav-item" href="#s8"><span class="nav-num">08</span> Server Patterns</a>
+  <a class="nav-item" href="#s9"><span class="nav-num">09</span> Security (WSS)</a>
+  <a class="nav-item" href="#s10"><span class="nav-num">10</span> Reconnect &amp; Heartbeat</a>
+  <a class="nav-item" href="#s11"><span class="nav-num">11</span> Binary Messaging</a>
+  <div class="nav-divider"></div>
+  <div class="nav-group-label">Production</div>
+  <a class="nav-item" href="#s12"><span class="nav-num">12</span> Performance &amp; Scaling</a>
+  <a class="nav-item" href="#s13"><span class="nav-num">13</span> WS vs Alternatives</a>
+  <a class="nav-item" href="#s14"><span class="nav-num">14</span> Production Checklist</a>
+</nav>
+
+<!-- ════════════════ MAIN ════════════════ -->
+<main class="main">
+
+  <div class="page-title">WebSocket Deep Dive</div>
+  <p class="page-sub">
+    Phân tích toàn bộ WebSocket protocol từ bit-level framing đến production patterns —
+    dành cho bạn muốn hiểu <em>tại sao</em> chứ không chỉ biết <em>cách dùng</em>.
+    Tài liệu offline, không cần internet. RFC 6455.
+  </p>
+
+  <!-- ══ OVERVIEW FLOW ══ -->
+  <p class="svg-caption">Toàn bộ vòng đời WebSocket — 5 phase (click vào từng phase)</p>
+  <svg viewBox="0 0 856 95" class="svg-diagram" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI',system-ui,sans-serif">
+    <defs>
+      <marker id="wf-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#94a3b8"/>
+      </marker>
+    </defs>
+    <!-- Phase 1: TCP -->
+    <g class="flow-phase">
+      <rect x="6" y="12" width="148" height="66" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="80" y="36" text-anchor="middle" font-size="11.5" font-weight="700" fill="#475569">TCP Connect</text>
+      <text x="80" y="54" text-anchor="middle" font-size="9.5" fill="#94a3b8">3-way handshake</text>
+      <text x="80" y="70" text-anchor="middle" font-size="9" fill="#94a3b8">SYN / SYN-ACK / ACK</text>
+    </g>
+    <line x1="154" y1="45" x2="176" y2="45" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#wf-arr)"/>
+    <!-- Phase 2: HTTP Upgrade -->
+    <a href="#s2">
+    <g class="flow-phase">
+      <rect x="176" y="12" width="155" height="66" rx="8" fill="#f0f9ff" stroke="#7dd3fc" stroke-width="1.5"/>
+      <text x="253" y="36" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0369a1">HTTP Upgrade</text>
+      <text x="253" y="53" text-anchor="middle" font-size="9.5" fill="#0369a1">GET + Upgrade: websocket</text>
+      <text x="253" y="69" text-anchor="middle" font-size="9" fill="#0369a1">← 101 Switching Protocols</text>
+    </g>
+    </a>
+    <line x1="331" y1="45" x2="353" y2="45" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#wf-arr)"/>
+    <!-- Phase 3: Open -->
+    <a href="#s7">
+    <g class="flow-phase">
+      <rect x="353" y="12" width="148" height="66" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+      <text x="427" y="36" text-anchor="middle" font-size="11.5" font-weight="700" fill="#15803d">WS Open</text>
+      <text x="427" y="53" text-anchor="middle" font-size="9.5" fill="#15803d">readyState: OPEN (1)</text>
+      <text x="427" y="69" text-anchor="middle" font-size="9" fill="#15803d">onopen event fires</text>
+    </g>
+    </a>
+    <line x1="501" y1="45" x2="523" y2="45" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#wf-arr)"/>
+    <!-- Phase 4: Messages -->
+    <a href="#s3">
+    <g class="flow-phase">
+      <rect x="523" y="12" width="163" height="66" rx="8" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="604" y="36" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7c3aed">Messages</text>
+      <text x="604" y="53" text-anchor="middle" font-size="9.5" fill="#7c3aed">Full-duplex WS frames</text>
+      <text x="604" y="69" text-anchor="middle" font-size="9" fill="#7c3aed">Text / Binary / Ping-Pong</text>
+    </g>
+    </a>
+    <line x1="686" y1="45" x2="708" y2="45" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#wf-arr)"/>
+    <!-- Phase 5: Close -->
+    <a href="#s4">
+    <g class="flow-phase">
+      <rect x="708" y="12" width="140" height="66" rx="8" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+      <text x="778" y="36" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c2410c">Close</text>
+      <text x="778" y="53" text-anchor="middle" font-size="9.5" fill="#c2410c">Close frame exchange</text>
+      <text x="778" y="69" text-anchor="middle" font-size="9" fill="#c2410c">TCP connection closed</text>
+    </g>
+    </a>
+  </svg>
+
+  <!-- ══════════════════════════════════════════════
+       S1: WEBSOCKET LÀ GÌ?
+  ══════════════════════════════════════════════ -->
+  <section class="section" id="s1">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">WebSocket là gì?</span>
+    </div>
+
+    <p><strong>WebSocket</strong> là giao thức truyền thông <em>full-duplex</em> (hai chiều đồng thời) chạy trên một TCP connection duy nhất. Được chuẩn hóa trong <strong>RFC 6455</strong> (2011), WebSocket giải quyết hạn chế cơ bản của HTTP: client luôn phải là người khởi tạo request.</p>
+
+    <h3>Vị trí trong mạng</h3>
+    <div class="proto-stack">
+      <div class="proto-row">
+        <div class="proto-label">Application</div>
+        <div class="proto-content"><strong>WebSocket (ws:// / wss://)</strong> — RFC 6455 — giao thức bạn code</div>
+      </div>
+      <div class="proto-row">
+        <div class="proto-label">Session (boot)</div>
+        <div class="proto-content"><strong>HTTP/1.1</strong> — chỉ dùng cho handshake upgrade, sau đó không còn liên quan</div>
+      </div>
+      <div class="proto-row">
+        <div class="proto-label">Security</div>
+        <div class="proto-content"><strong>TLS 1.2/1.3</strong> — bắt buộc cho wss://, cung cấp encryption + authentication</div>
+      </div>
+      <div class="proto-row">
+        <div class="proto-label">Transport</div>
+        <div class="proto-content"><strong>TCP</strong> — reliable, ordered delivery. WebSocket không thêm reliability — TCP đã lo</div>
+      </div>
+      <div class="proto-row">
+        <div class="proto-label">Network</div>
+        <div class="proto-content"><strong>IP</strong> — routing và addressing</div>
+      </div>
+    </div>
+
+    <h3>WebSocket vs HTTP vs TCP thuần</h3>
+    <table>
+      <tr><th></th><th>HTTP/1.1</th><th>WebSocket</th><th>Raw TCP</th></tr>
+      <tr><td><strong>Connection</strong></td><td>Stateless, request-response</td><td>Persistent, stateful</td><td>Persistent, stateful</td></tr>
+      <tr><td><strong>Direction</strong></td><td>Client→Server only</td><td>Full-duplex</td><td>Full-duplex</td></tr>
+      <tr><td><strong>Overhead/msg</strong></td><td>700–1500 bytes headers</td><td>2–14 bytes frame header</td><td>0 bytes (raw)</td></tr>
+      <tr><td><strong>Browser support</strong></td><td>Native</td><td>Native (2012+)</td><td>Không (vì bảo mật)</td></tr>
+      <tr><td><strong>Proxies/CDN</strong></td><td>Transparent</td><td>Cần cấu hình</td><td>Thường bị block</td></tr>
+      <tr><td><strong>Binary data</strong></td><td>Base64 encode</td><td>Native binary frames</td><td>Native</td></tr>
+    </table>
+
+    <h3>Đặc điểm nổi bật</h3>
+    <ul>
+      <li><strong>Full-duplex:</strong> Client và server đều có thể gửi message bất kỳ lúc nào, độc lập nhau.</li>
+      <li><strong>Low latency:</strong> Không có round-trip overhead của HTTP headers — frame header chỉ 2–14 bytes.</li>
+      <li><strong>Persistent connection:</strong> Một kết nối TCP dùng cho toàn bộ session — không tốn chi phí TCP handshake lặp lại.</li>
+      <li><strong>Binary-native:</strong> Gửi nhận ArrayBuffer trực tiếp, không cần encode sang Base64.</li>
+      <li><strong>Event-driven:</strong> Server push data ngay lập tức khi có event, không cần client hỏi.</li>
+    </ul>
+
+    <h3>Use cases phù hợp</h3>
+    <div class="two-col">
+      <div class="col-card">
+        <h4>Real-time bidirectional</h4>
+        <ul>
+          <li>Chat, messaging apps</li>
+          <li>Multiplayer online games</li>
+          <li>Collaborative editing (Google Docs)</li>
+          <li>Live code editors (CodeSandbox)</li>
+          <li>Video call signaling (WebRTC)</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <h4>Server push / live feed</h4>
+        <ul>
+          <li>Financial tickers, trading platforms</li>
+          <li>Live sports scores</li>
+          <li>IoT sensor telemetry</li>
+          <li>Log streaming, monitoring dashboards</li>
+          <li>CI/CD build progress</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="box box-yellow">
+      <div class="box-title">⚠ Khi nào KHÔNG nên dùng WebSocket</div>
+      Nếu data chỉ chạy một chiều (server → client) và là text: dùng <strong>SSE</strong> — đơn giản hơn, auto-reconnect, thân thiện với proxy. Nếu cần request-response thông thường: cứ dùng <strong>HTTP/2</strong>. Xem thêm <a href="#s13">Section 13</a>.
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       S2: HTTP UPGRADE HANDSHAKE
+  ══════════════════════════════════════════════ -->
+  <section class="section" id="s2">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">HTTP Upgrade Handshake</span>
+    </div>
+
+    <p>WebSocket bắt đầu bằng một HTTP/1.1 request thông thường, sau đó "nâng cấp" (upgrade) lên WebSocket protocol. Sau khi upgrade thành công, HTTP không còn được dùng nữa — toàn bộ traffic chuyển sang WebSocket framing.</p>
+
+    <h3>Client Request</h3>
+    <pre>GET /ws HTTP/1.1
+Host: example.com
+Upgrade: websocket                              ← bắt buộc
+Connection: Upgrade                             ← bắt buộc
+Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==    ← 16 bytes ngẫu nhiên, base64
+Sec-WebSocket-Version: 13                       ← luôn là 13 (RFC 6455)
+Sec-WebSocket-Extensions: permessage-deflate    ← tùy chọn: yêu cầu compression
+Sec-WebSocket-Protocol: chat, superchat         ← tùy chọn: subprotocol</pre>
+
+    <h3>Server Response — 101 Switching Protocols</h3>
+    <pre>HTTP/1.1 101 Switching Protocols
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=   ← xác minh server đọc key
+Sec-WebSocket-Protocol: chat                           ← server chọn 1 subprotocol
+Sec-WebSocket-Extensions: permessage-deflate           ← nếu accept compression</pre>
+
+    <h3>Tính toán Sec-WebSocket-Accept</h3>
+    <p>Server tính giá trị này để <em>chứng minh</em> nó thực sự đọc WebSocket upgrade request (không phải proxy cache trả lời). Quy trình cố định trong RFC 6455:</p>
+    <pre>1. Lấy Sec-WebSocket-Key:  "dGhlIHNhbXBsZSBub25jZQ=="
+2. Nối với Magic GUID:      "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
+3. Concatenated string:     "dGhlIHNhbXBsZSBub25jZQ==258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
+4. SHA-1 hash (hex):         b37a4f2cc0624f1690f64606cf385945b2bec4ea
+5. Base64 encode:            s3pPLMBiTxaQ9kYGzzhZRbK+xOo=    ← đây là Accept value
+
+Node.js:
+const key = req.headers['sec-websocket-key'];
+const accept = require('crypto')
+  .createHash('sha1')
+  .update(key + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11')
+  .digest('base64');</pre>
+
+    <div class="box box-blue">
+      <div class="box-title">Magic GUID</div>
+      <code>258EAFA5-E914-47DA-95CA-C5AB0DC85B11</code> là chuỗi cố định được chọn ngẫu nhiên khi viết RFC 6455. Nó không có ý nghĩa gì đặc biệt — chỉ để đảm bảo server biết nó đang nói WebSocket, không phải HTTP thông thường.
+    </div>
+
+    <h3>Sequence diagram</h3>
+    <p class="svg-caption">Toàn bộ quá trình từ TCP connect đến WebSocket frame đầu tiên</p>
+    <svg viewBox="0 0 700 308" class="svg-diagram" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI',system-ui,sans-serif">
+      <defs>
+        <marker id="sq-arr"   viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,1.5 L9,5 L0,8.5 Z" fill="#475569"/></marker>
+        <marker id="sq-arr-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,1.5 L9,5 L0,8.5 Z" fill="#0369a1"/></marker>
+        <marker id="sq-arr-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,1.5 L9,5 L0,8.5 Z" fill="#15803d"/></marker>
+        <marker id="sq-arr-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,1.5 L9,5 L0,8.5 Z" fill="#7c3aed"/></marker>
+        <marker id="sq-arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,1.5 L9,5 L0,8.5 Z" fill="#c2410c"/></marker>
+      </defs>
+
+      <!-- Actor: Client -->
+      <rect x="20"  y="8" width="120" height="40" rx="7" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="80"  y="25" text-anchor="middle" font-size="12" font-weight="700" fill="#6d28d9">Client</text>
+      <text x="80"  y="41" text-anchor="middle" font-size="9.5" fill="#7c3aed">Browser / ws lib</text>
+
+      <!-- Actor: Server -->
+      <rect x="560" y="8" width="120" height="40" rx="7" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+      <text x="620" y="25" text-anchor="middle" font-size="12" font-weight="700" fill="#15803d">Server</text>
+      <text x="620" y="41" text-anchor="middle" font-size="9.5" fill="#15803d">Node.js / nginx</text>
+
+      <!-- Lifelines -->
+      <line x1="80"  y1="48" x2="80"  y2="300" stroke="#c4b5fd" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <line x1="620" y1="48" x2="620" y2="300" stroke="#86efac" stroke-width="1.5" stroke-dasharray="5,4"/>
+
+      <!-- Step 1: TCP -->
+      <rect x="0" y="56" width="700" height="18" fill="#f8fafc"/>
+      <text x="350" y="69" text-anchor="middle" font-size="10" font-weight="700" fill="#64748b">① TCP 3-Way Handshake</text>
+      <path d="M90,84 L610,84" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#sq-arr)"/>
+      <text x="350" y="80" text-anchor="middle" font-size="9.5" fill="#64748b">SYN → SYN-ACK ← ACK</text>
+
+      <!-- Step 2: HTTP Upgrade Request -->
+      <rect x="0" y="96" width="700" height="18" fill="#f0f9ff"/>
+      <text x="350" y="109" text-anchor="middle" font-size="10" font-weight="700" fill="#0369a1">② HTTP Upgrade Request</text>
+      <path d="M90,130 L610,130" stroke="#0369a1" stroke-width="1.5" marker-end="url(#sq-arr-b)"/>
+      <text x="350" y="126" text-anchor="middle" font-size="9.5" fill="#0369a1">GET /ws HTTP/1.1 · Upgrade: websocket · Sec-WebSocket-Key: …</text>
+
+      <!-- Step 3: 101 -->
+      <rect x="0" y="144" width="700" height="18" fill="#f0fdf4"/>
+      <text x="350" y="157" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d">③ 101 Switching Protocols</text>
+      <path d="M610,175 L90,175" stroke="#15803d" stroke-width="1.5" marker-end="url(#sq-arr-g)"/>
+      <text x="350" y="171" text-anchor="middle" font-size="9.5" fill="#15803d">101 · Sec-WebSocket-Accept: s3pPLMBi… · Connection upgraded ✓</text>
+
+      <!-- Step 4: WS Frames -->
+      <rect x="0" y="188" width="700" height="18" fill="#faf5ff"/>
+      <text x="350" y="201" text-anchor="middle" font-size="10" font-weight="700" fill="#7c3aed">④ WebSocket Frame Exchange (full-duplex)</text>
+      <path d="M90,216 L610,216" stroke="#7c3aed" stroke-width="2" marker-end="url(#sq-arr-p)"/>
+      <text x="350" y="212" text-anchor="middle" font-size="9.5" fill="#7c3aed">ws.send("hello") → Text frame (opcode 0x1)</text>
+      <path d="M610,232 L90,232" stroke="#7c3aed" stroke-width="2" marker-end="url(#sq-arr-p)"/>
+      <text x="350" y="228" text-anchor="middle" font-size="9.5" fill="#7c3aed">← Text frame · onmessage: e.data = "world"</text>
+
+      <!-- Step 5: Close -->
+      <rect x="0" y="246" width="700" height="18" fill="#fff7ed"/>
+      <text x="350" y="259" text-anchor="middle" font-size="10" font-weight="700" fill="#c2410c">⑤ Close Handshake</text>
+      <path d="M90,274 L610,274" stroke="#c2410c" stroke-width="1.5" marker-end="url(#sq-arr-o)"/>
+      <text x="350" y="270" text-anchor="middle" font-size="9.5" fill="#c2410c">Close frame (opcode 0x8, code 1000)</text>
+      <path d="M610,290 L90,290" stroke="#c2410c" stroke-width="1.5" marker-end="url(#sq-arr-o)"/>
+      <text x="350" y="303" text-anchor="middle" font-size="9" fill="#64748b">Echo Close frame → TCP FIN → connection closed</text>
+    </svg>
+
+    <h3>Các trường hợp đặc biệt</h3>
+    <ul>
+      <li><strong>Server từ chối upgrade:</strong> Trả về HTTP 400/403/404 — connection đóng lại, không upgrade.</li>
+      <li><strong>Proxy không hiểu WebSocket:</strong> Một số HTTP proxy cũ không forward <code>Upgrade</code> header → dùng wss:// để traffic đi qua TLS tunnel (proxy treat như opaque CONNECT).</li>
+      <li><strong>HTTP/2 với WebSocket:</strong> RFC 8441 (2018) — WebSocket over HTTP/2. Dùng CONNECT method với <code>:protocol: websocket</code>. Ít phổ biến hơn, nhưng giúp multiplex nhiều WS connections trên 1 HTTP/2 connection.</li>
+    </ul>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       S3: FRAMING LAYER
+  ══════════════════════════════════════════════ -->
+  <section class="section" id="s3">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">Framing Layer — RFC 6455</span>
+    </div>
+
+    <p>Đây là <em>core</em> của WebSocket protocol. Mọi message đều được đóng gói trong một hoặc nhiều <strong>frames</strong>. Hiểu frame structure = hiểu WebSocket hoạt động như thế nào ở bit level.</p>
+
+    <h3>RFC 6455 Frame Layout</h3>
+    <p class="svg-caption">Cấu trúc frame WebSocket — mỗi ô đại diện cho một field (không đúng tỷ lệ bit)</p>
+    <svg viewBox="0 0 700 244" class="svg-diagram" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI',system-ui,sans-serif">
+      <!-- Row labels -->
+      <text x="50" y="42"  text-anchor="end" font-size="10" font-weight="600" fill="#64748b">Byte 0</text>
+      <text x="50" y="106" text-anchor="end" font-size="10" font-weight="600" fill="#64748b">Byte 1</text>
+      <text x="50" y="170" text-anchor="end" font-size="10" font-weight="600" fill="#94a3b8">Opt.</text>
+      <text x="50" y="222" text-anchor="end" font-size="10" font-weight="600" fill="#64748b">Data</text>
+
+      <!-- ROW 1: Byte 0 -->
+      <!-- FIN -->
+      <rect x="55" y="18" width="58" height="48" rx="5" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="84" y="37" text-anchor="middle" font-size="10.5" font-weight="700" fill="#6d28d9">FIN</text>
+      <text x="84" y="52" text-anchor="middle" font-size="8.5" fill="#7c3aed">1 bit</text>
+      <text x="84" y="63" text-anchor="middle" font-size="8" fill="#7c3aed">final?</text>
+      <!-- RSV1 -->
+      <rect x="113" y="18" width="52" height="48" rx="5" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+      <text x="139" y="37" text-anchor="middle" font-size="9.5" font-weight="700" fill="#94a3b8">RSV1</text>
+      <text x="139" y="52" text-anchor="middle" font-size="8" fill="#cbd5e1">ext.</text>
+      <!-- RSV2 -->
+      <rect x="165" y="18" width="52" height="48" rx="5" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+      <text x="191" y="37" text-anchor="middle" font-size="9.5" font-weight="700" fill="#94a3b8">RSV2</text>
+      <text x="191" y="52" text-anchor="middle" font-size="8" fill="#cbd5e1">ext.</text>
+      <!-- RSV3 -->
+      <rect x="217" y="18" width="52" height="48" rx="5" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+      <text x="243" y="37" text-anchor="middle" font-size="9.5" font-weight="700" fill="#94a3b8">RSV3</text>
+      <text x="243" y="52" text-anchor="middle" font-size="8" fill="#cbd5e1">ext.</text>
+      <!-- OPCODE -->
+      <rect x="269" y="18" width="376" height="48" rx="5" fill="#f0f9ff" stroke="#7dd3fc" stroke-width="1.5"/>
+      <text x="457" y="37" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">OPCODE</text>
+      <text x="457" y="53" text-anchor="middle" font-size="9.5" fill="#0369a1">4 bits — 0x0 Continuation · 0x1 Text · 0x2 Binary · 0x8 Close · 0x9 Ping · 0xA Pong</text>
+
+      <!-- ROW 2: Byte 1 -->
+      <!-- MASK -->
+      <rect x="55" y="82" width="58" height="48" rx="5" fill="#fffbeb" stroke="#fde68a" stroke-width="1.5"/>
+      <text x="84" y="100" text-anchor="middle" font-size="10.5" font-weight="700" fill="#92400e">MASK</text>
+      <text x="84" y="116" text-anchor="middle" font-size="8.5" fill="#92400e">1 bit</text>
+      <text x="84" y="127" text-anchor="middle" font-size="8" fill="#92400e">C→S:1</text>
+      <!-- PAYLOAD LEN -->
+      <rect x="113" y="82" width="532" height="48" rx="5" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+      <text x="379" y="100" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">PAYLOAD LEN</text>
+      <text x="379" y="116" text-anchor="middle" font-size="9.5" fill="#15803d">7 bits — 0–125: direct · 126: next 2 bytes (uint16) · 127: next 8 bytes (uint64)</text>
+
+      <!-- ROW 3: Optional -->
+      <!-- EXT PAYLOAD LEN -->
+      <rect x="55" y="146" width="408" height="48" rx="5" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="259" y="165" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d">Extended Payload Length</text>
+      <text x="259" y="182" text-anchor="middle" font-size="9" fill="#15803d">(16 bits nếu Payload Len=126 · 64 bits nếu =127)</text>
+      <!-- MASKING KEY -->
+      <rect x="463" y="146" width="182" height="48" rx="5" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="554" y="165" text-anchor="middle" font-size="10" font-weight="700" fill="#c2410c">Masking Key</text>
+      <text x="554" y="182" text-anchor="middle" font-size="9" fill="#c2410c">(32 bits nếu MASK=1)</text>
+
+      <!-- ROW 4: Payload Data -->
+      <rect x="55" y="208" width="590" height="32" rx="5" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1.5"/>
+      <text x="350" y="229" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0369a1">PAYLOAD DATA — 0 đến 2⁶³ bytes</text>
+    </svg>
+
+    <h3>Opcode Table</h3>
+    <table>
+      <tr><th>Opcode</th><th>Tên</th><th>Loại</th><th>Mô tả</th></tr>
+      <tr><td><span class="op op-text">0x0</span></td><td>Continuation</td><td>Data</td><td>Frame tiếp theo của fragmented message</td></tr>
+      <tr><td><span class="op op-text">0x1</span></td><td>Text</td><td>Data</td><td>UTF-8 encoded text payload</td></tr>
+      <tr><td><span class="op op-bin">0x2</span></td><td>Binary</td><td>Data</td><td>Raw binary payload (ArrayBuffer)</td></tr>
+      <tr><td><span class="op op-rsv">0x3–7</span></td><td>—</td><td>Reserved</td><td>Dành cho extension tương lai (non-control)</td></tr>
+      <tr><td><span class="op op-ctrl">0x8</span></td><td>Close</td><td>Control</td><td>Khởi tạo close handshake</td></tr>
+      <tr><td><span class="op op-ctrl">0x9</span></td><td>Ping</td><td>Control</td><td>Keepalive probe — peer PHẢI reply Pong</td></tr>
+      <tr><td><span class="op op-ctrl">0xA</span></td><td>Pong</td><td>Control</td><td>Reply cho Ping, echo cùng payload</td></tr>
+      <tr><td><span class="op op-rsv">0xB–F</span></td><td>—</td><td>Reserved</td><td>Dành cho extension tương lai (control)</td></tr>
+    </table>
+
+    <h3>MASK bit — Tại sao Client phải mask?</h3>
+    <p>RFC 6455 bắt buộc: <strong>Client → Server phải mask (MASK=1)</strong>. Server → Client KHÔNG được mask (MASK=0). Vi phạm → Protocol error → đóng connection.</p>
+    <p>Lý do: ngăn chặn <strong>cache poisoning attacks</strong> qua HTTP proxy. Một số proxy cũ cache HTTP response dựa vào pattern trong body. Nếu attacker có thể kiểm soát payload WS không mask, họ có thể craft binary data trông giống như HTTP response → proxy cache nó → các request HTTP sau bị nhiễm. Mask XOR làm cho payload không predictable với proxy.</p>
+
+    <h3>Masking Algorithm</h3>
+    <pre>// Unmasking (và masking — cùng phép tính)
+for (let i = 0; i &lt; payload.length; i++) {
+  unmasked[i] = masked[i] ^ maskingKey[i % 4];
+}
+
+// Ví dụ thực tế:
+// Masking key (4 bytes):  0x37  0xFA  0x21  0x3B
+// Original:    H     e     l     l     o
+//            0x48  0x65  0x6C  0x6C  0x6F
+// Key cycle: [k0]  [k1]  [k2]  [k3]  [k0]
+// XOR:       0x37  0xFA  0x21  0x3B  0x37
+// Masked:    0x7F  0x9F  0x4D  0x57  0x58  (gửi lên wire)
+// Receiver XOR lại với cùng key → ra "Hello"</pre>
+
+    <h3>Payload Length Encoding</h3>
+    <div class="box box-blue">
+      <table style="margin:0">
+        <tr><th>Giá trị 7-bit</th><th>Ý nghĩa</th><th>Tổng bytes header</th></tr>
+        <tr><td>0–125</td><td>Payload length chính là con số này</td><td>2 bytes (+ 4 nếu masked)</td></tr>
+        <tr><td>126</td><td>Đọc thêm 2 bytes tiếp theo (uint16 big-endian) → max 65,535 bytes</td><td>4 bytes (+ 4 nếu masked)</td></tr>
+        <tr><td>127</td><td>Đọc thêm 8 bytes tiếp theo (uint64 big-endian) → max ~9.2 EB</td><td>10 bytes (+ 4 nếu masked)</td></tr>
+      </table>
+    </div>
+
+    <h3>Fragmentation (Message Splitting)</h3>
+    <p>Message lớn có thể chia thành nhiều frames. FIN bit xác định frame cuối:</p>
+    <pre>Frame 1: FIN=0, opcode=0x1 (Text), payload="Hello, "   ← first fragment
+Frame 2: FIN=0, opcode=0x0 (Continuation), payload="World"
+Frame 3: FIN=1, opcode=0x0 (Continuation), payload="!"   ← final fragment
+→ Receiver reassemble: "Hello, World!"
+
+Lưu ý: Control frames (Ping/Pong/Close) không được fragmented và CÓ THỂ
+chen vào giữa fragmented data frames.</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       S4: CONTROL FRAMES
+  ══════════════════════════════════════════════ -->
+  <section class="section" id="s4">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title">Control Frames</span>
+    </div>
+
+    <p>Control frames quản lý <em>lifecycle</em> của WebSocket connection — không mang application data. Ba loại: <span class="op op-ctrl">0x8 Close</span> <span class="op op-ctrl">0x9 Ping</span> <span class="op op-ctrl">0xA Pong</span>.</p>
+
+    <div class="box box-yellow">
+      <div class="box-title">Ràng buộc của Control Frames</div>
+      Payload ≤ 125 bytes · FIN=1 (không được fragment) · Có thể chen giữa data frames đang fragmented
+    </div>
+
+    <h3>Ping / Pong — Keepalive</h3>
+    <p>Dùng để detect stale connections (xem chi tiết tại <a href="#s10">Section 10</a>).</p>
+    <pre>// Server gửi Ping mỗi 30s
+ws.ping(Buffer.from('heartbeat'));
+
+// Client tự động reply Pong (browser tự xử lý)
+// Node.js ws library:
+ws.on('ping', (data) => {
+  console.log('Received ping:', data.toString());
+  // ws library tự gửi Pong, không cần gọi ws.pong() thủ công
+});
+ws.on('pong', (data) => {
+  ws.isAlive = true; // mark connection alive
+});</pre>
+
+    <h3>Close Frame — Đóng kết nối đúng cách</h3>
+    <p>Close handshake là <em>graceful</em>: cả hai bên exchange Close frames trước khi TCP đóng. Payload của Close frame có thể chứa status code (2 bytes, uint16 big-endian) và reason string (UTF-8).</p>
+
+    <h4>Close Status Codes</h4>
+    <table>
+      <tr><th>Code</th><th>Tên</th><th>Ý nghĩa</th></tr>
+      <tr><td><code>1000</code></td><td>Normal Closure</td><td>Đóng bình thường, tác vụ hoàn thành</td></tr>
+      <tr><td><code>1001</code></td><td>Going Away</td><td>Server restart / browser tab đóng / navigate away</td></tr>
+      <tr><td><code>1002</code></td><td>Protocol Error</td><td>Vi phạm WebSocket protocol</td></tr>
+      <tr><td><code>1003</code></td><td>Unsupported Data</td><td>Nhận data type không hỗ trợ (ví dụ: binary khi chỉ expect text)</td></tr>
+      <tr><td><code>1005</code></td><td>No Status (reserved)</td><td>Không được gửi trong Close frame — chỉ dùng internally</td></tr>
+      <tr><td><code>1006</code></td><td>Abnormal (reserved)</td><td>Không được gửi — dành cho khi connection drop không có Close frame</td></tr>
+      <tr><td><code>1007</code></td><td>Invalid Frame Data</td><td>Text frame chứa non-UTF-8 data</td></tr>
+      <tr><td><code>1008</code></td><td>Policy Violation</td><td>Message vi phạm chính sách ứng dụng</td></tr>
+      <tr><td><code>1009</code></td><td>Message Too Big</td><td>Message vượt quá kích thước cho phép</td></tr>
+      <tr><td><code>1011</code></td><td>Internal Error</td><td>Server gặp unexpected condition</td></tr>
+      <tr><td><code>4000–4999</code></td><td>Application</td><td>Dành cho application-defined codes (không chuẩn hóa)</td></tr>
+    </table>
+
+    <h3>Close Handshake Flow</h3>
+    <pre>Initiator (ví dụ: client)         Receiver (server)
+  │                                      │
+  │── Close(1000, "done") ──────────────→│  ← gửi Close frame
+  │                                      │  ← server dừng nhận data, flush buffer
+  │←── Close(1000, "ok") ───────────────│  ← echo Close frame
+  │                                      │
+  │── TCP FIN ─────────────────────────→│  ← initiator đóng TCP
+  │←── TCP FIN ──────────────────────── │  ← receiver đóng TCP
+
+// JavaScript:
+ws.close(1000, 'Session ended normally');
+ws.onclose = e => console.log(e.code, e.reason); // 1000 "Session ended normally"</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       S5: EXTENSIONS
+  ══════════════════════════════════════════════ -->
+  <section class="section" id="s5">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title">Extensions — permessage-deflate</span>
+    </div>
+
+    <p>Extensions modify behavior của WebSocket ở frame level. Extension phổ biến nhất là <strong>permessage-deflate</strong> (RFC 7692) — nén payload bằng DEFLATE algorithm (LZ77 + Huffman), y hệt gzip nhưng per-message.</p>
+
+    <h3>Negotiation trong Handshake</h3>
+    <pre>// Client offer (HTTP request header):
+Sec-WebSocket-Extensions: permessage-deflate; client_max_window_bits
+
+// Server accept (HTTP response header):
+Sec-WebSocket-Extensions: permessage-deflate; client_no_context_takeover
+
+// Sau đó: frames được nén có RSV1 = 1
+// Browser WebSocket API tự handle — không cần code gì thêm</pre>
+
+    <h3>Tham số quan trọng</h3>
+    <table>
+      <tr><th>Parameter</th><th>Default</th><th>Ý nghĩa</th></tr>
+      <tr><td><code>client_max_window_bits</code></td><td>15</td><td>LZ77 sliding window size (8–15). Lớn hơn = nén tốt hơn, tốn RAM hơn</td></tr>
+      <tr><td><code>server_max_window_bits</code></td><td>15</td><td>Window size phía server</td></tr>
+      <tr><td><code>client_no_context_takeover</code></td><td>off</td><td>Reset LZ77 context sau mỗi message (ít RAM, nén kém hơn)</td></tr>
+      <tr><td><code>server_no_context_takeover</code></td><td>off</td><td>Tương tự phía server</td></tr>
+    </table>
+
+    <h3>Context Takeover vs No-Context</h3>
+    <div class="two-col">
+      <div class="col-card">
+        <h4>With Context Takeover (default)</h4>
+        <p>LZ77 sliding window <em>tích lũy</em> qua các messages. Message sau có thể reference pattern từ message trước → compression ratio tốt hơn (~60–80% reduction với JSON).</p>
+        <p><strong>Nhược điểm:</strong> Server cần duy trì LZ77 context per-connection (~32KB RAM mỗi connection × 100K connections = 3.2GB).</p>
+      </div>
+      <div class="col-card">
+        <h4>No-Context Takeover</h4>
+        <p>Fresh LZ77 state cho mỗi message. Mỗi message nén độc lập. Compression ratio thấp hơn với small messages.</p>
+        <p><strong>Ưu điểm:</strong> RAM per-connection thấp hơn, dễ scale horizontal hơn (không cần stick session cho context).</p>
+      </div>
+    </div>
+
+    <div class="box box-green">
+      <div class="box-title">Khi nào bật compression?</div>
+      <strong>Bật</strong> cho JSON, HTML text, repeated structured data — giảm 50–80% payload size. <strong>Tắt</strong> cho JPEG/PNG/video/encrypted data (đã nén sẵn — compression thêm chỉ làm chậm, không giảm được). Break-even point: payload &gt; ~150 bytes.
+    </div>
+
+    <h3>RSV bits và Extensions</h3>
+    <p>RSV1, RSV2, RSV3 trong frame header được reserved cho extensions. <code>permessage-deflate</code> dùng RSV1: nếu RSV1=1 → frame đó được compressed. Nếu không negotiate extension mà nhận frame có RSV≠0 → Protocol error → đóng connection.</p>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       S6: SUBPROTOCOLS
+  ══════════════════════════════════════════════ -->
+  <section class="section" id="s6">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-title">Subprotocols</span>
+    </div>
+
+    <p>Subprotocol là application-level protocol chạy <em>trên</em> WebSocket — định nghĩa message format, semantics, và conventions. WebSocket spec không quan tâm bạn gửi gì; subprotocol là thỏa thuận giữa client và server về <em>ý nghĩa</em> của data.</p>
+
+    <h3>Negotiation</h3>
+    <pre>// Client đề nghị (theo thứ tự ưu tiên):
+new WebSocket('wss://example.com/ws', ['chat-v2', 'chat-v1']);
+// → Sec-WebSocket-Protocol: chat-v2, chat-v1
+
+// Server chọn 1 (hoặc không chọn):
+// → Sec-WebSocket-Protocol: chat-v2
+
+// Sau khi connect:
+console.log(ws.protocol); // "chat-v2"</pre>
+
+    <h3>Subprotocols phổ biến</h3>
+    <table>
+      <tr><th>Subprotocol</th><th>Spec</th><th>Use case</th></tr>
+      <tr><td><code>STOMP</code></td><td>stomp.github.io</td><td>Message broker (ActiveMQ, RabbitMQ) — publish/subscribe qua WS</td></tr>
+      <tr><td><code>MQTT</code></td><td>RFC 7252 + MQTT over WS</td><td>IoT lightweight messaging</td></tr>
+      <tr><td><code>WAMP</code></td><td>wamp.ws</td><td>RPC + Pub/Sub trong 1 protocol</td></tr>
+      <tr><td><code>graphql-ws</code></td><td>github.com/enisdenjo</td><td>GraphQL subscriptions</td></tr>
+      <tr><td><code>json-rpc</code></td><td>jsonrpc.org</td><td>Remote procedure calls over WS</td></tr>
+      <tr><td><code>ocpp2.0.1</code></td><td>openchargealliance.org</td><td>EV charging station protocol</td></tr>
+    </table>
+
+    <h3>Thiết kế Custom Subprotocol</h3>
+    <pre>// Ví dụ: custom chat subprotocol "mychat-v1"
+// Mọi message là JSON với trường "type" bắt buộc:
+{ "type": "message",  "text": "hello",     "room": "general" }
+{ "type": "typing",   "isTyping": true,    "room": "general" }
+{ "type": "join",     "name": "Alice",     "room": "general" }
+{ "type": "presence", "users": ["Alice"],  "room": "general" }  // server→client
+{ "type": "error",    "code": 4001,        "msg": "Room full" } // server→client
+
+// Best practices:
+// 1. Version trong tên: "mychat-v1", "mychat-v2"
+// 2. Luôn có "type" field để dispatch
+// 3. Định nghĩa error codes (4000–4999)
+// 4. Document schema (JSON Schema, OpenAPI, Protobuf IDL)</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       S7: BROWSER WEBSOCKET API
+  ══════════════════════════════════════════════ -->
+  <section class="section" id="s7">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="section-title">Browser WebSocket API</span>
+    </div>
+
+    <h3>Constructor và Properties</h3>
+    <pre>// Tạo connection
+const ws = new WebSocket('wss://example.com/ws');
+const ws = new WebSocket('wss://example.com/ws', 'chat');          // 1 subprotocol
+const ws = new WebSocket('wss://example.com/ws', ['chat', 'raw']); // nhiều subprotocols
+
+// Properties (read-only sau khi connect)
+ws.url          // URL đã connect
+ws.protocol     // subprotocol được negotiate (hoặc "")
+ws.extensions   // extensions được negotiate
+ws.readyState   // 0=CONNECTING · 1=OPEN · 2=CLOSING · 3=CLOSED
+ws.bufferedAmount  // bytes đã queue để gửi nhưng chưa flush (backpressure indicator)
+
+// Configurable
+ws.binaryType = 'arraybuffer'; // hoặc 'blob' (default)</pre>
+
+    <h3>readyState State Machine</h3>
+    <div class="states">
+      <span class="rs rs-connecting">0 CONNECTING</span>
+      <span class="rs-arrow">→</span>
+      <span class="rs rs-open">1 OPEN</span>
+      <span class="rs-arrow">→</span>
+      <span class="rs rs-closing">2 CLOSING</span>
+      <span class="rs-arrow">→</span>
+      <span class="rs rs-closed">3 CLOSED</span>
+    </div>
+    <p class="svg-caption">Chuyển đổi trạng thái — các đường dashed là error paths</p>
+    <svg viewBox="0 0 700 168" class="svg-diagram" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI',system-ui,sans-serif">
+      <defs>
+        <marker id="rs-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#475569"/>
+        </marker>
+        <marker id="rs-arr-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#dc2626"/>
+        </marker>
+        <marker id="rs-arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#c2410c"/>
+        </marker>
+      </defs>
+
+      <!-- State: CONNECTING -->
+      <rect x="10" y="28" width="130" height="54" rx="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+      <text x="75" y="51" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">CONNECTING</text>
+      <text x="75" y="67" text-anchor="middle" font-size="9.5" fill="#3b82f6">readyState: 0</text>
+      <text x="75" y="79" text-anchor="middle" font-size="9" fill="#60a5fa">handshake…</text>
+
+      <!-- Arrow 0→1: onopen -->
+      <line x1="140" y1="55" x2="190" y2="55" stroke="#475569" stroke-width="1.5" marker-end="url(#rs-arr)"/>
+      <text x="165" y="48" text-anchor="middle" font-size="9" fill="#64748b">onopen</text>
+
+      <!-- State: OPEN -->
+      <rect x="190" y="28" width="130" height="54" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+      <text x="255" y="51" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">OPEN</text>
+      <text x="255" y="67" text-anchor="middle" font-size="9.5" fill="#16a34a">readyState: 1</text>
+      <text x="255" y="79" text-anchor="middle" font-size="9" fill="#22c55e">send() / recv</text>
+
+      <!-- Arrow 1→2: ws.close() -->
+      <line x1="320" y1="55" x2="370" y2="55" stroke="#475569" stroke-width="1.5" marker-end="url(#rs-arr)"/>
+      <text x="345" y="48" text-anchor="middle" font-size="9" fill="#64748b">ws.close()</text>
+
+      <!-- State: CLOSING -->
+      <rect x="370" y="28" width="130" height="54" rx="8" fill="#fef3c7" stroke="#fde68a" stroke-width="1.5"/>
+      <text x="435" y="51" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">CLOSING</text>
+      <text x="435" y="67" text-anchor="middle" font-size="9.5" fill="#a16207">readyState: 2</text>
+      <text x="435" y="79" text-anchor="middle" font-size="9" fill="#ca8a04">handshake…</text>
+
+      <!-- Arrow 2→3: onclose -->
+      <line x1="500" y1="55" x2="550" y2="55" stroke="#475569" stroke-width="1.5" marker-end="url(#rs-arr)"/>
+      <text x="525" y="48" text-anchor="middle" font-size="9" fill="#64748b">onclose</text>
+
+      <!-- State: CLOSED -->
+      <rect x="550" y="28" width="140" height="54" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="620" y="51" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">CLOSED</text>
+      <text x="620" y="67" text-anchor="middle" font-size="9.5" fill="#64748b">readyState: 3</text>
+      <text x="620" y="79" text-anchor="middle" font-size="9" fill="#94a3b8">final state</text>
+
+      <!-- Error path: CONNECTING → CLOSED -->
+      <path d="M 75,82 Q 75,128 620,128 Q 620,82 620,82" fill="none" stroke="#dc2626" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#rs-arr-r)"/>
+      <text x="345" y="142" text-anchor="middle" font-size="9" fill="#dc2626">onerror — connection refused / server down</text>
+
+      <!-- Error path: OPEN → CLOSED -->
+      <path d="M 255,82 Q 255,155 620,155 Q 620,82 620,82" fill="none" stroke="#c2410c" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#rs-arr-o)"/>
+      <text x="440" y="164" text-anchor="middle" font-size="9" fill="#c2410c">network error / server crash</text>
+    </svg>
+
+    <h3>Event Handlers</h3>
+    <pre>ws.onopen = (event) => {
+  console.log('Connected!');
+  ws.send('Hello Server!');
+};
+
+ws.onmessage = (event) => {
+  // event.data: string (text frame) | ArrayBuffer | Blob (binary frame)
+  if (typeof event.data === 'string') {
+    const msg = JSON.parse(event.data);
+  } else {
+    // Binary data
+    const view = new DataView(event.data);
+    const value = view.getFloat32(0, true);
+  }
+};
+
+ws.onerror = (event) => {
+  // event là generic Event — không có error message chi tiết vì bảo mật
+  // (không muốn cross-origin script biết lý do thất bại)
+  console.error('WebSocket error. Check network tab.');
+};
+
+ws.onclose = (event) => {
+  console.log(`Closed: code=${event.code} reason="${event.reason}" clean=${event.wasClean}`);
+  // event.wasClean = true nếu close handshake hoàn chỉnh (không phải network drop)
+};</pre>
+
+    <h3>send() và bufferedAmount — Backpressure</h3>
+    <pre>// Gửi text
+ws.send('Hello');
+ws.send(JSON.stringify({ type: 'message', text: 'Hi' }));
+
+// Gửi binary
+ws.send(new ArrayBuffer(1024));
+ws.send(new Uint8Array([1, 2, 3, 4]));
+ws.send(new Blob([data]));
+
+// Backpressure: tránh fill TCP buffer
+function sendWithBackpressure(data) {
+  if (ws.readyState !== WebSocket.OPEN) return;
+  if (ws.bufferedAmount &gt; 64 * 1024) {   // 64KB threshold
+    requestAnimationFrame(() => sendWithBackpressure(data)); // retry next frame
+    return;
+  }
+  ws.send(data);
+}</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       S8: SERVER-SIDE PATTERNS
+  ══════════════════════════════════════════════ -->
+  <section class="section" id="s8">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <span class="section-title">Server-Side Patterns (Node.js + ws)</span>
+    </div>
+
+    <h3>Setup cơ bản</h3>
+    <pre>import { createServer } from 'http';
+import { WebSocketServer, WebSocket } from 'ws';
+import { readFileSync } from 'fs';
+
+const server = createServer((req, res) => {
+  // Serve static files
+  res.writeHead(200, { 'Content-Type': 'text/html' });
+  res.end(readFileSync('./index.html'));
+});
+
+const wss = new WebSocketServer({ server });
+
+wss.on('connection', (ws, req) => {
+  console.log('Client connected from', req.socket.remoteAddress);
+  ws.on('message', data => handleMessage(ws, data));
+  ws.on('close', (code, reason) => handleClose(ws, code, reason));
+  ws.on('error', err => console.error('WS error:', err.message));
+});
+
+server.listen(3000, () => console.log('Server running on :3000'));</pre>
+
+    <h3>Broadcasting</h3>
+    <pre>function broadcast(message, excludeWs = null) {
+  const data = JSON.stringify(message);
+  wss.clients.forEach(client => {
+    if (client !== excludeWs && client.readyState === WebSocket.OPEN) {
+      client.send(data);
+    }
+  });
+}
+
+// Gửi cho tất cả (kể cả sender):
+broadcast({ type: 'announcement', text: 'Server restarting in 60s' });
+
+// Gửi cho tất cả trừ sender:
+broadcast({ type: 'message', text: msg.text, from: meta.name }, ws);</pre>
+
+    <h3>Rooms (Channels)</h3>
+    <pre>const rooms = new Map(); // roomName → Set&lt;ws&gt;
+
+function joinRoom(ws, room) {
+  // Leave current room
+  const meta = clients.get(ws);
+  if (meta?.room) rooms.get(meta.room)?.delete(ws);
+
+  // Join new room
+  if (!rooms.has(room)) rooms.set(room, new Set());
+  rooms.get(room).add(ws);
+  if (meta) meta.room = room;
+}
+
+function broadcastToRoom(room, message, excludeWs = null) {
+  const members = rooms.get(room);
+  if (!members) return;
+  const data = JSON.stringify(message);
+  members.forEach(client => {
+    if (client !== excludeWs && client.readyState === WebSocket.OPEN) {
+      client.send(data);
+    }
+  });
+}</pre>
+
+    <h3>Connection Registry với Metadata</h3>
+    <pre>import { randomUUID } from 'crypto';
+
+const clients = new Map(); // ws → { id, name, room, joinedAt }
+
+wss.on('connection', (ws, req) => {
+  clients.set(ws, {
+    id: randomUUID(),
+    name: null,        // set sau khi client gửi 'join' message
+    room: null,
+    joinedAt: Date.now()
+  });
+
+  ws.on('close', () => {
+    const meta = clients.get(ws);
+    if (meta?.room) rooms.get(meta.room)?.delete(ws);
+    clients.delete(ws);
+    broadcastPresence(meta?.room); // notify room members
+  });
+});</pre>
+
+    <h3>Heartbeat — Detect Stale Connections</h3>
+    <pre>// TCP keepalive không đủ — network nào đó drop connection im lặng
+// WebSocket-level heartbeat giải quyết vấn đề này
+
+wss.on('connection', ws => {
+  ws.isAlive = true;
+  ws.on('pong', () => { ws.isAlive = true; }); // pong received = still alive
+});
+
+const heartbeatInterval = setInterval(() => {
+  wss.clients.forEach(ws => {
+    if (!ws.isAlive) {
+      console.log('Terminating stale connection');
+      return ws.terminate(); // force close, không gửi Close frame
+    }
+    ws.isAlive = false;  // giả định dead cho đến khi nhận Pong
+    ws.ping();           // gửi Ping
+  });
+}, 30_000); // mỗi 30s
+
+wss.on('close', () => clearInterval(heartbeatInterval));</pre>
+
+    <h3>Graceful Shutdown</h3>
+    <pre>process.on('SIGTERM', async () => {
+  console.log('SIGTERM received — closing WebSocket connections...');
+
+  // Notify all clients
+  wss.clients.forEach(ws => {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.close(1001, 'Server is shutting down');
+    }
+  });
+
+  // Wait for connections to close (max 5s)
+  await new Promise(resolve => {
+    const check = setInterval(() => {
+      if (wss.clients.size === 0) { clearInterval(check); resolve(); }
+    }, 100);
+    setTimeout(resolve, 5000); // force exit after 5s
+  });
+
+  server.close(() => process.exit(0));
+});</pre>
+
+    <h3>Authentication</h3>
+    <pre>// Pattern 1: Token trong URL query (không khuyến nghị — leaked trong logs)
+// wss://api.example.com/ws?token=abc123
+
+// Pattern 2: Token trong custom header — KHÔNG work trên browser WebSocket API!
+// Browser không cho set custom headers.
+
+// Pattern 3 (khuyến nghị): Token trong first message
+wss.on('connection', (ws, req) => {
+  ws.authenticated = false;
+  ws.on('message', data => {
+    const msg = JSON.parse(data);
+    if (!ws.authenticated) {
+      if (msg.type !== 'auth' || !verifyToken(msg.token)) {
+        ws.close(4001, 'Unauthorized');
+        return;
+      }
+      ws.authenticated = true;
+      ws.send(JSON.stringify({ type: 'auth-ok' }));
+      return;
+    }
+    handleMessage(ws, msg);
+  });
+
+  // Timeout nếu không auth trong 10s
+  setTimeout(() => {
+    if (!ws.authenticated) ws.close(4001, 'Auth timeout');
+  }, 10_000);
+});</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       S9: SECURITY (WSS)
+  ══════════════════════════════════════════════ -->
+  <section class="section" id="s9">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <span class="section-title">Security — WSS &amp; Best Practices</span>
+    </div>
+
+    <div class="box box-red">
+      <div class="box-title">🔴 Rule #1</div>
+      <strong>Luôn dùng wss:// trên production.</strong> ws:// là cleartext TCP — mọi thứ bạn gửi đều bị đọc được trên đường truyền. wss:// = WebSocket over TLS, y hệt HTTPS.
+    </div>
+
+    <h3>wss:// — WebSocket Secure</h3>
+    <ul>
+      <li><strong>ws://</strong> — port 80, plaintext, chỉ dùng local development</li>
+      <li><strong>wss://</strong> — port 443, TLS 1.2/1.3 tunnel, server cert verified trước WS handshake</li>
+      <li>Sau khi TLS tunnel thiết lập, WS handshake nằm bên trong → proxy không đọc được content</li>
+      <li>ws library Node.js: dùng <code>https.createServer</code> với cert/key thay vì <code>http.createServer</code></li>
+    </ul>
+
+    <h3>Origin Header Validation</h3>
+    <p>Browser luôn gửi <code>Origin</code> header với WS request. Khác với XMLHttpRequest, WebSocket <strong>không bị hạn chế bởi Same-Origin Policy</strong> — browser vẫn cho phép cross-origin WS connection. Server PHẢI validate Origin nếu không muốn bất kỳ website nào connect vào.</p>
+    <pre>const ALLOWED_ORIGINS = new Set([
+  'https://myapp.com',
+  'https://www.myapp.com',
+  process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : null,
+].filter(Boolean));
+
+wss.on('headers', (headers, req) => {
+  const origin = req.headers.origin;
+  if (!ALLOWED_ORIGINS.has(origin)) {
+    // Không thể trả HTTP 403 ở đây vì headers đã được gửi
+    // Nhưng server vẫn có thể close connection ngay sau
+    console.warn('Rejected connection from origin:', origin);
+  }
+});
+
+// Hoặc validate trong connection handler:
+wss.on('connection', (ws, req) => {
+  if (!ALLOWED_ORIGINS.has(req.headers.origin)) {
+    ws.close(1008, 'Origin not allowed');
+    return;
+  }
+});</pre>
+
+    <h3>CSRF via WebSocket</h3>
+    <p>Nếu server dùng cookie-based auth và không validate Origin: một trang <code>evil.com</code> có thể tạo WS connection đến <code>api.yourapp.com</code> — browser tự gửi cookie → attacker có thể thực hiện actions với quyền của victim.</p>
+    <div class="box box-orange">
+      <div class="box-title">Defense</div>
+      1. Validate <code>Origin</code> header (chặn cross-origin request). 2. Nếu dùng token auth (không cookie): không cần lo CSRF vì cross-origin page không đọc được token của domain khác.
+    </div>
+
+    <h3>Rate Limiting</h3>
+    <pre>const connectionsPerIp = new Map(); // ip → count
+const MAX_CONNECTIONS_PER_IP = 10;
+
+wss.on('connection', (ws, req) => {
+  const ip = req.socket.remoteAddress;
+  const count = (connectionsPerIp.get(ip) || 0) + 1;
+  if (count > MAX_CONNECTIONS_PER_IP) {
+    ws.close(1008, 'Too many connections');
+    return;
+  }
+  connectionsPerIp.set(ip, count);
+  ws.on('close', () => connectionsPerIp.set(ip, connectionsPerIp.get(ip) - 1));
+});
+
+// Message rate limit per connection:
+const messageCount = new Map();
+setInterval(() => messageCount.clear(), 1000); // reset mỗi giây
+
+wss.on('connection', ws => {
+  ws.on('message', data => {
+    const count = (messageCount.get(ws) || 0) + 1;
+    messageCount.set(ws, count);
+    if (count > 100) { ws.close(1008, 'Rate limit exceeded'); return; }
+    handleMessage(ws, data);
+  });
+});
+
+// Max payload size (ws library):
+const wss = new WebSocketServer({ server, maxPayload: 64 * 1024 }); // 64KB</pre>
+
+    <h3>Input Validation</h3>
+    <pre>ws.on('message', (rawData) => {
+  // 1. Parse safely
+  let msg;
+  try { msg = JSON.parse(rawData); }
+  catch { ws.close(1007, 'Invalid JSON'); return; }
+
+  // 2. Validate structure
+  if (typeof msg.type !== 'string') { ws.close(1008, 'Missing type'); return; }
+
+  // 3. Dispatch only known types
+  const handlers = { message: handleChat, join: handleJoin, typing: handleTyping };
+  const handler = handlers[msg.type];
+  if (!handler) { ws.send(JSON.stringify({ type: 'error', msg: 'Unknown type' })); return; }
+
+  handler(ws, msg);
+});</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       S10: RECONNECTION & HEARTBEAT
+  ══════════════════════════════════════════════ -->
+  <section class="section" id="s10">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <span class="section-title">Reconnection &amp; Heartbeat</span>
+    </div>
+
+    <p>Browser <strong>không tự động reconnect</strong> khi WebSocket connection bị drop. Phải tự implement. Pattern chuẩn: exponential backoff + jitter.</p>
+
+    <h3>Exponential Backoff với Jitter</h3>
+    <p class="svg-caption">Timeline reconnect: delay tăng gấp đôi sau mỗi lần thất bại (+jitter ngẫu nhiên)</p>
+    <svg viewBox="0 0 700 130" class="svg-diagram" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI',system-ui,sans-serif">
+      <!-- Timeline line -->
+      <line x1="20" y1="65" x2="690" y2="65" stroke="#e2e8f0" stroke-width="2"/>
+
+      <!-- Delay bar 1: 1s = 41px -->
+      <rect x="30" y="58" width="41" height="14" rx="3" fill="#fef3c7" stroke="#fde68a"/>
+      <text x="50" y="71" text-anchor="middle" font-size="8.5" font-weight="600" fill="#92400e">1 s</text>
+
+      <!-- Delay bar 2: 2s = 82px -->
+      <rect x="89" y="58" width="82" height="14" rx="3" fill="#fde68a" stroke="#fbbf24"/>
+      <text x="130" y="71" text-anchor="middle" font-size="8.5" font-weight="600" fill="#92400e">2 s</text>
+
+      <!-- Delay bar 3: 4s = 164px -->
+      <rect x="189" y="58" width="164" height="14" rx="3" fill="#fdba74" stroke="#fb923c"/>
+      <text x="271" y="71" text-anchor="middle" font-size="8.5" font-weight="600" fill="#7c2d12">4 s</text>
+
+      <!-- Delay bar 4: 8s + jitter = ~332px + zigzag -->
+      <rect x="371" y="58" width="300" height="14" rx="3" fill="#fca5a5" stroke="#f87171"/>
+      <text x="521" y="71" text-anchor="middle" font-size="8.5" font-weight="600" fill="#7f1d1d">8 s + jitter (max 30 s)</text>
+
+      <!-- Attempt circles -->
+      <!-- Attempt 1 (t=0, fail) -->
+      <circle cx="30" cy="65" r="9" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+      <text x="30" y="69" text-anchor="middle" font-size="9" font-weight="700" fill="#dc2626">✗</text>
+      <text x="30" y="55" text-anchor="middle" font-size="8.5" fill="#64748b">t=0</text>
+
+      <!-- Attempt 2 (t=1s, fail) -->
+      <circle cx="89" cy="65" r="9" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+      <text x="89" y="69" text-anchor="middle" font-size="9" font-weight="700" fill="#dc2626">✗</text>
+      <text x="89" y="55" text-anchor="middle" font-size="8.5" fill="#64748b">+1s</text>
+
+      <!-- Attempt 3 (t=3s, fail) -->
+      <circle cx="189" cy="65" r="9" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+      <text x="189" y="69" text-anchor="middle" font-size="9" font-weight="700" fill="#dc2626">✗</text>
+      <text x="189" y="55" text-anchor="middle" font-size="8.5" fill="#64748b">+2s</text>
+
+      <!-- Attempt 4 (t=7s, fail) -->
+      <circle cx="371" cy="65" r="9" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+      <text x="371" y="69" text-anchor="middle" font-size="9" font-weight="700" fill="#dc2626">✗</text>
+      <text x="371" y="55" text-anchor="middle" font-size="8.5" fill="#64748b">+4s</text>
+
+      <!-- Attempt 5 (success) -->
+      <circle cx="671" cy="65" r="10" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+      <text x="671" y="69" text-anchor="middle" font-size="9" font-weight="700" fill="#15803d">✓</text>
+      <text x="671" y="55" text-anchor="middle" font-size="8.5" fill="#15803d">connected!</text>
+
+      <!-- Jitter annotation -->
+      <text x="350" y="100" text-anchor="middle" font-size="9" fill="#92400e">Jitter = Math.random() × 1000ms — ngăn "thundering herd" khi server restart</text>
+      <text x="350" y="115" text-anchor="middle" font-size="9" fill="#94a3b8">delay = min(base × 2^attempt, maxDelay) + jitter</text>
+    </svg>
+
+    <pre>class ReconnectingWebSocket {
+  constructor(url, protocols = []) {
+    this.url       = url;
+    this.protocols = protocols;
+    this.attempt   = 0;
+    this.maxDelay  = 30_000;  // 30s cap
+    this.baseDelay = 1_000;   // 1s base
+    this.ws        = null;
+    this.connect();
+  }
+
+  connect() {
+    this.ws = new WebSocket(this.url, this.protocols);
+    this.ws.binaryType = 'arraybuffer';
+    this.ws.onopen    = e => { this.attempt = 0; this.onopen?.(e); };
+    this.ws.onmessage = e => this.onmessage?.(e);
+    this.ws.onerror   = e => this.onerror?.(e);
+    this.ws.onclose   = e => {
+      this.onclose?.(e);
+      if (!this.manualClose) this._scheduleReconnect();
+    };
+  }
+
+  _scheduleReconnect() {
+    const jitter = Math.random() * 1000;
+    const delay  = Math.min(this.baseDelay * Math.pow(2, this.attempt), this.maxDelay) + jitter;
+    this.attempt++;
+    console.log(`Reconnecting in ${(delay/1000).toFixed(1)}s (attempt ${this.attempt})`);
+    setTimeout(() => this.connect(), delay);
+  }
+
+  send(data)  { this.ws?.send(data); }
+  close(code) { this.manualClose = true; this.ws?.close(code); }
+}</pre>
+
+    <h3>Server-side Heartbeat</h3>
+    <pre>// Vấn đề: TCP connection bị drop im lặng (network failure, NAT timeout, load balancer timeout)
+// Không có Ping/Pong → server không biết client đã gone → memory leak
+
+// Giải pháp: server gửi Ping mỗi 30s, terminate nếu không nhận Pong
+
+wss.on('connection', ws => { ws.isAlive = true; ws.on('pong', () => { ws.isAlive = true; }); });
+
+setInterval(() => {
+  wss.clients.forEach(ws => {
+    if (!ws.isAlive) { ws.terminate(); return; }   // còn sống không? Không → terminate
+    ws.isAlive = false;                             // giả định dead
+    ws.ping();                                      // gửi probe
+  });
+}, 30_000);
+
+// Client-side heartbeat (cho thêm robustness):
+let pingTimeout;
+ws.onopen = () => schedulePing();
+ws.onmessage = () => { clearTimeout(pingTimeout); schedulePing(); }; // reset on any msg
+
+function schedulePing() {
+  pingTimeout = setTimeout(() => {
+    ws.send(JSON.stringify({ type: 'ping' })); // application-level ping
+    setTimeout(() => {
+      if (ws.readyState === WebSocket.OPEN) ws.close(); // no response → reconnect
+    }, 5000);
+  }, 25_000);
+}</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       S11: BINARY MESSAGING
+  ══════════════════════════════════════════════ -->
+  <section class="section" id="s11">
+    <div class="section-header">
+      <span class="section-num">11</span>
+      <span class="section-title">Binary Messaging</span>
+    </div>
+
+    <p>WebSocket hỗ trợ gửi/nhận raw binary data — không cần encode Base64 như với HTTP. Đây là lợi thế lớn cho game, IoT telemetry, và file transfer.</p>
+
+    <h3>binaryType — Nhận binary như thế nào</h3>
+    <pre>ws.binaryType = 'arraybuffer'; // Nhận ArrayBuffer — synchronous access, preferred
+ws.binaryType = 'blob';        // Nhận Blob — lazy, stream-friendly, good for large files
+
+ws.onmessage = e => {
+  if (e.data instanceof ArrayBuffer) {
+    const view = new DataView(e.data);
+    const type    = view.getUint8(0);    // message type byte
+    const value   = view.getFloat32(1, true); // float32 little-endian tại offset 1
+  } else if (e.data instanceof Blob) {
+    e.data.arrayBuffer().then(buf => { /* process */ });
+  }
+};</pre>
+
+    <h3>Gửi Binary</h3>
+    <pre>// Typed Array
+ws.send(new Uint8Array([0x01, 0x02, 0x03]));
+
+// ArrayBuffer
+const buf = new ArrayBuffer(12);
+const view = new DataView(buf);
+view.setUint8(0, 0x02);        // message type: sensor data
+view.setFloat32(4, 23.5, true); // temperature (little-endian)
+view.setFloat32(8, 65.2, true); // humidity
+ws.send(buf);
+
+// Node.js server — nhận Buffer:
+ws.on('message', (data, isBinary) => {
+  if (isBinary) {
+    const type = data.readUInt8(0);
+    const temp = data.readFloatLE(4);
+  }
+});</pre>
+
+    <h3>Chunked File Transfer</h3>
+    <pre>// Sender (Client):
+async function sendFile(ws, file) {
+  const CHUNK_SIZE = 16 * 1024; // 16KB per chunk
+  const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+
+  // 1. Send metadata
+  ws.send(JSON.stringify({
+    type: 'file-start',
+    name: file.name,
+    size: file.size,
+    mimeType: file.type,
+    totalChunks
+  }));
+
+  // 2. Send binary chunks
+  for (let offset = 0; offset &lt; file.size; offset += CHUNK_SIZE) {
+    const chunk = file.slice(offset, offset + CHUNK_SIZE);
+    ws.send(await chunk.arrayBuffer());
+
+    // Backpressure: wait if buffer full
+    if (ws.bufferedAmount > 4 * 1024 * 1024) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
+
+  // 3. Signal end
+  ws.send(JSON.stringify({ type: 'file-end' }));
+}
+
+// Receiver (Server/Client):
+let fileChunks = [], fileInfo = null;
+ws.onmessage = e => {
+  if (typeof e.data === 'string') {
+    const msg = JSON.parse(e.data);
+    if (msg.type === 'file-start') { fileChunks = []; fileInfo = msg; }
+    if (msg.type === 'file-end') {
+      const blob = new Blob(fileChunks, { type: fileInfo.mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = Object.assign(document.createElement('a'), { href: url, download: fileInfo.name });
+      a.click();
+    }
+  } else {
+    fileChunks.push(e.data); // ArrayBuffer chunk
+  }
+};</pre>
+
+    <h3>Binary Protocol Formats</h3>
+    <table>
+      <tr><th>Format</th><th>Size vs JSON</th><th>Schema cần?</th><th>Phù hợp với</th></tr>
+      <tr><td><strong>JSON</strong></td><td>1× (baseline)</td><td>Không</td><td>General purpose, human-readable</td></tr>
+      <tr><td><strong>MessagePack</strong></td><td>~0.65–0.75×</td><td>Không (dynamic)</td><td>JSON-compatible, drop-in optimization</td></tr>
+      <tr><td><strong>Protobuf</strong></td><td>~0.25–0.35×</td><td>Có (.proto file)</td><td>High-frequency messages, strict typing</td></tr>
+      <tr><td><strong>FlatBuffers</strong></td><td>~0.3–0.4×</td><td>Có (.fbs file)</td><td>Zero-copy access, game engines</td></tr>
+      <tr><td><strong>Raw binary</strong></td><td>~0.1–0.2×</td><td>Implicit</td><td>Sensor data, IoT (fixed-format payloads)</td></tr>
+    </table>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       S12: PERFORMANCE & SCALING
+  ══════════════════════════════════════════════ -->
+  <section class="section" id="s12">
+    <div class="section-header">
+      <span class="section-num">12</span>
+      <span class="section-title">Performance &amp; Scaling</span>
+    </div>
+
+    <h3>Frame Overhead vs HTTP</h3>
+    <table>
+      <tr><th></th><th>WebSocket Frame</th><th>HTTP/1.1 Request</th></tr>
+      <tr><td><strong>Header size</strong></td><td>2–14 bytes</td><td>700–1,500 bytes</td></tr>
+      <tr><td><strong>Payload overhead</strong></td><td>~0% (sub-percent)</td><td>~700–1500 bytes per request</td></tr>
+      <tr><td><strong>Connection setup</strong></td><td>1× per session (TCP + WS handshake)</td><td>1× per request (hoặc keep-alive pool)</td></tr>
+    </table>
+
+    <div class="box box-green">
+      <div class="box-title">Ví dụ tính toán</div>
+      <strong>Gửi "ping" (4 bytes) mỗi giây trong 1 giờ:</strong><br>
+      • HTTP polling: 3,600 requests × 1,200 bytes header = <strong>4.32 MB overhead</strong><br>
+      • WebSocket: 3,600 frames × 6 bytes frame header = <strong>21.6 KB overhead</strong><br>
+      → WebSocket hiệu quả hơn <strong>200×</strong> về header overhead.
+    </div>
+
+    <h3>Horizontal Scaling — Vấn đề và Giải pháp</h3>
+    <p><strong>Vấn đề cốt lõi:</strong> WebSocket là <em>stateful</em> — connection gắn với một server process cụ thể. Khi scale lên nhiều server instances, message từ client A đến server 1 cần được forward đến client B đang connect server 2.</p>
+
+    <div class="two-col">
+      <div class="col-card">
+        <h4>Giải pháp 1: Sticky Sessions</h4>
+        <p>Load balancer route client đến cùng server instance dựa vào IP hash hoặc session cookie.</p>
+        <p><strong>Ưu:</strong> Đơn giản, không cần thay đổi app code.</p>
+        <p><strong>Nhược:</strong> Instance bị quá tải không tự rebalance được. Server restart → client reconnect ngẫu nhiên → session lost.</p>
+        <pre style="font-size:0.75rem">nginx: ip_hash;
+         # hoặc: hash $cookie_session;</pre>
+      </div>
+      <div class="col-card">
+        <h4>Giải pháp 2: Pub/Sub Backend</h4>
+        <p>Mỗi server subscribe một Redis channel. Khi cần broadcast: server publish lên Redis → tất cả instances nhận và forward cho connected clients của mình.</p>
+        <p><strong>Ưu:</strong> Scalable, không cần sticky. Stateless servers.</p>
+        <p><strong>Nhược:</strong> Thêm Redis dependency, latency cao hơn ~1–5ms.</p>
+        <pre style="font-size:0.75rem">redis.subscribe('room:general');
+redis.on('message', (ch, msg) => {
+  broadcastLocal(ch, msg);
+});</pre>
+      </div>
+    </div>
+
+    <h3>nginx WebSocket Proxy</h3>
+    <pre>upstream ws_backend {
+  server backend1:3000;
+  server backend2:3000;
+  ip_hash; # sticky sessions
+}
+
+server {
+  listen 443 ssl;
+  ssl_certificate     /etc/ssl/cert.pem;
+  ssl_certificate_key /etc/ssl/key.pem;
+
+  location /ws {
+    proxy_pass http://ws_backend;
+    proxy_http_version 1.1;               # bắt buộc cho Upgrade
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_read_timeout  3600s;            # 1 giờ — default 60s quá ngắn cho WS
+    proxy_send_timeout  3600s;
+    proxy_connect_timeout 10s;
+  }
+}</pre>
+
+    <h3>Node.js Performance Numbers</h3>
+    <ul>
+      <li>~50,000–100,000 concurrent WS connections per process (với đủ RAM)</li>
+      <li>Mỗi idle WS connection tốn ~10–20KB RAM (socket buffer + metadata)</li>
+      <li>100K connections × 15KB = ~1.5GB RAM → cần vertical scale hoặc cluster</li>
+      <li>Node.js <code>cluster</code> mode: mỗi worker một process, dùng tất cả CPU cores</li>
+      <li>Throughput bottleneck thường là bandwidth/CPU parsing JSON, không phải WS overhead</li>
+    </ul>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       S13: WEBSOCKET VS ALTERNATIVES
+  ══════════════════════════════════════════════ -->
+  <section class="section" id="s13">
+    <div class="section-header">
+      <span class="section-num">13</span>
+      <span class="section-title">WebSocket vs Alternatives</span>
+    </div>
+
+    <h3>Comparison Table</h3>
+    <table>
+      <tr><th></th><th>WebSocket</th><th>SSE</th><th>Long-Polling</th><th>HTTP/2 Push</th></tr>
+      <tr><td><strong>Direction</strong></td><td>Full-duplex ↕</td><td>Server→Client ↓</td><td>Server→Client ↓</td><td>Server→Client ↓</td></tr>
+      <tr><td><strong>Protocol</strong></td><td>WS (RFC 6455)</td><td>HTTP/1.1 + SSE</td><td>HTTP/1.1</td><td>HTTP/2</td></tr>
+      <tr><td><strong>Connection</strong></td><td>1 persistent</td><td>1 persistent</td><td>N short-lived</td><td>1 persistent</td></tr>
+      <tr><td><strong>Binary support</strong></td><td>✓ native</td><td>✗ text only</td><td>✗</td><td>✓</td></tr>
+      <tr><td><strong>Auto-reconnect</strong></td><td>✗ manual</td><td>✓ built-in</td><td>✓</td><td>—</td></tr>
+      <tr><td><strong>Browser support</strong></td><td>✓ All</td><td>✓ (IE: ✗)</td><td>✓ Universal</td><td>✓ (HTTP/2)</td></tr>
+      <tr><td><strong>Overhead/msg</strong></td><td>2–14 bytes</td><td>HTTP headers</td><td>Full HTTP req</td><td>Compressed header</td></tr>
+      <tr><td><strong>Proxy/firewall</strong></td><td>Đôi khi bị block</td><td>✓ mọi proxy</td><td>✓ mọi proxy</td><td>✓ HTTP/2 proxy</td></tr>
+      <tr><td><strong>Max connections</strong></td><td>Browser limit/tab</td><td>6/domain (H1)</td><td>6/domain (H1)</td><td>Multiplexed</td></tr>
+    </table>
+
+    <h3>Connection Patterns — Visualized</h3>
+    <p class="svg-caption">Cách mỗi technology thiết lập và duy trì kết nối (thời gian trên trục ngang)</p>
+    <svg viewBox="0 0 700 230" class="svg-diagram" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI',system-ui,sans-serif">
+      <defs>
+        <marker id="cmp-arr"  viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,1 L7,4 L0,7 Z" fill="#475569"/></marker>
+        <marker id="cmp-arr-b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,1 L7,4 L0,7 Z" fill="#0369a1"/></marker>
+        <marker id="cmp-arr-g" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,1 L7,4 L0,7 Z" fill="#15803d"/></marker>
+        <marker id="cmp-arr-p" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,1 L7,4 L0,7 Z" fill="#7c3aed"/></marker>
+      </defs>
+
+      <!-- Column backgrounds -->
+      <rect x="2"   y="26" width="218" height="200" rx="6" fill="#fff7ed" stroke="#fdba74" stroke-width="1"/>
+      <rect x="242" y="26" width="216" height="200" rx="6" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+      <rect x="482" y="26" width="216" height="200" rx="6" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1"/>
+
+      <!-- Headers -->
+      <text x="111" y="16" text-anchor="middle" font-size="11" font-weight="700" fill="#c2410c">HTTP Long-Polling</text>
+      <text x="350" y="16" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">Server-Sent Events</text>
+      <text x="590" y="16" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">WebSocket</text>
+
+      <!-- === LONG POLLING === -->
+      <!-- Labels -->
+      <text x="28"  y="50" font-size="9.5" fill="#c2410c">Client</text>
+      <text x="148" y="50" font-size="9.5" fill="#c2410c">Server</text>
+      <!-- Lifelines -->
+      <line x1="45"  y1="54" x2="45"  y2="218" stroke="#fdba74" stroke-width="1" stroke-dasharray="3,3"/>
+      <line x1="165" y1="54" x2="165" y2="218" stroke="#fdba74" stroke-width="1" stroke-dasharray="3,3"/>
+      <!-- 3 request-response cycles -->
+      <path d="M53,68 L157,68"  stroke="#c2410c" stroke-width="1.2" marker-end="url(#cmp-arr)"/>
+      <text x="105" y="64" text-anchor="middle" font-size="8" fill="#c2410c">GET /events</text>
+      <path d="M157,83 L53,83"  stroke="#c2410c" stroke-width="1.2" marker-end="url(#cmp-arr)"/>
+      <text x="105" y="79" text-anchor="middle" font-size="8" fill="#c2410c">200 event1</text>
+
+      <path d="M53,103 L157,103" stroke="#c2410c" stroke-width="1.2" marker-end="url(#cmp-arr)"/>
+      <text x="105" y="99" text-anchor="middle" font-size="8" fill="#c2410c">GET /events</text>
+      <path d="M157,118 L53,118" stroke="#c2410c" stroke-width="1.2" marker-end="url(#cmp-arr)"/>
+      <text x="105" y="114" text-anchor="middle" font-size="8" fill="#c2410c">200 event2</text>
+
+      <path d="M53,138 L157,138" stroke="#c2410c" stroke-width="1.2" marker-end="url(#cmp-arr)"/>
+      <text x="105" y="134" text-anchor="middle" font-size="8" fill="#c2410c">GET /events …wait…</text>
+      <path d="M157,158 L53,158" stroke="#c2410c" stroke-width="1.2" marker-end="url(#cmp-arr)"/>
+      <text x="105" y="154" text-anchor="middle" font-size="8" fill="#c2410c">200 event3</text>
+
+      <text x="105" y="195" text-anchor="middle" font-size="8.5" fill="#c2410c">N connections/session</text>
+      <text x="105" y="208" text-anchor="middle" font-size="8" fill="#94a3b8">high header overhead</text>
+
+      <!-- === SSE === -->
+      <text x="268" y="50" font-size="9.5" fill="#15803d">Client</text>
+      <text x="408" y="50" font-size="9.5" fill="#15803d">Server</text>
+      <line x1="285" y1="54" x2="285" y2="218" stroke="#86efac" stroke-width="1" stroke-dasharray="3,3"/>
+      <line x1="425" y1="54" x2="425" y2="218" stroke="#86efac" stroke-width="1" stroke-dasharray="3,3"/>
+
+      <!-- 1 request, multiple server pushes -->
+      <path d="M293,68 L417,68" stroke="#15803d" stroke-width="1.2" marker-end="url(#cmp-arr-g)"/>
+      <text x="355" y="64" text-anchor="middle" font-size="8" fill="#15803d">GET /events (persistent)</text>
+
+      <path d="M417,88  L293,88"  stroke="#15803d" stroke-width="1" marker-end="url(#cmp-arr-g)"/>
+      <text x="355" y="84" text-anchor="middle" font-size="8" fill="#15803d">data: event1\n\n</text>
+      <path d="M417,108 L293,108" stroke="#15803d" stroke-width="1" marker-end="url(#cmp-arr-g)"/>
+      <text x="355" y="104" text-anchor="middle" font-size="8" fill="#15803d">data: event2\n\n</text>
+      <path d="M417,128 L293,128" stroke="#15803d" stroke-width="1" marker-end="url(#cmp-arr-g)"/>
+      <text x="355" y="124" text-anchor="middle" font-size="8" fill="#15803d">data: event3\n\n</text>
+      <path d="M417,148 L293,148" stroke="#15803d" stroke-width="1" marker-end="url(#cmp-arr-g)"/>
+      <text x="355" y="144" text-anchor="middle" font-size="8" fill="#15803d">data: event4\n\n …</text>
+
+      <text x="355" y="190" text-anchor="middle" font-size="8.5" fill="#15803d">1 persistent connection</text>
+      <text x="355" y="203" text-anchor="middle" font-size="8" fill="#15803d">auto-reconnect built-in</text>
+      <text x="355" y="216" text-anchor="middle" font-size="8" fill="#94a3b8">server→client only · text only</text>
+
+      <!-- === WEBSOCKET === -->
+      <text x="508" y="50" font-size="9.5" fill="#0369a1">Client</text>
+      <text x="648" y="50" font-size="9.5" fill="#0369a1">Server</text>
+      <line x1="525" y1="54" x2="525" y2="218" stroke="#bae6fd" stroke-width="1" stroke-dasharray="3,3"/>
+      <line x1="665" y1="54" x2="665" y2="218" stroke="#bae6fd" stroke-width="1" stroke-dasharray="3,3"/>
+
+      <!-- Upgrade -->
+      <path d="M533,68 L657,68" stroke="#0369a1" stroke-width="1.2" marker-end="url(#cmp-arr-b)"/>
+      <text x="595" y="64" text-anchor="middle" font-size="8" fill="#0369a1">HTTP Upgrade → 101</text>
+
+      <!-- Bidirectional messages -->
+      <path d="M533,88  L657,88"  stroke="#7c3aed" stroke-width="1.4" marker-end="url(#cmp-arr-p)"/>
+      <text x="595" y="84" text-anchor="middle" font-size="8" fill="#7c3aed">ws.send("hello")</text>
+      <path d="M657,105 L533,105" stroke="#7c3aed" stroke-width="1.4" marker-end="url(#cmp-arr-p)"/>
+      <text x="595" y="101" text-anchor="middle" font-size="8" fill="#7c3aed">← onmessage: "world"</text>
+      <path d="M533,122 L657,122" stroke="#7c3aed" stroke-width="1.4" marker-end="url(#cmp-arr-p)"/>
+      <text x="595" y="118" text-anchor="middle" font-size="8" fill="#7c3aed">send(new ArrayBuffer(…))</text>
+      <path d="M657,139 L533,139" stroke="#7c3aed" stroke-width="1.4" marker-end="url(#cmp-arr-p)"/>
+      <text x="595" y="135" text-anchor="middle" font-size="8" fill="#7c3aed">← binary data push</text>
+
+      <text x="595" y="190" text-anchor="middle" font-size="8.5" fill="#0369a1">1 persistent connection</text>
+      <text x="595" y="203" text-anchor="middle" font-size="8" fill="#0369a1">full-duplex · text + binary</text>
+      <text x="595" y="216" text-anchor="middle" font-size="8" fill="#94a3b8">manual reconnect required</text>
+    </svg>
+
+    <h3>Khi nào dùng gì?</h3>
+    <table>
+      <tr><th>Use Case</th><th>Recommendation</th><th>Lý do</th></tr>
+      <tr><td>Chat, multiplayer game, collab editing</td><td><strong>WebSocket</strong></td><td>Cần bidirectional real-time, low latency</td></tr>
+      <tr><td>News feed, social notifications, live score</td><td><strong>SSE</strong></td><td>Server push only, text, auto-reconnect, proxy-friendly</td></tr>
+      <tr><td>IoT sensor → dashboard (unidirectional)</td><td><strong>SSE hoặc WebSocket</strong></td><td>SSE nếu text/JSON, WS nếu binary (tiết kiệm bandwidth)</td></tr>
+      <tr><td>CI/CD build log streaming</td><td><strong>SSE</strong></td><td>Đơn giản, text, một chiều</td></tr>
+      <tr><td>Trading platform, market data</td><td><strong>WebSocket</strong></td><td>Binary protocol, ultra-low latency, bidirectional</td></tr>
+      <tr><td>Legacy app, phải support IE11</td><td><strong>Long-polling</strong></td><td>Universal fallback</td></tr>
+      <tr><td>API server với subscriptions</td><td><strong>WebSocket + graphql-ws</strong></td><td>GraphQL subscription pattern chuẩn hóa</td></tr>
+    </table>
+
+    <div class="box box-blue">
+      <div class="box-title">SSE thường bị đánh giá thấp</div>
+      Nếu use case của bạn chỉ cần server push (server → client) và data là text/JSON: <strong>SSE thường là lựa chọn tốt hơn WebSocket</strong>. SSE: auto-reconnect, hoạt động qua mọi proxy/CDN, không cần upgrade header, native event IDs cho message recovery. Chỉ chuyển sang WebSocket khi cần bidirectional communication hoặc binary frames.
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       S14: PRODUCTION CHECKLIST
+  ══════════════════════════════════════════════ -->
+  <section class="section" id="s14">
+    <div class="section-header">
+      <span class="section-num">14</span>
+      <span class="section-title">Production Checklist</span>
+    </div>
+
+    <p>Danh sách kiểm tra trước khi deploy WebSocket lên production. Mỗi mục đều có lý do cụ thể.</p>
+
+    <div class="check-group">🔒 Security</div>
+    <ul class="checklist">
+      <li><strong>wss:// only</strong> — không bao giờ dùng ws:// trên public internet. TLS bắt buộc.</li>
+      <li><strong>Validate Origin header</strong> — chặn cross-origin connections không mong muốn. Ngăn CSRF attacks.</li>
+      <li><strong>Set maxPayload limit</strong> — <code>new WebSocketServer({ maxPayload: 64 * 1024 })</code>. Ngăn DoS qua large frames.</li>
+      <li><strong>Rate limit connections/IP</strong> — tối đa N connections per IP, X connections/minute. Ngăn connection flood.</li>
+      <li><strong>Rate limit messages/connection</strong> — tối đa 100–1000 msgs/second/connection tùy use case.</li>
+      <li><strong>Validate message schema</strong> — never trust client data. Validate type, structure, range.</li>
+      <li><strong>Authenticate trước khi xử lý data</strong> — close nếu không auth trong 10s, hoặc validate token trong HTTP headers.</li>
+    </ul>
+
+    <div class="check-group">🔁 Reliability</div>
+    <ul class="checklist">
+      <li><strong>Exponential backoff reconnect trên client</strong> — base 1s, cap 30s, add jitter. Không reconnect ngay lập tức (gây thundering herd).</li>
+      <li><strong>Server heartbeat (Ping/Pong)</strong> — gửi Ping mỗi 30s, terminate connection nếu không nhận Pong. Detect stale connections.</li>
+      <li><strong>Graceful shutdown</strong> — khi nhận SIGTERM: gửi Close(1001) cho tất cả clients, đợi handshake hoàn tất (max 5s), rồi mới exit process.</li>
+      <li><strong>Handle onerror và onclose đúng cách</strong> — không để unhandled rejection. Log errors với context (client ID, room).</li>
+      <li><strong>Test network interruption</strong> — simulate network drop bằng Chrome DevTools → Offline. Verify reconnect hoạt động.</li>
+    </ul>
+
+    <div class="check-group">⚡ Performance</div>
+    <ul class="checklist">
+      <li><strong>Bật permessage-deflate</strong> cho JSON/text-heavy traffic. Giảm 50–80% bandwidth. Đánh giá CPU trade-off.</li>
+      <li><strong>Set nginx proxy_read_timeout ≥ 600s</strong> — default 60s timeout sẽ kill long-lived WebSocket connections.</li>
+      <li><strong>Dùng binary format</strong> cho high-frequency numerical data (sensor, game state) — tránh JSON parsing overhead.</li>
+      <li><strong>Monitor bufferedAmount</strong> trên client — implement backpressure để tránh OOM.</li>
+      <li><strong>Dùng ws.readyState === WebSocket.OPEN check</strong> trước khi send — tránh throwing trên closed socket.</li>
+    </ul>
+
+    <div class="check-group">📈 Scaling</div>
+    <ul class="checklist">
+      <li><strong>Horizontal scaling strategy</strong> — sticky sessions (nginx ip_hash) hoặc pub/sub backend (Redis). Phải chọn một trước khi production.</li>
+      <li><strong>nginx: proxy_http_version 1.1 + Upgrade headers</strong> — thiếu 2 dòng này → WebSocket upgrade thất bại.</li>
+      <li><strong>Monitor active connections</strong> — <code>wss.clients.size</code>. Alert nếu vượt 80% capacity.</li>
+      <li><strong>Monitor messages/second và error rate</strong> — spike bất thường → có thể là attack hoặc bug.</li>
+    </ul>
+
+    <div class="check-group">🧪 Testing</div>
+    <ul class="checklist">
+      <li><strong>Autobahn TestSuite</strong> (<code>wstest</code>) — RFC 6455 compliance test. Chạy trước khi launch. <a href="https://github.com/crossbario/autobahn-testsuite">github.com/crossbario/autobahn-testsuite</a></li>
+      <li><strong>Test reconnection logic</strong> — network interruption (DevTools offline), server restart, load balancer failover.</li>
+      <li><strong>Load test</strong> — dùng <code>k6</code> hoặc <code>artillery</code> để verify server chịu được N concurrent WS connections.</li>
+      <li><strong>Test large messages gần maxPayload</strong> — verify server xử lý đúng, không crash.</li>
+    </ul>
+
+    <h3>nginx Config Template</h3>
+    <pre>upstream ws_backend {
+  ip_hash;  # sticky sessions (hoặc Redis pub/sub cho stateless)
+  server 127.0.0.1:3000;
+  server 127.0.0.1:3001;
+}
+
+server {
+  listen 443 ssl http2;
+  server_name example.com;
+  ssl_certificate     /etc/letsencrypt/live/example.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+  ssl_protocols TLSv1.2 TLSv1.3;
+
+  # Static files
+  location / { root /var/www/app; try_files $uri /index.html; }
+
+  # WebSocket endpoint
+  location /ws {
+    proxy_pass http://ws_backend;
+    proxy_http_version 1.1;              # ← bắt buộc
+    proxy_set_header Upgrade $http_upgrade; # ← bắt buộc
+    proxy_set_header Connection "upgrade";  # ← bắt buộc
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_read_timeout  3600s;   # ← 1 giờ, đủ cho long-lived connections
+    proxy_send_timeout  3600s;
+    proxy_connect_timeout 10s;
+  }
+}</pre>
+  </section>
+
+</main>
+</div>
+
+<a class="back-top" href="#" title="Lên đầu trang">↑</a>
+
+<script>
+  const navItems = document.querySelectorAll('.nav-item');
+  const sections = document.querySelectorAll('.section');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navItems.forEach(item => {
+          item.classList.toggle('active', item.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "ws-chat-room",
+  "version": "1.0.0",
+  "description": "WebSocket Chat Room demo — rooms, broadcast, history, file transfer",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

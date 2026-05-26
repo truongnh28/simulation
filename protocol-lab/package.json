@@ -1,0 +1,12 @@
+{
+  "name": "ws-protocol-lab",
+  "version": "1.0.0",
+  "description": "WebSocket Protocol Lab — echo server, frame inspector, metrics charts",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

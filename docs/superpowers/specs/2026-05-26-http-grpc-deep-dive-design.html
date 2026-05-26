@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>HTTP/HTTPS/H2 + gRPC Deep Dive — Design Spec</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#fff;color:#1e293b;line-height:1.75;padding:2.5rem 2rem}
+.container{max-width:900px;margin:0 auto}
+h1{font-size:1.9rem;color:#0f172a;margin-bottom:.25rem;font-weight:700}
+h2{font-size:1.15rem;color:#0369a1;margin:2.25rem 0 .65rem;border-bottom:2px solid #e0f2fe;padding-bottom:.35rem;font-weight:700}
+h3{font-size:.95rem;color:#0f4c81;margin:1.25rem 0 .4rem;font-weight:600}
+.meta{color:#64748b;font-size:.85rem;margin-bottom:2.25rem}
+p{margin-bottom:.65rem;color:#334155}
+pre{background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #0ea5e9;border-radius:0 8px 8px 0;padding:.9rem 1.1rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#0f4c81;line-height:1.7;margin:.65rem 0 1rem}
+code{background:#f0f9ff;color:#0369a1;padding:.15em .45em;border-radius:4px;font-size:.86em;font-family:'JetBrains Mono',monospace;border:1px solid #bae6fd}
+table{width:100%;border-collapse:collapse;margin:.65rem 0 1rem;font-size:.87rem}
+th{background:#f0f9ff;color:#0369a1;padding:.55rem .9rem;text-align:left;font-weight:700;border-bottom:2px solid #bae6fd}
+td{padding:.5rem .9rem;border-bottom:1px solid #f1f5f9;color:#334155}
+ul,ol{padding-left:1.5rem;margin-bottom:.65rem}
+li{margin-bottom:.3rem;color:#334155}
+.section-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:1rem 1.1rem;margin:.65rem 0 1rem}
+.badge{display:inline-block;padding:.15em .55em;border-radius:4px;font-size:.78em;font-weight:700}
+.badge-blue{background:#e0f2fe;color:#0369a1}
+.badge-green{background:#dcfce7;color:#166534}
+.badge-purple{background:#f3e8ff;color:#7e22ce}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>HTTP/HTTPS/H2 + gRPC Deep Dive — Design Spec</h1>
+<div class="meta">Ngày: <strong>2026-05-26</strong> · Approach: Evolution narrative + Stack bottom-up · Format: 2 HTML docs + inline SVG · Ngôn ngữ: Tiếng Việt</div>
+
+<h2>1. Deliverables</h2>
+<table>
+<tr><th>File</th><th>Mô tả</th><th>Sections</th></tr>
+<tr><td><code>docs/http-deep-dive.html</code></td><td>HTTP/1.0→1.1→HTTPS→H2→H3, evolution narrative, 7 SVG diagrams</td><td>18</td></tr>
+<tr><td><code>docs/grpc-deep-dive.html</code></td><td>gRPC + Protobuf, stack bottom-up, 6 SVG diagrams</td><td>16</td></tr>
+</table>
+<p>Không có demo app. Cùng style với <code>webrtc-deep-dive.html</code> và <code>websocket-deep-dive.html</code>: white background, blue accent theme, CSS variables, sticky sidebar, inline SVG.</p>
+
+<h2>2. http-deep-dive.html — 18 Sections</h2>
+
+<h3>Sidebar groups</h3>
+<table>
+<tr><th>Group</th><th>Sections</th></tr>
+<tr><td><span class="badge badge-blue">Nền tảng</span></td><td>s1–s7</td></tr>
+<tr><td><span class="badge badge-green">Security &amp; Caching</span></td><td>s8–s12</td></tr>
+<tr><td><span class="badge badge-purple">HTTP/2 &amp; HTTP/3</span></td><td>s13–s18</td></tr>
+</table>
+
+<h3>Section list</h3>
+<table>
+<tr><th>#</th><th>Title</th><th>Key content</th><th>SVG</th></tr>
+<tr><td>s1</td><td>HTTP là gì?</td><td>Application-layer protocol, OSI position, request-response model, stateless, text-based, use cases, RFC overview</td><td>Evolution timeline (top banner)</td></tr>
+<tr><td>s2</td><td>HTTP/1.0</td><td>Simple request/response, one connection per request, Content-Type/Length, no persistent connections, limitations</td><td>—</td></tr>
+<tr><td>s3</td><td>HTTP/1.1</td><td>Keep-alive, pipelining (và vấn đề HOL blocking), chunked transfer encoding, virtual hosts, conditional requests (If-Modified-Since/ETag)</td><td>Keep-alive vs pipelining vs H2 multiplexing</td></tr>
+<tr><td>s4</td><td>HTTP Methods &amp; Semantics</td><td>GET/POST/PUT/DELETE/PATCH/HEAD/OPTIONS/CONNECT/TRACE, idempotency, safety, RFC 9110 semantics</td><td>—</td></tr>
+<tr><td>s5</td><td>HTTP Headers &amp; Message Structure</td><td>Start-line, header fields, empty line, body; request vs response anatomy; common headers; header folding deprecation</td><td>Request/Response anatomy diagram</td></tr>
+<tr><td>s6</td><td>Status Codes</td><td>1xx Informational, 2xx Success, 3xx Redirection, 4xx Client Error, 5xx Server Error; 30+ common codes explained</td><td>—</td></tr>
+<tr><td>s7</td><td>URL &amp; Content Negotiation</td><td>URL structure (scheme/authority/path/query/fragment), percent-encoding, Accept/Content-Type/Accept-Language/Accept-Encoding, q-values, Vary header</td><td>—</td></tr>
+<tr><td>s8</td><td>Caching</td><td>Cache-Control directives (max-age/no-cache/no-store/must-revalidate/stale-while-revalidate), ETag/If-None-Match, Last-Modified, Age, Surrogate-Control, CDN caching, browser cache layers</td><td>—</td></tr>
+<tr><td>s9</td><td>Cookies &amp; Sessions</td><td>Set-Cookie attributes (HttpOnly/Secure/SameSite/Domain/Path/Expires), session vs persistent cookies, session management patterns, cookie size limits</td><td>—</td></tr>
+<tr><td>s10</td><td>CORS</td><td>Same-origin policy, simple vs preflighted requests, OPTIONS preflight, CORS headers (Access-Control-Allow-*), credentials, CORB, common pitfalls</td><td>—</td></tr>
+<tr><td>s11</td><td>HTTPS &amp; PKI</td><td>Why HTTPS, symmetric vs asymmetric crypto, certificates (X.509), CA chain, certificate transparency, SNI, HSTS, mixed content</td><td>—</td></tr>
+<tr><td>s12</td><td>TLS Handshake</td><td>TLS 1.2 full handshake vs TLS 1.3 1-RTT vs 0-RTT; key exchange (ECDHE), cipher suites, session resumption, early data risks</td><td>TLS 1.3 handshake sequence diagram (Client ↔ Server)</td></tr>
+<tr><td>s13</td><td>HTTP/2 — Binary Framing</td><td>Binary protocol vs text, frame types (DATA/HEADERS/PRIORITY/RST_STREAM/SETTINGS/PUSH_PROMISE/PING/GOAWAY/WINDOW_UPDATE/CONTINUATION), frame structure (length/type/flags/stream-id/payload)</td><td>HTTP/2 binary frame layout (bit-level)</td></tr>
+<tr><td>s14</td><td>HTTP/2 — Streams &amp; Multiplexing</td><td>Stream states (idle/open/half-closed/closed), concurrent streams, HOL blocking fix, stream ID parity, RST_STREAM, connection vs stream errors</td><td>—</td></tr>
+<tr><td>s15</td><td>HPACK Header Compression</td><td>Static table (61 entries), dynamic table, Huffman coding, indexed header field, literal with/without indexing, never-indexed (sensitive headers)</td><td>HPACK static + dynamic table lookup flow</td></tr>
+<tr><td>s16</td><td>HTTP/2 — Flow Control &amp; Priorities</td><td>Connection/stream window (65535 bytes default), WINDOW_UPDATE, priority tree/dependency/weight (deprecated in H3), priority inversion problem</td><td>—</td></tr>
+<tr><td>s17</td><td>Security Headers</td><td>HSTS (max-age/includeSubDomains/preload), CSP (Content-Security-Policy directives), X-Frame-Options, Referrer-Policy, CORP/COOP/COEP, Permissions-Policy, certificate pinning (HPKP deprecated)</td><td>—</td></tr>
+<tr><td>s18</td><td>HTTP/3 &amp; QUIC</td><td>QUIC over UDP, 0-RTT connection, stream multiplexing without HOL blocking, connection migration, QUIC packet structure, HTTP/3 vs HTTP/2 comparison table, current adoption</td><td>QUIC vs TCP+TLS+H2 stack comparison</td></tr>
+</table>
+
+<h3>7 SVG diagrams — http-deep-dive.html</h3>
+<div class="section-card">
+<ol>
+<li><strong>HTTP Evolution Timeline</strong> (top, sau page subtitle) — horizontal pipeline: HTTP/1.0 (1996) → HTTP/1.1 (1997) → HTTPS/TLS (2000s) → HTTP/2 (2015) → HTTP/3 (2022). Mỗi phase là box màu khác nhau. Anchor links đến sections tương ứng.</li>
+<li><strong>s3 — Connection Models</strong> — 3-column SVG: HTTP/1.0 (serial, new conn each req), HTTP/1.1 pipelining (serial on 1 conn, HOL blocking), HTTP/2 multiplexing (parallel streams on 1 conn). Hiển thị timing bars.</li>
+<li><strong>s5 — Request/Response Anatomy</strong> — 2-column SVG: trái = HTTP request (start-line, headers, blank line, body), phải = HTTP response. Highlight từng field với màu riêng.</li>
+<li><strong>s12 — TLS 1.3 Handshake</strong> — sequence diagram 2 actors (Client/Server): ClientHello → ServerHello + EncryptedExtensions + Certificate + CertificateVerify + Finished → {Finished} → Application Data. Nhánh phụ: 0-RTT (early data).</li>
+<li><strong>s13 — HTTP/2 Frame Layout</strong> — bit-level diagram (cùng style WS frame): 24-bit Length, 8-bit Type, 8-bit Flags, 1-bit Reserved + 31-bit Stream ID, Payload. Màu khác nhau cho từng field.</li>
+<li><strong>s15 — HPACK Table</strong> — hiển thị static table (indexed 1–61) + dynamic table (FIFO eviction), mũi tên lookup flow: header field → check static → check dynamic → encode literal + insert dynamic.</li>
+<li><strong>s18 — QUIC vs TCP Stack</strong> — 2-column SVG: trái = TCP+TLS+HTTP/2 layers (Application → HTTP/2 → TLS → TCP → IP), phải = QUIC+HTTP/3 (Application → HTTP/3 → QUIC [TLS integrated] → UDP → IP). Highlight latency reduction.</li>
+</ol>
+</div>
+
+<h2>3. grpc-deep-dive.html — 16 Sections</h2>
+
+<h3>Sidebar groups</h3>
+<table>
+<tr><th>Group</th><th>Sections</th></tr>
+<tr><td><span class="badge badge-blue">Nền tảng</span></td><td>s1–s5</td></tr>
+<tr><td><span class="badge badge-green">Communication Patterns</span></td><td>s6–s9</td></tr>
+<tr><td><span class="badge badge-purple">Runtime</span></td><td>s10–s13</td></tr>
+<tr><td><span class="badge" style="background:#fef3c7;color:#92400e">Production</span></td><td>s14–s16</td></tr>
+</table>
+
+<h3>Section list</h3>
+<table>
+<tr><th>#</th><th>Title</th><th>Key content</th><th>SVG</th></tr>
+<tr><td>s1</td><td>gRPC là gì?</td><td>Google RPC framework (2015, open-source 2016), HTTP/2 transport, Protobuf encoding, polyglot, use cases (microservices, mobile, streaming), vs REST/GraphQL overview</td><td>gRPC stack diagram (top banner)</td></tr>
+<tr><td>s2</td><td>Protocol Buffers — Proto3 Syntax</td><td>Message definition, scalar types, field numbers (1–15 vs 16+), optional/repeated/map, oneof, reserved fields, imports, packages, options</td><td>—</td></tr>
+<tr><td>s3</td><td>Protobuf Wire Format</td><td>Wire types (0=Varint/1=64-bit/2=LEN/5=32-bit), field tag encoding (field_number &lt;&lt; 3 | wire_type), varint encoding (MSB continuation bit), zigzag encoding (sint32/sint64), packed repeated fields</td><td>Proto wire format: varint bit layout + field tag structure</td></tr>
+<tr><td>s4</td><td>Service Definition</td><td>.proto service block, rpc method declaration, request/response message types, stream keyword, well-known types (google.protobuf.*), proto best practices (field numbering, backward compatibility)</td><td>—</td></tr>
+<tr><td>s5</td><td>Code Generation</td><td>protoc compiler, language plugins (--go_out, --java_out, etc.), generated code structure (message classes, service stubs), buf tool, buf.gen.yaml, breaking change detection</td><td>—</td></tr>
+<tr><td>s6</td><td>Unary RPC</td><td>Simple request-response, blocking stub, async stub, future stub, deadline propagation, when to use, error propagation via Status</td><td rowspan="4">4 Streaming Patterns (single SVG, 4-panel sequence diagrams)</td></tr>
+<tr><td>s7</td><td>Server-Streaming RPC</td><td>Server sends N responses, client reads stream, use cases (live feeds, large result sets), flow control interaction, end-of-stream marker</td></tr>
+<tr><td>s8</td><td>Client-Streaming RPC</td><td>Client sends N requests then server responds once, use cases (file upload, batch insert), half-close, server reads all then responds</td></tr>
+<tr><td>s9</td><td>Bidirectional Streaming RPC</td><td>Full-duplex, independent read/write loops, use cases (chat, real-time collaboration, telemetry), ordering guarantees, flow control</td></tr>
+<tr><td>s10</td><td>Channels &amp; Stubs</td><td>Channel = logical connection (pooled subchannels), channel lifecycle (idle/connecting/ready/transient-failure/shutdown), credentials, KeepAlive config, stub types (blocking/async/future), ManagedChannel</td><td>Channel architecture diagram</td></tr>
+<tr><td>s11</td><td>Metadata</td><td>Key-value pairs sent before/after call, request vs response metadata, binary metadata (-bin suffix), initial vs trailing metadata, propagation patterns, common use cases (auth tokens, tracing)</td><td>—</td></tr>
+<tr><td>s12</td><td>Error Handling</td><td>google.rpc.Status (code + message + details), 16 status codes (OK/CANCELLED/UNKNOWN/INVALID_ARGUMENT/DEADLINE_EXCEEDED/NOT_FOUND/…), google.rpc.ErrorInfo/RetryInfo/BadRequest details, error propagation across languages</td><td>—</td></tr>
+<tr><td>s13</td><td>Deadlines &amp; Cancellation</td><td>Context deadline (absolute timestamp vs timeout), propagation through call chain (server reads deadline), graceful vs abrupt cancellation, DEADLINE_EXCEEDED vs CANCELLED, retry vs hedging</td><td>—</td></tr>
+<tr><td>s14</td><td>Interceptors</td><td>Unary interceptor signature, stream interceptor, chaining multiple interceptors, middleware pattern (auth/logging/metrics/retry), client vs server interceptors, grpc.ChainUnaryInterceptor</td><td>Interceptor chain diagram</td></tr>
+<tr><td>s15</td><td>Load Balancing</td><td>Client-side LB (round_robin, pick_first, least-conn), proxy LB (Envoy/Nginx), xDS protocol + control plane (Istio), service mesh, look-aside vs sidecar, subchannel health tracking</td><td>Load balancing strategies diagram</td></tr>
+<tr><td>s16</td><td>gRPC-Web, Transcoding &amp; Production</td><td>gRPC-Web (browser limitation, HTTP/1.1 fallback, Envoy proxy), grpc-gateway (proto annotations → REST/JSON), mTLS (channel credentials, mutual auth), health checking protocol (grpc.health.v1), server reflection, performance vs REST benchmark table</td><td>—</td></tr>
+</table>
+
+<h3>6 SVG diagrams — grpc-deep-dive.html</h3>
+<div class="section-card">
+<ol>
+<li><strong>gRPC Stack</strong> (top banner) — vertical stack diagram: Application Code → gRPC Framework → HTTP/2 Transport → TLS → TCP → IP. Bên cạnh: Protobuf serialization layer. Mũi tên encode/decode.</li>
+<li><strong>s3 — Proto Wire Format</strong> — 2-part SVG: (1) varint encoding: bit layout với MSB continuation bit highlight, ví dụ số 300 encode thành 2 bytes; (2) field tag: field_number || wire_type, bảng wire types.</li>
+<li><strong>s6–s9 — 4 Streaming Patterns</strong> — 1 SVG, 4 panels ngang: Unary (1 req → 1 resp), Server-streaming (1 req → N resp), Client-streaming (N req → 1 resp), Bidirectional (N req ↔ N resp). Arrows với timing.</li>
+<li><strong>s10 — Channel Architecture</strong> — diagram: Stub → Channel → [Subchannel 1, Subchannel 2, …] → Server instances. Hiện lifecycle states (connecting/ready/idle/transient-failure).</li>
+<li><strong>s14 — Interceptor Chain</strong> — pipeline diagram: RPC Call → Interceptor 1 (auth) → Interceptor 2 (logging) → Interceptor 3 (retry) → Handler. Mũi tên vào/ra với labels.</li>
+<li><strong>s15 — Load Balancing Strategies</strong> — 2-column SVG: trái = client-side LB (client holds server list, picks directly); phải = proxy LB (client → Envoy → servers). Labels: xDS control plane, subchannel health.</li>
+</ol>
+</div>
+
+<h2>4. Stack &amp; Style</h2>
+<pre>Format:    Static HTML, no build step, no JS frameworks
+Style:     CSS variables, white bg (#fff), blue accent (#0ea5e9 / #0369a1)
+           Sticky sidebar with IntersectionObserver active state
+           Same pattern as webrtc-deep-dive.html + websocket-deep-dive.html
+SVG:       Inline, consistent arrow markers, viewBox defined, no overflow
+Language:  Tiếng Việt
+
+Implementation order:
+  1. http-deep-dive.html  (18 sections, 7 SVGs)
+  2. grpc-deep-dive.html  (16 sections, 6 SVGs)</pre>
+
+</div>
+</body>
+</html>
