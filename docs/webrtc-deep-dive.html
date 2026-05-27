@@ -251,6 +251,19 @@
   .svg-caption { font-size: 0.78rem; color: var(--text3); margin-bottom: 0.4rem; font-style: italic; }
   .flow-phase rect, .flow-phase polygon { transition: opacity 0.15s; }
   .flow-phase:hover rect, .flow-phase:hover polygon { opacity: 0.75; }
+
+  .nav-divider { height: 1px; background: var(--border); margin: 0.5rem 1.25rem; }
+  .nav-group-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); padding: 0.6rem 1.25rem 0.2rem; }
+
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin: 0.75rem 0 1.25rem; }
+  @media (max-width: 900px) { .summary-grid { grid-template-columns: 1fr 1fr; } }
+  .summary-card { border-radius: 8px; padding: 0.9rem 1rem; }
+  .summary-card h4 { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; margin-top: 0; }
+  .summary-card ul { padding-left: 1.1rem; margin: 0; }
+  .summary-card li { font-size: 0.82rem; margin-bottom: 0.22rem; line-height: 1.5; color: inherit; }
+  .summary-card li strong { color: inherit; opacity: 0.95; }
+  .nav-home { display:flex; align-items:center; gap:.5rem; padding:.7rem 1.25rem .85rem; font-size:.78rem; color:var(--text3); text-decoration:none; border-bottom:1px solid var(--border); margin-bottom:.75rem; transition:color .15s; }
+  .nav-home:hover { color:var(--blue); }
 </style>
 </head>
 <body>
@@ -259,6 +272,10 @@
 
 <!-- ═══════════════ SIDEBAR ═══════════════ -->
 <nav class="sidebar">
+  <a class="nav-home" href="../index.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+    Protocol Deep Dives
+  </a>
   <div class="sidebar-title">WebRTC Deep Dive</div>
   <a class="nav-item" href="#s1"><span class="nav-num">01</span> WebRTC là gì</a>
   <a class="nav-item" href="#s2"><span class="nav-num">02</span> NAT &amp; vấn đề</a>
@@ -272,6 +289,9 @@
   <a class="nav-item" href="#s10"><span class="nav-num">10</span> Codec Negotiation</a>
   <a class="nav-item" href="#s11"><span class="nav-num">11</span> DataChannel</a>
   <a class="nav-item" href="#s12"><span class="nav-num">12</span> getStats() API</a>
+  <div class="nav-divider"></div>
+  <div class="nav-group-label">Tổng kết</div>
+  <a class="nav-item" href="#s13"><span class="nav-num">★</span> Các điểm cốt lõi</a>
 </nav>
 
 <!-- ═══════════════ MAIN ═══════════════ -->
@@ -1859,6 +1879,95 @@ server.listen(3000);</pre>
       Chrome có built-in WebRTC debugger tại <code>chrome://webrtc-internals</code> —
       hiển thị toàn bộ getStats() theo real-time với biểu đồ. Công cụ chẩn đoán mạnh nhất
       để phân tích WebRTC issues trong production.
+    </div>
+  </section>
+
+  <!-- ═══ S13: TỔNG KẾT ═══ -->
+  <section class="section" id="s13">
+    <div class="section-header">
+      <span class="section-num">★</span>
+      <h2 class="section-title">Các điểm cốt lõi cần nhớ</h2>
+    </div>
+    <p>Bản chắt lọc từ 12 sections — những điểm hay bị nhầm, hay gặp trong interviews và hay phát sinh bug trong production WebRTC.</p>
+
+    <div class="summary-grid">
+
+      <div class="summary-card box-blue">
+        <h4>Connection Flow</h4>
+        <ul>
+          <li>Thứ tự: getUserMedia → createOffer → <strong>setLocalDescription</strong> → ICE gathering → signaling → setRemoteDescription → DTLS → SRTP</li>
+          <li>ICE gathering bắt đầu <em>ngay khi setLocalDescription được gọi</em> — không phải sau</li>
+          <li><strong>ICE connected ≠ DTLS complete</strong> — hai state machine độc lập, dùng cả <code>oniceconnectionstatechange</code> và <code>onconnectionstatechange</code></li>
+          <li>Trickle ICE: gửi candidates ngay khi gather được → giảm latency đáng kể vs batch</li>
+        </ul>
+      </div>
+
+      <div class="summary-card box-green">
+        <h4>NAT &amp; ICE</h4>
+        <ul>
+          <li>4 loại NAT: Full Cone, Restricted, Port Restricted, <strong>Symmetric</strong> — chỉ Symmetric không thể hole-punch</li>
+          <li>Candidate priority: <strong>host &gt; srflx &gt; relay</strong> — ICE chọn pair có priority tổng cao nhất</li>
+          <li>Symmetric NAT → STUN không đủ → <strong>bắt buộc TURN relay</strong></li>
+          <li>TURN credentials: dùng time-limited HMAC token (RFC 5766) — không expose static credentials</li>
+          <li>ICE restarts khi network thay đổi — <code>pc.restartIce()</code></li>
+        </ul>
+      </div>
+
+      <div class="summary-card box-orange">
+        <h4>SDP</h4>
+        <ul>
+          <li>SDP = negotiate parameters, <em>không truyền data</em> — chỉ là text description</li>
+          <li><code>a=fingerprint</code> trong SDP → verify DTLS certificate (chống MITM)</li>
+          <li><code>sdpMid</code> + <code>sdpMLineIndex</code>: định vị candidate thuộc media line nào</li>
+          <li>Offer/answer phải match: codec PT, direction (sendrecv/sendonly/recvonly), ice-ufrag/ice-pwd</li>
+          <li>Unified Plan (mặc định): mỗi track = 1 m-line; Plan B (deprecated): nhiều tracks/m-line</li>
+        </ul>
+      </div>
+
+      <div class="summary-card box-purple">
+        <h4>DTLS &amp; SRTP</h4>
+        <ul>
+          <li>DTLS chạy <em>sau ICE connected</em>, <em>trước</em> khi media flow — không bỏ qua được</li>
+          <li>DTLS fingerprint = SHA-256 của cert, so sánh với <code>a=fingerprint</code> trong SDP → chống MITM</li>
+          <li>SRTP key material được derive từ DTLS handshake (DTLS-SRTP, RFC 5763)</li>
+          <li><strong>RTCP-MUX:</strong> RTP và RTCP dùng chung port → giảm số port cần mở qua NAT</li>
+          <li>Cipher suites: AES-128-GCM (mới) hoặc AES-128-CM-HMAC-SHA1-80 (legacy)</li>
+        </ul>
+      </div>
+
+      <div class="summary-card box-red">
+        <h4>Codec &amp; DataChannel</h4>
+        <ul>
+          <li><strong>Opus bắt buộc</strong> cho audio (RFC 7874) — tất cả browsers support</li>
+          <li>Video codecs: VP8/VP9/H.264/AV1 — dùng <code>RTCRtpSender.getCapabilities('video')</code> để kiểm tra</li>
+          <li>DataChannel = SCTP trên DTLS — <code>ordered: false</code> + <code>maxRetransmits: 0</code> cho unreliable (gaming)</li>
+          <li>DataChannel không cần media tracks — có thể dùng độc lập</li>
+          <li>Simulcast: gửi nhiều resolutions (rid: low/mid/high) → receiver chọn layer</li>
+        </ul>
+      </div>
+
+      <div class="summary-card box-yellow">
+        <h4>Debugging &amp; Stats</h4>
+        <ul>
+          <li><strong>chrome://webrtc-internals</strong> — real-time graphs, ICE candidates, SDP history — công cụ mạnh nhất</li>
+          <li><code>RTCInboundRtpStreamStats</code>: <code>jitter</code>, <code>packetsLost</code>, <code>bytesReceived</code>, <code>framesDecoded</code></li>
+          <li>Packet loss = <code>packetsLost / (packetsReceived + packetsLost)</code> — &gt;5% là degraded</li>
+          <li><code>RTCIceCandidatePairStats</code>: <code>currentRoundTripTime</code>, <code>availableOutgoingBitrate</code></li>
+          <li>Jitter target &lt; 30ms cho audio — jitter buffer sẽ tăng delay khi jitter cao</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="box box-blue" style="margin-top:1rem">
+      <div class="box-title">Câu hỏi hay gặp trong interviews</div>
+      <ul style="margin:0">
+        <li><strong>Tại sao cần TURN server?</strong> — Symmetric NAT block hole-punching; TURN relay traffic qua server, đảm bảo kết nối được nhưng tốn bandwidth</li>
+        <li><strong>SDP offer/answer exchange xảy ra ở đâu?</strong> — Qua signaling channel tùy chọn (WebSocket, HTTP) — WebRTC không định nghĩa signaling protocol</li>
+        <li><strong>Khác nhau giữa ICE connected và connection state connected?</strong> — ICE connected = transport layer OK; connection state connected = ICE + DTLS đều xong</li>
+        <li><strong>Tại sao DTLS fingerprint quan trọng?</strong> — Chống MITM attack: attacker có thể relay ICE nhưng không thể forge certificate khớp fingerprint trong SDP</li>
+        <li><strong>DataChannel có thể dùng mà không cần video/audio không?</strong> — Có — createDataChannel() tạo RTCPeerConnection chỉ với SCTP transport, không cần addTrack()</li>
+      </ul>
     </div>
   </section>
 

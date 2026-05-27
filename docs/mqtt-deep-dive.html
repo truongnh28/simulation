@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MQTT Deep Dive</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #ffffff; --bg2: #f8fafc; --bg3: #f1f5f9; --border: #e2e8f0;
+  --text: #1e293b; --text2: #475569; --text3: #94a3b8;
+  --blue: #0369a1; --blue-l: #e0f2fe; --blue-ll: #f0f9ff;
+  --green: #15803d; --green-l: #dcfce7;
+  --orange: #c2410c; --orange-l: #fff7ed;
+  --red: #dc2626; --red-l: #fef2f2;
+  --purple: #7c3aed; --purple-l: #faf5ff;
+  --yellow: #92400e; --yellow-l: #fffbeb;
+  --accent: #0ea5e9;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.75; font-size: 15px; }
+.layout { display: flex; min-height: 100vh; }
+.sidebar { width: 260px; flex-shrink: 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; background: var(--bg2); border-right: 1px solid var(--border); padding: 1.5rem 0; }
+.sidebar-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text3); padding: 0 1.25rem 0.75rem; }
+.nav-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.45rem 1.25rem; font-size: 0.85rem; color: var(--text2); text-decoration: none; border-left: 3px solid transparent; transition: all 0.15s; }
+.nav-item:hover { background: var(--blue-ll); color: var(--blue); border-left-color: var(--accent); }
+.nav-item.active { background: var(--blue-ll); color: var(--blue); border-left-color: var(--accent); font-weight: 600; }
+.nav-num { font-size: 0.7rem; background: var(--bg3); color: var(--text3); border-radius: 4px; padding: 0.1rem 0.4rem; font-weight: 600; min-width: 1.6rem; text-align: center; }
+.nav-divider { height: 1px; background: var(--border); margin: 0.5rem 1.25rem; }
+.nav-group-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); padding: 0.6rem 1.25rem 0.2rem; }
+.main { flex: 1; max-width: 820px; padding: 3rem 3rem 6rem; }
+.page-title { font-size: 2rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem; }
+.page-sub { font-size: 1rem; color: var(--text2); margin-bottom: 2rem; line-height: 1.6; }
+.section { margin-bottom: 4rem; }
+.section-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; padding-bottom: 0.6rem; border-bottom: 2px solid var(--blue-l); }
+.section-num { background: var(--blue); color: white; font-weight: 800; font-size: 0.75rem; border-radius: 6px; padding: 0.25rem 0.6rem; letter-spacing: 0.05em; }
+.section-title { font-size: 1.35rem; font-weight: 700; color: #0f172a; }
+h3 { font-size: 1rem; font-weight: 700; color: var(--blue); margin: 1.75rem 0 0.5rem; }
+h4 { font-size: 0.85rem; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.08em; margin: 1.25rem 0 0.4rem; }
+p { color: var(--text2); margin-bottom: 0.8rem; }
+p strong { color: var(--text); }
+pre { background: var(--bg2); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.8rem; color: #0f4c81; line-height: 1.7; margin: 0.75rem 0 1.25rem; white-space: pre; }
+code { background: var(--blue-ll); color: var(--blue); padding: 0.15em 0.45em; border-radius: 4px; font-size: 0.85em; font-family: 'JetBrains Mono', monospace; border: 1px solid #bae6fd; }
+.box { border-radius: 8px; padding: 1rem 1.25rem; margin: 0.75rem 0 1.25rem; font-size: 0.9rem; }
+.box-blue   { background: var(--blue-ll);  border: 1px solid #bae6fd; color: #0c4a6e; }
+.box-green  { background: var(--green-l);  border: 1px solid #86efac; color: #14532d; }
+.box-orange { background: var(--orange-l); border: 1px solid #fdba74; color: #7c2d12; }
+.box-yellow { background: var(--yellow-l); border: 1px solid #fde68a; color: var(--yellow); }
+.box-purple { background: var(--purple-l); border: 1px solid #c4b5fd; color: #4c1d95; }
+.box-red    { background: var(--red-l);    border: 1px solid #fca5a5; color: #7f1d1d; }
+.box-title  { font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.3rem; opacity: 0.7; }
+table { width: 100%; border-collapse: collapse; margin: 0.75rem 0 1.25rem; font-size: 0.88rem; }
+th { background: var(--blue-ll); color: var(--blue); padding: 0.6rem 1rem; text-align: left; font-weight: 700; border-bottom: 2px solid #bae6fd; }
+td { padding: 0.55rem 1rem; border-bottom: 1px solid var(--bg3); color: var(--text2); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg2); }
+ul, ol { padding-left: 1.5rem; margin-bottom: 0.8rem; }
+li { margin-bottom: 0.35rem; color: var(--text2); }
+li strong { color: var(--text); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 0.75rem 0 1.25rem; }
+@media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+.col-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.1rem; }
+.col-card h4 { margin-top: 0; }
+.diagram-wrap { margin: 0.75rem 0 1.25rem; overflow-x: auto; }
+svg.diagram { display: block; max-width: 100%; height: auto; }
+.packet-grid { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; margin: 0.75rem 0 1.25rem; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.packet-row { display: flex; }
+.packet-byte { flex: 1; min-width: 2.8rem; padding: 0.4rem 0.2rem; text-align: center; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); line-height: 1.3; }
+.packet-byte:last-child { border-right: none; }
+.packet-row:last-child .packet-byte { border-bottom: none; }
+.packet-label { background: var(--bg3); font-weight: 700; font-size: 0.7rem; color: var(--text2); }
+.pkt-type    { background: #dbeafe; color: #1e40af; }
+.pkt-len     { background: var(--green-l); color: var(--green); }
+.pkt-name    { background: var(--orange-l); color: var(--orange); }
+.pkt-ver     { background: var(--yellow-l); color: var(--yellow); }
+.pkt-cflag   { background: #fce7f3; color: #9d174d; }
+.pkt-keep    { background: var(--blue-ll); color: var(--blue); }
+.pkt-payload { background: var(--bg2); color: var(--text2); }
+.bits-row { display: flex; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin: 0.75rem 0 1.25rem; }
+.bit-cell { flex: 1; text-align: center; padding: 0.35rem 0.1rem; border-right: 1px solid var(--border); line-height: 1.4; }
+.bit-cell:last-child { border-right: none; }
+.bit-header { background: var(--bg3); font-weight: 700; font-size: 0.7rem; color: var(--text3); }
+.summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin: 0.75rem 0 1.25rem; }
+@media (max-width: 900px) { .summary-grid { grid-template-columns: 1fr 1fr; } }
+.summary-card { border-radius: 8px; padding: 0.9rem 1rem; }
+.summary-card h4 { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; margin-top: 0; }
+.summary-card ul { padding-left: 1.1rem; margin: 0; }
+.summary-card li { font-size: 0.82rem; margin-bottom: 0.22rem; line-height: 1.5; color: inherit; }
+.summary-card li strong { color: inherit; opacity: 0.95; }
+.nav-home { display:flex; align-items:center; gap:.5rem; padding:.7rem 1.25rem .85rem; font-size:.78rem; color:var(--text3); text-decoration:none; border-bottom:1px solid var(--border); margin-bottom:.75rem; transition:color .15s; }
+.nav-home:hover { color:var(--blue); }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav class="sidebar">
+  <a class="nav-home" href="../index.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+    Protocol Deep Dives
+  </a>
+  <div class="sidebar-title">MQTT Deep Dive</div>
+  <div class="nav-group-label">Nền tảng</div>
+  <a class="nav-item" href="#s1"><span class="nav-num">01</span>MQTT là gì?</a>
+  <a class="nav-item" href="#s2"><span class="nav-num">02</span>Fixed Header &amp; Packet Types</a>
+  <a class="nav-item" href="#s3"><span class="nav-num">03</span>CONNECT Packet</a>
+  <a class="nav-item" href="#s4"><span class="nav-num">04</span>Topics &amp; Wildcards</a>
+  <a class="nav-item" href="#s5"><span class="nav-num">05</span>PUBLISH Packet</a>
+  <div class="nav-divider"></div>
+  <div class="nav-group-label">QoS &amp; Session</div>
+  <a class="nav-item" href="#s6"><span class="nav-num">06</span>QoS 0 — At-most-once</a>
+  <a class="nav-item" href="#s7"><span class="nav-num">07</span>QoS 1 — At-least-once</a>
+  <a class="nav-item" href="#s8"><span class="nav-num">08</span>QoS 2 — Exactly-once</a>
+  <a class="nav-item" href="#s9"><span class="nav-num">09</span>Retained Messages &amp; LWT</a>
+  <a class="nav-item" href="#s10"><span class="nav-num">10</span>Persistent Sessions</a>
+  <div class="nav-divider"></div>
+  <div class="nav-group-label">MQTT 5.0</div>
+  <a class="nav-item" href="#s11"><span class="nav-num">11</span>SUBSCRIBE &amp; SUBACK</a>
+  <a class="nav-item" href="#s12"><span class="nav-num">12</span>MQTT 5.0 Core Features</a>
+  <a class="nav-item" href="#s13"><span class="nav-num">13</span>Shared Sub &amp; Auth</a>
+  <div class="nav-divider"></div>
+  <div class="nav-group-label">Security &amp; Patterns</div>
+  <a class="nav-item" href="#s14"><span class="nav-num">14</span>Security</a>
+  <a class="nav-item" href="#s15"><span class="nav-num">15</span>IoT &amp; Drone Patterns</a>
+  <a class="nav-item" href="#s16"><span class="nav-num">16</span>MQTT over WebSocket</a>
+  <div class="nav-divider"></div>
+  <div class="nav-group-label">Brokers &amp; Production</div>
+  <a class="nav-item" href="#s17"><span class="nav-num">17</span>Brokers</a>
+  <a class="nav-item" href="#s18"><span class="nav-num">18</span>Production &amp; Python Patterns</a>
+  <div class="nav-divider"></div>
+  <div class="nav-group-label">Tổng kết</div>
+  <a class="nav-item" href="#s19"><span class="nav-num">★</span>Các điểm cốt lõi</a>
+</nav>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main">
+  <h1 class="page-title">MQTT Deep Dive</h1>
+  <p class="page-sub">Từ wire format 2-byte đến persistent sessions, QoS guarantees và drone fleet patterns. MQTT = <strong>lightweight pub/sub + persistent TCP + broker fan-out</strong> — sinh ra cho IoT từ năm 1999.</p>
+
+  <!-- SVG 1: Pub/Sub Topology Banner -->
+  <div class="diagram-wrap">
+  <svg class="diagram" viewBox="0 0 700 148" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="m-gray" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#94a3b8"/></marker>
+      <marker id="m-green" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#22c55e"/></marker>
+      <marker id="m-purple" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#7c3aed"/></marker>
+    </defs>
+    <!-- Publishers -->
+    <rect x="8" y="10" width="138" height="32" rx="6" fill="#f0f9ff" stroke="#7dd3fc" stroke-width="1.5"/>
+    <text x="77" y="27" text-anchor="middle" font-size="10" font-weight="700" fill="#0369a1">Temp Sensor</text>
+    <text x="77" y="38" text-anchor="middle" font-size="8" fill="#64748b">home/+/temp</text>
+    <rect x="8" y="55" width="138" height="32" rx="6" fill="#f0f9ff" stroke="#7dd3fc" stroke-width="1.5"/>
+    <text x="77" y="72" text-anchor="middle" font-size="10" font-weight="700" fill="#0369a1">Humid Sensor</text>
+    <text x="77" y="83" text-anchor="middle" font-size="8" fill="#64748b">home/+/humidity</text>
+    <rect x="8" y="100" width="138" height="32" rx="6" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
+    <text x="77" y="117" text-anchor="middle" font-size="10" font-weight="700" fill="#7c3aed">Drone 001</text>
+    <text x="77" y="128" text-anchor="middle" font-size="8" fill="#94a3b8">drone/001/telemetry</text>
+    <!-- Publisher → Broker arrows -->
+    <line x1="146" y1="28" x2="278" y2="60" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#m-gray)"/>
+    <line x1="146" y1="71" x2="278" y2="70" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#m-gray)"/>
+    <line x1="146" y1="116" x2="278" y2="82" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#m-purple)"/>
+    <text x="198" y="44" font-size="7.5" fill="#64748b" text-anchor="middle">QoS 0</text>
+    <text x="198" y="67" font-size="7.5" fill="#64748b" text-anchor="middle">QoS 0</text>
+    <text x="198" y="108" font-size="7.5" fill="#7c3aed" text-anchor="middle">QoS 0</text>
+    <!-- MQTT Broker -->
+    <rect x="280" y="40" width="140" height="68" rx="10" fill="#0369a1"/>
+    <text x="350" y="68" text-anchor="middle" font-size="13" font-weight="800" fill="white">MQTT Broker</text>
+    <text x="350" y="85" text-anchor="middle" font-size="9" fill="#bae6fd">pub/sub router · fan-out · QoS</text>
+    <text x="350" y="99" text-anchor="middle" font-size="8" fill="#7dd3fc">persistent sessions · retained msgs</text>
+    <!-- Broker → Subscriber arrows -->
+    <line x1="420" y1="62" x2="552" y2="38" stroke="#22c55e" stroke-width="1.5" marker-end="url(#m-green)"/>
+    <line x1="420" y1="78" x2="552" y2="88" stroke="#22c55e" stroke-width="1.5" marker-end="url(#m-green)"/>
+    <!-- Command arrow GS → Broker → Drone (dashed) -->
+    <line x1="552" y1="98" x2="422" y2="84" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#m-purple)"/>
+    <line x1="420" y1="85" x2="148" y2="116" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#m-purple)"/>
+    <text x="490" y="100" font-size="7.5" fill="#7c3aed" text-anchor="middle">cmd QoS 1</text>
+    <!-- Subscribers -->
+    <rect x="554" y="18" width="138" height="32" rx="6" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+    <text x="623" y="35" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d">Dashboard</text>
+    <text x="623" y="46" text-anchor="middle" font-size="8" fill="#64748b">home/# · drone/+/telemetry</text>
+    <rect x="554" y="72" width="138" height="32" rx="6" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
+    <text x="623" y="89" text-anchor="middle" font-size="10" font-weight="700" fill="#7c3aed">Ground Station</text>
+    <text x="623" y="100" text-anchor="middle" font-size="8" fill="#94a3b8">drone/+/telemetry · status</text>
+  </svg>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s1">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">MQTT là gì?</h2>
+    </div>
+    <p>MQTT (Message Queuing Telemetry Transport) được thiết kế năm 1999 bởi Andy Stanford-Clark (IBM) và Arlen Nipper cho <strong>pipeline monitoring qua vệ tinh</strong> — nơi bandwidth cực hạn chế, connection không ổn định, và thiết bị chạy bằng pin. Đây là lý do tại sao MQTT tối ưu cho IoT hơn HTTP: minimum header chỉ 2 bytes, persistent TCP connection, và broker fan-out native.</p>
+
+    <h3>Publish/Subscribe Model</h3>
+    <p>Publisher gửi message đến <strong>topic</strong> trên broker, không biết subscriber là ai. Subscriber đăng ký topic, không biết publisher là ai. Broker là <em>intermediary duy nhất</em> — decouples producer và consumer hoàn toàn về không gian, thời gian và đồng bộ hóa.</p>
+
+    <h3>2 Mini-Scenarios</h3>
+    <div class="two-col">
+      <div class="col-card">
+        <h4>IoT Sensor Network</h4>
+        <p>1000 temperature sensors gửi <code>home/{room}/temp</code> mỗi 10 giây với QoS 0. Dashboard subscribe <code>home/#</code> nhận tất cả. Sensor mất kết nối → broker giữ session, gửi lại khi reconnect (QoS 1). Toàn bộ chỉ cần 1 broker.</p>
+      </div>
+      <div class="col-card">
+        <h4>Drone Fleet</h4>
+        <p>Drone publish <code>drone/001/telemetry</code> (GPS/battery/altitude) mỗi 200ms QoS 0. Ground station subscribe và hiện real-time. LWT tự động publish <code>drone/001/status = "offline"</code> khi mất kết nối. Command channel <code>drone/001/command</code> dùng QoS 1 đảm bảo đến.</p>
+      </div>
+    </div>
+
+    <h3>So sánh với HTTP &amp; WebSocket</h3>
+    <table>
+      <tr><th>Tiêu chí</th><th>MQTT</th><th>HTTP</th><th>WebSocket</th></tr>
+      <tr><td>Pattern</td><td>Pub/Sub</td><td>Request/Response</td><td>Bidirectional</td></tr>
+      <tr><td>Min header overhead</td><td><strong>2 bytes</strong></td><td>~200 bytes</td><td>2–14 bytes</td></tr>
+      <tr><td>Connection</td><td>Persistent TCP</td><td>Short-lived (HTTP/1.1 keep-alive)</td><td>Persistent TCP</td></tr>
+      <tr><td>Fan-out 1→N</td><td>Native (broker)</td><td>Manual</td><td>Manual</td></tr>
+      <tr><td>Offline support</td><td>Persistent session + QoS queue</td><td>✗</td><td>✗</td></tr>
+      <tr><td>QoS guarantees</td><td>0 / 1 / 2</td><td>✗</td><td>✗</td></tr>
+      <tr><td>Wildcard subscribe</td><td>+ và #</td><td>✗</td><td>✗</td></tr>
+      <tr><td>Born for</td><td>IoT, M2M, sensor telemetry</td><td>Web APIs, browsers</td><td>Real-time web apps</td></tr>
+    </table>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s2">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Fixed Header &amp; Packet Types</h2>
+    </div>
+    <p>Mọi MQTT packet đều bắt đầu bằng <strong>Fixed Header</strong> tối thiểu 2 bytes — đây là phần nhỏ nhất của giao thức, cho phép broker parse loại packet chỉ từ 1 byte đầu tiên.</p>
+
+    <h3>Byte 1 — Type + Flags</h3>
+    <div class="bits-row">
+      <div class="bit-cell bit-header">Bit</div>
+      <div class="bit-cell bit-header">7</div>
+      <div class="bit-cell bit-header">6</div>
+      <div class="bit-cell bit-header">5</div>
+      <div class="bit-cell bit-header">4</div>
+      <div class="bit-cell bit-header">3</div>
+      <div class="bit-cell bit-header">2</div>
+      <div class="bit-cell bit-header">1</div>
+      <div class="bit-cell bit-header">0</div>
+    </div>
+    <div class="bits-row">
+      <div class="bit-cell bit-header">Field</div>
+      <div class="bit-cell pkt-type">Type</div>
+      <div class="bit-cell pkt-type">Type</div>
+      <div class="bit-cell pkt-type">Type</div>
+      <div class="bit-cell pkt-type">Type</div>
+      <div class="bit-cell pkt-cflag">Flag</div>
+      <div class="bit-cell pkt-cflag">Flag</div>
+      <div class="bit-cell pkt-cflag">Flag</div>
+      <div class="bit-cell pkt-cflag">Flag</div>
+    </div>
+    <p>Bits 7–4 = <strong>Packet Type</strong> (4 bits → 16 giá trị). Bits 3–0 = <strong>Flags</strong> — ý nghĩa khác nhau tùy packet type. PUBLISH dùng cả 4 flag bits (DUP / QoS / QoS / RETAIN); các packet khác có flags cố định.</p>
+
+    <h3>Byte 2+ — Remaining Length (VLE)</h3>
+    <p>Remaining Length = số bytes còn lại sau fixed header (variable header + payload). Dùng <strong>Variable-Length Encoding</strong>: mỗi byte dùng 7 bits thấp cho value, bit MSB = 1 nếu còn byte tiếp theo. Tối đa 4 bytes → max value = 268,435,455 bytes (~256 MB).</p>
+    <pre>Giá trị 64   → 0x40          (1 byte,  bit 7 = 0)
+Giá trị 321  → 0xC1 0x02     (2 bytes, byte đầu bit 7 = 1: "còn tiếp")
+               0x41 | 0x80 = 0xC1  →  value = 0x41 = 65
+               0x02               →  value = 2 × 128 = 256
+               total = 65 + 256 = 321 ✓
+Giá trị 16383 → 0xFF 0x7F    (2 bytes, max 2-byte value)</pre>
+
+    <h3>14 Packet Types</h3>
+    <table>
+      <tr><th>Type</th><th>Value</th><th>Direction</th><th>Mô tả</th></tr>
+      <tr><td><strong>CONNECT</strong></td><td>1</td><td>C → S</td><td>Khởi tạo connection — gửi sau khi TCP connected</td></tr>
+      <tr><td><strong>CONNACK</strong></td><td>2</td><td>S → C</td><td>Broker xác nhận connection + session present flag</td></tr>
+      <tr><td><strong>PUBLISH</strong></td><td>3</td><td>Both</td><td>Gửi message đến topic</td></tr>
+      <tr><td><strong>PUBACK</strong></td><td>4</td><td>Both</td><td>QoS 1 — acknowledge PUBLISH</td></tr>
+      <tr><td><strong>PUBREC</strong></td><td>5</td><td>Both</td><td>QoS 2 — step 1: "đã nhận"</td></tr>
+      <tr><td><strong>PUBREL</strong></td><td>6</td><td>Both</td><td>QoS 2 — step 2: "OK deliver"</td></tr>
+      <tr><td><strong>PUBCOMP</strong></td><td>7</td><td>Both</td><td>QoS 2 — step 3: "đã deliver xong"</td></tr>
+      <tr><td><strong>SUBSCRIBE</strong></td><td>8</td><td>C → S</td><td>Đăng ký topic filter</td></tr>
+      <tr><td><strong>SUBACK</strong></td><td>9</td><td>S → C</td><td>Xác nhận subscription + granted QoS</td></tr>
+      <tr><td><strong>UNSUBSCRIBE</strong></td><td>10</td><td>C → S</td><td>Hủy đăng ký topic filter</td></tr>
+      <tr><td><strong>UNSUBACK</strong></td><td>11</td><td>S → C</td><td>Xác nhận unsubscribe</td></tr>
+      <tr><td><strong>PINGREQ</strong></td><td>12</td><td>C → S</td><td>Keepalive ping (2 bytes, không có payload)</td></tr>
+      <tr><td><strong>PINGRESP</strong></td><td>13</td><td>S → C</td><td>Keepalive pong</td></tr>
+      <tr><td><strong>DISCONNECT</strong></td><td>14</td><td>Both (5.0)</td><td>Normal disconnect — broker không gửi LWT</td></tr>
+    </table>
+    <div class="box box-blue">
+      <div class="box-title">PUBLISH Flags (bits 3–0)</div>
+      <strong>Bit 3 — DUP:</strong> = 1 khi retransmit QoS 1/2 packet. Chỉ informational — không dùng để detect duplicates.<br>
+      <strong>Bits 2–1 — QoS:</strong> 00=QoS0, 01=QoS1, 10=QoS2, 11=reserved.<br>
+      <strong>Bit 0 — RETAIN:</strong> = 1 → broker lưu message này làm "last known value" cho topic.
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s3">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">CONNECT Packet</h2>
+    </div>
+    <p>CONNECT là packet quan trọng nhất — thiết lập toàn bộ session parameters. Phải là packet đầu tiên sau TCP connection. Nếu broker nhận bất kỳ packet nào khác trước CONNECT → ngắt kết nối.</p>
+
+    <h3>Wire Format — Byte Layout</h3>
+    <div class="packet-grid">
+      <div class="packet-row">
+        <div class="packet-byte packet-label" style="flex:1.2">Offset</div>
+        <div class="packet-byte packet-label">0</div>
+        <div class="packet-byte packet-label">1</div>
+        <div class="packet-byte packet-label">2</div>
+        <div class="packet-byte packet-label">3</div>
+        <div class="packet-byte packet-label">4</div>
+        <div class="packet-byte packet-label">5</div>
+        <div class="packet-byte packet-label">6</div>
+        <div class="packet-byte packet-label">7</div>
+        <div class="packet-byte packet-label">8</div>
+        <div class="packet-byte packet-label">9</div>
+        <div class="packet-byte packet-label">10</div>
+        <div class="packet-byte packet-label">11</div>
+        <div class="packet-byte packet-label">12+</div>
+      </div>
+      <div class="packet-row">
+        <div class="packet-byte packet-label" style="flex:1.2">Hex</div>
+        <div class="packet-byte pkt-type">0x10</div>
+        <div class="packet-byte pkt-len">RL</div>
+        <div class="packet-byte pkt-name">0x00</div>
+        <div class="packet-byte pkt-name">0x04</div>
+        <div class="packet-byte pkt-name">'M'</div>
+        <div class="packet-byte pkt-name">'Q'</div>
+        <div class="packet-byte pkt-name">'T'</div>
+        <div class="packet-byte pkt-name">'T'</div>
+        <div class="packet-byte pkt-ver">0x04</div>
+        <div class="packet-byte pkt-cflag">CF</div>
+        <div class="packet-byte pkt-keep">KA₁</div>
+        <div class="packet-byte pkt-keep">KA₂</div>
+        <div class="packet-byte pkt-payload">Payload…</div>
+      </div>
+      <div class="packet-row">
+        <div class="packet-byte packet-label" style="flex:1.2">Field</div>
+        <div class="packet-byte pkt-type" style="font-size:0.65rem">Type+Flags</div>
+        <div class="packet-byte pkt-len" style="font-size:0.65rem">Rem Len</div>
+        <div class="packet-byte pkt-name" style="font-size:0.65rem">Proto Name Len</div>
+        <div class="packet-byte pkt-name" style="font-size:0.65rem">Proto Name Len</div>
+        <div class="packet-byte pkt-name" style="font-size:0.65rem">Protocol</div>
+        <div class="packet-byte pkt-name" style="font-size:0.65rem">Name</div>
+        <div class="packet-byte pkt-name" style="font-size:0.65rem">"MQTT"</div>
+        <div class="packet-byte pkt-name" style="font-size:0.65rem">(4 bytes)</div>
+        <div class="packet-byte pkt-ver" style="font-size:0.65rem">Level 3.1.1</div>
+        <div class="packet-byte pkt-cflag" style="font-size:0.65rem">Conn Flags</div>
+        <div class="packet-byte pkt-keep" style="font-size:0.65rem">Keep Alive (big-endian)</div>
+        <div class="packet-byte pkt-keep" style="font-size:0.65rem">Keep Alive</div>
+        <div class="packet-byte pkt-payload" style="font-size:0.65rem">ClientID + Will + Auth</div>
+      </div>
+    </div>
+    <p>Byte 0 = <code>0x10</code>: type=1 (CONNECT), flags=0000. Variable header là <strong>10 bytes cố định</strong> cho MQTT 3.1.1 (Protocol Level = <code>0x04</code>). MQTT 5.0 dùng level <code>0x05</code> và thêm Properties section.</p>
+
+    <h3>Connect Flags Byte (byte 9)</h3>
+    <div class="bits-row">
+      <div class="bit-cell bit-header">Bit</div>
+      <div class="bit-cell bit-header">7</div>
+      <div class="bit-cell bit-header">6</div>
+      <div class="bit-cell bit-header">5</div>
+      <div class="bit-cell bit-header">4</div>
+      <div class="bit-cell bit-header">3</div>
+      <div class="bit-cell bit-header">2</div>
+      <div class="bit-cell bit-header">1</div>
+      <div class="bit-cell bit-header">0</div>
+    </div>
+    <div class="bits-row">
+      <div class="bit-cell bit-header">Flag</div>
+      <div class="bit-cell pkt-type">User<br>Name</div>
+      <div class="bit-cell pkt-type">Pass<br>word</div>
+      <div class="bit-cell pkt-name">Will<br>Retain</div>
+      <div class="bit-cell pkt-name">Will<br>QoS₁</div>
+      <div class="bit-cell pkt-name">Will<br>QoS₀</div>
+      <div class="bit-cell pkt-ver">Will<br>Flag</div>
+      <div class="bit-cell pkt-cflag">Clean<br>Session</div>
+      <div class="bit-cell pkt-keep">Res<br>(0)</div>
+    </div>
+    <p>Bit 0 luôn phải = 0 (reserved). <strong>Clean Session</strong> = 1 → broker xóa session khi disconnect; = 0 → lưu session state. <strong>Will Flag</strong> = 1 → payload chứa Will Topic + Will Message (Last Will and Testament).</p>
+
+    <h3>Payload Order</h3>
+    <p>Mỗi field có 2 bytes length prefix + data: <code>[ClientID]</code> (bắt buộc) → <code>[Will Topic]</code> (nếu Will Flag=1) → <code>[Will Message]</code> → <code>[Username]</code> (nếu Username Flag=1) → <code>[Password]</code>. Thứ tự này cố định, không thể đảo lộn.</p>
+
+    <pre>import paho.mqtt.client as mqtt
+
+client = mqtt.Client(client_id="drone-001", clean_session=False)
+client.username_pw_set("fleet-user", "s3cr3t")
+
+# Last Will — broker gửi tự động nếu TCP bị drop bất thường
+client.will_set("drone/001/status",
+                payload='{"status":"offline"}',
+                qos=1, retain=True)
+
+client.connect("broker.emqx.io", port=1883, keepalive=60)
+client.loop_start()</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s4">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Topics &amp; Wildcards</h2>
+    </div>
+    <p>Topic là <strong>UTF-8 string</strong>, phân cấp bằng ký tự <code>/</code>. Case-sensitive. Tránh leading slash (<code>/home/temp</code> tạo ra level rỗng đầu tiên). Convention tốt nhất: <code>{context}/{deviceId}/{metric}</code>.</p>
+
+    <!-- SVG 3: Topic Wildcard Tree -->
+    <div class="diagram-wrap">
+    <svg class="diagram" viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="m-tree" markerWidth="6" markerHeight="6" refX="4" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#94a3b8"/></marker>
+      </defs>
+      <!-- Root -->
+      <rect x="300" y="8" width="100" height="26" rx="5" fill="#0369a1"/>
+      <text x="350" y="25" text-anchor="middle" font-size="10" font-weight="700" fill="white">Topic Tree</text>
+
+      <!-- Level 1 branches -->
+      <line x1="350" y1="34" x2="130" y2="62" stroke="#94a3b8" stroke-width="1.5"/>
+      <line x1="350" y1="34" x2="350" y2="62" stroke="#94a3b8" stroke-width="1.5"/>
+      <line x1="350" y1="34" x2="580" y2="62" stroke="#94a3b8" stroke-width="1.5"/>
+
+      <rect x="60" y="62" width="140" height="26" rx="5" fill="#f0f9ff" stroke="#7dd3fc" stroke-width="1.5"/>
+      <text x="130" y="79" text-anchor="middle" font-size="10" font-weight="700" fill="#0369a1">home</text>
+
+      <rect x="280" y="62" width="140" height="26" rx="5" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="350" y="79" text-anchor="middle" font-size="10" font-weight="700" fill="#7c3aed">drone</text>
+
+      <rect x="510" y="62" width="140" height="26" rx="5" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="580" y="79" text-anchor="middle" font-size="10" font-weight="700" fill="#64748b">$SYS</text>
+
+      <!-- home sub-branches -->
+      <line x1="130" y1="88" x2="65" y2="116" stroke="#94a3b8" stroke-width="1.5"/>
+      <line x1="130" y1="88" x2="195" y2="116" stroke="#94a3b8" stroke-width="1.5"/>
+      <rect x="15" y="116" width="100" height="26" rx="5" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+      <text x="65" y="133" text-anchor="middle" font-size="9.5" fill="#1e40af">kitchen/temp</text>
+      <rect x="145" y="116" width="100" height="26" rx="5" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+      <text x="195" y="133" text-anchor="middle" font-size="9.5" fill="#1e40af">living/humidity</text>
+
+      <!-- drone sub-branches -->
+      <line x1="350" y1="88" x2="300" y2="116" stroke="#94a3b8" stroke-width="1.5"/>
+      <line x1="350" y1="88" x2="400" y2="116" stroke="#94a3b8" stroke-width="1.5"/>
+      <rect x="250" y="116" width="100" height="26" rx="5" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="300" y="133" text-anchor="middle" font-size="9.5" fill="#7c3aed">001/telemetry</text>
+      <rect x="360" y="116" width="100" height="26" rx="5" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.5"/>
+      <text x="410" y="133" text-anchor="middle" font-size="9.5" fill="#7c3aed">001/command</text>
+
+      <!-- Wildcard labels -->
+      <rect x="20" y="162" width="200" height="30" rx="5" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+      <text x="120" y="174" text-anchor="middle" font-size="9" font-weight="700" fill="#15803d">home/+/temp</text>
+      <text x="120" y="186" text-anchor="middle" font-size="8" fill="#15803d">matches: kitchen/temp, living/temp</text>
+
+      <rect x="240" y="162" width="220" height="30" rx="5" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+      <text x="350" y="174" text-anchor="middle" font-size="9" font-weight="700" fill="#15803d">drone/#</text>
+      <text x="350" y="186" text-anchor="middle" font-size="8" fill="#15803d">matches: 001/telemetry, 001/command, ...</text>
+
+      <rect x="480" y="162" width="200" height="30" rx="5" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5"/>
+      <text x="580" y="174" text-anchor="middle" font-size="9" font-weight="700" fill="#dc2626">$SYS/# — không match bởi #</text>
+      <text x="580" y="186" text-anchor="middle" font-size="8" fill="#dc2626">phải subscribe explicit</text>
+    </svg>
+    </div>
+
+    <h3>Wildcard Rules</h3>
+    <ul>
+      <li><strong><code>+</code> (single-level):</strong> thay thế <em>đúng 1 level</em>. <code>drone/+/telemetry</code> match <code>drone/001/telemetry</code> nhưng <strong>không</strong> match <code>drone/001/sensor/gps</code>.</li>
+      <li><strong><code>#</code> (multi-level):</strong> thay thế 0 hoặc nhiều levels, <em>phải ở cuối</em>. <code>drone/#</code> match <code>drone/001/telemetry</code>, <code>drone/002/command</code>, v.v.</li>
+      <li><strong>Wildcards chỉ dùng trong SUBSCRIBE</strong> — không được publish đến topic có wildcard.</li>
+      <li><strong><code>$SYS</code>:</strong> Namespace reserved của broker (<code>$SYS/broker/clients/connected</code>). Subscribe <code>#</code> <strong>không</strong> match <code>$SYS</code> — phải subscribe explicit.</li>
+    </ul>
+
+    <pre>def on_message(client, userdata, msg):
+    parts = msg.topic.split("/")   # ["drone", "003", "telemetry"]
+    drone_id = parts[1]            # "003"
+    payload  = json.loads(msg.payload)
+    print(f"[{drone_id}] lat={payload['lat']:.4f} bat={payload['battery']}%")
+
+client.subscribe("drone/+/telemetry", qos=0)  # tất cả drones
+client.subscribe("drone/+/status",    qos=1)  # LWT status
+client.subscribe("$SYS/broker/clients/connected", qos=0)  # broker metrics
+client.on_message = on_message</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s5">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2 class="section-title">PUBLISH Packet</h2>
+    </div>
+    <p>PUBLISH là packet được dùng nhiều nhất — mang data từ publisher đến broker, rồi broker forward đến tất cả matching subscribers. Fixed header flags encode QoS, DUP, RETAIN trực tiếp trong nibble thấp của byte đầu tiên.</p>
+
+    <h3>Fixed Header Flags cho PUBLISH</h3>
+    <table>
+      <tr><th>Flag</th><th>Bit</th><th>Giá trị</th><th>Ý nghĩa</th></tr>
+      <tr><td><strong>DUP</strong></td><td>3</td><td>0/1</td><td>1 = đây là retransmit. Chỉ mang tính informational — không dùng để deduplicate</td></tr>
+      <tr><td><strong>QoS</strong></td><td>2–1</td><td>00/01/10</td><td>00=fire-forget, 01=at-least-once, 10=exactly-once, 11=reserved (lỗi)</td></tr>
+      <tr><td><strong>RETAIN</strong></td><td>0</td><td>0/1</td><td>1 = broker lưu message này, gửi ngay cho subscriber mới</td></tr>
+    </table>
+
+    <h3>Variable Header</h3>
+    <ul>
+      <li><strong>Topic Name:</strong> 2 bytes length + UTF-8 string. Không có wildcard. Length tính vào Remaining Length.</li>
+      <li><strong>Packet Identifier:</strong> 2 bytes big-endian — <em>chỉ có khi QoS &gt; 0</em>. Range 1–65535. QoS 0 không có Packet ID nên nhỏ hơn 2 bytes.</li>
+    </ul>
+
+    <h3>Payload</h3>
+    <p>Binary data tùy ý — không có length prefix riêng, length được tính từ Remaining Length trừ đi variable header size. <strong>Empty payload (0 bytes) hợp lệ</strong> — dùng để clear retained message (RETAIN=1 + empty payload).</p>
+
+    <div class="box box-blue">
+      <div class="box-title">MQTT 5.0 Properties</div>
+      Thêm <strong>Properties section</strong> trong variable header (trước payload): Properties Length (VLE) + danh sách properties. Key properties: Message Expiry Interval, Topic Alias, Response Topic, Correlation Data, Content Type, User Properties.
+    </div>
+
+    <pre>import json, time, math, paho.mqtt.client as mqtt
+
+client = mqtt.Client("drone-publisher")
+client.connect("broker.emqx.io", 1883)
+client.loop_start()
+
+flight_time = 0
+while True:
+    telemetry = {
+        "lat":     10.7769 + math.sin(flight_time * 0.1) * 0.01,
+        "lng":     106.7009 + math.cos(flight_time * 0.1) * 0.01,
+        "alt_m":   round(50 + math.sin(flight_time * 0.05) * 10, 1),
+        "bat_pct": round(max(0, 100 - flight_time * 0.5), 1),
+        "ts":      int(time.time() * 1000)
+    }
+    # QoS 0: no packet ID, no ACK → minimum overhead
+    client.publish("drone/001/telemetry", json.dumps(telemetry), qos=0)
+    flight_time += 1
+    time.sleep(0.2)   # 5 Hz</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s6">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2 class="section-title">QoS 0 — At-most-once</h2>
+    </div>
+    <p>Fire-and-forget: publisher gửi PUBLISH một lần, không đợi ACK. Broker nhận xong forward ngay cho subscribers, không lưu. Nếu connection drop ở bất kỳ điểm nào → message mất vĩnh viễn.</p>
+
+    <h3>Wire</h3>
+    <p>Chỉ 1 PUBLISH packet. Fixed header byte 1 = <code>0x30</code> (type=3, QoS=00, RETAIN=0). <strong>Không có Packet Identifier</strong> — variable header chỉ có Topic Name. Payload là application data trực tiếp.</p>
+
+    <h3>Semantics</h3>
+    <ul>
+      <li>Broker forward <em>at most once</em> — không retry, không queue.</li>
+      <li>Subscriber nhận <em>at most once</em> — không thể nhận duplicate.</li>
+      <li>Không cần session state để track QoS 0 messages.</li>
+    </ul>
+
+    <div class="two-col">
+      <div class="col-card">
+        <h4>Dùng khi</h4>
+        <ul>
+          <li>Telemetry liên tục — mất 1 reading OK (GPS, temp, humidity)</li>
+          <li>Real-time dashboard — stale data tệ hơn missing data</li>
+          <li>Logging metrics — volume cao, mất ít packet chấp nhận được</li>
+          <li>Drone flight telemetry (5 Hz) — mất vài packet không ảnh hưởng display</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <h4>Không dùng khi</h4>
+        <ul>
+          <li>Command điều khiển thiết bị — phải đến ít nhất 1 lần</li>
+          <li>Alerts/notifications quan trọng</li>
+          <li>Firmware OTA commands</li>
+          <li>Financial transactions</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s7">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2 class="section-title">QoS 1 — At-least-once</h2>
+    </div>
+    <p>Publisher gửi PUBLISH (với Packet Identifier), chờ PUBACK. Nếu không nhận PUBACK trong timeout → retransmit với DUP=1. Kết quả: subscriber <em>có thể nhận duplicate</em> — application phải xử lý idempotency.</p>
+
+    <h3>Packet Identifier</h3>
+    <p>2 bytes big-endian, range 1–65535. Client tự quản lý, reuse sau khi nhận PUBACK. Cùng lúc có thể có nhiều in-flight QoS 1 messages với Packet ID khác nhau. Broker giữ lại message cho subscriber offline có persistent session.</p>
+
+    <h3>Broker Behavior</h3>
+    <p>Broker forward PUBLISH đến tất cả matching subscribers với QoS ≤ subscribed QoS (broker có thể downgrade). Nếu subscriber offline + persistent session → broker queue message, gửi khi reconnect.</p>
+
+    <pre>import json, time, paho.mqtt.client as mqtt
+
+def send_command(client, drone_id: str, command: str, params: dict = {}):
+    payload = json.dumps({
+        "cmd": command,
+        "params": params,
+        "ts": int(time.time() * 1000)
+    })
+    result = client.publish(f"drone/{drone_id}/command", payload, qos=1)
+    result.wait_for_publish()  # block until broker ACK'd (PUBACK received)
+    print(f"Command '{command}' delivered to {drone_id}")
+
+client = mqtt.Client("ground-station-001")
+client.connect("broker.emqx.io", 1883)
+client.loop_start()
+time.sleep(1)
+
+send_command(client, "001", "goto_waypoint", {"lat": 10.780, "lng": 106.705, "alt": 100})
+send_command(client, "001", "return_home")</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s8">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2 class="section-title">QoS 2 — Exactly-once</h2>
+    </div>
+    <p>4-step handshake đảm bảo message được deliver <strong>đúng một lần</strong>. Cả sender và receiver đều duy trì state. Đây là QoS level tốn kém nhất: 4 packets, 2 round-trips, state cả 2 phía.</p>
+
+    <h3>4-Step Handshake</h3>
+
+    <!-- SVG 4: QoS 3-in-1 State Machines -->
+    <div class="diagram-wrap">
+    <svg class="diagram" viewBox="0 0 700 252" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="q-blue" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#0369a1"/></marker>
+        <marker id="q-green" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#15803d"/></marker>
+        <marker id="q-orange" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#c2410c"/></marker>
+      </defs>
+
+      <!-- Panel backgrounds -->
+      <rect x="0" y="0" width="220" height="252" rx="0" fill="#f0f9ff"/>
+      <rect x="230" y="0" width="220" height="252" rx="0" fill="#f0fdf4"/>
+      <rect x="460" y="0" width="240" height="252" rx="0" fill="#fff7ed"/>
+
+      <!-- Panel headers -->
+      <rect x="0" y="0" width="220" height="28" fill="#0369a1"/>
+      <text x="110" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="white">QoS 0 — At-most-once</text>
+      <rect x="230" y="0" width="220" height="28" fill="#15803d"/>
+      <text x="340" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="white">QoS 1 — At-least-once</text>
+      <rect x="460" y="0" width="240" height="28" fill="#c2410c"/>
+      <text x="580" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="white">QoS 2 — Exactly-once</text>
+
+      <!-- QoS 0 actors -->
+      <text x="30" y="44" text-anchor="middle" font-size="9" font-weight="700" fill="#0369a1">Client</text>
+      <text x="190" y="44" text-anchor="middle" font-size="9" font-weight="700" fill="#0369a1">Broker</text>
+      <line x1="30" y1="48" x2="30" y2="240" stroke="#bae6fd" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <line x1="190" y1="48" x2="190" y2="240" stroke="#bae6fd" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <!-- QoS 0: single arrow -->
+      <line x1="32" y1="100" x2="185" y2="100" stroke="#0369a1" stroke-width="2" marker-end="url(#q-blue)"/>
+      <text x="111" y="94" text-anchor="middle" font-size="9" font-weight="700" fill="#0369a1">PUBLISH</text>
+      <text x="111" y="115" text-anchor="middle" font-size="8" fill="#64748b">no ACK · 1 packet</text>
+      <text x="111" y="180" text-anchor="middle" font-size="8.5" fill="#0369a1">Best performance</text>
+      <text x="111" y="194" text-anchor="middle" font-size="8" fill="#64748b">May lose messages</text>
+      <text x="111" y="208" text-anchor="middle" font-size="8" fill="#64748b">No packet ID</text>
+
+      <!-- QoS 1 actors -->
+      <text x="258" y="44" text-anchor="middle" font-size="9" font-weight="700" fill="#15803d">Client</text>
+      <text x="422" y="44" text-anchor="middle" font-size="9" font-weight="700" fill="#15803d">Broker</text>
+      <line x1="258" y1="48" x2="258" y2="240" stroke="#86efac" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <line x1="422" y1="48" x2="422" y2="240" stroke="#86efac" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <!-- QoS 1 arrows -->
+      <line x1="260" y1="80" x2="417" y2="80" stroke="#15803d" stroke-width="2" marker-end="url(#q-green)"/>
+      <text x="340" y="74" text-anchor="middle" font-size="9" font-weight="700" fill="#15803d">PUBLISH (id=42)</text>
+      <line x1="420" y1="115" x2="263" y2="115" stroke="#15803d" stroke-width="2" marker-end="url(#q-green)"/>
+      <text x="340" y="110" text-anchor="middle" font-size="9" font-weight="700" fill="#15803d">PUBACK (id=42)</text>
+      <text x="340" y="130" text-anchor="middle" font-size="8" fill="#64748b">retransmit if no ACK (DUP=1)</text>
+      <text x="340" y="180" text-anchor="middle" font-size="8.5" fill="#15803d">Guaranteed delivery</text>
+      <text x="340" y="194" text-anchor="middle" font-size="8" fill="#64748b">May duplicate</text>
+      <text x="340" y="208" text-anchor="middle" font-size="8" fill="#64748b">2 packets, 1 RTT</text>
+
+      <!-- QoS 2 actors -->
+      <text x="492" y="44" text-anchor="middle" font-size="9" font-weight="700" fill="#c2410c">Client</text>
+      <text x="672" y="44" text-anchor="middle" font-size="9" font-weight="700" fill="#c2410c">Broker</text>
+      <line x1="492" y1="48" x2="492" y2="240" stroke="#fdba74" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <line x1="672" y1="48" x2="672" y2="240" stroke="#fdba74" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <!-- QoS 2 arrows (4-step) -->
+      <line x1="494" y1="68" x2="667" y2="68" stroke="#c2410c" stroke-width="2" marker-end="url(#q-orange)"/>
+      <text x="582" y="63" text-anchor="middle" font-size="8.5" font-weight="700" fill="#c2410c">PUBLISH (id=7)</text>
+      <line x1="670" y1="100" x2="497" y2="100" stroke="#c2410c" stroke-width="2" marker-end="url(#q-orange)"/>
+      <text x="582" y="95" text-anchor="middle" font-size="8.5" font-weight="700" fill="#c2410c">PUBREC (id=7)</text>
+      <line x1="494" y1="132" x2="667" y2="132" stroke="#c2410c" stroke-width="2" marker-end="url(#q-orange)"/>
+      <text x="582" y="127" text-anchor="middle" font-size="8.5" font-weight="700" fill="#c2410c">PUBREL (id=7)</text>
+      <line x1="670" y1="164" x2="497" y2="164" stroke="#c2410c" stroke-width="2" marker-end="url(#q-orange)"/>
+      <text x="582" y="159" text-anchor="middle" font-size="8.5" font-weight="700" fill="#c2410c">PUBCOMP (id=7)</text>
+      <text x="582" y="200" text-anchor="middle" font-size="8.5" fill="#c2410c">Exactly once</text>
+      <text x="582" y="214" text-anchor="middle" font-size="8" fill="#64748b">4 packets, 2 RTT</text>
+      <text x="582" y="228" text-anchor="middle" font-size="8" fill="#64748b">State both sides</text>
+    </svg>
+    </div>
+
+    <h3>Guarantee Mechanism</h3>
+    <ol>
+      <li><strong>PUBLISH</strong> (sender → receiver): gửi message, lưu vào "sent" store với Packet ID.</li>
+      <li><strong>PUBREC</strong> (receiver → sender): "đã nhận, chưa deliver" — receiver lưu Packet ID để deduplicate.</li>
+      <li><strong>PUBREL</strong> (sender → receiver): "OK, deliver đi" — sender có thể xóa message khỏi store sau khi gửi PUBREL.</li>
+      <li><strong>PUBCOMP</strong> (receiver → sender): "đã deliver xong" — receiver xóa Packet ID khỏi store.</li>
+    </ol>
+    <p>Bước 1–2 có thể retry (PUBLISH với DUP=1 nếu không nhận PUBREC). Receiver <strong>chỉ deliver một lần</strong> vì nó lưu Packet ID — nhận PUBLISH lần 2 với cùng ID → discard (đã deliver rồi, chờ PUBREL).</p>
+
+    <pre>client.publish("drone/001/firmware/update",
+               payload=json.dumps({"version": "2.1.0", "url": "..."}),
+               qos=2)   # exactly-once — firmware command không được duplicate</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s9">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <h2 class="section-title">Retained Messages &amp; LWT</h2>
+    </div>
+
+    <h3>Retained Messages</h3>
+    <p>PUBLISH với RETAIN=1 → broker lưu message này làm <strong>"last known value"</strong> cho topic. Subscriber mới kết nối và subscribe topic đó → nhận ngay retained message, không cần chờ publisher gửi lần tới. Chỉ 1 retained message/topic — message mới overwrite.</p>
+    <p><strong>Clear retained message:</strong> publish empty payload (0 bytes) với RETAIN=1 đến cùng topic.</p>
+    <div class="box box-blue">
+      <div class="box-title">Use Case</div>
+      Dashboard khởi động lúc 3 AM → subscribe <code>home/#</code> → nhận ngay <em>tất cả</em> giá trị hiện tại của sensors (retained) mà không cần đợi chúng gửi reading tiếp theo. Không có retained → dashboard trống cho đến khi từng sensor gửi lần tới.
+    </div>
+
+    <h3>Last Will and Testament (LWT)</h3>
+    <p>Client khai báo Will trong CONNECT: nếu TCP connection bị drop <em>bất thường</em> (không gửi DISCONNECT), broker sẽ publish will message thay cho client. <strong>LWT không được gửi nếu client disconnect bình thường</strong> (gửi DISCONNECT packet).</p>
+    <ul>
+      <li><strong>Will Topic, Will Message:</strong> khai báo trong CONNECT payload.</li>
+      <li><strong>Will QoS, Will Retain:</strong> trong Connect Flags byte.</li>
+      <li><strong>Will Delay Interval (MQTT 5.0):</strong> broker chờ N giây trước khi publish will — cho phép client reconnect kịp nếu chỉ là short network blip.</li>
+    </ul>
+
+    <pre>def setup_drone_client(drone_id: str) -> mqtt.Client:
+    client = mqtt.Client(drone_id, clean_session=False)
+
+    # LWT — broker publish tự động nếu TCP drop bất thường
+    client.will_set(
+        topic=f"drone/{drone_id}/status",
+        payload=json.dumps({"status": "offline", "ts": int(time.time() * 1000)}),
+        qos=1, retain=True
+    )
+
+    def on_connect(c, userdata, flags, rc):
+        if rc == 0:
+            # Birth message — gửi khi kết nối thành công
+            c.publish(f"drone/{drone_id}/status",
+                      json.dumps({"status": "online", "ts": int(time.time() * 1000)}),
+                      qos=1, retain=True)
+
+    client.on_connect = on_connect
+    return client</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s10">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <h2 class="section-title">Persistent Sessions</h2>
+    </div>
+    <p>Persistent session cho phép broker lưu trữ state của client khi offline — subscriptions, queued QoS 1/2 messages, in-flight handshake state. Khi client reconnect, mọi thứ được khôi phục.</p>
+
+    <h3>clean_session Flag</h3>
+    <div class="two-col">
+      <div class="col-card">
+        <h4>clean_session = True</h4>
+        <p>Broker xóa toàn bộ session state khi client disconnect. Reconnect = new session. Subscriptions mất, queued messages mất.</p>
+        <p><strong>Dùng cho:</strong> Stateless consumers, browsers, temporary subscribers.</p>
+      </div>
+      <div class="col-card">
+        <h4>clean_session = False</h4>
+        <p>Broker lưu session state. CONNACK trả về <strong>Session Present</strong> flag = 1 nếu session đã tồn tại. Client biết mình không cần re-subscribe.</p>
+        <p><strong>Dùng cho:</strong> IoT devices, drone command channel, offline-capable consumers.</p>
+      </div>
+    </div>
+
+    <h3>Session State Broker Lưu</h3>
+    <ul>
+      <li>Subscription list (topic filters + QoS)</li>
+      <li>QoS 1 messages đang chờ deliver (offline queue)</li>
+      <li>QoS 1 messages đã gửi nhưng chưa nhận PUBACK</li>
+      <li>QoS 2 messages trong handshake (PUBREC received, chờ PUBREL)</li>
+    </ul>
+
+    <h3>MQTT 5.0 Session Expiry Interval</h3>
+    <p>Property trong CONNECT (và DISCONNECT) — broker xóa session sau N giây offline. <code>0</code> = xóa ngay khi disconnect; <code>0xFFFFFFFF</code> = giữ mãi mãi. Thay thế hành vi "giữ mãi" mơ hồ của 3.1.1.</p>
+
+    <h3>Client Takeover</h3>
+    <p>Nếu 2 clients dùng cùng ClientID: broker terminate kết nối cũ, accept kết nối mới. Tránh bằng unique ClientID per device — ví dụ dùng MAC address hoặc UUID.</p>
+
+    <pre>client = mqtt.Client("drone-001", clean_session=False)
+
+def on_connect(client, userdata, flags, rc):
+    if rc != 0:
+        print(f"Connect failed: {rc}")
+        return
+    if flags.get("session present"):
+        print("Session restored — broker có queued messages, không cần re-subscribe")
+    else:
+        print("New session — re-subscribe")
+        client.subscribe([
+            ("drone/001/command", 1),
+            ("drone/001/config",  1),
+        ])
+
+client.on_connect = on_connect
+client.reconnect_delay_set(min_delay=1, max_delay=30)  # exponential backoff
+client.connect("broker.emqx.io", 1883, keepalive=60)</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s11">
+    <div class="section-header">
+      <span class="section-num">11</span>
+      <h2 class="section-title">SUBSCRIBE &amp; SUBACK</h2>
+    </div>
+    <p>SUBSCRIBE packet có fixed header <code>0x82</code> (type=8, flags=0010 — flags cố định, không giống PUBLISH). Variable header: Packet Identifier (2 bytes). Payload: list topic filters.</p>
+
+    <h3>Payload Structure</h3>
+    <p>Mỗi topic filter = 2 bytes length + UTF-8 string + 1 byte options. Có thể gửi nhiều filters trong 1 SUBSCRIBE packet. SUBACK trả về list return codes (1 byte/filter): <code>0x00</code>=QoS0, <code>0x01</code>=QoS1, <code>0x02</code>=QoS2, <code>0x80</code>=Failure.</p>
+
+    <h3>QoS Negotiation</h3>
+    <p>Client request QoS X, broker có thể grant QoS ≤ X — broker có quyền downgrade. Ví dụ: client request QoS 2 nhưng broker chỉ support QoS 1 → SUBACK trả về QoS 1. Application cần check granted QoS.</p>
+
+    <h3>MQTT 5.0 Subscription Options</h3>
+    <table>
+      <tr><th>Option</th><th>Bits</th><th>Mô tả</th></tr>
+      <tr><td><strong>No-local</strong></td><td>2</td><td>= 1 → broker không gửi message từ chính client đó về lại (tránh echo)</td></tr>
+      <tr><td><strong>Retain-as-published</strong></td><td>3</td><td>= 1 → broker giữ nguyên RETAIN flag khi forward, không strip</td></tr>
+      <tr><td><strong>Retain Handling</strong></td><td>5–4</td><td>0=gửi retained khi subscribe, 1=chỉ gửi nếu subscription mới, 2=không gửi retained</td></tr>
+    </table>
+
+    <pre>def on_subscribe(client, userdata, mid, granted_qos):
+    print(f"Subscribed mid={mid}, granted QoS: {granted_qos}")
+    # granted_qos = (1, 0, 1) cho 3 topics được grant
+
+client.on_subscribe = on_subscribe
+client.subscribe([
+    ("drone/+/telemetry", 0),  # high-frequency, QoS 0 OK
+    ("drone/+/status",    1),  # status/LWT, QoS 1
+    ("drone/+/command",   1),  # command echo, QoS 1
+])</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s12">
+    <div class="section-header">
+      <span class="section-num">12</span>
+      <h2 class="section-title">MQTT 5.0 Core Features</h2>
+    </div>
+    <p>MQTT 5.0 (OASIS standard 2019) giải quyết những hạn chế lớn của 3.1.1 bằng cách thêm <strong>Properties system</strong> vào hầu hết packets — tương đương HTTP headers cho MQTT.</p>
+
+    <h3>Reason Codes</h3>
+    <p>3.1.1 CONNACK chỉ có 6 return codes; 5.0 thêm reason code đầy đủ cho mọi packet (PUBACK, SUBACK, DISCONNECT, AUTH). Giờ server có thể nói rõ lý do disconnect: <code>0x8D</code>=Keep Alive timeout, <code>0x9C</code>=Use Another Server, <code>0x89</code>=Server Busy.</p>
+
+    <h3>User Properties</h3>
+    <p>UTF-8 key-value pairs trong bất kỳ packet nào — tương đương custom HTTP headers. Dùng cho: routing metadata, distributed tracing IDs (<code>X-Trace-ID</code>), device firmware version, region tag.</p>
+
+    <h3>Message Expiry Interval</h3>
+    <p>PUBLISH property — broker drop message sau N giây nếu chưa deliver. Ngăn <strong>stale commands</strong> chạy trên device sau khi reconnect. Ví dụ: command "hover for 5 seconds" hết hạn sau 10 giây.</p>
+
+    <h3>Topic Aliases</h3>
+    <p>Map topic string → integer (1–N). Sau khi map lần đầu, gửi integer thay chuỗi. Topic <code>drone/fleet/001/sensors/gps/telemetry/v2</code> → alias <code>1</code>. Tiết kiệm bandwidth đáng kể với high-frequency messages.</p>
+
+    <h3>Response Topic + Correlation Data</h3>
+    <p>Request/response pattern: requester thêm <code>Response Topic</code> và <code>Correlation Data</code> (opaque bytes để match) vào PUBLISH. Responder xử lý xong → publish response về <code>Response Topic</code> kèm <code>Correlation Data</code>. Không cần unique topic per request.</p>
+
+    <h3>Flow Control — Receive Maximum</h3>
+    <p>CONNECT property — client báo broker số lượng max in-flight QoS 1/2 messages có thể handle đồng thời. Tránh overwhelm client yếu (embedded device với 4KB RAM). Broker tự throttle theo giá trị này.</p>
+
+    <h3>Content Type</h3>
+    <p>UTF-8 string mô tả payload format — <code>application/json</code>, <code>application/cbor</code>, <code>application/protobuf</code>. Subscriber có thể inspect trước khi parse.</p>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s13">
+    <div class="section-header">
+      <span class="section-num">13</span>
+      <h2 class="section-title">Shared Subscriptions &amp; Enhanced Auth</h2>
+    </div>
+
+    <h3>Shared Subscriptions</h3>
+    <p>Syntax: <code>$share/{ShareName}/{TopicFilter}</code>. Nhiều clients subscribe cùng group → broker <strong>load-balance</strong> messages (round-robin hoặc random). <em>Không phải fan-out</em> — mỗi message chỉ đến 1 subscriber trong group.</p>
+    <p>Chính thức trong MQTT 5.0, nhưng EMQX và nhiều broker 3.1.1 cũng hỗ trợ.</p>
+
+    <pre>import paho.mqtt.client as mqtt
+
+def on_message(client, userdata, msg):
+    print(f"[{client._client_id.decode()}] {msg.topic}: {msg.payload.decode()}")
+
+# Ground station 1 — cùng group "groundcrew"
+gs1 = mqtt.Client("ground-station-1")
+gs1.on_message = on_message
+gs1.connect("broker.emqx.io", 1883)
+gs1.subscribe("$share/groundcrew/drone/+/telemetry", qos=1)
+gs1.loop_start()
+
+# Ground station 2 — cùng group → mỗi telemetry message chỉ đến 1 trong 2
+gs2 = mqtt.Client("ground-station-2")
+gs2.on_message = on_message
+gs2.connect("broker.emqx.io", 1883)
+gs2.subscribe("$share/groundcrew/drone/+/telemetry", qos=1)
+gs2.loop_forever()</pre>
+
+    <div class="box box-green">
+      <div class="box-title">Use Case — Fleet Scale-out</div>
+      100 drones gửi 5 Hz telemetry = 500 messages/giây. 1 ground station không xử lý kịp. Thêm 4 GS nữa vào group <code>$share/groundcrew/drone/+/telemetry</code> → mỗi GS nhận ~100 msg/s. Scale horizontal mà không đổi publisher.
+    </div>
+
+    <h3>Enhanced Authentication (AUTH packet — MQTT 5.0)</h3>
+    <p>Cho phép multi-step auth flow (challenge-response) thay vì chỉ username/password một lần trong CONNECT. Broker và client trao đổi nhiều AUTH packets trước khi CONNACK.</p>
+    <p><strong>Flow SCRAM-SHA-256:</strong></p>
+    <ol>
+      <li>Client gửi CONNECT (authMethod="SCRAM-SHA-256", authData=client-first-message)</li>
+      <li>Broker gửi AUTH (reason=0x18 "Continue", authData=server-first-message)</li>
+      <li>Client gửi AUTH (authData=client-final-message)</li>
+      <li>Broker gửi CONNACK (success) hoặc AUTH failure</li>
+    </ol>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s14">
+    <div class="section-header">
+      <span class="section-num">14</span>
+      <h2 class="section-title">Security</h2>
+    </div>
+
+    <h3>TLS Transport (MQTTS)</h3>
+    <p>Port <strong>8883</strong> = MQTT over TLS. Port <strong>8884</strong> = MQTT over WSS. Không dùng plaintext port 1883 trong production — username/password gửi cleartext.</p>
+    <pre>import ssl, paho.mqtt.client as mqtt
+
+client = mqtt.Client("drone-001-secure")
+client.tls_set(
+    ca_certs  = "/etc/ssl/certs/ca-certificates.crt",
+    certfile  = "/path/to/drone-001.crt",   # mTLS: client cert
+    keyfile   = "/path/to/drone-001.key",   # mTLS: client private key
+    cert_reqs = ssl.CERT_REQUIRED,
+    tls_version = ssl.PROTOCOL_TLS_CLIENT
+)
+client.connect("broker.example.com", port=8883)</pre>
+
+    <h3>mTLS cho Device Identity</h3>
+    <p>Mỗi drone có certificate riêng signed bởi private CA. Broker verify certificate → xác định device identity mà không cần username/password. Phù hợp IoT vì không cần secret management trên constrained device.</p>
+
+    <h3>ACL — Access Control List</h3>
+    <p>Authorization ở broker level — mỗi client chỉ được publish/subscribe topics cụ thể. Ví dụ Mosquitto ACL file:</p>
+    <pre># Drone 001: chỉ publish topic của mình, subscribe lệnh của mình
+user drone-001
+topic write drone/001/telemetry
+topic write drone/001/status
+topic read  drone/001/command
+topic read  drone/001/config
+
+# Dashboard: read-only tất cả drones
+user dashboard-svc
+topic read drone/+/telemetry
+topic read drone/+/status</pre>
+
+    <div class="box box-orange">
+      <div class="box-title">Attack Vectors Cần Biết</div>
+      <ul style="margin:0">
+        <li><strong>ClientID takeover:</strong> Kẻ tấn công kết nối với cùng ClientID → broker terminate connection cũ. Dùng random suffix hoặc certificate-bound ClientID.</li>
+        <li><strong>Retained message poisoning:</strong> Publisher ghi đè retained message quan trọng. ACL phải restrict write trên retained topics.</li>
+        <li><strong>Subscription storm:</strong> Client subscribe quá nhiều topics → CPU spike. Giới hạn max subscriptions per client.</li>
+        <li><strong>Payload injection:</strong> Broker không validate payload — validate JSON schema ở application layer.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s15">
+    <div class="section-header">
+      <span class="section-num">15</span>
+      <h2 class="section-title">IoT &amp; Drone Patterns</h2>
+    </div>
+
+    <!-- SVG 5: Drone IoT Architecture -->
+    <div class="diagram-wrap">
+    <svg class="diagram" viewBox="0 0 700 155" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a-blue" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#0369a1"/></marker>
+        <marker id="a-green" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#15803d"/></marker>
+        <marker id="a-orange" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#c2410c"/></marker>
+        <marker id="a-purple" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#7c3aed"/></marker>
+      </defs>
+
+      <!-- Drone -->
+      <rect x="8" y="20" width="148" height="110" rx="8" fill="#faf5ff" stroke="#c4b5fd" stroke-width="2"/>
+      <text x="82" y="40" text-anchor="middle" font-size="11" font-weight="800" fill="#7c3aed">Drone 001</text>
+      <text x="82" y="56" text-anchor="middle" font-size="8" fill="#94a3b8">publisher + subscriber</text>
+      <rect x="20" y="64" width="124" height="18" rx="4" fill="#ede9fe"/>
+      <text x="82" y="77" text-anchor="middle" font-size="8" fill="#7c3aed">drone/001/telemetry → QoS 0</text>
+      <rect x="20" y="88" width="124" height="18" rx="4" fill="#ede9fe"/>
+      <text x="82" y="101" text-anchor="middle" font-size="8" fill="#7c3aed">drone/001/status → QoS 1 retain</text>
+      <rect x="20" y="112" width="124" height="14" rx="4" fill="#dbeafe"/>
+      <text x="82" y="123" text-anchor="middle" font-size="8" fill="#1e40af">← drone/001/command QoS 1</text>
+
+      <!-- Broker -->
+      <rect x="276" y="28" width="148" height="95" rx="10" fill="#0369a1"/>
+      <text x="350" y="55" text-anchor="middle" font-size="12" font-weight="800" fill="white">MQTT Broker</text>
+      <text x="350" y="72" text-anchor="middle" font-size="8.5" fill="#bae6fd">Routes by topic filter</text>
+      <text x="350" y="86" text-anchor="middle" font-size="8.5" fill="#bae6fd">Persistent sessions</text>
+      <text x="350" y="100" text-anchor="middle" font-size="8.5" fill="#bae6fd">Retained messages</text>
+      <text x="350" y="114" text-anchor="middle" font-size="8.5" fill="#7dd3fc">broker.emqx.io:1883</text>
+
+      <!-- Ground Station -->
+      <rect x="544" y="15" width="148" height="50" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="2"/>
+      <text x="618" y="35" text-anchor="middle" font-size="11" font-weight="800" fill="#15803d">Ground Station</text>
+      <text x="618" y="50" text-anchor="middle" font-size="8" fill="#64748b">drone/+/telemetry (sub)</text>
+      <text x="618" y="62" text-anchor="middle" font-size="8" fill="#64748b">drone/001/command (pub)</text>
+
+      <!-- Dashboard -->
+      <rect x="544" y="83" width="148" height="50" rx="8" fill="#f0f9ff" stroke="#7dd3fc" stroke-width="2"/>
+      <text x="618" y="103" text-anchor="middle" font-size="11" font-weight="800" fill="#0369a1">Dashboard</text>
+      <text x="618" y="118" text-anchor="middle" font-size="8" fill="#64748b">drone/# (sub)</text>
+      <text x="618" y="130" text-anchor="middle" font-size="8" fill="#64748b">home/# (sub)</text>
+
+      <!-- Arrows Drone → Broker -->
+      <line x1="156" y1="68" x2="273" y2="68" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#a-purple)"/>
+      <text x="215" y="62" font-size="7.5" fill="#7c3aed" text-anchor="middle">telemetry</text>
+      <line x1="156" y1="88" x2="273" y2="80" stroke="#c2410c" stroke-width="1.5" marker-end="url(#a-orange)"/>
+      <text x="215" y="91" font-size="7.5" fill="#c2410c" text-anchor="middle">status/LWT</text>
+
+      <!-- Arrows Broker → Ground Station + Dashboard -->
+      <line x1="424" y1="60" x2="542" y2="40" stroke="#15803d" stroke-width="1.5" marker-end="url(#a-green)"/>
+      <line x1="424" y1="85" x2="542" y2="108" stroke="#0369a1" stroke-width="1.5" marker-end="url(#a-blue)"/>
+
+      <!-- Command arrow Ground Station → Broker → Drone -->
+      <line x1="542" y1="56" x2="426" y2="68" stroke="#c2410c" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#a-orange)"/>
+      <line x1="276" y1="73" x2="158" y2="116" stroke="#c2410c" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#a-orange)"/>
+    </svg>
+    </div>
+
+    <h3>Pattern 1 — Telemetry (QoS 0)</h3>
+    <pre># drone_publisher.py — chạy: python drone_publisher.py
+import json, time, math, paho.mqtt.client as mqtt
+
+BROKER   = "broker.emqx.io"
+DRONE_ID = "drone-001"
+
+client = mqtt.Client(DRONE_ID, clean_session=False)
+client.will_set(f"drone/{DRONE_ID}/status",
+                json.dumps({"status": "offline", "ts": 0}), qos=1, retain=True)
+client.connect(BROKER, 1883, keepalive=30)
+client.loop_start()
+
+client.publish(f"drone/{DRONE_ID}/status",
+               json.dumps({"status": "online", "ts": int(time.time()*1000)}),
+               qos=1, retain=True)
+
+t = 0
+while True:
+    data = {
+        "lat":      10.7769 + math.sin(t * 0.05) * 0.005,
+        "lng":      106.7009 + math.cos(t * 0.05) * 0.005,
+        "alt_m":    round(80 + math.sin(t * 0.02) * 20, 1),
+        "bat_pct":  round(max(0, 100 - t * 0.1), 1),
+        "speed_ms": round(abs(math.sin(t * 0.03)) * 15, 1),
+        "ts":       int(time.time() * 1000)
+    }
+    client.publish(f"drone/{DRONE_ID}/telemetry", json.dumps(data), qos=0)
+    t += 1
+    time.sleep(0.2)   # 5 Hz</pre>
+
+    <h3>Pattern 2 — Command/Control (QoS 1)</h3>
+    <pre># ground_station.py — chạy: python ground_station.py
+import json, time, paho.mqtt.client as mqtt
+
+BROKER = "broker.emqx.io"
+GS_ID  = "ground-station-001"
+
+def on_message(client, userdata, msg):
+    parts = msg.topic.split("/")
+    drone_id = parts[1]
+    data = json.loads(msg.payload)
+    if parts[2] == "telemetry":
+        print(f"[{drone_id}] lat={data['lat']:.4f} lng={data['lng']:.4f} "
+              f"alt={data['alt_m']}m bat={data['bat_pct']}%")
+    elif parts[2] == "status":
+        print(f"[{drone_id}] *** STATUS: {data['status'].upper()} ***")
+
+def send_command(drone_id: str, command: str, params: dict = {}):
+    payload = json.dumps({"cmd": command, "params": params,
+                          "ts": int(time.time() * 1000)})
+    result = client.publish(f"drone/{drone_id}/command", payload, qos=1)
+    result.wait_for_publish()
+    print(f"Command '{command}' sent → {drone_id}")
+
+client = mqtt.Client(GS_ID)
+client.on_message = on_message
+client.connect(BROKER, 1883)
+client.subscribe([("drone/+/telemetry", 0), ("drone/+/status", 1)])
+client.loop_start()
+
+time.sleep(3)
+send_command("drone-001", "goto_waypoint", {"lat": 10.780, "lng": 106.705, "alt": 100})
+time.sleep(5)
+send_command("drone-001", "return_home")
+client.loop_forever()</pre>
+
+    <h3>Pattern 3 — Device Shadow</h3>
+    <pre># Device Shadow = "desired state" vs "reported state"
+# drone/{id}/shadow/update   — publish desired state
+# drone/{id}/shadow/reported — drone publish actual state
+# drone/{id}/shadow/delta    — service publish diff (desired ≠ reported)
+
+desired  = {"altitude": 100, "speed": 10, "mode": "autonomous"}
+reported = {"altitude": 85,  "speed": 8,  "mode": "manual"}
+delta    = {k: desired[k] for k in desired if desired.get(k) != reported.get(k)}
+# delta = {"altitude": 100, "speed": 10, "mode": "autonomous"}
+
+# Ground station publish desired
+client.publish("drone/001/shadow/update",
+               json.dumps({"desired": desired}), qos=1)
+
+# Drone subscribe delta, execute, publish reported
+def on_delta(client, userdata, msg):
+    delta = json.loads(msg.payload)
+    execute_changes(delta)           # apply desired state
+    client.publish("drone/001/shadow/reported",
+                   json.dumps({"reported": get_current_state()}), qos=1)
+
+client.message_callback_add("drone/001/shadow/delta", on_delta)</pre>
+
+    <h3>Pattern 4 — Multi-Drone Dashboard</h3>
+    <pre>fleet_state = {}
+
+def on_telemetry(client, userdata, msg):
+    drone_id = msg.topic.split("/")[1]
+    fleet_state[drone_id] = {
+        "data": json.loads(msg.payload),
+        "last_seen": time.time()
+    }
+    # Check offline drones (không nhận telemetry > 2 giây)
+    offline = [d for d, v in fleet_state.items()
+               if time.time() - v["last_seen"] > 2.0]
+    if offline:
+        print(f"Drones possibly offline: {offline}")
+
+client.message_callback_add("drone/+/telemetry", on_telemetry)
+client.subscribe("drone/+/telemetry", qos=0)</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s16">
+    <div class="section-header">
+      <span class="section-num">16</span>
+      <h2 class="section-title">MQTT over WebSocket</h2>
+    </div>
+    <p>Browser không có raw TCP socket API → không kết nối MQTT port 1883 trực tiếp. Giải pháp: <strong>MQTT frames gói trong WebSocket binary frames</strong> — MQTT protocol hoàn toàn không đổi, chỉ transport layer thay đổi.</p>
+
+    <h3>WebSocket Upgrade</h3>
+    <p>Client gửi HTTP Upgrade request với header <code>Sec-WebSocket-Protocol: mqtt</code>. Broker phải hỗ trợ WebSocket listener. Sau khi upgrade thành công → gửi CONNECT packet như bình thường qua WS binary frames.</p>
+
+    <table>
+      <tr><th>Mode</th><th>Port</th><th>URL</th><th>Khi nào dùng</th></tr>
+      <tr><td>MQTT over WS</td><td>8083</td><td><code>ws://host:8083/mqtt</code></td><td>Dev/local only</td></tr>
+      <tr><td>MQTT over WSS</td><td>8084</td><td><code>wss://host:8084/mqtt</code></td><td>Production (TLS)</td></tr>
+      <tr><td>MQTT over TCP</td><td>1883</td><td>—</td><td>Server-to-server, IoT devices</td></tr>
+      <tr><td>MQTT over TLS</td><td>8883</td><td>—</td><td>Production IoT devices</td></tr>
+    </table>
+
+    <h3>paho-mqtt với WebSocket Transport</h3>
+    <pre>import paho.mqtt.client as mqtt
+
+# Plain WebSocket (dev)
+client = mqtt.Client(transport="websockets")
+client.connect("broker.emqx.io", port=8083)
+
+# Secure WebSocket (production)
+client = mqtt.Client(transport="websockets")
+client.tls_set()   # sử dụng system CA store
+client.connect("broker.emqx.io", port=8084)
+client.loop_start()</pre>
+
+    <h3>Browser Client (MQTT.js)</h3>
+    <pre>// npm install mqtt  hoặc CDN: https://unpkg.com/mqtt/dist/mqtt.min.js
+import mqtt from 'mqtt'
+
+const client = mqtt.connect('wss://broker.emqx.io:8084/mqtt', {
+  clientId: 'browser-dashboard-' + Math.random().toString(16).slice(2),
+  clean: true,
+  reconnectPeriod: 3000,
+  connectTimeout: 10000,
+})
+
+client.on('connect', () => {
+  console.log('Connected')
+  client.subscribe('drone/+/telemetry', { qos: 0 })
+  client.subscribe('drone/+/status',    { qos: 1 })
+})
+
+client.on('message', (topic, payload) => {
+  const parts = topic.split('/')
+  const droneId = parts[1]
+  const data = JSON.parse(payload.toString())
+  updateFleetMap(droneId, data)   // update map UI
+})
+
+client.on('error', err => console.error('MQTT error:', err))</pre>
+
+    <div class="box box-yellow">
+      <div class="box-title">Mosquitto WebSocket Config</div>
+      <code>listener 8083<br>protocol websockets<br><br>listener 8084<br>protocol websockets<br>cafile /etc/mosquitto/ca.crt<br>certfile /etc/mosquitto/server.crt<br>keyfile /etc/mosquitto/server.key</code>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s17">
+    <div class="section-header">
+      <span class="section-num">17</span>
+      <h2 class="section-title">Brokers</h2>
+    </div>
+
+    <!-- SVG 6: Broker Comparison Cards -->
+    <div class="diagram-wrap">
+    <svg class="diagram" viewBox="0 0 700 135" xmlns="http://www.w3.org/2000/svg">
+      <!-- Mosquitto -->
+      <rect x="5" y="5" width="163" height="125" rx="8" fill="#f0f9ff" stroke="#7dd3fc" stroke-width="2"/>
+      <rect x="5" y="5" width="163" height="32" rx="8" fill="#0369a1"/>
+      <rect x="5" y="29" width="163" height="8" fill="#0369a1"/>
+      <text x="86" y="26" text-anchor="middle" font-size="12" font-weight="800" fill="white">Mosquitto</text>
+      <text x="86" y="52" text-anchor="middle" font-size="9.5" fill="#0369a1">Language: C</text>
+      <text x="86" y="67" text-anchor="middle" font-size="9.5" fill="#0369a1">~100K connections</text>
+      <text x="86" y="82" text-anchor="middle" font-size="9.5" fill="#64748b">Eclipse Foundation OSS</text>
+      <text x="86" y="97" text-anchor="middle" font-size="9" fill="#64748b">250KB RAM · RPi-friendly</text>
+      <text x="86" y="112" text-anchor="middle" font-size="9" fill="#64748b">Best for: dev · edge · IoT</text>
+      <text x="86" y="125" text-anchor="middle" font-size="8" fill="#15803d">✓ bridge support</text>
+
+      <!-- EMQX -->
+      <rect x="178" y="5" width="163" height="125" rx="8" fill="#faf5ff" stroke="#c4b5fd" stroke-width="2"/>
+      <rect x="178" y="5" width="163" height="32" rx="8" fill="#7c3aed"/>
+      <rect x="178" y="29" width="163" height="8" fill="#7c3aed"/>
+      <text x="259" y="26" text-anchor="middle" font-size="12" font-weight="800" fill="white">EMQX</text>
+      <text x="259" y="52" text-anchor="middle" font-size="9.5" fill="#7c3aed">Language: Erlang/OTP</text>
+      <text x="259" y="67" text-anchor="middle" font-size="9.5" fill="#7c3aed">100M+ connections</text>
+      <text x="259" y="82" text-anchor="middle" font-size="9.5" fill="#64748b">Built-in dashboard + metrics</text>
+      <text x="259" y="97" text-anchor="middle" font-size="9" fill="#64748b">Rule engine (SQL-like)</text>
+      <text x="259" y="112" text-anchor="middle" font-size="9" fill="#64748b">Best for: large-scale IoT</text>
+      <text x="259" y="125" text-anchor="middle" font-size="8" fill="#15803d">✓ clustering · MQTT 5.0</text>
+
+      <!-- HiveMQ -->
+      <rect x="351" y="5" width="163" height="125" rx="8" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+      <rect x="351" y="5" width="163" height="32" rx="8" fill="#c2410c"/>
+      <rect x="351" y="29" width="163" height="8" fill="#c2410c"/>
+      <text x="432" y="26" text-anchor="middle" font-size="12" font-weight="800" fill="white">HiveMQ</text>
+      <text x="432" y="52" text-anchor="middle" font-size="9.5" fill="#c2410c">Language: Java</text>
+      <text x="432" y="67" text-anchor="middle" font-size="9.5" fill="#c2410c">~1M connections</text>
+      <text x="432" y="82" text-anchor="middle" font-size="9.5" fill="#64748b">Enterprise plugins SDK</text>
+      <text x="432" y="97" text-anchor="middle" font-size="9" fill="#64748b">Kubernetes-native</text>
+      <text x="432" y="112" text-anchor="middle" font-size="9" fill="#64748b">Best for: enterprise</text>
+      <text x="432" y="125" text-anchor="middle" font-size="8" fill="#15803d">✓ extensions API</text>
+
+      <!-- AWS IoT Core -->
+      <rect x="524" y="5" width="171" height="125" rx="8" fill="#fffbeb" stroke="#fde68a" stroke-width="2"/>
+      <rect x="524" y="5" width="171" height="32" rx="8" fill="#92400e"/>
+      <rect x="524" y="29" width="171" height="8" fill="#92400e"/>
+      <text x="609" y="26" text-anchor="middle" font-size="11" font-weight="800" fill="white">AWS IoT Core</text>
+      <text x="609" y="52" text-anchor="middle" font-size="9.5" fill="#92400e">Managed / Serverless</text>
+      <text x="609" y="67" text-anchor="middle" font-size="9.5" fill="#92400e">Unlimited (pay per msg)</text>
+      <text x="609" y="82" text-anchor="middle" font-size="9.5" fill="#64748b">Device Shadow built-in</text>
+      <text x="609" y="97" text-anchor="middle" font-size="9" fill="#64748b">Rules Engine → Lambda/S3</text>
+      <text x="609" y="112" text-anchor="middle" font-size="9" fill="#64748b">Best for: AWS ecosystem</text>
+      <text x="609" y="125" text-anchor="middle" font-size="8" fill="#15803d">✓ mTLS · X.509 device cert</text>
+    </svg>
+    </div>
+
+    <table>
+      <tr><th>Broker</th><th>MQTT 5.0</th><th>Clustering</th><th>WebSocket</th><th>Monitoring</th></tr>
+      <tr><td><strong>Mosquitto 2.x</strong></td><td>✓</td><td>Manual bridge</td><td>✓</td><td>$SYS topics</td></tr>
+      <tr><td><strong>EMQX 5.x</strong></td><td>✓</td><td>Native clustering</td><td>✓</td><td>Dashboard + Prometheus</td></tr>
+      <tr><td><strong>HiveMQ 4.x</strong></td><td>✓</td><td>Native clustering</td><td>✓</td><td>Control Center UI</td></tr>
+      <tr><td><strong>AWS IoT Core</strong></td><td>✓ (partial)</td><td>Managed</td><td>✓</td><td>CloudWatch</td></tr>
+      <tr><td><strong>VerneMQ</strong></td><td>✓</td><td>Native (Erlang)</td><td>✓</td><td>Prometheus</td></tr>
+    </table>
+
+    <pre>brew install mosquitto   # macOS
+# hoặc: sudo apt install mosquitto mosquitto-clients
+
+# Subscribe tất cả drone telemetry
+mosquitto_sub -h broker.emqx.io -t "drone/+/telemetry" -v
+
+# Publish command đến drone
+mosquitto_pub -h broker.emqx.io -t "drone/001/command" \
+              -m '{"cmd":"return_home"}' -q 1
+
+# Xem broker system metrics
+mosquitto_sub -h localhost -t '$SYS/#' -v</pre>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s18">
+    <div class="section-header">
+      <span class="section-num">18</span>
+      <h2 class="section-title">Production &amp; Python Patterns</h2>
+    </div>
+
+    <h3>MQTTService Class Pattern</h3>
+    <pre>import paho.mqtt.client as mqtt
+import json, time
+
+class MQTTService:
+    """Thread-safe MQTT service với auto-reconnect và topic dispatch."""
+
+    def __init__(self, broker: str, port: int, client_id: str,
+                 username: str = None, password: str = None):
+        self._client = mqtt.Client(client_id, clean_session=False)
+        if username:
+            self._client.username_pw_set(username, password)
+        self._client.on_connect    = self._on_connect
+        self._client.on_disconnect = self._on_disconnect
+        self._client.on_message    = self._on_unhandled
+        self._handlers = {}
+        self._broker, self._port = broker, port
+
+    def add_handler(self, topic_pattern: str, fn, qos: int = 1):
+        """Register callback cho topic pattern. Tự động re-subscribe on reconnect."""
+        self._handlers[topic_pattern] = (fn, qos)
+        self._client.message_callback_add(topic_pattern, fn)
+
+    def _on_connect(self, client, userdata, flags, rc):
+        if rc != 0:
+            print(f"[MQTT] Connect failed rc={rc}")
+            return
+        print(f"[MQTT] Connected (session={'restored' if flags.get('session present') else 'new'})")
+        for pattern, (_, qos) in self._handlers.items():
+            client.subscribe(pattern, qos=qos)
+
+    def _on_disconnect(self, client, userdata, rc):
+        if rc != 0:
+            print(f"[MQTT] Unexpected disconnect rc={rc}, auto-reconnecting...")
+
+    def _on_unhandled(self, client, userdata, msg):
+        print(f"[MQTT] Unhandled: {msg.topic}")
+
+    def start(self):
+        self._client.reconnect_delay_set(min_delay=1, max_delay=30)
+        self._client.connect(self._broker, self._port, keepalive=60)
+        self._client.loop_start()   # non-blocking background thread
+
+    def publish(self, topic: str, payload, qos: int = 0, retain: bool = False):
+        data = json.dumps(payload) if not isinstance(payload, (str, bytes)) else payload
+        return self._client.publish(topic, data, qos=qos, retain=retain)
+
+    def stop(self):
+        self._client.disconnect()
+        self._client.loop_stop()</pre>
+
+    <h3>$SYS Monitoring Topics</h3>
+    <pre># Mosquitto system metrics — subscribe để monitor broker health
+mosquitto_sub -h localhost -t '$SYS/#' -v
+
+# Key metrics:
+# $SYS/broker/clients/connected     — active connections
+# $SYS/broker/clients/maximum       — peak connections ever
+# $SYS/broker/messages/received     — total PUBLISH received
+# $SYS/broker/publish/messages/sent — total PUBLISH forwarded
+# $SYS/broker/subscriptions/count   — active subscriptions
+# $SYS/broker/retained messages/count — retained messages stored
+# $SYS/broker/bytes/received        — total bytes received
+# $SYS/broker/uptime                — broker uptime (seconds)</pre>
+
+    <h3>End-to-End Drone Simulation</h3>
+    <pre># Cài đặt:  pip install paho-mqtt
+# Chạy terminal 1: python drone_publisher.py
+# Chạy terminal 2: python ground_station.py
+# Hoặc xem raw data:
+mosquitto_sub -h broker.emqx.io -t "drone/+/telemetry" -v | python -m json.tool</pre>
+
+    <h3>Capacity Planning</h3>
+    <ul>
+      <li><strong>Mosquitto:</strong> ~1 MB RAM / 1000 connections (default buffer). Single-threaded → CPU bound trên 1 core.</li>
+      <li><strong>QoS 0:</strong> negligible broker storage. <strong>QoS 1/2 offline queues:</strong> cấu hình <code>max_queued_messages 1000</code> (Mosquitto) để tránh OOM.</li>
+      <li><strong>Persistent sessions:</strong> cần disk persistence khi broker restart. Cấu hình <code>persistence true</code> + <code>persistence_location /var/lib/mosquitto</code>.</li>
+      <li><strong>Fan-out bottleneck:</strong> 1000 subscribers × 100 msg/s = 100,000 forwards/s → dùng shared subscriptions và horizontal scaling.</li>
+      <li><strong>Keepalive tuning:</strong> <code>keepalive=60</code> (60 giây) = PINGREQ mỗi 60s. Mạng cellular unstable → giảm xuống 30s.</li>
+    </ul>
+
+    <div class="box box-green">
+      <div class="box-title">Production Checklist</div>
+      <ul style="margin:0">
+        <li>✓ Dùng TLS (port 8883) hoặc WSS (8084) — không plaintext 1883</li>
+        <li>✓ ClientID unique per device (MAC/UUID) — tránh client takeover</li>
+        <li>✓ LWT cho mỗi device quan trọng với retain=True</li>
+        <li>✓ ACL restrict write/read per client</li>
+        <li>✓ clean_session=False cho IoT devices + Session Expiry Interval hợp lý</li>
+        <li>✓ Message Expiry Interval cho commands (tránh stale commands)</li>
+        <li>✓ Monitor $SYS topics hoặc Prometheus exporter</li>
+        <li>✓ Test reconnect behavior với network partition</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="section" id="s19">
+    <div class="section-header">
+      <span class="section-num">★</span>
+      <h2 class="section-title">Các điểm cốt lõi cần nhớ</h2>
+    </div>
+    <p>Bản chắt lọc từ 18 sections — những điểm quan trọng nhất, hay bị nhầm, hay gặp trong interviews và hay phát sinh bug trong production MQTT.</p>
+
+    <div class="summary-grid">
+
+      <div class="summary-card box-blue">
+        <h4>Packet Format</h4>
+        <ul>
+          <li><strong>Fixed header:</strong> byte 1 = type (bits 7–4) + flags (bits 3–0), byte 2+ = remaining length (VLE)</li>
+          <li><strong>VLE encoding:</strong> 7 bits value + bit 7 = "còn tiếp". Tối đa 4 bytes = 256 MB</li>
+          <li>14 packet types — PUBLISH dùng cả 4 flag bits (DUP/QoS/QoS/RETAIN)</li>
+          <li><strong>CONNECT variable header:</strong> 10 bytes cố định (Protocol Name 6B + Level 1B + Flags 1B + KeepAlive 2B)</li>
+          <li>QoS 0 PUBLISH không có Packet Identifier — nhỏ hơn 2 bytes so với QoS 1/2</li>
+        </ul>
+      </div>
+
+      <div class="summary-card box-green">
+        <h4>QoS State Machines</h4>
+        <ul>
+          <li><strong>QoS 0:</strong> 1 packet, no ACK, may lose — telemetry, metrics</li>
+          <li><strong>QoS 1:</strong> 2 packets (PUBLISH + PUBACK), may duplicate — commands, alerts</li>
+          <li><strong>QoS 2:</strong> 4 packets, 2 RTT, exactly-once — firmware OTA, financial</li>
+          <li>Broker có thể downgrade QoS khi forward — luôn check granted QoS trong SUBACK</li>
+          <li>QoS 1/2 messages được queue cho offline persistent session clients</li>
+        </ul>
+      </div>
+
+      <div class="summary-card box-orange">
+        <h4>Topics &amp; Sessions</h4>
+        <ul>
+          <li><code>+</code> = đúng 1 level; <code>#</code> = 0+ levels, phải ở cuối — <em>chỉ dùng trong SUBSCRIBE</em></li>
+          <li><strong>$SYS</strong> không match bởi <code>#</code> — phải subscribe explicit</li>
+          <li>Retained: broker lưu last value — clear bằng PUBLISH empty payload với RETAIN=1</li>
+          <li><strong>LWT chỉ được gửi khi TCP drop bất thường</strong> — không gửi nếu client gửi DISCONNECT</li>
+          <li>Persistent session (clean_session=False) → check Session Present trong CONNACK</li>
+        </ul>
+      </div>
+
+      <div class="summary-card box-purple">
+        <h4>MQTT 5.0</h4>
+        <ul>
+          <li><strong>Reason codes</strong> trên mọi packet — biết chính xác lý do disconnect/failure</li>
+          <li><strong>User Properties</strong> = custom key-value metadata trên bất kỳ packet nào</li>
+          <li><strong>Message Expiry</strong>: broker drop stale messages — dùng cho commands có TTL</li>
+          <li><strong>Topic Aliases</strong>: map topic string → integer, tiết kiệm bandwidth đáng kể</li>
+          <li><strong>Shared subscriptions</strong>: <code>$share/group/topic</code> — load balance, không fan-out</li>
+        </ul>
+      </div>
+
+      <div class="summary-card box-red">
+        <h4>Security</h4>
+        <ul>
+          <li><strong>TLS port 8883</strong> bắt buộc trong production — 1883 là plaintext</li>
+          <li><strong>mTLS</strong> cho device identity — cert per device thay vì shared password</li>
+          <li>ACL restrict write/read per ClientID và topic pattern</li>
+          <li>ClientID takeover: unique ClientID per device để tránh bị disconnect</li>
+          <li>username/password trong CONNECT payload — cleartext nếu không có TLS</li>
+        </ul>
+      </div>
+
+      <div class="summary-card box-yellow">
+        <h4>IoT &amp; Drone Patterns</h4>
+        <ul>
+          <li><strong>Telemetry</strong> = QoS 0 (high-freq, loss OK): <code>drone/001/telemetry</code></li>
+          <li><strong>Command</strong> = QoS 1 (must arrive once): <code>drone/001/command</code></li>
+          <li><strong>LWT birth/death</strong>: will_set offline + on_connect publish online, cả 2 retain=True</li>
+          <li><strong>Device shadow</strong>: desired vs reported, delta topic cho sync</li>
+          <li><strong>Shared sub</strong>: <code>$share/fleet/drone/+/telemetry</code> scale ground stations</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="box box-blue" style="margin-top:1rem">
+      <div class="box-title">Câu hỏi hay gặp trong interviews</div>
+      <ul style="margin:0">
+        <li><strong>QoS 1 vs QoS 2 — khi nào chọn cái nào?</strong> — QoS 1 đủ cho hầu hết cases (commands, alerts) nếu application xử lý được duplicate; QoS 2 chỉ khi duplicate thực sự gây hại (firmware flash, financial transaction) — cost 4x packet</li>
+        <li><strong>Retained message vs persistent session — khác gì?</strong> — Retained = broker lưu 1 message per topic, gửi cho <em>mọi subscriber mới</em>. Persistent session = broker queue messages cho <em>1 client cụ thể</em> khi offline</li>
+        <li><strong>LWT trigger trong trường hợp nào?</strong> — Chỉ khi TCP connection bị drop mà không có DISCONNECT packet (network failure, crash). Normal disconnect (gửi DISCONNECT) → broker không gửi LWT</li>
+        <li><strong>Shared subscription vs normal subscription — khác gì?</strong> — Normal sub: tất cả subscribers nhận message (fan-out). Shared sub (<code>$share/group/topic</code>): chỉ 1 subscriber trong group nhận mỗi message (load balance)</li>
+        <li><strong>MQTT vs WebSocket — khi nào chọn cái nào?</strong> — MQTT khi cần pub/sub native, offline support, QoS guarantee, IoT/M2M, fan-out 1→N; WebSocket khi cần bidirectional custom protocol, browser-native, không cần broker intermediary</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    const id = e.target.id;
+    const link = document.querySelector(`.nav-item[href="#${id}"]`);
+    if (link) link.classList.toggle('active', e.isIntersecting);
+  });
+}, { rootMargin: '-10% 0px -80% 0px' });
+document.querySelectorAll('.section').forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

@@ -254,6 +254,14 @@
   .flow-phase rect { transition: opacity 0.15s; }
   .flow-phase:hover rect { opacity: 0.75; }
 
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin: 0.75rem 0 1.25rem; }
+  @media (max-width: 900px) { .summary-grid { grid-template-columns: 1fr 1fr; } }
+  .summary-card { border-radius: 8px; padding: 0.9rem 1rem; }
+  .summary-card h4 { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; margin-top: 0; }
+  .summary-card ul { padding-left: 1.1rem; margin: 0; }
+  .summary-card li { font-size: 0.82rem; margin-bottom: 0.22rem; line-height: 1.5; color: inherit; }
+  .summary-card li strong { color: inherit; opacity: 0.95; }
+
   /* ── BACK TOP ── */
   .back-top {
     position: fixed; bottom: 2rem; right: 2rem;
@@ -266,6 +274,8 @@
     text-decoration: none;
   }
   .back-top:hover { background: #0284c7; }
+  .nav-home { display:flex; align-items:center; gap:.5rem; padding:.7rem 1.25rem .85rem; font-size:.78rem; color:var(--text3); text-decoration:none; border-bottom:1px solid var(--border); margin-bottom:.75rem; transition:color .15s; }
+  .nav-home:hover { color:var(--blue); }
 </style>
 </head>
 <body>
@@ -274,6 +284,10 @@
 
 <!-- ════════════════ SIDEBAR ════════════════ -->
 <nav class="sidebar">
+  <a class="nav-home" href="../index.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+    Protocol Deep Dives
+  </a>
   <div class="sidebar-title">WebSocket Deep Dive</div>
   <div class="nav-group-label">Nền tảng</div>
   <a class="nav-item" href="#s1"><span class="nav-num">01</span> WebSocket là gì</a>
@@ -294,6 +308,9 @@
   <a class="nav-item" href="#s12"><span class="nav-num">12</span> Performance &amp; Scaling</a>
   <a class="nav-item" href="#s13"><span class="nav-num">13</span> WS vs Alternatives</a>
   <a class="nav-item" href="#s14"><span class="nav-num">14</span> Production Checklist</a>
+  <div class="nav-divider"></div>
+  <div class="nav-group-label">Tổng kết</div>
+  <a class="nav-item" href="#s15"><span class="nav-num">★</span> Các điểm cốt lõi</a>
 </nav>
 
 <!-- ════════════════ MAIN ════════════════ -->
@@ -1808,6 +1825,96 @@ server {
     proxy_connect_timeout 10s;
   }
 }</pre>
+  </section>
+
+  <!-- ═══ S15: TỔNG KẾT ═══ -->
+  <section class="section" id="s15">
+    <div class="section-header">
+      <span class="section-num">★</span>
+      <h2 class="section-title">Các điểm cốt lõi cần nhớ</h2>
+    </div>
+    <p>Bản chắt lọc từ 14 sections — những điểm quan trọng nhất về WebSocket, hay bị nhầm và hay gặp trong production.</p>
+
+    <div class="summary-grid">
+
+      <div class="summary-card box-blue">
+        <h4>Handshake &amp; Framing</h4>
+        <ul>
+          <li>Upgrade request cần: <code>Upgrade: websocket</code>, <code>Connection: Upgrade</code>, <code>Sec-WebSocket-Key</code> (16 bytes base64)</li>
+          <li>Server reply: <strong>101 Switching Protocols</strong> + <code>Sec-WebSocket-Accept</code> = SHA-1(key + GUID), base64</li>
+          <li>Frame header: tối thiểu 2 bytes — FIN/RSV/Opcode (1B) + MASK/Payload-len (1B)</li>
+          <li><strong>Masking bắt buộc</strong> client→server (4-byte key XOR payload); server→client không mask</li>
+          <li>Fragmented: FIN=0 cho intermediate frames, FIN=1 cho frame cuối</li>
+        </ul>
+      </div>
+
+      <div class="summary-card box-green">
+        <h4>Control Frames &amp; Close</h4>
+        <ul>
+          <li>Opcodes: <code>0x1</code>=text, <code>0x2</code>=binary, <code>0x8</code>=close, <code>0x9</code>=ping, <code>0xA</code>=pong</li>
+          <li>Control frames: payload ≤ 125 bytes, <strong>không được fragment</strong></li>
+          <li>Close handshake: gửi close frame → đợi close reply → <em>rồi mới</em> đóng TCP — không close đột ngột</li>
+          <li>Close codes: 1000 (normal), 1001 (going away), 1008 (policy violation), 1011 (server error)</li>
+          <li>Nếu không nhận pong sau timeout → force close, coi là connection dropped</li>
+        </ul>
+      </div>
+
+      <div class="summary-card box-orange">
+        <h4>Security (WSS)</h4>
+        <ul>
+          <li><strong>WSS bắt buộc</strong> trong production — <code>ws://</code> bị proxy/firewall block hoặc modify payload</li>
+          <li>Origin header trong upgrade request — server <strong>PHẢI validate</strong> Origin (chống CSRF WebSocket)</li>
+          <li>Không có CORS cho WS — browser gửi Origin, server quyết định; khác HTTP, credentials không tự động bị block</li>
+          <li>Authenticate trước khi upgrade: JWT trong query param hoặc header (<code>Sec-WebSocket-Protocol</code> trick)</li>
+          <li>DoS: limit connections/IP, rate limit messages, enforce max payload size</li>
+        </ul>
+      </div>
+
+      <div class="summary-card box-purple">
+        <h4>Reconnect &amp; Heartbeat</h4>
+        <ul>
+          <li>Exponential backoff: <code>delay = min(2^n × base, maxDelay) + jitter</code> — jitter tránh thundering herd</li>
+          <li><code>readyState</code>: 0=CONNECTING, 1=OPEN, 2=CLOSING, 3=CLOSED</li>
+          <li><code>event.wasClean=false</code> = connection dropped (không qua close handshake) → nên reconnect</li>
+          <li>Application heartbeat: server gửi <code>{type:"ping"}</code> → client reply — khác WS-level ping/pong frame</li>
+          <li>Reconnect: restore state (subscribe lại rooms, re-auth) ngay sau khi open</li>
+        </ul>
+      </div>
+
+      <div class="summary-card box-red">
+        <h4>Scaling</h4>
+        <ul>
+          <li>WebSocket là <strong>stateful</strong> → cần sticky sessions (connection state nằm trong process heap)</li>
+          <li>Pub/sub với Redis adapter: broadcast qua Redis channel → tất cả server instances nhận</li>
+          <li>Memory: 1 connection ≈ 50–100 KB RAM server (tùy buffer size)</li>
+          <li>Linux <code>ulimit -n</code> giới hạn file descriptors — cần tăng lên ≥ 65536 cho production</li>
+          <li>Nginx cần <code>proxy_read_timeout 3600s</code> và <code>proxy_http_version 1.1</code> để không drop connection</li>
+        </ul>
+      </div>
+
+      <div class="summary-card box-yellow">
+        <h4>WS vs Alternatives</h4>
+        <ul>
+          <li><strong>SSE</strong>: chỉ server→client, HTTP/1.1, auto-reconnect built-in — tốt hơn WS nếu chỉ cần 1 chiều</li>
+          <li><strong>Long polling</strong>: compatibility cao nhất nhưng latency cao, overhead mỗi request</li>
+          <li><strong>gRPC-Web streaming</strong>: binary, type-safe nhưng cần Envoy proxy và trình duyệt hỗ trợ hạn chế</li>
+          <li>Dùng WebSocket khi: cần bidirectional real-time, latency quan trọng (&lt;100ms), custom protocol</li>
+          <li>HTTP/2 Server Push: deprecated — không phải real-time, không thay thế WebSocket</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="box box-blue" style="margin-top:1rem">
+      <div class="box-title">Câu hỏi hay gặp trong interviews</div>
+      <ul style="margin:0">
+        <li><strong>Tại sao WebSocket cần masking?</strong> — Chống cache-poisoning attack: proxy cũ có thể cache WebSocket frames nếu không mask, confuse với HTTP responses</li>
+        <li><strong>Tại sao WebSocket là stateful làm phức tạp horizontal scaling?</strong> — Connection state (subscriptions, user identity) nằm trong RAM của 1 process → load balancer phải route đúng server (sticky session) hoặc dùng shared state (Redis)</li>
+        <li><strong>Khác nhau giữa ws:// và wss://?</strong> — wss = WebSocket qua TLS; ngoài encryption, <code>ws://</code> bị nhiều corporate proxy và CDN block hoặc buffer toàn bộ response (vì nghĩ là HTTP)</li>
+        <li><strong>Khi nào dùng SSE thay vì WebSocket?</strong> — Khi chỉ cần server→client push (notifications, live feeds) — SSE đơn giản hơn, HTTP/2 multiplexed, auto-reconnect, không cần special server</li>
+        <li><strong>WebSocket có CORS không?</strong> — Không — browser gửi Origin header, server có thể check nhưng không có preflight; không có built-in CORS enforcement như Fetch API</li>
+      </ul>
+    </div>
   </section>
 
 </main>

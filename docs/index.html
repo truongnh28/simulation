@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protocol Deep Dives</title>
+<meta name="description" content="Deep-dive documentation on HTTP, gRPC, WebSocket, WebRTC, MQTT — từ wire format đến production patterns. Viết bằng tiếng Việt.">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #ffffff; --bg2: #f8fafc; --bg3: #f1f5f9; --border: #e2e8f0;
+  --text: #1e293b; --text2: #475569; --text3: #94a3b8; --dark: #0f172a;
+  --blue: #0369a1; --purple: #7c3aed; --teal: #0d9488; --orange: #c2410c; --green: #15803d;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+/* ─── Hero ─── */
+.hero {
+  background: var(--dark);
+  background-image:
+    radial-gradient(ellipse at 20% 65%, rgba(14,165,233,.2) 0%, transparent 55%),
+    radial-gradient(ellipse at 78% 25%, rgba(124,58,237,.16) 0%, transparent 55%);
+  padding: 5.5rem 2rem 4.5rem;
+  text-align: center;
+}
+.eyebrow {
+  display: inline-block;
+  background: rgba(14,165,233,.14); border: 1px solid rgba(14,165,233,.3);
+  color: #38bdf8; font-size: .7rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+  padding: .32rem .85rem; border-radius: 999px; margin-bottom: 1.5rem;
+}
+.hero h1 {
+  font-size: clamp(2.4rem, 5.5vw, 3.8rem); font-weight: 900; color: #fff;
+  line-height: 1.08; margin-bottom: 1.25rem; letter-spacing: -.025em;
+}
+.hero h1 em { color: #38bdf8; font-style: normal; }
+.hero-sub {
+  font-size: 1.05rem; color: #94a3b8; max-width: 520px;
+  margin: 0 auto 3.25rem; line-height: 1.8;
+}
+.hero-stats { display: flex; justify-content: center; gap: 3.5rem; flex-wrap: wrap; }
+.stat { text-align: center; }
+.stat-num { font-size: 2.1rem; font-weight: 900; color: #fff; line-height: 1; }
+.stat-label { font-size: .7rem; color: #475569; margin-top: .35rem; text-transform: uppercase; letter-spacing: .1em; }
+
+/* ─── Container ─── */
+.container { max-width: 1100px; margin: 0 auto; padding: 4.5rem 2rem 5rem; }
+
+.sec-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .15em; color: var(--text3); margin-bottom: .4rem; }
+.sec-title { font-size: 1.7rem; font-weight: 800; color: var(--dark); margin-bottom: .5rem; }
+.sec-sub   { font-size: .93rem; color: var(--text2); margin-bottom: 2.75rem; }
+
+/* ─── Card grid ─── */
+.grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem;
+  margin-bottom: 3rem;
+}
+@media (max-width: 880px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .grid { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+  overflow: hidden; display: flex; flex-direction: column;
+  text-decoration: none; color: inherit;
+  transition: box-shadow .2s, transform .2s;
+}
+.card:hover { box-shadow: 0 10px 36px rgba(0,0,0,.11); transform: translateY(-3px); }
+.card-bar { height: 5px; }
+.card-inner { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+.card-badge {
+  display: inline-block; font-size: .67rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .12em; padding: .22rem .6rem; border-radius: 6px; margin-bottom: 1rem;
+}
+.card-title { font-size: 1.2rem; font-weight: 800; color: var(--dark); margin-bottom: .55rem; line-height: 1.2; }
+.card-desc {
+  font-size: .875rem; color: var(--text2); line-height: 1.65; flex: 1; margin-bottom: 1.25rem;
+}
+.card-desc code {
+  background: rgba(0,0,0,.06); padding: .1em .35em; border-radius: 3px;
+  font-size: .88em; font-family: 'JetBrains Mono', monospace;
+}
+.card-meta { display: flex; gap: .55rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+.chip { font-size: .71rem; color: var(--text3); background: var(--bg3); padding: .18rem .55rem; border-radius: 999px; }
+.card-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: 1.5rem; }
+.tag { font-size: .69rem; font-weight: 600; padding: .18rem .5rem; border-radius: 4px; }
+.btn {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-size: .82rem; font-weight: 700; padding: .5rem 1rem;
+  border-radius: 8px; text-decoration: none; transition: opacity .15s;
+  align-self: flex-start; color: white;
+}
+.btn:hover { opacity: .85; }
+
+/* Protocol color schemes */
+.c-http  .card-bar { background: linear-gradient(90deg,#0369a1,#0ea5e9); }
+.c-http  .card-badge { background: #e0f2fe; color: #0369a1; }
+.c-http  .tag { background: #e0f2fe; color: #0369a1; }
+.c-http  .btn { background: #0369a1; }
+
+.c-grpc  .card-bar { background: linear-gradient(90deg,#7c3aed,#a855f7); }
+.c-grpc  .card-badge { background: #faf5ff; color: #7c3aed; }
+.c-grpc  .tag { background: #faf5ff; color: #7c3aed; }
+.c-grpc  .btn { background: #7c3aed; }
+
+.c-ws    .card-bar { background: linear-gradient(90deg,#0d9488,#14b8a6); }
+.c-ws    .card-badge { background: #f0fdfa; color: #0d9488; }
+.c-ws    .tag { background: #f0fdfa; color: #0d9488; }
+.c-ws    .btn { background: #0d9488; }
+
+.c-webrtc .card-bar { background: linear-gradient(90deg,#c2410c,#f97316); }
+.c-webrtc .card-badge { background: #fff7ed; color: #c2410c; }
+.c-webrtc .tag { background: #fff7ed; color: #c2410c; }
+.c-webrtc .btn { background: #c2410c; }
+
+.c-mqtt  .card-bar { background: linear-gradient(90deg,#15803d,#22c55e); }
+.c-mqtt  .card-badge { background: #dcfce7; color: #15803d; }
+.c-mqtt  .tag { background: #dcfce7; color: #15803d; }
+.c-mqtt  .btn { background: #15803d; }
+
+/* ─── Tip box ─── */
+.tip-box {
+  background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;
+  padding: 1rem 1.25rem; margin-bottom: 3rem; font-size: .9rem; color: #92400e;
+  display: flex; gap: .75rem; align-items: flex-start;
+}
+.tip-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: .1rem; }
+.tip-box p { color: #92400e; margin: 0; line-height: 1.65; }
+.tip-box strong { color: #78350f; }
+
+/* ─── Compare table ─── */
+.compare { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; }
+.compare h3 { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: 1.5rem; }
+table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+th {
+  padding: .6rem .9rem; font-size: .7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .1em; border-bottom: 2px solid var(--border); text-align: center; white-space: nowrap;
+}
+th:first-child { text-align: left; color: var(--text3); }
+th.th-http  { color: var(--blue); }
+th.th-grpc  { color: var(--purple); }
+th.th-ws    { color: var(--teal); }
+th.th-webrtc{ color: var(--orange); }
+th.th-mqtt  { color: var(--green); }
+td { padding: .52rem .9rem; border-bottom: 1px solid var(--bg3); color: var(--text2); text-align: center; vertical-align: top; font-size: .82rem; }
+td:first-child { font-weight: 700; color: var(--dark); text-align: left; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg3); }
+@media (max-width: 700px) { .compare { overflow-x: auto; } table { min-width: 600px; } }
+
+/* ─── Footer ─── */
+footer {
+  background: var(--dark); color: #475569; text-align: center;
+  padding: 2.5rem 2rem; font-size: .82rem; line-height: 1.9;
+}
+footer a { color: #64748b; text-decoration: none; transition: color .15s; }
+footer a:hover { color: #94a3b8; }
+.footer-links { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-top: .75rem; }
+.topbar { background: var(--dark); padding: .65rem 2rem; display:flex; align-items:center; gap:.6rem; font-size:.8rem; }
+.topbar a { color:#64748b; text-decoration:none; transition:color .15s; }
+.topbar a:hover { color:#94a3b8; }
+.topbar-sep { color:#334155; }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <a href="../index.html">← Protocol Lab</a>
+  <span class="topbar-sep">/</span>
+  <span style="color:#94a3b8">Docs</span>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<header class="hero">
+  <div class="eyebrow">Network Protocols · Tiếng Việt</div>
+  <h1>Protocol <em>Deep Dives</em></h1>
+  <p class="hero-sub">
+    Hiểu sâu từng protocol — từ wire format đến production patterns.<br>
+    Không chỉ <em>"nó làm gì"</em> mà cả <em>"tại sao nó được thiết kế như vậy"</em>.
+  </p>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Protocols</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">83</div>
+      <div class="stat-label">Sections</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">100+</div>
+      <div class="stat-label">Code examples</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">Free</div>
+      <div class="stat-label">& Open</div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ MAIN ═══ -->
+<main class="container">
+
+  <p class="sec-label">Tài liệu</p>
+  <h2 class="sec-title">Chọn một protocol để bắt đầu</h2>
+  <p class="sec-sub">Mỗi bài viết theo hướng bottom-up — wire format trước, abstractions sau. Có diagram SVG, bảng so sánh, và code ví dụ cho mỗi concept.</p>
+
+  <div class="grid">
+
+    <!-- ── HTTP ── -->
+    <a class="card c-http" href="http-deep-dive.html">
+      <div class="card-bar"></div>
+      <div class="card-inner">
+        <span class="card-badge">HTTP</span>
+        <div class="card-title">HTTP Deep Dive</div>
+        <p class="card-desc">HTTP/1.0 → HTTP/1.1 → HTTPS → HTTP/2 → HTTP/3 — từng bước tiến hóa, từng bit trong frame. Từ <code>GET / HTTP/1.0</code> đến QUIC streams trên UDP.</p>
+        <div class="card-meta">
+          <span class="chip">19 sections</span>
+          <span class="chip">RFC 9114</span>
+        </div>
+        <div class="card-tags">
+          <span class="tag">TLS 1.3</span>
+          <span class="tag">HTTP/2 Framing</span>
+          <span class="tag">HPACK</span>
+          <span class="tag">QUIC</span>
+          <span class="tag">Caching</span>
+          <span class="tag">CORS</span>
+        </div>
+        <span class="btn">Đọc bài →</span>
+      </div>
+    </a>
+
+    <!-- ── gRPC ── -->
+    <a class="card c-grpc" href="grpc-deep-dive.html">
+      <div class="card-bar"></div>
+      <div class="card-inner">
+        <span class="card-badge">gRPC</span>
+        <div class="card-title">gRPC Deep Dive</div>
+        <p class="card-desc">Từ Protobuf wire format đến 4 streaming patterns, interceptors và production deployment. gRPC = HTTP/2 transport + Protocol Buffers + code generation.</p>
+        <div class="card-meta">
+          <span class="chip">17 sections</span>
+          <span class="chip">Protobuf 3</span>
+        </div>
+        <div class="card-tags">
+          <span class="tag">Protobuf</span>
+          <span class="tag">Bidirectional Stream</span>
+          <span class="tag">Interceptors</span>
+          <span class="tag">Deadlines</span>
+          <span class="tag">Load Balancing</span>
+        </div>
+        <span class="btn">Đọc bài →</span>
+      </div>
+    </a>
+
+    <!-- ── WebSocket ── -->
+    <a class="card c-ws" href="websocket-deep-dive.html">
+      <div class="card-bar"></div>
+      <div class="card-inner">
+        <span class="card-badge">WebSocket</span>
+        <div class="card-title">WebSocket Deep Dive</div>
+        <p class="card-desc">HTTP Upgrade handshake → frame masking → backpressure → Redis pub/sub scaling. Full-duplex persistent connection trên một TCP duy nhất.</p>
+        <div class="card-meta">
+          <span class="chip">15 sections</span>
+          <span class="chip">RFC 6455</span>
+        </div>
+        <div class="card-tags">
+          <span class="tag">Frame Masking</span>
+          <span class="tag">Reconnect</span>
+          <span class="tag">Heartbeat</span>
+          <span class="tag">Redis pub/sub</span>
+          <span class="tag">SSE</span>
+        </div>
+        <span class="btn">Đọc bài →</span>
+      </div>
+    </a>
+
+    <!-- ── WebRTC ── -->
+    <a class="card c-webrtc" href="webrtc-deep-dive.html">
+      <div class="card-bar"></div>
+      <div class="card-inner">
+        <span class="card-badge">WebRTC</span>
+        <div class="card-title">WebRTC Deep Dive</div>
+        <p class="card-desc">NAT traversal → ICE/STUN/TURN → SDP negotiation → DTLS-SRTP → DataChannel. P2P video/audio trực tiếp giữa browser, không qua server trung gian.</p>
+        <div class="card-meta">
+          <span class="chip">13 sections</span>
+          <span class="chip">RFC 8829</span>
+        </div>
+        <div class="card-tags">
+          <span class="tag">ICE / STUN / TURN</span>
+          <span class="tag">SDP</span>
+          <span class="tag">DTLS-SRTP</span>
+          <span class="tag">DataChannel</span>
+          <span class="tag">NAT</span>
+        </div>
+        <span class="btn">Đọc bài →</span>
+      </div>
+    </a>
+
+    <!-- ── MQTT ── -->
+    <a class="card c-mqtt" href="mqtt-deep-dive.html">
+      <div class="card-bar"></div>
+      <div class="card-inner">
+        <span class="card-badge">MQTT</span>
+        <div class="card-title">MQTT Deep Dive</div>
+        <p class="card-desc">Wire format 2-byte → QoS 0/1/2 state machines → persistent sessions → drone fleet IoT patterns. Pub/sub sinh ra cho IoT khi bandwidth còn quý hơn vàng.</p>
+        <div class="card-meta">
+          <span class="chip">19 sections</span>
+          <span class="chip">MQTT 5.0</span>
+        </div>
+        <div class="card-tags">
+          <span class="tag">QoS 0/1/2</span>
+          <span class="tag">LWT</span>
+          <span class="tag">Retained Messages</span>
+          <span class="tag">paho-mqtt</span>
+          <span class="tag">IoT / Drone</span>
+        </div>
+        <span class="btn">Đọc bài →</span>
+      </div>
+    </a>
+
+  </div><!-- /grid -->
+
+  <!-- Learning path tip -->
+  <div class="tip-box">
+    <span class="tip-icon">💡</span>
+    <p>
+      <strong>Gợi ý thứ tự học:</strong>
+      Mỗi bài độc lập, nhưng nếu bạn mới bắt đầu hãy đọc theo thứ tự
+      <strong>HTTP → gRPC → WebSocket → WebRTC → MQTT</strong>.
+      Hiểu TCP và HTTP/1.1 trước giúp mọi bài sau dễ hơn rất nhiều.
+    </p>
+  </div>
+
+  <!-- Comparison table -->
+  <div class="compare">
+    <h3>So sánh nhanh — Chọn protocol phù hợp</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th class="th-http">HTTP</th>
+          <th class="th-grpc">gRPC</th>
+          <th class="th-ws">WebSocket</th>
+          <th class="th-webrtc">WebRTC</th>
+          <th class="th-mqtt">MQTT</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Transport</td>
+          <td>TCP / QUIC</td>
+          <td>TCP (HTTP/2)</td>
+          <td>TCP</td>
+          <td>UDP (ICE)</td>
+          <td>TCP</td>
+        </tr>
+        <tr>
+          <td>Mô hình</td>
+          <td>Request / Response</td>
+          <td>RPC + Streaming</td>
+          <td>Full-duplex</td>
+          <td>P2P</td>
+          <td>Pub / Sub</td>
+        </tr>
+        <tr>
+          <td>Overhead</td>
+          <td>Medium</td>
+          <td>Thấp</td>
+          <td>Rất thấp</td>
+          <td>Cao (setup)</td>
+          <td>Tối thiểu</td>
+        </tr>
+        <tr>
+          <td>Binary?</td>
+          <td>H2/H3: Yes</td>
+          <td>Yes (Protobuf)</td>
+          <td>Tuỳ chọn</td>
+          <td>Yes (SRTP)</td>
+          <td>Yes</td>
+        </tr>
+        <tr>
+          <td>Server cần?</td>
+          <td>Origin server</td>
+          <td>gRPC server</td>
+          <td>WS server</td>
+          <td>Signaling only</td>
+          <td>MQTT broker</td>
+        </tr>
+        <tr>
+          <td>Dùng khi</td>
+          <td>REST API, web, CDN</td>
+          <td>Microservices, RPC</td>
+          <td>Chat, live dashboard</td>
+          <td>Video/audio call, P2P</td>
+          <td>IoT, sensors, drone</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div>Protocol Deep Dives &nbsp;·&nbsp; Viết bằng tiếng Việt &nbsp;·&nbsp; Static HTML, no framework</div>
+  <div class="footer-links">
+    <a href="http-deep-dive.html">HTTP</a>
+    <a href="grpc-deep-dive.html">gRPC</a>
+    <a href="websocket-deep-dive.html">WebSocket</a>
+    <a href="webrtc-deep-dive.html">WebRTC</a>
+    <a href="mqtt-deep-dive.html">MQTT</a>
+  </div>
+</footer>
+
+</body>
+</html>
