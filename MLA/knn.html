@@ -110,6 +110,18 @@ li{font-size:.875rem;line-height:1.65}
 ul,ol{padding-left:1.4rem;margin:.4rem 0}
 strong{color:#1e293b}
 
+.insight{background:#f0fdf4;border:1px solid #86efac;border-left:4px solid #16a34a;border-radius:0 8px 8px 0;padding:.9rem 1.1rem;margin:.85rem 0}
+.insight-title{font-weight:700;color:#14532d;margin-bottom:.35rem;font-size:.88rem;display:flex;align-items:center;gap:.4rem}
+.analogy{background:#fefce8;border:1px solid #fde68a;border-left:4px solid #eab308;border-radius:0 8px 8px 0;padding:.9rem 1.1rem;margin:.85rem 0}
+.analogy-title{font-weight:700;color:#854d0e;margin-bottom:.35rem;font-size:.88rem;display:flex;align-items:center;gap:.4rem}
+.key-eq{background:#fff;border:2px solid #16a34a;border-radius:8px;padding:.85rem 1.25rem;margin:.75rem 0;text-align:center}
+.warn-box{background:#fef2f2;border:1px solid #fecaca;border-left:4px solid #ef4444;border-radius:0 8px 8px 0;padding:.9rem 1.1rem;margin:.85rem 0}
+.warn-title{font-weight:700;color:#b91c1c;margin-bottom:.35rem;font-size:.88rem;display:flex;align-items:center;gap:.4rem}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0}
+.col-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:.9rem 1.1rem}
+.col-card h4{font-size:.85rem;font-weight:700;color:#1e293b;margin-bottom:.5rem}
+@media(max-width:640px){.two-col{grid-template-columns:1fr}}
+
 @media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
 </style>
 </head>
@@ -228,78 +240,236 @@ strong{color:#1e293b}
 </div>
 </details>
 
-<div class="s-title">6. Cấu trúc dữ liệu tối ưu & Hành vi K</div>
-<div class="alert al-yellow">
-  <div class="alert-title"><i class="fas fa-star"></i> Câu hỏi thi quan trọng (Câu 17 & 18)</div>
-  <ul><li><strong>KD-Tree</strong> và <strong>Ball-Tree</strong> giảm chi phí tìm kiếm từ \(\mathcal{O}(N \cdot D)\) xuống \(\mathcal{O}(\log N)\).</li>
-  <li><strong>K=1</strong>: Low Bias, High Variance → Overfit. <strong>K=N</strong>: High Bias, Low Variance → luôn dự đoán lớp đa số (Majority Class), biên quyết định biến mất.</li>
-  <li>Khi K=N: Training Error ≠ 0 (các điểm thuộc lớp thiểu số bị phân loại sai).</li></ul>
+<!-- ══════════════════════════════════════════════
+     SECTION 6 — KD-Tree & Ball-Tree (deep analysis)
+══════════════════════════════════════════════ -->
+<div class="s-title">6. Cấu trúc dữ liệu tối ưu — KD-Tree &amp; Ball-Tree</div>
+
+<div class="ss-title">6.1 Vấn đề gốc rễ: tại sao Brute-force tốn \(\mathcal{O}(N \cdot D)\)?</div>
+<p>Mỗi lần dự đoán một điểm truy vấn, KNN phải tính khoảng cách đến <em>tất cả</em> N điểm huấn luyện. Một phép tính khoảng cách Euclidean trong D chiều cần D phép trừ, D phép bình phương, và 1 căn bậc hai → chi phí \(\mathcal{O}(D)\) mỗi cặp → tổng cộng \(\mathcal{O}(N \cdot D)\) mỗi query.</p>
+
+<div class="analogy">
+  <div class="analogy-title"><i class="fas fa-map-marked-alt"></i> Tư duy trực giác</div>
+  <p>Tìm trạm xăng gần nhất trong thành phố: cách Brute-force tương đương lái xe đến <em>từng</em> trạm xăng, đo khoảng cách, rồi chọn ngắn nhất. Rõ ràng phi thực tế. KD-Tree giống như xem bản đồ: bạn biết ngay "phía Bắc có khu vực xa lắm, bỏ qua hẳn" — loại trừ cả vùng không gian mà không cần kiểm tra từng điểm.</p>
 </div>
 
-<div class="s-title">7. KD-Tree — Cấu trúc dữ liệu tối ưu hóa tìm kiếm</div>
+<div class="ss-title">6.2 Ý tưởng cốt lõi: phân hoạch không gian để cắt tỉa (Pruning)</div>
 
-<div class="alert al-blue">
-  <div class="alert-title"><i class="fas fa-project-diagram"></i> Tại sao cần KD-Tree / Ball-Tree?</div>
-  <p>Tìm kiếm tuần tự (Brute-force): với N điểm, D chiều → mỗi query cần <strong>O(N·D)</strong> phép tính khoảng cách. Khi N=100.000, D=100 → 10 triệu phép tính/query → quá chậm trên thực tế.</p>
+<div class="insight">
+  <div class="insight-title"><i class="fas fa-lightbulb"></i> Key Insight — Điều kiện cắt tỉa</div>
+  <p>Gọi \(r\) là khoảng cách đến ứng viên tốt nhất đã tìm thấy. Nếu khoảng cách từ query đến <em>toàn bộ một vùng không gian</em> đã lớn hơn \(r\), thì không có điểm nào trong vùng đó có thể là kết quả tốt hơn → <strong>bỏ qua toàn bộ vùng</strong>, không cần kiểm tra từng điểm. Đây là nguyên lý hoạt động của mọi space-partitioning tree.</p>
 </div>
+
+<div class="ss-title">6.3 KD-Tree — Binary Search Tree trên không gian D chiều</div>
 
 <details open>
-<summary><i class="fas fa-tree"></i> KD-Tree — Binary Search Tree trên không gian D chiều</summary>
+<summary><i class="fas fa-hammer"></i> Pha xây dựng (Build): chia không gian bằng siêu phẳng axis-aligned</summary>
 <div class="dc">
-<div class="step"><div class="step-n">1</div><div class="step-c"><strong>Xây dựng:</strong> Tại mỗi node, chọn chiều có phương sai lớn nhất, split tại median → chia đôi không gian.</div></div>
-<div class="step"><div class="step-n">2</div><div class="step-c"><strong>Query:</strong> Đi xuống cây theo hướng gần query point nhất, sau đó backtrack để kiểm tra nhánh còn lại nếu hypersphere bán kính k-th distance giao với nhánh đó.</div></div>
-<div class="step"><div class="step-n">3</div><div class="step-c"><strong>Độ phức tạp:</strong> Trung bình \(\mathcal{O}(D \cdot \log N)\), trường hợp xấu nhất vẫn \(\mathcal{O}(N \cdot D)\) khi D lớn (curse of dimensionality).</div></div>
-<div class="alert al-yellow" style="margin-top:.6rem"><div class="alert-title">Giới hạn thực tế</div>KD-Tree hiệu quả khi \(D \ll N\) (chiều thấp, D &lt; 20). Khi D lớn hơn, Ball-Tree thường tốt hơn. Khi D rất lớn (&gt;100), Brute-force thường cạnh tranh do chi phí backtrack.</div>
+<div class="step"><div class="step-n">1</div><div class="step-c"><strong>Chọn chiều chia:</strong> chọn chiều \(d^* = \arg\max_d \,\text{Var}(\text{data theo chiều }d)\). Chiều có phương sai lớn nhất đảm bảo split phân chia dữ liệu cân bằng nhất.</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c"><strong>Split tại median:</strong> điểm trung vị → hai nửa bằng nhau → cây cân bằng → độ sâu \(\mathcal{O}(\log N)\).</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c"><strong>Đệ quy:</strong> mỗi node con lại áp dụng lại hai bước trên trên tập con của mình, xoay vòng qua các chiều.</div></div>
+<div class="fbox no-top-radius" style="text-align:left;padding:.9rem 1.4rem">
+<pre style="font-family:monospace;font-size:.78rem;line-height:1.75">
+  Không gian 2D ban đầu (6 điểm):
+  ┌──────────────────────────────┐
+  │  B         A                 │  ← split d=x tại x=5 (median)
+  │         │                   │
+  │    C    │  D     F          │
+  │         │                   │
+  │      E  │                   │
+  └──────────────────────────────┘
+            x=5
+
+  Sau split:   Node gốc [x ≤ 5 | x > 5]
+               ├── Trái {B, C, E}: split d=y tại y=median
+               └── Phải {A, D, F}: split d=y tại y=median</pre>
+</div>
+<p>Kết quả: không gian bị chia nhỏ thành các hình chữ nhật (hyperrectangles). Mỗi leaf node chứa một tập nhỏ điểm.</p>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-search"></i> Pha truy vấn (Query): đi xuống + backtrack với điều kiện cắt tỉa</summary>
+<div class="dc">
+<div class="step"><div class="step-n">1</div><div class="step-c"><strong>Descend:</strong> từ gốc, đi theo nhánh mà query point \(q\) thuộc về → đến leaf. Lấy điểm trong leaf làm ứng viên ban đầu, đặt \(r = d(q, \text{ứng viên tốt nhất})\).</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c"><strong>Backtrack:</strong> quay lên từng node tổ tiên, kiểm tra nhánh <em>chưa đi</em>.</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c"><strong>Điều kiện cắt tỉa (quan trọng nhất):</strong> \(d(q, \text{split\_hyperplane}) > r\) → hình cầu bán kính \(r\) quanh \(q\) KHÔNG giao với nửa không gian kia → <strong>bỏ qua toàn bộ nhánh đó</strong>. Ngược lại: phải đi vào kiểm tra.</div></div>
+<div class="insight" style="margin-top:.6rem">
+  <div class="insight-title"><i class="fas fa-cut"></i> Tại sao điều kiện này đúng?</div>
+  <p>Mọi điểm trong nhánh bị bỏ qua đều nằm trong nửa không gian cách query ít nhất \(d(q, \text{hyperplane})\). Nếu khoảng cách này đã &gt; \(r\), tất cả chúng đều xa hơn ứng viên hiện tại → không thể cải thiện kết quả → bỏ qua an toàn.</p>
+</div>
 </div>
 </details>
 
 <details>
-<summary><i class="fas fa-circle"></i> Ball-Tree — Cây phân hoạch bằng hình cầu</summary>
+<summary><i class="fas fa-skull-crossbones"></i> Khi nào KD-Tree KHÔNG hiệu quả? — Curse of Dimensionality</summary>
 <div class="dc">
-<p>Thay vì chia theo siêu phẳng axis-aligned (KD-Tree), Ball-Tree bao mỗi cụm trong một hình cầu (hypersphere). Khi query, loại cả cụm nếu khoảng cách từ query đến mặt cầu đã lớn hơn khoảng cách ứng viên tốt nhất hiện tại → hiệu quả hơn KD-Tree ở không gian chiều cao.</p>
+<p>Khi D tăng, hypersphere bán kính \(r\) quanh query point bắt đầu cắt qua <em>tất cả</em> các hyperrectangle → điều kiện cắt tỉa luôn thất bại → thuật toán phải visit gần như mọi node → chi phí tiến gần về \(\mathcal{O}(N \cdot D)\).</p>
+<div class="key-eq">
+  \[\text{KD-Tree hiệu quả khi } D < \log_2 N \quad \text{(rule of thumb: } D < 20 \text{)}\]
+</div>
+<p><strong>Cơ chế:</strong> trong D chiều, để đảm bảo hypersphere KHÔNG cắt một hyperrectangle, cần r đủ nhỏ so với kích thước hyperrectangle. Nhưng volume hyperrectangle co lại theo hàm mũ \(2^{-D}\) (mỗi chiều bị chia đôi) trong khi volume hypersphere co chậm hơn → hypersphere "tràn ra" khắp nơi.</p>
+<div class="warn-box">
+  <div class="warn-title"><i class="fas fa-exclamation-triangle"></i> Practical guideline</div>
+  <p>D ≤ 20: dùng KD-Tree. 20 &lt; D ≤ 100: dùng Ball-Tree. D &gt; 100: Brute-force với tối ưu BLAS thường nhanh ngang ngửa, vì overhead backtrack của tree không còn bù được.</p>
+</div>
 </div>
 </details>
 
-<div class="s-title">8. Hành vi của K — Phân tích Bias-Variance đầy đủ</div>
+<div class="ss-title">6.4 Ball-Tree — Phân hoạch bằng hình cầu (Hypersphere)</div>
+
+<details>
+<summary><i class="fas fa-circle"></i> Ý tưởng và điều kiện cắt tỉa của Ball-Tree</summary>
+<div class="dc">
+<p>Thay vì chia bằng siêu phẳng axis-aligned (KD-Tree), Ball-Tree bao mỗi tập con điểm bằng hình cầu nhỏ nhất (minimal enclosing ball) với tâm \(c\) và bán kính \(\rho\).</p>
+<div class="key-eq">
+  \[\text{Pruning condition: } d(q, c) - \rho > r_{\text{best}} \Rightarrow \text{bỏ qua toàn bộ ball này}\]
+</div>
+<p><strong>Tại sao Ball-Tree tốt hơn KD-Tree ở D cao?</strong> Hình cầu là bao lồi "chặt" hơn hình chữ nhật đối với cụm điểm co cụm (clustered data). Hyperrectangle của KD-Tree thường rất rộng (có "góc thừa"), dẫn đến hypersphere query dễ cắt vào → ít cắt tỉa hơn. Hình cầu ôm sát cụm dữ liệu → điều kiện cắt tỉa mạnh hơn.</p>
+<div class="two-col">
+  <div class="col-card">
+    <h4>KD-Tree</h4>
+    <ul>
+      <li>Biên phân hoạch: siêu phẳng axis-aligned</li>
+      <li>Tốt khi D thấp (&lt; 20)</li>
+      <li>Build nhanh hơn</li>
+      <li>Dữ liệu phân bố đều theo trục</li>
+    </ul>
+  </div>
+  <div class="col-card">
+    <h4>Ball-Tree</h4>
+    <ul>
+      <li>Biên phân hoạch: hình cầu</li>
+      <li>Tốt hơn khi D vừa (20–100)</li>
+      <li>Build chậm hơn nhưng query hiệu quả hơn</li>
+      <li>Dữ liệu co cụm theo bất kỳ hướng nào</li>
+    </ul>
+  </div>
+</div>
+</div>
+</details>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 7 — Hành vi K (deep analysis)
+══════════════════════════════════════════════ -->
+<div class="s-title">7. Hành vi siêu tham số K — Phân tích Bias-Variance sâu</div>
+
+<div class="ss-title">7.1 Mental model: K như một "núm chỉnh độ mịn" (Smoothness Dial)</div>
+
+<div class="analogy">
+  <div class="analogy-title"><i class="fas fa-camera"></i> Analogy — Camera lấy nét</div>
+  <p><strong>K=1:</strong> Lấy nét hoàn toàn sắc nét — thấy từng hạt nhiễu, từng điểm ngoại lệ. <strong>K=N:</strong> Blur hoàn toàn — mất toàn bộ chi tiết, chỉ thấy "màu nền" (lớp đa số). <strong>K tối ưu:</strong> Đủ mịn để triệt tiêu nhiễu, đủ sắc để giữ signal thật.</p>
+  <p>Tăng K = tăng "bán kính vùng ảnh hưởng" → biên quyết định mượt dần, "đảo" nhỏ bị nuốt vào vùng lớn hơn.</p>
+</div>
+
+<div class="ss-title">7.2 K = 1: Training Error = 0 — Chứng minh và hệ quả</div>
+
+<div class="insight">
+  <div class="insight-title"><i class="fas fa-microscope"></i> Tại sao Training Error = 0 tại K=1?</div>
+  <p><strong>Lập luận:</strong> Với K=1, để dự đoán điểm huấn luyện \(x_i\), ta tìm nearest neighbor của \(x_i\) trong tập huấn luyện. Khoảng cách \(d(x_i, x_i) = 0\) — chính nó luôn là điểm gần nhất. Vậy neighbor duy nhất là \(x_i\) với nhãn \(y_i\) → predict \(y_i\) → luôn đúng. Kết quả: <strong>Training Error = 0 cho MỌI tập dữ liệu khi K=1</strong>.</p>
+  <p><strong>Hệ quả quan trọng:</strong> Training Error = 0 <em>không</em> có nghĩa là mô hình tốt. Đây là dấu hiệu cổ điển của overfitting — mô hình "thuộc lòng" training data kể cả nhiễu.</p>
+</div>
+
+<p><strong>Decision boundary tại K=1:</strong> Biên quyết định là sơ đồ Voronoi (Voronoi diagram / Thiessen polygons). Mỗi vùng Voronoi của điểm \(x_i\) là tập tất cả điểm \(q\) thỏa \(d(q, x_i) < d(q, x_j) \;\forall j \neq i\). Biên giữa hai vùng là đường thẳng vuông góc phân giác nối \(x_i\) và \(x_j\). Với dữ liệu nhiều điểm: biên rất gấp khúc, phức tạp, "ôm" từng điểm.</p>
+
+<div class="ss-title">7.3 K = N: Degenerates to Majority Class — Chứng minh chặt chẽ</div>
+
+<div class="insight">
+  <div class="insight-title"><i class="fas fa-microscope"></i> Tại sao K=N luôn predict Majority Class?</div>
+  <p><strong>Lập luận:</strong> Với K=N, bất kỳ query \(q\) nào — dù nằm ở đâu trong không gian feature — đều lấy <em>tất cả N điểm huấn luyện</em> làm hàng xóm. Vote: lớp A nhận \(n_A\) phiếu, lớp B nhận \(n_B\) phiếu. Nếu \(n_A > n_B\): <strong>luôn predict A</strong>, bất kể \(q\) đứng ở đâu. Vị trí của \(q\) hoàn toàn không ảnh hưởng đến kết quả.</p>
+  <p><strong>Kết luận:</strong> Biên quyết định biến mất — toàn bộ không gian thuộc về một lớp duy nhất.</p>
+</div>
+
+<div class="flabel">Training Error tại K=N</div>
+<div class="fbox">
+\[ \text{Training Error}_{K=N} = 1 - \max_c P(c) = \frac{n_{\text{minority}}}{N} \]
+</div>
+<p><strong>Ví dụ cụ thể:</strong> Tập 100 điểm — 60 Class A (majority), 40 Class B (minority). Với K=100: mọi điểm được predict là A. 60 điểm A → đúng. 40 điểm B → sai. Training Error = 40/100 = <strong>40%</strong>. Đây là con số lớn, nhưng cũng chính là "baseline" của một classifier ngây thơ (majority class classifier).</p>
+
+<div class="warn-box">
+  <div class="warn-title"><i class="fas fa-exclamation-triangle"></i> Sai lầm phổ biến trong thi</div>
+  <p>Nhiều người nhầm Training Error tại K=N = 0 (vì nghĩ "dùng toàn bộ data nên predict tốt"). <strong>Sai.</strong> K=N predict đúng đến <em>mức bằng phẳng</em> (flat prediction), và vì tập huấn luyện có cả lớp thiểu số, Training Error = tỷ lệ lớp thiểu số ≠ 0.</p>
+</div>
+
+<div class="ss-title">7.4 Tiến trình biên quyết định từ K=1 đến K=N</div>
+
+<div class="fbox no-top-radius" style="text-align:left;padding:1rem 1.5rem">
+<pre style="font-family:monospace;font-size:.79rem;line-height:1.9">
+  K=1 (Voronoi, phức tạp tối đa)
+  ┌──────────────────────────────┐
+  │ ●A│●A      │  ●B  │●B       │ ← Biên bám sát từng điểm.
+  │   │  ●B    │       │        │   Có "đảo" nhỏ của lớp B
+  │   │    ●A  │ ●A   ●B       │   giữa vùng lớp A → dấu hiệu
+  └──────────────────────────────┘   overfit noise
+
+  K=√N (cân bằng tốt)
+  ┌──────────────────────────────┐
+  │ ●A  ●A            ●B  ●B   │ ← Biên mượt. "Đảo" nhỏ bị
+  │          ╱‾‾‾‾╲            │   nuốt vào vùng đa số xung
+  │   ●A  ●A╱       ╲●B  ●B   │   quanh. Tổng quát hóa tốt.
+  └──────────────────────────────┘
+
+  K=N (không có biên, một màu)
+  ┌──────────────────────────────┐
+  │  A   A   A   A   A   A   A  │ ← Toàn bộ không gian = A
+  │  A   A   A   A   A   A   A  │   (majority class). Không
+  │  A   A   A   A   A   A   A  │   còn tính "phân loại" nữa.
+  └──────────────────────────────┘</pre>
+</div>
+
+<div class="ss-title">7.5 Đường cong Training/Test Error và Bias-Variance Tradeoff</div>
 
 <table class="tbl">
-<thead><tr><th>Giá trị K</th><th>Biên quyết định</th><th>Training Error</th><th>Hiện tượng</th></tr></thead>
+<thead><tr><th>Giá trị K</th><th>Biên quyết định</th><th>Training Error</th><th>Bias</th><th>Variance</th><th>Hiện tượng</th></tr></thead>
 <tbody>
-<tr><td>K = 1</td><td>Rất phức tạp, bám sát từng điểm — Voronoi cells</td><td>0% (tự predict đúng chính mình)</td><td>Overfit — Low Bias, High Variance</td></tr>
-<tr><td>K nhỏ (3–7)</td><td>Khá phức tạp nhưng bắt đầu mượt</td><td>Thấp</td><td>Cân bằng tốt</td></tr>
-<tr><td>K = √N</td><td>Mượt, tổng quát tốt (rule of thumb)</td><td>Thấp</td><td>Thường là vùng tối ưu</td></tr>
-<tr><td>K → N</td><td>Ngày càng đơn giản, mờ dần</td><td>Tăng dần</td><td>Underfit tăng dần</td></tr>
-<tr><td>K = N</td><td>Biến mất — toàn bộ không gian về 1 lớp (Majority Class)</td><td>= Tỷ lệ lớp thiểu số</td><td>Underfit cực đại — High Bias, Low Variance</td></tr>
+<tr><td><strong>K = 1</strong></td><td>Voronoi — cực kỳ phức tạp</td><td><strong>0%</strong> (tự predict chính mình)</td><td>Thấp</td><td>Cao</td><td>Overfit</td></tr>
+<tr><td>K nhỏ (3–7)</td><td>Phức tạp, "đảo" nhỏ dần</td><td>Thấp</td><td>Thấp</td><td>Vừa</td><td>Gần tối ưu</td></tr>
+<tr style="background:#f0fdf4"><td><strong>K ≈ √N</strong></td><td>Mượt, tổng quát</td><td>Thấp</td><td>Vừa</td><td>Thấp</td><td><strong>Thường tối ưu</strong></td></tr>
+<tr><td>K → N</td><td>Đơn giản dần, mờ dần</td><td>Tăng dần</td><td>Cao dần</td><td>Giảm dần</td><td>Underfit tăng</td></tr>
+<tr><td><strong>K = N</strong></td><td>Biến mất — 1 lớp duy nhất</td><td><strong>= minority%</strong></td><td>Cực đại</td><td>~0</td><td>Underfit cực đại</td></tr>
 </tbody>
 </table>
 
-<div class="alert al-red">
-  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> K=N: Phân tích Training Error chi tiết</div>
-  <p>Khi K=N, mọi điểm đều dùng <em>toàn bộ N điểm huấn luyện</em> làm hàng xóm → bỏ phiếu đa số trên toàn bộ tập → <strong>luôn predict Majority Class cho mọi input</strong>.</p>
-  <p><strong>Ví dụ:</strong> 60 điểm Class A, 40 điểm Class B (N=100). Với K=100: mọi điểm predict Class A. Training Error = 40/100 = 40% (40 điểm Class B bị predict sai). <strong>Training Error ≠ 0</strong> trừ khi tất cả data thuộc cùng 1 lớp.</p>
-  <p><strong>Training Error tại K=N = tỷ lệ lớp thiểu số</strong> = \(1 - \max_c P(c)\).</p>
-</div>
-
 <details open>
-<summary><i class="fas fa-chart-line"></i> Đường cong Training/Test Error theo K</summary>
+<summary><i class="fas fa-chart-line"></i> Đường cong lỗi theo K — Đọc hiểu từng vùng</summary>
 <div class="dc">
 <div class="fbox no-top-radius" style="text-align:left;padding:1rem 1.5rem">
-<pre style="font-family:monospace;font-size:.8rem;line-height:1.8">Error (%)
-    |
-High|  /‾‾‾‾‾‾‾‾‾ Test Error ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\
-    | /                                                 \
-    |/               ___________________________________/
-    |            ___/ Training Error (không giảm theo K)
- Low|_____________________________________________________
-    +--------------------------------------------------→ K
-    1         √N                                      N
-    ^           ^                                     ^
- Overfit    Optimal K                             Underfit
-(Train=0)  (Elbow point)                     (Train=minority%)</pre>
+<pre style="font-family:monospace;font-size:.79rem;line-height:1.9">
+Error (%)
+    │
+    │● K=1: Train=0, Test cao (variance cao = nhạy với noise)
+ Hi │╲
+    │ ╲  Test Error    ╭─────────── high bias plateau
+    │  ╲     ────────╮╱ (tiệm cận minority% = K=N baseline)
+    │   ╲  ╭─────────╯
+    │    ╲╱
+    │     ╲___Training Error (tăng đơn điệu theo K)
+ Lo │          ═══════════════════════════════════════
+    └──────────────────────────────────────────────→ K
+    1    3   √N              …                     N
+    ↑         ↑                                    ↑
+ Train=0   Elbow:                              Train = minority%
+ Test↑↑   min Test Error                      Test ≈ Train ≈ minority%
+           (optimal K)</pre>
 </div>
-<p>Tại K=1: Training Error = 0 (mỗi điểm là nearest neighbor của chính nó). Test Error cao do variance cao. Cân bằng tốt nhất thường gần √N.</p>
+<div class="insight">
+  <div class="insight-title"><i class="fas fa-lightbulb"></i> Ba điểm cần nhớ để suy luận</div>
+  <ul style="margin-top:.4rem">
+    <li><strong>Training Error tăng đơn điệu</strong> khi K tăng — do K lớn hơn đưa vào hàng xóm của các lớp khác → một số training point bị classify sai.</li>
+    <li><strong>Test Error hình chữ U</strong> — K nhỏ: variance cao; K lớn: bias cao. Điểm tối ưu ở "elbow" — nơi variance và bias cân bằng.</li>
+    <li><strong>Tại K=N:</strong> Train Error = Test Error ≈ minority% — cả hai hội tụ về mức lỗi của "naive baseline" (luôn đoán majority class).</li>
+  </ul>
+</div>
 </div>
 </details>
+
+<div class="ss-title">7.6 Chọn K tối ưu — Cách tư duy thực tế</div>
+
+<div class="step"><div class="step-n">1</div><div class="step-c"><strong>Rule of thumb khởi đầu:</strong> \(K = \lfloor\sqrt{N}\rfloor\). Ví dụ N=100 → thử K=10. Ưu tiên K lẻ để tránh tie (bỏ phiếu hòa).</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c"><strong>Grid search + Cross-validation:</strong> thử K = 1, 3, 5, ..., 2⌊√N⌋+1. Với mỗi K, đo lỗi trên validation set (hoặc dùng k-fold CV). Chọn K có lỗi CV thấp nhất.</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c"><strong>Kiểm tra hình dạng đường cong:</strong> nếu Test Error giảm đều đến điểm elbow rồi tăng trở lại → K ở elbow là tối ưu. Nếu đường cong phẳng → mô hình không nhạy cảm với K trong vùng đó.</div></div>
+<div class="step"><div class="step-n">4</div><div class="step-c"><strong>Không bao giờ dùng K=1 trong sản xuất:</strong> một điểm outlier trong training set tạo ra một "vùng lãnh thổ" nhỏ sai → gây lỗi cục bộ trên test set.</div></div>
 
 <div class="s-title">9. Ví dụ tính toán đầy đủ — KNN Classification</div>
 
