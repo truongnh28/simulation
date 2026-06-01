@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 0 – Khung Tư Duy Giải Quyết Vấn Đề | GK5009</title>
+<style>
+  :root {
+    --primary: #2e1f5e;
+    --secondary: #5c3bc7;
+    --accent: #ff6b35;
+    --accent2: #f9c74f;
+    --light: #f0edfb;
+    --lighter: #faf9ff;
+    --border: #c9bef0;
+    --text: #1a1a2e;
+    --muted: #5a5a7a;
+    --white: #ffffff;
+    --success: #27ae60;
+    --info: #2980b9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    background: #f5f3ff;
+    color: var(--text);
+    line-height: 1.75;
+    font-size: 15px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, var(--primary) 0%, #4a2d8a 60%, var(--secondary) 100%);
+    color: white;
+    padding: 48px 40px 36px;
+    border-bottom: 4px solid var(--accent);
+  }
+  header .tag {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  header h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  header .subtitle {
+    font-size: 1.1rem;
+    opacity: 0.88;
+    margin-bottom: 16px;
+  }
+  header .meta {
+    display: flex;
+    gap: 28px;
+    font-size: 0.85rem;
+    opacity: 0.75;
+    flex-wrap: wrap;
+  }
+  header .meta span::before { content: "• "; opacity: 0.5; }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--primary);
+    padding: 0 40px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    border-bottom: 3px solid var(--secondary);
+  }
+  nav a {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    padding: 14px 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -3px;
+    transition: all 0.2s;
+  }
+  nav a:hover { color: white; border-bottom-color: var(--accent); }
+
+  /* ── MAIN ── */
+  main { max-width: 1100px; margin: 0 auto; padding: 40px 30px; }
+
+  /* ── SECTION ── */
+  .section {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 36px;
+    box-shadow: 0 2px 12px rgba(46,31,94,0.08);
+    overflow: hidden;
+  }
+  .section-header {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 22px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .section-number {
+    width: 44px; height: 44px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; font-weight: 900; flex-shrink: 0;
+  }
+  .section-header h2 { font-size: 1.35rem; font-weight: 800; }
+  .section-header .en { font-size: 0.85rem; opacity: 0.78; margin-top: 2px; font-style: italic; }
+  .section-body { padding: 32px; }
+
+  /* ── TYPOGRAPHY ── */
+  h3 {
+    font-size: 1.15rem;
+    color: var(--primary);
+    font-weight: 700;
+    margin: 28px 0 12px;
+    padding-left: 12px;
+    border-left: 4px solid var(--accent);
+  }
+  h4 {
+    font-size: 1rem;
+    color: var(--secondary);
+    font-weight: 700;
+    margin: 20px 0 8px;
+  }
+  p { margin-bottom: 14px; }
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { margin-bottom: 6px; }
+  strong { color: var(--primary); }
+
+  /* ── AGENDA BOX ── */
+  .agenda-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .agenda-card {
+    background: var(--light);
+    border-radius: 10px;
+    padding: 20px 16px;
+    text-align: center;
+    border-top: 4px solid var(--secondary);
+  }
+  .agenda-card .num {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .agenda-card .name {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 0.95rem;
+  }
+  .agenda-card .en {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ── SCIENCE CATEGORIES ── */
+  .science-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 20px 0;
+  }
+  .science-card {
+    border-radius: 10px;
+    padding: 24px;
+    border: 2px solid transparent;
+  }
+  .science-card.truth {
+    background: #e8f4fd;
+    border-color: #2980b9;
+  }
+  .science-card.utility {
+    background: #fef9e7;
+    border-color: #f39c12;
+  }
+  .science-card .sc-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .science-card.truth .sc-label { color: #2980b9; }
+  .science-card.utility .sc-label { color: #e67e22; }
+  .science-card h4 { margin-top: 0; font-size: 1.1rem; }
+  .science-card.truth h4 { color: #1a5276; }
+  .science-card.utility h4 { color: #7d4e00; }
+  .science-card p { font-size: 0.9rem; margin-bottom: 0; }
+
+  .ref-list {
+    background: var(--light);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+  .ref-list li {
+    font-size: 0.88rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ── INQUIRY LOGIC TABLE ── */
+  .logic-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 0.9rem;
+  }
+  .logic-table thead tr {
+    background: var(--primary);
+    color: white;
+  }
+  .logic-table th { padding: 12px 16px; text-align: left; font-weight: 700; }
+  .logic-table td { padding: 10px 16px; border-bottom: 1px solid #e0d9f5; }
+  .logic-table tr:nth-child(even) { background: var(--light); }
+  .logic-table .ded { color: #2980b9; font-weight: 700; }
+  .logic-table .ind { color: var(--success); font-weight: 700; }
+  .logic-table .abd { color: var(--accent); font-weight: 700; }
+
+  /* ── THREE TRADITIONS ── */
+  .tradition-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin: 20px 0;
+  }
+  .tradition-card {
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+  }
+  .tradition-card.brit { background: #eaf2ff; border-top: 4px solid #2980b9; }
+  .tradition-card.fren { background: #fef5fb; border-top: 4px solid #8e44ad; }
+  .tradition-card.amer { background: #fff5ec; border-top: 4px solid var(--accent); }
+  .tradition-card .country { font-size: 0.75rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+  .tradition-card.brit .country { color: #2980b9; }
+  .tradition-card.fren .country { color: #8e44ad; }
+  .tradition-card.amer .country { color: var(--accent); }
+  .tradition-card .mode { font-size: 1.3rem; font-weight: 900; margin-bottom: 4px; }
+  .tradition-card .method { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+  .tradition-card p { font-size: 0.85rem; margin-bottom: 0; }
+
+  /* ── BEAN EXAMPLES ── */
+  .bean-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .bean-card {
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 0.88rem;
+  }
+  .bean-card.ded { background: #eaf2ff; border: 2px solid #2980b9; }
+  .bean-card.ind { background: #eafaf1; border: 2px solid var(--success); }
+  .bean-card.abd { background: #fff5ec; border: 2px solid var(--accent); }
+  .bean-card .bc-label { font-weight: 800; font-size: 0.82rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+  .bean-card.ded .bc-label { color: #2980b9; }
+  .bean-card.ind .bc-label { color: var(--success); }
+  .bean-card.abd .bc-label { color: var(--accent); }
+  .bean-step { padding: 6px 10px; border-radius: 6px; margin-bottom: 6px; font-size: 0.85rem; }
+  .bean-step strong { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── SYSTEMS THINKING ── */
+  .sys-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 20px 0;
+  }
+  .sys-col { padding: 0; }
+  .sys-col-head {
+    padding: 14px 20px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    text-align: center;
+    color: white;
+  }
+  .sys-col:first-child .sys-col-head { background: #5d6d7e; }
+  .sys-col:last-child .sys-col-head { background: var(--secondary); }
+  .sys-item {
+    padding: 10px 20px;
+    font-size: 0.88rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .sys-col:first-child .sys-item { background: #f7f8f9; }
+  .sys-col:last-child .sys-item { background: #f0edfb; }
+  .sys-divider {
+    background: var(--primary);
+    color: white;
+    text-align: center;
+    padding: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    grid-column: 1 / -1;
+  }
+
+  /* ── TOP PERSPECTIVES ── */
+  .top-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .top-card {
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+  }
+  .top-card.tech { background: #e8f8f5; border-top: 4px solid #16a085; }
+  .top-card.org { background: #eaf2ff; border-top: 4px solid #2980b9; }
+  .top-card.per { background: #fdedec; border-top: 4px solid #e74c3c; }
+  .top-card .letter { font-size: 2.5rem; font-weight: 900; margin-bottom: 6px; }
+  .top-card.tech .letter { color: #16a085; }
+  .top-card.org .letter { color: #2980b9; }
+  .top-card.per .letter { color: #e74c3c; }
+  .top-card .top-name { font-weight: 700; margin-bottom: 8px; }
+  .top-card p { font-size: 0.85rem; margin-bottom: 0; }
+
+  /* ── CASE METHOD ── */
+  .lecture-case {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 20px 0;
+  }
+  .lc-card {
+    border-radius: 10px;
+    padding: 22px;
+  }
+  .lc-card.lecture { background: #f7f8f9; border: 2px solid #95a5a6; }
+  .lc-card.case { background: #f0edfb; border: 2px solid var(--secondary); }
+  .lc-card .lc-label { font-size: 0.75rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+  .lc-card.lecture .lc-label { color: #7f8c8d; }
+  .lc-card.case .lc-label { color: var(--secondary); }
+  .lc-card h4 { margin-top: 0; }
+
+  /* ── CASE STEPS TIMELINE ── */
+  .case-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 24px 0;
+    position: relative;
+  }
+  .case-steps::before {
+    content: '';
+    position: absolute;
+    left: 36px;
+    top: 20px;
+    bottom: 20px;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--secondary));
+  }
+  .case-step {
+    display: flex;
+    gap: 20px;
+    padding: 20px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .step-num {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-weight: 900;
+    color: white;
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .step-num .cn { font-size: 0.7rem; opacity: 0.85; }
+  .step-num .cnum { font-size: 1.3rem; line-height: 1; }
+  .step-num .time { font-size: 0.65rem; opacity: 0.8; }
+  .step-num.c1 { background: #e74c3c; }
+  .step-num.c2 { background: #e67e22; }
+  .step-num.c3 { background: #f39c12; }
+  .step-num.c4 { background: var(--success); }
+  .step-num.c5 { background: #2980b9; }
+  .step-body {
+    flex: 1;
+    background: var(--light);
+    border-radius: 10px;
+    padding: 20px 24px;
+    border-left: 4px solid transparent;
+  }
+  .case-step:nth-child(1) .step-body { border-left-color: #e74c3c; }
+  .case-step:nth-child(2) .step-body { border-left-color: #e67e22; }
+  .case-step:nth-child(3) .step-body { border-left-color: #f39c12; }
+  .case-step:nth-child(4) .step-body { border-left-color: var(--success); }
+  .case-step:nth-child(5) .step-body { border-left-color: #2980b9; }
+  .step-body h4 { color: var(--primary); margin-top: 0; font-size: 1.05rem; }
+  .step-body .key-q {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 0.88rem;
+    font-style: italic;
+    color: var(--secondary);
+    font-weight: 600;
+  }
+  .step-body .key-q::before { content: "🎯 Câu hỏi chủ đạo: "; }
+
+  /* ── TIME BUDGET ── */
+  .time-bar {
+    display: flex;
+    gap: 4px;
+    margin: 20px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 48px;
+  }
+  .time-seg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: white;
+    text-align: center;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .time-seg .ts-name { font-size: 0.65rem; opacity: 0.9; }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 18px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .callout.info { background: #e8f4fd; border-left: 4px solid #2980b9; }
+  .callout.warn { background: #fef9e7; border-left: 4px solid #f39c12; }
+  .callout.key { background: #f0edfb; border-left: 4px solid var(--secondary); }
+  .callout.tip { background: #eafaf1; border-left: 4px solid var(--success); }
+  .callout-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+  .callout-body strong { display: block; margin-bottom: 4px; color: var(--primary); }
+  .callout-body p { margin-bottom: 0; font-size: 0.92rem; }
+
+  /* ── HIGHLIGHT BOX ── */
+  .highlight-box {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border-radius: 12px;
+    padding: 26px 30px;
+    margin: 24px 0;
+    text-align: center;
+  }
+  .highlight-box .big { font-size: 1.4rem; font-weight: 900; margin-bottom: 8px; }
+  .highlight-box p { opacity: 0.9; margin-bottom: 0; font-size: 0.95rem; }
+
+  /* ── QUOTE ── */
+  blockquote {
+    border-left: 5px solid var(--accent);
+    background: var(--light);
+    padding: 18px 22px;
+    border-radius: 0 10px 10px 0;
+    margin: 18px 0;
+    font-style: italic;
+    color: var(--primary);
+  }
+  blockquote cite { font-style: normal; font-size: 0.82rem; color: var(--muted); display: block; margin-top: 8px; }
+
+  /* ── TRAPS ── */
+  .trap-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .trap-card {
+    background: #fff5f5;
+    border: 2px solid #e74c3c;
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .trap-card .trap-num {
+    background: #e74c3c;
+    color: white;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 800;
+    float: right;
+    margin-left: 8px;
+  }
+  .trap-card h4 { color: #c0392b; margin-top: 0; font-size: 0.95rem; }
+  .trap-card p { font-size: 0.88rem; margin-bottom: 0; }
+
+  /* ── KEY CONCEPTS TABLE ── */
+  .concepts-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 0.9rem;
+  }
+  .concepts-table thead tr { background: var(--primary); color: white; }
+  .concepts-table th { padding: 12px 16px; text-align: left; }
+  .concepts-table td { padding: 10px 16px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .concepts-table tr:nth-child(even) { background: var(--light); }
+  .concepts-table .concept { font-weight: 700; color: var(--secondary); }
+  .concepts-table .author { font-size: 0.8rem; color: var(--muted); font-style: italic; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--primary);
+    color: rgba(255,255,255,0.75);
+    text-align: center;
+    padding: 24px 40px;
+    font-size: 0.82rem;
+    margin-top: 20px;
+  }
+  footer strong { color: white; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .agenda-grid, .tradition-grid, .bean-grid, .top-grid { grid-template-columns: 1fr 1fr; }
+    .science-split, .lecture-case, .sys-compare { grid-template-columns: 1fr; }
+    .trap-grid { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.6rem; }
+    main { padding: 24px 16px; }
+    .section-body { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tag">GK5009 — Quản lý & Lãnh đạo</div>
+  <h1>Unit 0: Khung Tư Duy Giải Quyết Vấn Đề</h1>
+  <div class="subtitle">Introduction to Problem Solving Framework</div>
+  <div class="meta">
+    <span>Nguyen Manh Tuan (2023)</span>
+    <span>Khoa học · Nghiên cứu · Tư duy hệ thống · Phương pháp tình huống</span>
+    <span>22 slides — Tài liệu nền tảng</span>
+  </div>
+</header>
+
+<nav>
+  <a href="#overview">1. Tổng quan</a>
+  <a href="#analysis">2. Phân tích chuyên sâu</a>
+  <a href="#models">3. Mô hình & Công thức</a>
+  <a href="#examples">4. Ví dụ thực tiễn</a>
+  <a href="#review">5. Ghi chú ôn tập</a>
+</nav>
+
+<main>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION 1: TỔNG QUAN -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section class="section" id="overview">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div>
+        <h2>Tổng Quan / Overview</h2>
+        <div class="en">What this unit covers and why it matters</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <p>Unit 0 là tài liệu nhập môn định hướng tư duy cho toàn bộ khóa học GK5009. Thay vì dạy một kỹ năng cụ thể, unit này xây dựng <strong>nền tảng nhận thức luận (epistemological foundation)</strong> — tức là cách chúng ta biết điều gì, cách ta lý luận, cách ta học từ các tình huống phức tạp. Đây là công cụ tư duy trước khi tiếp cận bất kỳ case study hay lý thuyết quản lý nào.</p>
+
+      <div class="agenda-grid">
+        <div class="agenda-card">
+          <span class="num">1</span>
+          <div class="name">Science</div>
+          <div class="en">Khoa học là gì? Các loại khoa học</div>
+        </div>
+        <div class="agenda-card">
+          <span class="num">2</span>
+          <div class="name">Inquiry / Research</div>
+          <div class="en">Suy diễn, quy nạp, giả thuyết</div>
+        </div>
+        <div class="agenda-card">
+          <span class="num">3</span>
+          <div class="name">Systems Thinking</div>
+          <div class="en">Tư duy hệ thống vs. tư duy phân tích</div>
+        </div>
+        <div class="agenda-card">
+          <span class="num">4</span>
+          <div class="name">Case Study Method</div>
+          <div class="en">5 bước giải quyết tình huống (Ellet 2007)</div>
+        </div>
+      </div>
+
+      <div class="callout key">
+        <div class="callout-icon">🎯</div>
+        <div class="callout-body">
+          <strong>Mục đích cốt lõi của Unit 0</strong>
+          <p>Trang bị cho học viên <em>cách nhìn</em> trước khi trang bị <em>nội dung</em>. Người học cần hiểu bản chất của tri thức (science), cách suy luận từ bằng chứng (inquiry), cách nhìn nhận hệ thống phức tạp (systems thinking), và cách phân tích tình huống thực (case method) — trước khi áp dụng bất kỳ lý thuyết quản trị nào.</p>
+        </div>
+      </div>
+
+      <h3>Bối cảnh học thuật</h3>
+      <p>Tài liệu này tổng hợp từ nhiều nguồn nền tảng triết học và khoa học quản lý: Mitroff (1974) về xã hội học khoa học, Simon (1969) về "science of the artificial," Checkland & Holwell (1998) về nghiên cứu định tính, Ellet (2007) về phương pháp tình huống. Đây không phải là tài liệu tự chứa — nó là <strong>bản đồ nhận thức</strong> dẫn đường cho mọi bài đọc tiếp theo trong khóa học.</p>
+
+      <h3>Tại sao cần học Unit 0 trước?</h3>
+      <ul>
+        <li><strong>Phá vỡ tư duy thụ động:</strong> Học viên quen với việc <em>nhận</em> kiến thức từ giáo viên; phương pháp tình huống yêu cầu <em>tự tạo ra</em> kiến thức.</li>
+        <li><strong>Rèn luyện tư duy phê phán:</strong> Biết phân biệt deduction / induction / abduction giúp phân tích bằng chứng trong case study chính xác hơn.</li>
+        <li><strong>Tránh bẫy phân tích tuyến tính:</strong> Các vấn đề quản lý thực tế là hệ thống phi tuyến — cần tư duy hệ thống, không chỉ tư duy nguyên nhân-kết quả.</li>
+        <li><strong>Biết cách thuyết phục:</strong> Case method đòi hỏi lập luận có bằng chứng (argumentation), không phải ý kiến cá nhân.</li>
+      </ul>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION 2: PHÂN TÍCH CHUYÊN SÂU -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section class="section" id="analysis">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div>
+        <h2>Phân Tích Chuyên Sâu / In-depth Analysis</h2>
+        <div class="en">Science · Inquiry · Systems Thinking · Case Method</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <!-- SCIENCE -->
+      <h3>Phần I: Science — Khoa học là gì?</h3>
+      <p>Theo Mitroff (1974), "science" không phải là một khái niệm đơn lẻ mà là một hiện tượng đa chiều có thể nhìn từ ba góc độ:</p>
+      <ul>
+        <li><strong>Science as a body of knowledge:</strong> Khoa học là tập hợp tri thức tích lũy — các lý thuyết, dữ liệu, quy luật đã được kiểm chứng.</li>
+        <li><strong>Science as what scientists do:</strong> Khoa học là hoạt động — thực nghiệm, quan sát, phân tích, công bố. Đây là <em>logic của khoa học</em>.</li>
+        <li><strong>Science as a social institution:</strong> Khoa học là cộng đồng người có chuẩn mực, giá trị, tranh luận — đây là <em>xã hội học của khoa học</em>. Ai quyết định cái gì là "đúng"? Thông qua cơ chế xã hội nào?</li>
+      </ul>
+
+      <h4>Hai loại khoa học cơ bản</h4>
+      <p>Các học giả từ nhiều ngành đã đề xuất dichotomy (lưỡng phân) tương tự nhau để phân biệt hai loại khoa học với hai mục tiêu khác nhau:</p>
+
+      <div class="science-split">
+        <div class="science-card truth">
+          <div class="sc-label">Mục tiêu: TRUTH (Chân lý)</div>
+          <h4>Behavioral / Explanatory Science</h4>
+          <p>Xây dựng và kiểm chứng các <strong>lý thuyết mô tả, giải thích và dự báo</strong> hiện tượng thế giới thực. Đặt câu hỏi: <em>Điều này xảy ra như thế nào? Tại sao?</em></p>
+          <p style="margin-top: 10px; font-size: 0.82rem; color: #1a5276;">Ví dụ: Nghiên cứu lý thuyết động lực làm việc, xác nhận mô hình lãnh đạo tình huống qua dữ liệu thực nghiệm.</p>
+        </div>
+        <div class="science-card utility">
+          <div class="sc-label">Mục tiêu: UTILITY (Hữu dụng)</div>
+          <h4>Design / Engineering Science</h4>
+          <p>Thiết kế và triển khai <strong>artifacts (công cụ, quy trình, giải pháp)</strong> để giải quyết và cải thiện vấn đề thực tế. Đặt câu hỏi: <em>Chúng ta nên làm gì? Giải pháp nào hiệu quả?</em></p>
+          <p style="margin-top: 10px; font-size: 0.82rem; color: #7d4e00;">Ví dụ: Thiết kế hệ thống đánh giá hiệu suất, xây dựng quy trình đào tạo lãnh đạo.</p>
+        </div>
+      </div>
+
+      <div class="ref-list">
+        <strong style="display:block; margin-bottom:8px; color: var(--primary);">Các nguồn phân loại (phiên bản tương đương nhau):</strong>
+        <ul>
+          <li>natural science vs. <strong>science of the artificial</strong> — Simon (1969)</li>
+          <li>natural vs. <strong>design science</strong> — March & Smith (1995)</li>
+          <li>behavioral vs. <strong>design science</strong> — Hevner et al. (2004)</li>
+          <li>scientific vs. <strong>engineering discipline</strong> — Long & Dowell (1989)</li>
+          <li>explanatory vs. <strong>design sciences</strong> — van Aken (2004)</li>
+        </ul>
+      </div>
+
+      <h4>Churchman's Guarantors of Truth (Singer 1959)</h4>
+      <p>Singer (1959) tổng hợp nhiều truyền thống triết học vào câu hỏi: <em>Điều gì đảm bảo rằng một tuyên bố là "sự thật"?</em> Churchman xác định 5 hệ paradigm (trường phái) chính:</p>
+      <ul>
+        <li><strong>Locke (Empirics):</strong> Sự thật đến từ dữ liệu quan sát, thực nghiệm. Cần đồng thuận của nhiều nhà quan sát độc lập.</li>
+        <li><strong>Leibnitz (Logic):</strong> Sự thật đến từ suy luận logic chặt chẽ, tính nhất quán nội tại của hệ thống.</li>
+        <li><strong>Kant (Explanation/Synthesis):</strong> Sự thật cần cả dữ liệu lẫn framework lý thuyết để giải thích "tại sao."</li>
+        <li><strong>Hegel (Dialectical):</strong> Sự thật nổi lên qua xung đột giữa các quan điểm đối lập (thesis ↔ antithesis → synthesis).</li>
+        <li><strong>Singer (Interdisciplinary):</strong> Sự thật đòi hỏi tất cả các bên liên quan đều có tiếng nói — khoa học liên ngành, đa quan điểm.</li>
+      </ul>
+      <p>Pragmatism (Peirce, 1878) bổ sung: <em>sự thật của một tuyên bố là hậu quả thực tiễn của việc tin vào nó</em> — đây là nền tảng triết học của phương pháp case study.</p>
+
+      <!-- INQUIRY -->
+      <h3>Phần II: Inquiry/Research — Ba Logic Suy Luận</h3>
+      <p>Checkland & Holwell (1998) mô tả inquiry (nghiên cứu) là một cộng đồng hoạt động — không chỉ là cá nhân đơn lẻ. Trong bối cảnh đó, ba truyền thống suy luận lớn của phương Tây cung cấp các công cụ khác nhau để đi từ bằng chứng đến kết luận:</p>
+
+      <div class="tradition-grid">
+        <div class="tradition-card brit">
+          <div class="country">Anh — British Empiricism</div>
+          <div class="mode">INDUCTION</div>
+          <div class="method">Quy nạp</div>
+          <p>Từ quan sát cụ thể → suy ra quy luật chung. Locke, Hume: kiến thức đến từ trải nghiệm cảm giác. <em>Nhìn đủ nhiều trường hợp → rút ra mẫu phổ quát.</em></p>
+        </div>
+        <div class="tradition-card fren">
+          <div class="country">Pháp — Cartesian Rationalism</div>
+          <div class="mode">DEDUCTION</div>
+          <div class="method">Suy diễn</div>
+          <p>Từ tiền đề đã biết → áp dụng quy tắc logic → kết luận tất yếu. Descartes: tri thức chắc chắn đến từ lý trí thuần túy. <em>Nếu quy tắc đúng + trường hợp đúng → kết quả đúng tất yếu.</em></p>
+        </div>
+        <div class="tradition-card amer">
+          <div class="country">Mỹ — Peircean Pragmatism</div>
+          <div class="mode">ABDUCTION</div>
+          <div class="method">Giả thuyết</div>
+          <p>Từ quy tắc và kết quả → suy ra trường hợp có thể. Peirce (1878): cách lý luận sáng tạo nhất — <em>giả thuyết tốt nhất giải thích bằng chứng quan sát được.</em></p>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <div class="callout-icon">📌</div>
+        <div class="callout-body">
+          <strong>Logic of Justification vs. Logic of Discovery</strong>
+          <p>Deduction và Induction chủ yếu thuộc về <em>logic of justification</em> (chứng minh điều đã có). Abduction thuộc về <em>logic of discovery</em> (khám phá điều chưa biết). Case study method dựa nhiều vào abduction: từ triệu chứng (kết quả) và frameworks (quy tắc) → suy luận nguyên nhân (trường hợp).</p>
+        </div>
+      </div>
+
+      <!-- SYSTEMS THINKING -->
+      <h3>Phần III: Systems Thinking — Tư Duy Hệ Thống</h3>
+
+      <blockquote>
+        "Synthesize, don't analyse!"
+        <cite>— Churchman (1971), khẩu hiệu của Systems Thinking</cite>
+      </blockquote>
+
+      <p>Gharajedaghi (2011) giải thích sự khác biệt cốt lõi: <strong>Analysis</strong> (phân tích) tháo rời hệ thống ra từng phần, giải thích từng phần riêng lẻ, rồi cộng lại. <strong>Systems Thinking</strong> đặt hệ thống trong bối cảnh môi trường lớn hơn, nghiên cứu vai trò của nó trong toàn thể. Hai cách tiếp cận tương ứng với hai thời đại:</p>
+
+      <div class="sys-compare">
+        <div class="sys-col">
+          <div class="sys-col-head">🏭 Machine-Age Thinking (Tư duy máy móc)</div>
+          <div class="sys-item">Cách mạng công nghiệp</div>
+          <div class="sys-item">Analysis — phân tích, tháo rời</div>
+          <div class="sys-item">Reductionism — quy về đơn vị nhỏ nhất</div>
+          <div class="sys-item">Quan hệ nhân-quả tuyến tính</div>
+          <div class="sys-item">Determinism — tất định luận</div>
+          <div class="sys-item">Value-free — trung lập giá trị</div>
+          <div class="sys-item">Khoa học tự nhiên (natural science)</div>
+          <div class="sys-item" style="background:#eee; font-style:italic; font-size:0.82rem;">Phù hợp với vật lý, hóa học, kỹ thuật</div>
+        </div>
+        <div class="sys-col">
+          <div class="sys-col-head">🌐 Systems-Age Thinking (Tư duy hệ thống)</div>
+          <div class="sys-item">Hậu cách mạng công nghiệp</div>
+          <div class="sys-item">Synthesis — tổng hợp, kết nối</div>
+          <div class="sys-item">Expansionism — mở rộng ngữ cảnh</div>
+          <div class="sys-item">Quan hệ producer-product (vòng lặp)</div>
+          <div class="sys-item">Free will & choice — tự do lựa chọn</div>
+          <div class="sys-item">Value-full — mang tải giá trị đạo đức</div>
+          <div class="sys-item">Khoa học xã hội (social sciences)</div>
+          <div class="sys-item" style="background:#e8e5fa; font-style:italic; font-size:0.82rem;">Phù hợp với quản lý, lãnh đạo, chính sách</div>
+        </div>
+      </div>
+
+      <p>Checkland (1981): Systems thinking nổi lên như phản ứng trước những <em>thất bại của tư duy phân tích</em> khi áp dụng vào các vấn đề phức tạp thực tế của xã hội. Butterfly Effect và Chaos Theory minh chứng: trong hệ thống phức tạp, nguyên nhân nhỏ có thể tạo ra hậu quả lớn và không đoán trước được.</p>
+
+      <h4>Các khái niệm cốt lõi của Systems Thinking</h4>
+      <ul>
+        <li><strong>Boundary (ranh giới):</strong> Mọi hệ thống đều có ranh giới được tưởng tượng và quyết định bởi người phân tích — đây là điểm khác biệt quan trọng nhất với tư duy khoa học cổ điển (Ackoff, 2000). Chọn ranh giới khác → hiểu vấn đề khác.</li>
+        <li><strong>Purpose (mục đích):</strong> Hệ thống tồn tại vì mục đích — cần xác định mục đích thực sự, không phải mục đích tuyên bố.</li>
+        <li><strong>Stakeholder (các bên liên quan):</strong> Ai bị ảnh hưởng? Ai có quyền lực? Ai có lợi ích xung đột?</li>
+        <li><strong>Process (quy trình):</strong> Hệ thống hoạt động ra sao? Các luồng thông tin, vật chất, quyết định chảy như thế nào?</li>
+        <li><strong>Contradictions (mâu thuẫn):</strong> Trong hệ thống phức tạp, mâu thuẫn là nguồn tri thức, không phải lỗi cần xóa.</li>
+      </ul>
+
+      <h4>Linstone's TOP Perspectives (1984, 1993)</h4>
+      <div class="top-grid">
+        <div class="top-card tech">
+          <div class="letter">T</div>
+          <div class="top-name">Technical</div>
+          <p>Nhìn vấn đề qua lăng kính kỹ thuật, logic, dữ liệu, quy trình. Câu hỏi: <em>Cơ chế hoạt động như thế nào?</em></p>
+        </div>
+        <div class="top-card org">
+          <div class="letter">O</div>
+          <div class="top-name">Organizational</div>
+          <p>Nhìn qua cấu trúc tổ chức, quyền lực, nguồn lực, quy tắc thể chế. Câu hỏi: <em>Ai quyết định? Ai có lợi ích gì?</em></p>
+        </div>
+        <div class="top-card per">
+          <div class="letter">P</div>
+          <div class="top-name">Personal</div>
+          <p>Nhìn qua giá trị, cảm xúc, lịch sử cá nhân của các nhân vật chính. Câu hỏi: <em>Con người thực sự muốn gì và sợ gì?</em></p>
+        </div>
+      </div>
+
+      <div class="callout tip">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>Tại sao cần Multiple Perspectives?</strong>
+          <p>Churchman, Mason, Mitroff, Linstone đều nhấn mạnh: để phân tích có đạo đức (ethical), lập luận phải <em>cho tất cả các bên liên quan đều có tiếng nói</em> và khuyến khích các cách nhìn sáng tạo, được lý luận hợp lý. Khoa học cổ điển cho rằng chỉ có 1 hệ thống – 1 vũ trụ – 1 sự thật (Metcalfe, 2006); Systems thinking thừa nhận nhiều góc nhìn hợp lệ đồng thời.</p>
+        </div>
+      </div>
+
+      <!-- CASE METHOD -->
+      <h3>Phần IV: Case Study Method for Learning (Ellet, 2007)</h3>
+
+      <div class="lecture-case">
+        <div class="lc-card lecture">
+          <div class="lc-label">Phương pháp bài giảng truyền thống</div>
+          <h4>Lecture Method</h4>
+          <p>Người học <strong>nhận kiến thức</strong> từ chuyên gia. Giáo viên là nguồn tri thức chính thức; học viên tiếp thu, ghi nhớ và tái hiện.</p>
+          <p style="margin-top:10px; font-size:0.85rem; color:#7f8c8d;"><em>Điểm yếu: Thụ động; không rèn luyện khả năng phán đoán trong môi trường mơ hồ.</em></p>
+        </div>
+        <div class="lc-card case">
+          <div class="lc-label">Phương pháp tình huống</div>
+          <h4>Case Method</h4>
+          <p>Người học <strong>tạo ra kiến thức</strong> với sự hỗ trợ của chuyên gia. Học viên phân tích, lập luận, thuyết phục — giáo viên là người hướng dẫn quá trình.</p>
+          <p style="margin-top:10px; font-size:0.85rem; color: var(--secondary);"><em>Điểm mạnh: Rèn tư duy phê phán, kỹ năng thuyết phục qua lập luận dựa trên bằng chứng.</em></p>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <div class="big">Persuasion through Argument</div>
+        <p>Mục tiêu của case method không phải tìm ra "đáp án đúng" mà là xây dựng và bảo vệ <strong>lập luận thuyết phục nhất</strong> dựa trên bằng chứng từ tình huống. Đây là kỹ năng cốt lõi của nhà quản lý trong thực tế.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION 3: MÔ HÌNH & CÔNG THỨC -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section class="section" id="models">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div>
+        <h2>Mô Hình & Công Thức / Models & Frameworks</h2>
+        <div class="en">Logic of inquiry · Case study C1–C5 process · Analysis vs. synthesis</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <h3>Mô hình 1: Ba Logic Suy Luận — Cấu trúc so sánh</h3>
+
+      <table class="logic-table">
+        <thead>
+          <tr>
+            <th>Logic</th>
+            <th>Tên gọi</th>
+            <th>Cấu trúc hình thức</th>
+            <th>Truyền thống triết học</th>
+            <th>Vai trò trong nghiên cứu</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="ded">DEDUCTION</td>
+            <td>Suy diễn</td>
+            <td><strong>Rule + Case → Result</strong><br><small>Quy tắc + Trường hợp → Kết quả</small></td>
+            <td>French / Cartesian Rationalism (Descartes)</td>
+            <td>Kiểm tra dự đoán; xác nhận lý thuyết; logic toán học</td>
+          </tr>
+          <tr>
+            <td class="ind">INDUCTION</td>
+            <td>Quy nạp</td>
+            <td><strong>Case + Result → Rule</strong><br><small>Trường hợp + Kết quả → Quy tắc</small></td>
+            <td>British / Lockean Empiricism (Locke, Hume)</td>
+            <td>Xây dựng lý thuyết; khái quát từ quan sát; nghiên cứu định lượng</td>
+          </tr>
+          <tr>
+            <td class="abd">ABDUCTION</td>
+            <td>Giả thuyết</td>
+            <td><strong>Rule + Result → Case</strong><br><small>Quy tắc + Kết quả → Trường hợp suy đoán</small></td>
+            <td>American / Peircean Pragmatism (Peirce 1878)</td>
+            <td>Chẩn đoán nguyên nhân; suy luận sáng tạo; case analysis</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Mô hình 2: Bean Example — Ví dụ kinh điển của Peirce</h3>
+
+      <div class="bean-grid">
+        <div class="bean-card ded">
+          <div class="bc-label">Deduction</div>
+          <div class="bean-step"><strong>Rule (Quy tắc)</strong> Tất cả đậu trong túi này đều trắng.</div>
+          <div class="bean-step"><strong>Case (Trường hợp)</strong> Những hạt đậu này lấy từ túi đó.</div>
+          <div class="bean-step" style="background:#bde3f9;"><strong>Result (Kết luận tất yếu)</strong> Những hạt đậu này màu trắng.</div>
+        </div>
+        <div class="bean-card ind">
+          <div class="bc-label">Induction</div>
+          <div class="bean-step"><strong>Case (Trường hợp)</strong> Những hạt đậu này lấy từ túi đó.</div>
+          <div class="bean-step"><strong>Result (Quan sát)</strong> Những hạt đậu này màu trắng.</div>
+          <div class="bean-step" style="background:#b2dfdb;"><strong>Rule (Quy tắc suy ra)</strong> Tất cả đậu trong túi này đều trắng.</div>
+        </div>
+        <div class="bean-card abd">
+          <div class="bc-label">Abduction / Hypothesis</div>
+          <div class="bean-step"><strong>Rule (Quy tắc)</strong> Tất cả đậu trong túi này đều trắng.</div>
+          <div class="bean-step"><strong>Result (Quan sát)</strong> Những hạt đậu này màu trắng.</div>
+          <div class="bean-step" style="background:#ffe0cc;"><strong>Case (Giả thuyết)</strong> Những hạt đậu này có lẽ lấy từ túi đó.</div>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <strong>Lưu ý về Abduction</strong>
+          <p>Abduction không cho kết luận chắc chắn — nó cho <em>hypothesis tốt nhất</em> (best available explanation). Kết luận có thể sai nếu có quy tắc khác giải thích kết quả tương tự. Đây chính là lý do tại sao bước C3 trong case method nhấn mạnh: <em>hypothesis không sai mà chỉ fail khi không thể lập luận được từ bằng chứng.</em></p>
+        </div>
+      </div>
+
+      <h3>Mô hình 3: 5 Bước Phân Tích Case Study (Ellet, 2007)</h3>
+
+      <p>Đây là framework quan trọng nhất của Unit 0. Ellet (2007) đề xuất quy trình 5 bước có phân bổ thời gian rõ ràng cho việc làm việc với một case study:</p>
+
+      <div class="case-steps">
+        <div class="case-step">
+          <div class="step-num c1">
+            <span class="cn">C</span>
+            <span class="cnum">1</span>
+            <span class="time">5 phút</span>
+          </div>
+          <div class="step-body">
+            <h4>Situation — Nhận diện tình huống</h4>
+            <div class="key-q">What is the situation?</div>
+            <p><strong>Mục tiêu:</strong> Hiểu bức tranh tổng thể trước khi đi vào chi tiết. Không cần đọc toàn bộ case ngay.</p>
+            <p><strong>Phương pháp:</strong> Thường chỉ cần đọc phần đầu và phần cuối của case là đủ để nhận diện tình huống. Đây là bước <em>orientation</em> (định hướng), không phải analysis.</p>
+            <p><strong>Output:</strong> 1-2 câu mô tả: <em>"Case này xảy ra ở đâu, liên quan đến ai, thời điểm nào, vấn đề gì xuất hiện."</em></p>
+          </div>
+        </div>
+
+        <div class="case-step">
+          <div class="step-num c2">
+            <span class="cn">C</span>
+            <span class="cnum">2</span>
+            <span class="time">15 phút</span>
+          </div>
+          <div class="step-body">
+            <h4>Questions — Xác định câu hỏi then chốt</h4>
+            <div class="key-q">What do I need to know about the situation?</div>
+            <p><strong>Problem-Based Questions (C21):</strong></p>
+            <ul>
+              <li>Chủ thể của vấn đề là ai/cái gì? (manager, company, country?)</li>
+              <li>Vấn đề là gì? Đây là thất bại, thành công, hay tình huống mơ hồ?</li>
+              <li>Ý nghĩa/tầm quan trọng của vấn đề đối với chủ thể là gì?</li>
+              <li>Ai chịu trách nhiệm về vấn đề (thường là protagonist) và họ cần biết gì để giải quyết?</li>
+            </ul>
+            <p><strong>Lưu ý:</strong> Không cố trả lời câu hỏi trong bước này — chỉ cần xác định <em>câu hỏi quan trọng nhất cần tìm câu trả lời.</em></p>
+          </div>
+        </div>
+
+        <div class="case-step">
+          <div class="step-num c3">
+            <span class="cn">C</span>
+            <span class="cnum">3</span>
+            <span class="time">45 phút</span>
+          </div>
+          <div class="step-body">
+            <h4>Hypothesis — Xây dựng giả thuyết <span style="background: #f39c12; color:white; font-size:0.7rem; padding:2px 8px; border-radius:10px; vertical-align:middle; margin-left:6px;">QUAN TRỌNG NHẤT</span></h4>
+            <div class="key-q">Đâu là giải thích hoặc chẩn đoán có tính thuyết phục nhất?</div>
+            <p><strong>Đây là giai đoạn quan trọng nhất</strong> — chiếm nhiều thời gian nhất. Thông qua nghiên cứu kỹ các phần và exhibits có giá trị cao, thu hẹp các khả năng xuống còn một hypothesis thuyết phục nhất.</p>
+            <p><strong>Problem-Based Hypotheses (C31):</strong></p>
+            <ul>
+              <li>Đảm bảo bạn hiểu rõ vấn đề cần chẩn đoán.</li>
+              <li>Xem xét liệu đặc điểm của vấn đề có gợi ý nguyên nhân không.</li>
+              <li>Xác định frameworks phù hợp nhất với tình huống; ôn nhanh nếu không chắc.</li>
+              <li>Truy theo chẩn đoán bằng cách nhìn thông tin case qua lăng kính nguyên nhân bạn tin tưởng nhất.</li>
+              <li>Với mỗi nguyên nhân tiềm năng, duyệt qua case một lần riêng để tìm bằng chứng.</li>
+              <li>Nếu có nhiều dữ liệu định lượng, xác định nguyên nhân nào giải thích tốt nhất.</li>
+              <li>Xem xét liệu protagonist có phải là nguyên nhân tiềm năng không.</li>
+            </ul>
+            <div class="callout key" style="margin-top:12px; padding:12px 16px;">
+              <div class="callout-icon" style="font-size:1.1rem;">💎</div>
+              <div class="callout-body">
+                <strong>Key insight về Hypothesis:</strong>
+                <p style="font-size:0.85rem;">"A hypothesis isn't wrong; a hypothesis <strong>fails</strong> when you can't make a credible argument for it from case evidence." — Một hypothesis không thể "sai" về mặt logic; nó chỉ thất bại khi không thể tìm được bằng chứng để bảo vệ nó trong tình huống cụ thể này.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="case-step">
+          <div class="step-num c4">
+            <span class="cn">C</span>
+            <span class="cnum">4</span>
+            <span class="time">40 phút</span>
+          </div>
+          <div class="step-body">
+            <h4>Proof and Action — Chứng minh và Hành động</h4>
+            <div class="key-q">Bằng chứng nào ủng hộ hypothesis? Cần thêm bằng chứng gì?</div>
+            <p><strong>Nguyên tắc quan trọng:</strong> <em>"You want to prove something, not look for something to prove."</em> Sự khác biệt tinh tế nhưng quan trọng: xuất phát từ hypothesis rõ ràng rồi tìm bằng chứng, không phải duyệt ngẫu nhiên rồi ghép vào.</p>
+            <ul>
+              <li>Quay lại case với <em>mục đích duy nhất</em> là tìm thêm bằng chứng ủng hộ hypothesis.</li>
+              <li>Không cần đọc từ trang 1 đến trang cuối — có thể nhảy trực tiếp đến phần bạn nghĩ có bằng chứng.</li>
+              <li>Đọc tuần tự từ đầu đến cuối vẫn được, nhưng phải <em>tập trung vào mục tiêu chứng minh</em>, không phải khám phá.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="case-step">
+          <div class="step-num c5">
+            <span class="cn">C</span>
+            <span class="cnum">5</span>
+            <span class="time">15 phút</span>
+          </div>
+          <div class="step-body">
+            <h4>Alternatives — Xem xét phương án thay thế</h4>
+            <div class="key-q">Điểm yếu lớn nhất của hypothesis là gì? Phương án thay thế mạnh nhất là gì?</div>
+            <p><strong>Mục tiêu:</strong> Tự phê phán hypothesis của bản thân để tăng tính thuyết phục và tránh bẫy confirmation bias.</p>
+            <p><strong>Problem-Based Alternatives (C51):</strong></p>
+            <ul>
+              <li>Vấn đề có thể được định nghĩa khác đi không? Nếu định nghĩa khác sẽ tạo ra chẩn đoán khác?</li>
+              <li>Có lỗ hổng nào trong chẩn đoán không — có thể bỏ sót nguyên nhân nào?</li>
+              <li>Phần yếu nhất của chẩn đoán là gì?</li>
+              <li>Có thể đưa ra chẩn đoán hoàn toàn khác không? Nó trông như thế nào?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3>Mô hình 4: Phân bổ thời gian (Total ~2 giờ)</h3>
+
+      <div class="time-bar">
+        <div class="time-seg" style="background:#e74c3c; flex: 5;">
+          <span class="ts-name">C1: Situation</span>
+          <span>5 phút</span>
+        </div>
+        <div class="time-seg" style="background:#e67e22; flex: 15;">
+          <span class="ts-name">C2: Questions</span>
+          <span>15 phút</span>
+        </div>
+        <div class="time-seg" style="background:#f39c12; flex: 45;">
+          <span class="ts-name">C3: Hypothesis ⭐</span>
+          <span>45 phút</span>
+        </div>
+        <div class="time-seg" style="background: var(--success); flex: 40;">
+          <span class="ts-name">C4: Proof & Action</span>
+          <span>40 phút</span>
+        </div>
+        <div class="time-seg" style="background:#2980b9; flex: 15;">
+          <span class="ts-name">C5: Alternatives</span>
+          <span>15 phút</span>
+        </div>
+      </div>
+
+      <h3>Mô hình 5: Analysis vs. Systems Thinking — So sánh quy trình</h3>
+
+      <table class="logic-table">
+        <thead>
+          <tr>
+            <th>Chiều</th>
+            <th>Analysis (Phân tích)</th>
+            <th>Systems Thinking (Tư duy hệ thống)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Hành động cơ bản</strong></td>
+            <td>Tháo rời hệ thống ra các phần</td>
+            <td>Đặt hệ thống vào môi trường lớn hơn</td>
+          </tr>
+          <tr>
+            <td><strong>Nghiên cứu</strong></td>
+            <td>Hành vi từng phần riêng lẻ</td>
+            <td>Vai trò của hệ thống trong toàn thể</td>
+          </tr>
+          <tr>
+            <td><strong>Kết luận</strong></td>
+            <td>Tổng hợp hiểu biết về các phần thành giải thích toàn thể</td>
+            <td>Hiểu biết toàn thể dẫn đến hiểu biết từng phần</td>
+          </tr>
+          <tr>
+            <td><strong>Unit of analysis</strong></td>
+            <td>Phần tử nhỏ nhất (element)</td>
+            <td>Hệ thống và môi trường của nó</td>
+          </tr>
+          <tr>
+            <td><strong>Nhân quả</strong></td>
+            <td>Tuyến tính: A → B</td>
+            <td>Vòng lặp: A → B → C → A</td>
+          </tr>
+          <tr>
+            <td><strong>Boundary</strong></td>
+            <td>Cố định, khách quan</td>
+            <td>Được lựa chọn, chủ quan, thay đổi được</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION 4: VÍ DỤ THỰC TIỄN -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section class="section" id="examples">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div>
+        <h2>Ví Dụ Thực Tiễn / Practical Examples</h2>
+        <div class="en">Applying logic, systems thinking, and case method to real scenarios</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <h3>Ví dụ 1: Ba logic suy luận trong quản lý</h3>
+
+      <h4>Tình huống: Nhân viên giỏi bỗng nhiên làm việc kém hiệu quả</h4>
+
+      <table class="logic-table">
+        <thead>
+          <tr>
+            <th>Logic</th>
+            <th>Xuất phát</th>
+            <th>Quá trình suy luận</th>
+            <th>Kết luận</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="ded">Deduction</td>
+            <td>Rule: Nhân viên thiếu gắn kết thì làm việc kém<br>Case: A vừa được xác nhận thiếu gắn kết</td>
+            <td>Áp dụng quy tắc vào trường hợp cụ thể</td>
+            <td>A đang làm việc kém — kết quả tất yếu</td>
+          </tr>
+          <tr>
+            <td class="ind">Induction</td>
+            <td>Quan sát: A, B, C đều vắng mặt nhiều và hiệu suất thấp sau khi bị từ chối tăng lương</td>
+            <td>Tổng quát hóa từ nhiều trường hợp</td>
+            <td>Rule mới: Khi từ chối tăng lương → giảm gắn kết → giảm hiệu suất</td>
+          </tr>
+          <tr>
+            <td class="abd">Abduction</td>
+            <td>Rule: Thiếu giao tiếp với quản lý → cảm giác bị bỏ rơi<br>Result: A làm việc kém và ít giao tiếp hơn</td>
+            <td>Suy ra trường hợp giải thích bằng chứng tốt nhất</td>
+            <td>Hypothesis: A cảm thấy bị quản lý bỏ rơi/xem nhẹ → cần xác nhận qua gặp trực tiếp</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout tip">
+        <div class="callout-icon">🔑</div>
+        <div class="callout-body">
+          <strong>Nhà quản lý giỏi dùng cả ba logic</strong>
+          <p>Deduction: áp dụng lý thuyết đã biết vào tình huống mới. Induction: học từ nhiều tình huống để xây dựng lý thuyết làm việc của riêng mình. Abduction: trong tình huống mơ hồ, suy ra giả thuyết tốt nhất để kiểm tra — đây là kỹ năng quan trọng nhất trong môi trường thực tế.</p>
+        </div>
+      </div>
+
+      <h3>Ví dụ 2: Systems Thinking trong phân tích tổ chức</h3>
+
+      <h4>Tình huống: Công ty X có tỷ lệ nghỉ việc cao</h4>
+      <p><strong>Tư duy phân tích truyền thống:</strong> Tách vấn đề ra → Lương thấp? → Tăng lương → Kỳ vọng tỷ lệ nghỉ việc giảm.</p>
+      <p><strong>Hạn chế:</strong> Bỏ qua vòng lặp nhân quả: Nghỉ việc nhiều → nhân viên còn lại làm thêm giờ → kiệt sức → nghỉ việc thêm. Lương tăng có thể giảm nghỉ việc ngắn hạn nhưng vòng lặp kiệt sức tiếp tục.</p>
+      <p><strong>Systems Thinking (Linstone's TOP):</strong></p>
+      <ul>
+        <li><strong>Technical:</strong> Phân tích workload, quy trình, thiếu hụt công cụ, KPIs không thực tế.</li>
+        <li><strong>Organizational:</strong> Ai có quyền quyết định headcount? Cơ chế reward có tạo ra cạnh tranh nội bộ độc hại không? Lãnh đạo trung gian có được đào tạo không?</li>
+        <li><strong>Personal:</strong> Người quản lý trực tiếp có phong cách lãnh đạo như thế nào? Nhân viên nghỉ vì ai (quản lý hay công ty)?</li>
+      </ul>
+      <p><strong>Ranh giới (Boundary) của phân tích:</strong> Nếu vẽ ranh giới chỉ bao gồm bộ phận nhân sự → giải pháp là tuyển dụng và phúc lợi. Nếu mở rộng ranh giới bao gồm cả chiến lược công ty và văn hóa → giải pháp có thể là tái cơ cấu hoàn toàn. Ranh giới khác → vấn đề khác → giải pháp khác.</p>
+
+      <h3>Ví dụ 3: Áp dụng C1–C5 vào một case lãnh đạo điển hình</h3>
+
+      <h4>Case: CEO mới tiếp quản công ty đang thua lỗ</h4>
+      <ul>
+        <li><strong>C1 (5 phút):</strong> Đọc đầu và cuối → Công ty ABC thua lỗ 3 năm liên tiếp; CEO mới vừa nhậm chức 6 tháng; Board yêu cầu kế hoạch turnaround trong 30 ngày.</li>
+        <li><strong>C2 (15 phút):</strong> Câu hỏi: Nguyên nhân thua lỗ từ đâu (nội tại hay thị trường)? CEO mới đã làm gì trong 6 tháng? Tại sao Board mất kiên nhẫn? Stakeholders chính là ai?</li>
+        <li><strong>C3 (45 phút):</strong> Hypothesis chính: Vấn đề cốt lõi là <em>misalignment giữa chiến lược sản phẩm và thay đổi thị trường</em>, chứ không phải kém hiệu quả vận hành. Bằng chứng: doanh thu giảm đồng đều các dòng sản phẩm, đối thủ cạnh tranh tăng trưởng, chi phí vận hành trong tầm kiểm soát.</li>
+        <li><strong>C4 (40 phút):</strong> Tìm thêm bằng chứng: data thị phần, phản hồi khách hàng, chiến lược của đối thủ được đề cập trong case. Đề xuất hành động: CEO cần restructure danh mục sản phẩm, không phải cắt giảm headcount.</li>
+        <li><strong>C5 (15 phút):</strong> Điểm yếu của hypothesis: Có thể vấn đề là execution (thực thi kém), không phải strategy (chiến lược sai). Alternative diagnosis: CEO chưa có đủ thẩm quyền vì Board can thiệp quá nhiều — vấn đề governance.</li>
+      </ul>
+
+      <h3>Ví dụ 4: Hai loại khoa học trong nghiên cứu quản lý</h3>
+
+      <table class="logic-table">
+        <thead>
+          <tr>
+            <th>Loại nghiên cứu</th>
+            <th>Câu hỏi nghiên cứu</th>
+            <th>Phương pháp</th>
+            <th>Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:#2980b9; font-weight:700;">Behavioral (Truth)</td>
+            <td>Lãnh đạo chuyển đổi có ảnh hưởng đến cam kết tổ chức không?</td>
+            <td>Survey, hồi quy tuyến tính, phân tích nhân tố</td>
+            <td>Lý thuyết mô tả mối quan hệ (correlation, causation)</td>
+          </tr>
+          <tr>
+            <td style="color:#e67e22; font-weight:700;">Design (Utility)</td>
+            <td>Làm thế nào để tăng cam kết tổ chức trong bối cảnh cụ thể của công ty này?</td>
+            <td>Action research, prototyping, pilot testing</td>
+            <td>Can thiệp thực tiễn, quy trình, công cụ áp dụng được</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout info">
+        <div class="callout-icon">🔬</div>
+        <div class="callout-body">
+          <strong>Cả hai đều cần thiết trong GK5009</strong>
+          <p>Behavioral science cung cấp <em>lý thuyết</em> (Northouse, Whetten, Carpenter). Design science hỏi <em>chúng ta nên làm gì</em> — đây là tư duy cần thiết khi giải case study. Case method rèn luyện design science thinking: phân tích tình huống thực → đề xuất giải pháp khả thi → bảo vệ bằng lập luận.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION 5: GHI CHÚ ÔN TẬP -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section class="section" id="review">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div>
+        <h2>Ghi Chú Ôn Tập & Bẫy Nhận Thức / Study Notes & Cognitive Traps</h2>
+        <div class="en">Key concepts to memorize · Common mistakes · Exam tips</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <h3>Các khái niệm cốt lõi cần nhớ</h3>
+
+      <table class="concepts-table">
+        <thead>
+          <tr>
+            <th>Khái niệm</th>
+            <th>Định nghĩa ngắn</th>
+            <th>Nguồn</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="concept">Deduction</td>
+            <td>Rule + Case → Result. Kết luận tất yếu từ tiền đề đã cho. Chắc chắn nhưng không khám phá điều mới.</td>
+            <td class="author">Cartesian Rationalism / logic hình thức</td>
+          </tr>
+          <tr>
+            <td class="concept">Induction</td>
+            <td>Case + Result → Rule. Khái quát hóa từ quan sát cụ thể. Có thể sai (white swan / black swan problem).</td>
+            <td class="author">Lockean Empiricism (Hume, Locke)</td>
+          </tr>
+          <tr>
+            <td class="concept">Abduction</td>
+            <td>Rule + Result → Case (hypothesis). Logic của khám phá và chẩn đoán. Kết luận là giả thuyết tốt nhất, không chắc chắn.</td>
+            <td class="author">Peirce (1878) — Pragmatism</td>
+          </tr>
+          <tr>
+            <td class="concept">Behavioral Science</td>
+            <td>Mục tiêu truth — mô tả, giải thích, dự báo hiện tượng. Xây dựng lý thuyết.</td>
+            <td class="author">Hevner et al. (2004); Simon (1969)</td>
+          </tr>
+          <tr>
+            <td class="concept">Design Science</td>
+            <td>Mục tiêu utility — thiết kế artifacts để giải quyết vấn đề thực tế. Tạo ra giải pháp.</td>
+            <td class="author">March & Smith (1995); van Aken (2004)</td>
+          </tr>
+          <tr>
+            <td class="concept">Systems Thinking</td>
+            <td>Đặt hệ thống trong môi trường lớn hơn; tổng hợp thay vì phân tích; boundary là chủ quan; nhân quả vòng lặp.</td>
+            <td class="author">Gharajedaghi (2011); Checkland (1981); Ackoff (2000)</td>
+          </tr>
+          <tr>
+            <td class="concept">Boundary</td>
+            <td>Ranh giới của hệ thống được phân tích — do người phân tích lựa chọn, không phải cố định trong tự nhiên. Ranh giới khác → hiểu vấn đề khác.</td>
+            <td class="author">Ackoff (2000); Metcalfe (2006)</td>
+          </tr>
+          <tr>
+            <td class="concept">TOP Perspectives</td>
+            <td>Technical + Organizational + Personal — ba lăng kính của Linstone để phân tích hệ thống đa chiều.</td>
+            <td class="author">Linstone (1984, 1993)</td>
+          </tr>
+          <tr>
+            <td class="concept">Case Method vs Lecture</td>
+            <td>Lecture: nhận kiến thức. Case: tạo ra kiến thức. Case method rèn persuasion through argument.</td>
+            <td class="author">Ellet (2007)</td>
+          </tr>
+          <tr>
+            <td class="concept">Hypothesis trong Case</td>
+            <td>Không phải "đúng hay sai" — hypothesis fail khi không thể lập luận dựa trên bằng chứng case. Đây là phân biệt quan trọng nhất.</td>
+            <td class="author">Ellet (2007)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Bẫy nhận thức phổ biến</h3>
+
+      <div class="trap-grid">
+        <div class="trap-card">
+          <div class="trap-num">1</div>
+          <h4>Nhầm Induction với Deduction</h4>
+          <p>Khi thấy nhiều trường hợp → rút ra quy luật: đó là <em>induction</em>, không phải deduction. Deduction phải có quy tắc đã biết trước từ đầu. Nhầm hai khái niệm này dẫn đến lập luận thiếu chặt chẽ trong case analysis.</p>
+        </div>
+        <div class="trap-card">
+          <div class="trap-num">2</div>
+          <h4>Bỏ qua Boundary khi phân tích</h4>
+          <p>Phân tích hệ thống mà không tuyên bố rõ ranh giới đang sử dụng. Người khác có thể vẽ ranh giới khác và đến kết luận hoàn toàn ngược lại — và cả hai đều "đúng" trong ranh giới của mình.</p>
+        </div>
+        <div class="trap-card">
+          <div class="trap-num">3</div>
+          <h4>Dùng phân tích tuyến tính cho hệ thống phức tạp</h4>
+          <p>A gây ra B → tăng A để tăng B. Bỏ qua feedback loops: B có thể làm giảm A, hoặc C (hậu quả của B) có thể làm tăng A theo cách không ngờ. Butterfly Effect là minh chứng cực đoan.</p>
+        </div>
+        <div class="trap-card">
+          <div class="trap-num">4</div>
+          <h4>Tìm "đáp án đúng" thay vì lập luận tốt</h4>
+          <p>Case method không có đáp án đúng duy nhất. Tư duy "đúng/sai" của học sinh phổ thông phản tác dụng. Câu hỏi đúng là: "Lập luận của tôi có được ủng hộ bởi bằng chứng từ case không?"</p>
+        </div>
+        <div class="trap-card">
+          <div class="trap-num">5</div>
+          <h4>Confirmation Bias trong C4</h4>
+          <p>Tìm bằng chứng ủng hộ hypothesis (C4) mà bỏ qua bằng chứng phản bác. Đây là lý do C5 (Alternatives) tồn tại — buộc phải tự phê phán. Không thực hiện C5 = lập luận thiếu độ tin cậy.</p>
+        </div>
+        <div class="trap-card">
+          <div class="trap-num">6</div>
+          <h4>Bỏ qua chữ P trong TOP Perspectives</h4>
+          <p>Phân tích kỹ T (technical) và O (organizational) nhưng quên P (personal). Trong quản lý và lãnh đạo, yếu tố cá nhân (giá trị, tính cách, lịch sử của protagonists) thường là nguyên nhân cốt lõi mà bằng chứng hard data không thể hiện trực tiếp.</p>
+        </div>
+        <div class="trap-card">
+          <div class="trap-num">7</div>
+          <h4>Nhầm "hypothesis fail" với "hypothesis sai"</h4>
+          <p>Ellet nói rõ: "A hypothesis isn't wrong." Hypothesis fail chỉ khi không tìm được bằng chứng từ case để lập luận. Điều này có nghĩa một hypothesis tốt trong case khác có thể không áp dụng được trong case này.</p>
+        </div>
+        <div class="trap-card">
+          <div class="trap-num">8</div>
+          <h4>Dành quá nhiều thời gian cho C1 và C2</h4>
+          <p>C1 chỉ 5 phút; C2 chỉ 15 phút. Nhiều học viên đọc toàn bộ case ngay từ đầu (45–60 phút) mà chưa có hypothesis — mất định hướng, đọc không có trọng tâm. Phân bổ thời gian của Ellet là có chủ ý: hypothesis trước, bằng chứng sau.</p>
+        </div>
+      </div>
+
+      <h3>Các nhà tư tưởng quan trọng cần nhớ theo chủ đề</h3>
+
+      <table class="concepts-table">
+        <thead>
+          <tr>
+            <th>Chủ đề</th>
+            <th>Nhà tư tưởng</th>
+            <th>Đóng góp chính</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Xã hội học KH</strong></td>
+            <td>Mitroff (1974)</td>
+            <td>3 chiều của science: body of knowledge, what scientists do, social institution</td>
+          </tr>
+          <tr>
+            <td><strong>Design Science</strong></td>
+            <td>Simon (1969)</td>
+            <td>"Science of the artificial" — đặt nền tảng cho design science</td>
+          </tr>
+          <tr>
+            <td><strong>Paradigms of truth</strong></td>
+            <td>Churchman / Singer (1959)</td>
+            <td>5 guarantors of truth: Locke, Leibnitz, Kant, Hegel, Singer</td>
+          </tr>
+          <tr>
+            <td><strong>Abduction</strong></td>
+            <td>Peirce (1878)</td>
+            <td>Logic of discovery — abduction là loại suy luận thứ 3 bên cạnh deduction và induction</td>
+          </tr>
+          <tr>
+            <td><strong>Systems Thinking</strong></td>
+            <td>Checkland (1981)</td>
+            <td>Systems thinking như phản ứng với thất bại của tư duy phân tích trong vấn đề xã hội phức tạp</td>
+          </tr>
+          <tr>
+            <td><strong>Systems Thinking</strong></td>
+            <td>Gharajedaghi (2011)</td>
+            <td>Định nghĩa analysis vs. systems thinking rõ ràng nhất</td>
+          </tr>
+          <tr>
+            <td><strong>Boundary</strong></td>
+            <td>Ackoff (2000); Metcalfe (2006)</td>
+            <td>Systems thinking vs. science thinking: boundary là điểm phân biệt cốt lõi</td>
+          </tr>
+          <tr>
+            <td><strong>TOP Perspectives</strong></td>
+            <td>Linstone (1984, 1993)</td>
+            <td>Technical, Organizational, Personal — 3 lăng kính thiết yếu</td>
+          </tr>
+          <tr>
+            <td><strong>Case Method</strong></td>
+            <td>Ellet (2007)</td>
+            <td>5 bước C1–C5 với phân bổ thời gian; hypothesis không sai mà chỉ fail</td>
+          </tr>
+          <tr>
+            <td><strong>Inquiry</strong></td>
+            <td>Checkland & Holwell (1998)</td>
+            <td>Inquiry là hoạt động cộng đồng, không phải cá nhân</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Câu hỏi ôn tập</h3>
+      <ol>
+        <li>Phân biệt ba loại logic suy luận: deduction, induction, abduction. Cho ví dụ từ thực tế quản lý cho mỗi loại.</li>
+        <li>Tại sao abduction quan trọng hơn hai loại còn lại trong việc phân tích case study?</li>
+        <li>So sánh "behavioral science" và "design science." Trong khóa học GK5009, bạn đang áp dụng loại nào khi giải case?</li>
+        <li>Giải thích tại sao "ranh giới" (boundary) là điểm phân biệt quan trọng nhất giữa systems thinking và scientific thinking.</li>
+        <li>Mô tả 5 bước C1–C5 của Ellet. Tại sao C3 được phân bổ nhiều thời gian nhất?</li>
+        <li>Hypothesis trong case method "fail" như thế nào? Tại sao không nói hypothesis "sai"?</li>
+        <li>Linstone's TOP perspectives là gì? Cho ví dụ về cách áp dụng cả ba lăng kính vào một tình huống tổ chức cụ thể.</li>
+        <li>Phương pháp tình huống (case method) khác gì so với phương pháp bài giảng (lecture method)? Ý nghĩa với cách học của sinh viên là gì?</li>
+        <li>Churchman xác định 5 "guarantors of truth." Kể tên và giải thích ngắn gọn từng loại.</li>
+        <li>Tại sao systems thinking nói "Synthesize, don't analyse!"? Điều này mâu thuẫn với tư duy khoa học thông thường như thế nào?</li>
+      </ol>
+
+      <div class="callout key">
+        <div class="callout-icon">🎓</div>
+        <div class="callout-body">
+          <strong>Lời khuyên ôn tập cuối cùng</strong>
+          <p>Unit 0 là <em>khung nhận thức</em> — không phải nội dung để học thuộc. Mục tiêu là <strong>thay đổi cách bạn tiếp cận vấn đề</strong>: từ tư duy tuyến tính, thụ động, tìm đáp án duy nhất → sang tư duy hệ thống, chủ động, xây dựng lập luận dựa trên bằng chứng. Khi đọc bất kỳ case study nào trong GK5009, hãy tự hỏi: "Đây là abduction hay deduction? Tôi đang analysis hay systems thinking? Tôi đang ở bước C3 hay C4?"</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <strong>GK5009 — Quản lý và Lãnh đạo</strong> &nbsp;|&nbsp;
+  Unit 0: Introduction to Problem Solving Framework &nbsp;|&nbsp;
+  Nguyen Manh Tuan (2023) &nbsp;|&nbsp;
+  Ellet (2007) · Gharajedaghi (2011) · Checkland (1981) · Peirce (1878) · Mitroff (1974)
+  <br><br>
+  <span style="opacity:0.6; font-size:0.78rem;">
+    Hoàn thành: Carpenter ✓ (Ch01, Ch04, Ch05, Ch06) | Whetten ✓ (Ch06, Ch08) | HBR ✓ (Friedman, Drucker) | Humphrey ✓ | <strong style="color:white;">Unit 0 ✓</strong>
+  </span>
+</footer>
+
+</body>
+</html>

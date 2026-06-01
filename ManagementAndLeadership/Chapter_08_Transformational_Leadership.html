@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GK5009 – Chương 8: Lãnh đạo Biến đổi (Transformational Leadership)</title>
+  <style>
+    :root {
+      --primary: #1a3c6e;
+      --secondary: #2e6da4;
+      --accent: #e8a020;
+      --light: #f4f7fb;
+      --text: #1c1c1c;
+      --muted: #5a6a7a;
+      --border: #d0daea;
+      --green: #1a6e3c;
+      --red: #8b1a1a;
+      --trans: #1a3c6e;
+      --trans-light: #eef3fb;
+      --actrans: #7b1fa2;
+      --actrans-light: #f5eeff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Georgia','Times New Roman',serif; font-size:16px; line-height:1.8; color:var(--text); background:#fff; max-width:1100px; margin:0 auto; padding:40px 30px; }
+    h1 { font-size:2.2rem; color:var(--primary); border-bottom:4px solid var(--accent); padding-bottom:12px; margin-bottom:8px; }
+    h2 { font-size:1.6rem; color:var(--primary); margin-top:48px; margin-bottom:16px; border-left:6px solid var(--accent); padding-left:14px; }
+    h3 { font-size:1.25rem; color:var(--secondary); margin-top:32px; margin-bottom:12px; }
+    h4 { font-size:1.05rem; color:var(--primary); margin-top:20px; margin-bottom:8px; font-style:italic; }
+    p { margin-bottom:14px; }
+    ul, ol { margin:10px 0 14px 28px; } li { margin-bottom:7px; }
+    .term { font-weight:bold; color:var(--primary); }
+    .definition { background:var(--light); border-left:4px solid var(--secondary); padding:12px 16px; margin:14px 0; border-radius:4px; }
+    .callout { background:#eaf4ff; border:1px solid var(--secondary); padding:14px 18px; margin:18px 0; border-radius:6px; }
+    .callout.warning { background:#fff4e0; border-color:var(--accent); }
+    .callout.important { background:#fdecea; border-color:var(--red); }
+    .callout.success { background:#e8f5ee; border-color:var(--green); }
+    table { width:100%; border-collapse:collapse; margin:20px 0; font-size:0.95rem; }
+    th { background:var(--primary); color:#fff; padding:10px 14px; text-align:left; }
+    td { border:1px solid var(--border); padding:9px 14px; vertical-align:top; }
+    tr:nth-child(even) td { background:var(--light); }
+    .section-label { display:inline-block; background:var(--primary); color:#fff; font-size:0.78rem; font-weight:bold; letter-spacing:1px; padding:3px 10px; border-radius:3px; margin-bottom:6px; text-transform:uppercase; }
+    .toc { background:var(--light); border:1px solid var(--border); padding:18px 24px; margin:24px 0 40px; border-radius:6px; }
+    .toc h3 { color:var(--primary); margin-top:0; margin-bottom:10px; }
+    .toc a { color:var(--secondary); text-decoration:none; }
+    .toc a:hover { text-decoration:underline; }
+    .meta { color:var(--muted); font-size:0.9rem; margin-bottom:30px; }
+    .highlight { background:#fffbcc; padding:2px 4px; border-radius:2px; }
+    hr { border:none; border-top:2px solid var(--border); margin:36px 0; }
+    .badge { display:inline-block; padding:2px 9px; border-radius:10px; font-size:0.82rem; font-weight:bold; }
+    .badge-blue { background:#daeeff; color:var(--primary); }
+    .badge-green { background:#d4f0e0; color:var(--green); }
+    .badge-red { background:#fde4e4; color:var(--red); }
+    .badge-purple { background:#ede0ff; color:var(--actrans); }
+    .badge-gray { background:#e9ecef; color:#495057; }
+
+    /* 4 I's cards */
+    .i-card { border-radius:8px; padding:18px 22px; margin:16px 0; border:2px solid; }
+    .i1 { border-color:#1a3c6e; background:#eef3fb; }
+    .i2 { border-color:#c0392b; background:#fef5f5; }
+    .i3 { border-color:#27ae60; background:#f0faf4; }
+    .i4 { border-color:#8e44ad; background:#f7eeff; }
+    .i-card h4 { font-style:normal; margin-top:0; margin-bottom:10px; font-size:1.1rem; }
+
+    /* Transactional cards */
+    .t-card { border-radius:6px; padding:14px 18px; margin:10px 0; border-left:5px solid; }
+    .t1 { border-left-color:#e8a020; background:#fef9ec; }
+    .t2 { border-left-color:#2e6da4; background:#eef3fb; }
+    .t3 { border-left-color:#5a6a7a; background:#f5f5f5; }
+    .t4 { border-left-color:#c0392b; background:#fef5f5; }
+
+    /* Full Range Model spectrum */
+    .spectrum { display:flex; width:100%; border-radius:8px; overflow:hidden; margin:20px 0; }
+    .spectrum-block { flex:1; padding:10px 8px; text-align:center; font-size:0.8rem; font-weight:bold; }
+    .continuum { display:flex; align-items:center; margin:16px 0; gap:4px; flex-wrap:wrap; }
+    .cont-item { flex:1; border-radius:6px; padding:8px; text-align:center; font-size:0.82rem; min-width:100px; }
+  </style>
+</head>
+<body>
+
+<div class="section-label">GK5009 – Quản lý và Lãnh đạo | HK252</div>
+<h1>Chương 8: Lãnh đạo Biến đổi<br><small style="font-size:1rem;color:var(--muted);">Transformational Leadership</small></h1>
+<p class="meta">Nguồn: Northouse, P. G. (2021). <em>Leadership: Theory and Practice</em> (7th ed.). SAGE Publications. — Chapter 8 | Burns (1978); Bass (1985); Bass & Avolio (1994)</p>
+
+<div class="toc">
+  <h3>Mục lục</h3>
+  <ol>
+    <li><a href="#s1">Tổng quan & Nguồn gốc từ Burns (1978)</a></li>
+    <li><a href="#s2">Transactional Leadership — Lãnh đạo Giao dịch</a></li>
+    <li><a href="#s3">Transformational Leadership — Bốn thành phần "4 I's"</a></li>
+    <li><a href="#s4">Full Range Leadership Model</a></li>
+    <li><a href="#s5">Cơ chế Tác động & Pseudotransformational Leadership</a></li>
+    <li><a href="#s6">Mô hình & Khung lý thuyết tổng hợp</a></li>
+    <li><a href="#s7">Ví dụ thực tiễn</a></li>
+    <li><a href="#s8">Lưu ý học tập & Bẫy nhận thức phổ biến</a></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s1">1. Tổng quan & Nguồn gốc từ Burns (1978)</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 1 – Overview & Historical Background</div>
+
+<p>Transformational Leadership (Lãnh đạo Biến đổi) là một trong những lý thuyết lãnh đạo có ảnh hưởng nhất trong vài thập kỷ qua — được nghiên cứu rộng rãi trong học thuật và ứng dụng phổ biến trong thực tiễn quản lý. Nó ra đời từ câu hỏi sâu sắc: <strong>Điều gì làm cho một số nhà lãnh đạo có khả năng tạo ra sự thay đổi sâu sắc và bền vững — không chỉ trong hành vi của người theo mà còn trong giá trị, niềm tin, và bản sắc của họ?</strong></p>
+
+<h3>1.1 Burns (1978) — Sự phân biệt gốc</h3>
+
+<p>Nhà chính trị học <strong>James MacGregor Burns</strong> trong tác phẩm <em>Leadership</em> (1978) lần đầu tiên phân biệt rõ ràng giữa hai loại lãnh đạo:</p>
+
+<div class="definition">
+  <strong>Transactional Leadership (Lãnh đạo Giao dịch):</strong> Loại lãnh đạo phổ biến nhất — dựa trên trao đổi (exchange) giữa lãnh đạo và người theo. Lãnh đạo cung cấp phần thưởng (lương, thăng chức, khen ngợi) để đổi lấy sự tuân thủ và hiệu suất của người theo. Mối quan hệ tương hỗ nhưng tính chất giao dịch — không thay đổi bản thân người theo.
+</div>
+
+<div class="definition">
+  <strong>Transformational Leadership (Lãnh đạo Biến đổi):</strong> Lãnh đạo nâng cao nhận thức và mức độ động lực của cả lãnh đạo lẫn người theo. Không chỉ thỏa mãn nhu cầu hiện tại của người theo mà <em>biến đổi</em> giá trị, mục tiêu, và bản thân họ — giúp họ đạt đến mức độ cao hơn của động lực, đạo đức, và tiềm năng. Lãnh đạo biến đổi tạo ra lãnh đạo từ người theo.
+</div>
+
+<div class="callout">
+  <strong>Quan niệm đạo đức của Burns:</strong><br>
+  Burns lập luận rằng Transformational Leadership về bản chất mang tính đạo đức — nó nâng cao mức độ đạo đức của cả lãnh đạo lẫn người theo, hướng đến những giá trị cao hơn như tự do, công bằng, bình đẳng. Điều này phân biệt Transformational Leadership với các dạng lãnh đạo chỉ sử dụng charisma để phục vụ lợi ích cá nhân của lãnh đạo (xem Pseudotransformational Leadership — phần 5).
+</div>
+
+<h3>1.2 Bass (1985) — Phát triển thành mô hình đo lường</h3>
+
+<p><strong>Bernard Bass (1985)</strong> mở rộng công trình của Burns theo hướng thực nghiệm — xây dựng các công cụ đo lường, kiểm tra bằng nghiên cứu định lượng, và phát triển thành mô hình có thể ứng dụng trong tổ chức. Những đóng góp chính của Bass:</p>
+<ul>
+  <li>Phát triển <em>Multifactor Leadership Questionnaire (MLQ)</em> — công cụ đo lường các phong cách lãnh đạo được sử dụng rộng rãi nhất thế giới</li>
+  <li>Xác định bốn thành phần của Transformational Leadership (<strong>4 I's</strong>)</li>
+  <li>Phát triển <em>Full Range Leadership Model</em> — lý thuyết mô tả toàn bộ phổ lãnh đạo từ thụ động đến tích cực</li>
+  <li>Cùng Avolio (1994, 2004) tiếp tục tinh chỉnh và mở rộng lý thuyết</li>
+</ul>
+
+<div class="callout warning">
+  <strong>Burns vs. Bass — Điểm khác biệt quan trọng:</strong><br>
+  Burns coi Transactional và Transformational là <em>hai đầu của một thang</em> — đối lập nhau, người lãnh đạo dùng một hoặc cái kia. Bass cho rằng chúng <em>bổ sung nhau</em> — lãnh đạo giỏi sử dụng cả hai, nhưng transformational là cao hơn transactional. Trong bài thi, hãy ghi rõ sự khác biệt quan niệm này.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s2">2. Transactional Leadership — Lãnh đạo Giao dịch</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 2 – Transactional Leadership</div>
+
+<p>Bass & Avolio xác định bốn thành phần của Transactional Leadership, sắp xếp từ tích cực/hiệu quả nhất đến tiêu cực/kém hiệu quả nhất:</p>
+
+<div class="t-card t1">
+  <h4 style="font-style:normal; color:#856404;">1. Contingent Reward (Khen thưởng Có điều kiện)</h4>
+  <p><strong>Định nghĩa:</strong> Lãnh đạo làm rõ những gì được kỳ vọng từ người theo và cung cấp phần thưởng — vật chất (lương, thưởng) và phi vật chất (khen ngợi, công nhận) — khi người theo đáp ứng kỳ vọng đó.</p>
+  <p><strong>Bản chất:</strong> Đây là giao dịch rõ ràng và minh bạch nhất — "Nếu bạn đạt mục tiêu A, bạn nhận phần thưởng B." Người theo hiểu rõ quy tắc và được khen thưởng khi thực hiện.</p>
+  <p><strong>Hiệu quả:</strong> Đây là thành phần transactional <em>tích cực nhất</em> và được xếp hạng là loại hành vi lãnh đạo hiệu quả trong nhiều bối cảnh. Contingent Reward dựa trên Expectancy Theory (tăng Instrumentality) và là nền tảng quản lý tốt.</p>
+  <p><strong>Hạn chế:</strong> Phần thưởng bên ngoài (extrinsic rewards) có thể làm giảm động lực nội tại (intrinsic motivation) — hiệu ứng "overjustification." Ngoài ra, khi phần thưởng ngừng lại, hành vi cũng dừng lại.</p>
+  <p><strong>Ví dụ:</strong> "Nếu nhóm hoàn thành dự án trước deadline 1 tuần và đạt điểm chất lượng trên 90%, tôi sẽ đề xuất thưởng 10% cho cả nhóm và ưu tiên nhóm cho dự án tốt tiếp theo."</p>
+</div>
+
+<div class="t-card t2">
+  <h4 style="font-style:normal; color:var(--secondary);">2. Management by Exception — Active (MBE-A: Quản lý bằng Ngoại lệ — Chủ động)</h4>
+  <p><strong>Định nghĩa:</strong> Lãnh đạo chủ động theo dõi công việc của người theo, tìm kiếm sai lệch so với tiêu chuẩn, và thực hiện hành động sửa chữa khi cần thiết — <em>trước khi</em> vấn đề trở nên nghiêm trọng.</p>
+  <p><strong>Bản chất:</strong> Lãnh đạo ở chế độ "cảnh giác" (watchdog mode) — giám sát để phát hiện và ngăn ngừa sai sót. Không phải giám sát mọi chi tiết nhỏ, mà tập trung vào các chỉ số hiệu suất quan trọng.</p>
+  <p><strong>Hiệu quả:</strong> MBE-A là loại quản lý phù hợp trong môi trường an toàn cao (như y tế, hàng không, điện hạt nhân) nơi sai sót nhỏ có hậu quả lớn. Ít hiệu quả hơn trong môi trường sáng tạo vì quá tập trung vào kiểm soát.</p>
+  <p><strong>Ví dụ:</strong> Trưởng phòng kiểm tra chất lượng sản xuất hàng ngày xem xét báo cáo lỗi; nếu tỷ lệ lỗi vượt ngưỡng, ngay lập tức họp nhóm để tìm nguyên nhân và điều chỉnh quy trình.</p>
+</div>
+
+<div class="t-card t3">
+  <h4 style="font-style:normal; color:var(--muted);">3. Management by Exception — Passive (MBE-P: Quản lý bằng Ngoại lệ — Thụ động)</h4>
+  <p><strong>Định nghĩa:</strong> Lãnh đạo <em>chờ đợi</em> cho đến khi vấn đề hoặc sai lệch xảy ra, và chỉ can thiệp <em>sau khi</em> tiêu chuẩn không đạt. Không chủ động theo dõi — chỉ phản ứng khi có khiếu nại hoặc vấn đề đủ lớn.</p>
+  <p><strong>Bản chất:</strong> "Đừng làm phiền tôi nếu mọi thứ ổn." Người theo biết rằng lãnh đạo chỉ xuất hiện khi có vấn đề — điều này tạo ra lo lắng và phản ứng phòng thủ, không phải cam kết.</p>
+  <p><strong>Hiệu quả:</strong> Ít hiệu quả hơn MBE-A đáng kể. Thường dẫn đến vấn đề bị che giấu cho đến khi quá lớn để không thể giải quyết. Tạo ra văn hóa "chờ đợi và hy vọng" thay vì chủ động.</p>
+  <p><strong>Ví dụ:</strong> Sếp không bao giờ kiểm tra tiến độ. Đến ngày deadline mới phát hiện dự án bị trễ 3 tuần. Phản ứng bằng cách trách mắng nhóm và yêu cầu giải thích — nhưng đã quá muộn để sửa.</p>
+</div>
+
+<div class="t-card t4">
+  <h4 style="font-style:normal; color:var(--red);">4. Laissez-Faire (Thả lỏng — Không Lãnh đạo)</h4>
+  <p><strong>Định nghĩa:</strong> Lãnh đạo từ chối chịu trách nhiệm, trì hoãn quyết định, không cung cấp phản hồi, và không tham gia vào các nhu cầu quan trọng của người theo. Về bản chất, đây là <em>vắng mặt lãnh đạo</em> (absence of leadership).</p>
+  <p><strong>Phân biệt với S4 Delegating (SLII):</strong> Laissez-faire KHÁC với Delegating. S4 Delegating là lãnh đạo chủ ý trao quyền cho người theo năng lực cao (D4) — lãnh đạo vẫn theo dõi kết quả và sẵn sàng hỗ trợ. Laissez-faire là lãnh đạo <em>bỏ mặc</em> — không có sự giám sát, không có hỗ trợ, không có phản hồi, không có trách nhiệm.</p>
+  <p><strong>Hiệu quả:</strong> Tệ nhất trong toàn bộ Full Range Leadership Model. Nghiên cứu nhất quán chỉ ra laissez-faire dẫn đến hiệu suất thấp, mơ hồ về vai trò, xung đột nhóm, và bất mãn.</p>
+  <p><strong>Ví dụ:</strong> Giám đốc luôn "họp bên ngoài" hoặc không trả lời email; không có quyết định nào được đưa ra; khi nhân viên gặp vấn đề, không tìm được ai chịu trách nhiệm giải quyết.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s3">3. Transformational Leadership — Bốn thành phần "4 I's"</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 3 – The Four I's of Transformational Leadership</div>
+
+<p>Bass & Avolio xác định Transformational Leadership bao gồm bốn thành phần, được gọi tắt là <strong>"4 I's"</strong>:</p>
+
+<div class="i-card i1">
+  <h4 style="color:var(--primary);">I₁ — IDEALIZED INFLUENCE (Ảnh hưởng Lý tưởng / Charisma)</h4>
+  <p><strong>Định nghĩa:</strong> Lãnh đạo hành xử theo cách mà người theo ngưỡng mộ, tôn trọng, và tin tưởng. Người lãnh đạo trở thành hình mẫu (role model) — thể hiện các giá trị và niềm tin đạo đức mạnh mẽ, có mục tiêu rõ ràng, và đặt lợi ích tập thể lên trên lợi ích cá nhân.</p>
+
+  <p><strong>Bass & Avolio phân biệt hai hình thức của Idealized Influence:</strong></p>
+  <ul>
+    <li><strong>Idealized Influence (Attributed) — II-A:</strong> Sức hút được <em>nhận thức</em> bởi người theo — người theo cảm nhận lãnh đạo là người có quyền lực, tự tin, và có tầm nhìn. Đây là cách người theo <em>nhìn nhận</em> lãnh đạo.</li>
+    <li><strong>Idealized Influence (Behavioral) — II-B:</strong> Hành vi cụ thể của lãnh đạo thể hiện các giá trị và niềm tin đạo đức — ví dụ: hy sinh lợi ích cá nhân vì lợi ích nhóm; luôn nhất quán giữa lời nói và hành động; chia sẻ rủi ro với nhóm.</li>
+  </ul>
+
+  <p><strong>Đặc điểm nhận biết lãnh đạo có Idealized Influence cao:</strong></p>
+  <ul>
+    <li>Người theo sẵn sàng làm thêm giờ không phải vì sợ hay vì thưởng, mà vì họ tin tưởng vào lãnh đạo và muốn không làm thất vọng người họ ngưỡng mộ</li>
+    <li>Lãnh đạo được nhắc đến như người có "phong cách khác biệt" — sự hiện diện của họ thay đổi năng lượng của phòng</li>
+    <li>Lãnh đạo chia sẻ rủi ro với nhóm; không đổ lỗi cho người khác khi thất bại</li>
+    <li>Hành động nhất quán với giá trị đã tuyên bố — không có khoảng cách giữa lời nói và việc làm</li>
+  </ul>
+
+  <p><strong>Lưu ý quan trọng — Charisma vs. Idealized Influence:</strong> Charisma (sức lôi cuốn) là yếu tố trung tâm của Idealized Influence, nhưng không đủ để là Transformational. Có nhiều nhà lãnh đạo charismatic nhưng không transformational — họ dùng charisma để phục vụ bản thân (pseudotransformational) chứ không để biến đổi người theo theo hướng tốt hơn. Điều làm Idealized Influence thực sự transformational là <em>nền tảng đạo đức</em> của nó.</p>
+</div>
+
+<div class="i-card i2">
+  <h4 style="color:#c0392b;">I₂ — INSPIRATIONAL MOTIVATION (Thúc đẩy Truyền cảm hứng)</h4>
+  <p><strong>Định nghĩa:</strong> Lãnh đạo thúc đẩy và truyền cảm hứng cho người theo bằng cách cung cấp ý nghĩa và thách thức cho công việc của họ. Lãnh đạo khuấy động tinh thần đội nhóm, thể hiện sự nhiệt tình và lạc quan, và tạo ra một tầm nhìn hấp dẫn về tương lai mà cả nhóm cùng hướng đến.</p>
+
+  <p><strong>Đặc điểm:</strong></p>
+  <ul>
+    <li><strong>Tầm nhìn (Vision):</strong> Lãnh đạo truyền đạt một hình ảnh hấp dẫn và rõ ràng về tương lai tổ chức — điều này có ý nghĩa lớn hơn công việc hàng ngày, kết nối công việc với mục đích lớn hơn.</li>
+    <li><strong>Ngôn ngữ và biểu tượng:</strong> Sử dụng những câu chuyện, ẩn dụ, và biểu tượng cụ thể để truyền đạt tầm nhìn — không chỉ số liệu và mục tiêu khô khan.</li>
+    <li><strong>Kỳ vọng cao:</strong> Lãnh đạo thể hiện sự tin tưởng rằng người theo có thể đạt được những điều phi thường — kỳ vọng cao tự nó là nguồn động lực.</li>
+    <li><strong>Tinh thần đồng đội:</strong> Xây dựng cảm giác "chúng ta cùng nhau trong điều này" — không ai chiến đấu một mình.</li>
+  </ul>
+
+  <p><strong>Sự khác biệt giữa I₁ và I₂:</strong> Idealized Influence về <em>bản sắc và giá trị của lãnh đạo</em> — người theo ngưỡng mộ <em>người đó là ai</em>. Inspirational Motivation về <em>thông điệp và tầm nhìn</em> — người theo được thúc đẩy bởi <em>điều đang được hướng tới</em>.</p>
+
+  <p><strong>Ví dụ:</strong> Martin Luther King Jr. với bài diễn văn "I Have a Dream" — không liệt kê các chính sách cụ thể mà vẽ ra một hình ảnh cụ thể, cảm xúc, và sống động về tương lai mà mọi người muốn hướng đến. Steve Jobs nói về "making a dent in the universe" — không chỉ về bán máy tính.</p>
+</div>
+
+<div class="i-card i3">
+  <h4 style="color:var(--green);">I₃ — INTELLECTUAL STIMULATION (Kích thích Trí tuệ)</h4>
+  <p><strong>Định nghĩa:</strong> Lãnh đạo kích thích người theo sáng tạo và đổi mới bằng cách thách thức các giả định (assumptions), tái cơ cấu vấn đề (reframe problems), và tiếp cận các tình huống cũ theo những cách mới. Lãnh đạo khuyến khích người theo suy nghĩ độc lập và sáng tạo.</p>
+
+  <p><strong>Hành vi cụ thể:</strong></p>
+  <ul>
+    <li>Đặt ra những câu hỏi khó: "Tại sao chúng ta làm theo cách này? Còn cách nào khác không?"</li>
+    <li>Khuyến khích người theo thách thức giả định của chính lãnh đạo — tạo môi trường an toàn để không đồng ý</li>
+    <li>Đưa ra vấn đề cũ theo góc nhìn mới để kích thích suy nghĩ sáng tạo</li>
+    <li>Khi người theo đề xuất ý tưởng khác thường, không phê phán công khai — thay vào đó khuyến khích thử nghiệm</li>
+    <li>Yêu cầu người theo lý giải và kiểm chứng giả định của họ</li>
+  </ul>
+
+  <p><strong>Điểm quan trọng:</strong> Lãnh đạo không cần phải là nguồn của mọi ý tưởng mới — vai trò của họ là tạo ra môi trường <em>an toàn về tâm lý</em> nơi ý tưởng mới được hoan nghênh, thử nghiệm, và học hỏi từ thất bại. Intellectual Stimulation không phải là lãnh đạo thông minh hơn người theo — mà là lãnh đạo <em>làm cho người theo thông minh hơn</em>.</p>
+
+  <p><strong>Tại sao đây là yếu tố transformational?</strong> Khi người theo bắt đầu đặt câu hỏi về các giả định cũ và tiếp cận vấn đề theo cách mới, họ đang <em>thay đổi cách tư duy</em> — đây là một dạng biến đổi sâu sắc hơn chỉ thay đổi hành vi.</p>
+</div>
+
+<div class="i-card i4">
+  <h4 style="color:var(--actrans);">I₄ — INDIVIDUALIZED CONSIDERATION (Quan tâm Cá nhân hóa)</h4>
+  <p><strong>Định nghĩa:</strong> Lãnh đạo chú ý đến nhu cầu phát triển và thành tích của từng cá nhân trong nhóm — đối xử với mỗi người theo như một cá nhân duy nhất, không phải như một thành viên đồng nhất trong nhóm. Lãnh đạo đóng vai trò mentor và coach cho người theo.</p>
+
+  <p><strong>Hành vi cụ thể:</strong></p>
+  <ul>
+    <li>Nhớ những điều người theo đã chia sẻ trong các cuộc trò chuyện trước — thể hiện sự quan tâm thực sự, không phải theo công thức</li>
+    <li>Giao nhiệm vụ dựa trên nhu cầu phát triển của từng cá nhân — không chỉ dựa trên hiệu quả ngắn hạn</li>
+    <li>Lắng nghe tích cực và không phán xét khi người theo chia sẻ khó khăn cá nhân hay nghề nghiệp</li>
+    <li>Cung cấp phản hồi cụ thể, xây dựng, và phù hợp với từng người — không dùng phản hồi "đại trà"</li>
+    <li>Tạo ra trải nghiệm học tập phù hợp với từng người theo — không có chương trình đào tạo "một kích cỡ cho tất cả"</li>
+    <li>Thể hiện sự đồng cảm (empathy) với hoàn cảnh của từng người</li>
+  </ul>
+
+  <p><strong>Phân biệt với Supportive Leadership (Path-Goal):</strong> Supportive Leadership (Ch6) cũng quan tâm đến người theo, nhưng chủ yếu là làm cho công việc dễ chịu hơn. Individualized Consideration đi sâu hơn — tập trung vào sự <em>phát triển dài hạn</em> của từng cá nhân, không chỉ sự thoải mái ngắn hạn. Lãnh đạo với I₄ cao sẽ giao nhiệm vụ khó để người theo phát triển, dù điều đó có thể không thoải mái ngắn hạn.</p>
+
+  <p><strong>Kết quả:</strong> Người theo cảm thấy được nhìn nhận và coi trọng như một cá nhân duy nhất — điều này tạo ra sự cam kết sâu sắc hơn bất kỳ hệ thống khen thưởng nào.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s4">4. Full Range Leadership Model</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 4 – Full Range Leadership Model</div>
+
+<p>Bass & Avolio (1994) đề xuất <strong>Full Range Leadership Model (Mô hình Lãnh đạo Toàn diện)</strong> — một khung tổng hợp đặt tất cả các phong cách lãnh đạo trên một phổ liên tục từ thụ động nhất đến tích cực nhất. Mô hình này có hai chiều:</p>
+
+<ul>
+  <li><strong>Active–Passive (Tích cực–Thụ động):</strong> Mức độ lãnh đạo tham gia chủ động vào quá trình lãnh đạo</li>
+  <li><strong>Effective–Ineffective (Hiệu quả–Kém hiệu quả):</strong> Mức độ phong cách dẫn đến kết quả tốt</li>
+</ul>
+
+<div class="callout">
+  <strong>Phổ từ thụ động đến tích cực (từ kém hiệu quả đến hiệu quả nhất):</strong>
+  <div class="continuum" style="margin-top:12px;">
+    <div class="cont-item" style="background:#fde4e4; border:2px solid #c0392b; font-size:0.78rem;">
+      <strong style="color:#c0392b;">LAISSEZ-FAIRE</strong><br>
+      <small>Thụ động nhất<br>Kém hiệu quả nhất</small>
+    </div>
+    <div style="font-size:1.4rem; color:var(--accent);">→</div>
+    <div class="cont-item" style="background:#f5f5f5; border:2px solid #888; font-size:0.78rem;">
+      <strong style="color:#555;">MBE-Passive</strong><br>
+      <small>Phản ứng sau sự kiện</small>
+    </div>
+    <div style="font-size:1.4rem; color:var(--accent);">→</div>
+    <div class="cont-item" style="background:#eef3fb; border:2px solid var(--secondary); font-size:0.78rem;">
+      <strong style="color:var(--secondary);">MBE-Active</strong><br>
+      <small>Chủ động giám sát</small>
+    </div>
+    <div style="font-size:1.4rem; color:var(--accent);">→</div>
+    <div class="cont-item" style="background:#fff3cd; border:2px solid #e8a020; font-size:0.78rem;">
+      <strong style="color:#856404;">CONTINGENT REWARD</strong><br>
+      <small>Trao đổi rõ ràng</small>
+    </div>
+    <div style="font-size:1.4rem; color:var(--accent);">→</div>
+    <div class="cont-item" style="background:var(--trans-light); border:2px solid var(--trans); font-size:0.78rem;">
+      <strong style="color:var(--trans);">4 I's TRANS-FORMATIONAL</strong><br>
+      <small>Tích cực nhất<br>Hiệu quả nhất</small>
+    </div>
+  </div>
+</div>
+
+<h3>4.1 Hàm ý thực tiễn của Full Range Model</h3>
+
+<p>Mô hình này có một số hàm ý thực tiễn quan trọng:</p>
+<ol>
+  <li><strong>Lãnh đạo có thể sử dụng nhiều phong cách:</strong> Không giống Situational Leadership (một phong cách tại một thời điểm), Full Range Model gợi ý lãnh đạo giỏi sử dụng tất cả các phong cách khi phù hợp — nhưng ưu tiên transformational.</li>
+  <li><strong>Transformational không loại trừ Transactional:</strong> Lãnh đạo transformational vẫn cần Contingent Reward và quản lý hiệu suất tốt — transformational bổ sung cho transactional, không thay thế.</li>
+  <li><strong>Augmentation Effect:</strong> Bass đề xuất rằng Transformational leadership "augments" (bổ sung và khuếch đại) hiệu quả của Transactional leadership — có transactional tốt + transformational sẽ hiệu quả hơn chỉ có transactional tốt.</li>
+  <li><strong>Laissez-faire là vấn đề cần giải quyết:</strong> Khi thấy laissez-faire trong tổ chức, đây là dấu hiệu cần can thiệp — không phải chấp nhận như "phong cách tự do."</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="s5">5. Cơ chế Tác động & Pseudotransformational Leadership</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 5 – How It Works & Pseudotransformation</div>
+
+<h3>5.1 Cơ chế tác động của Transformational Leadership</h3>
+
+<p>Transformational Leadership tạo ra ảnh hưởng theo cơ chế sâu sắc hơn các lý thuyết trước đây — không chỉ thay đổi hành vi mà thay đổi bản thân người theo:</p>
+
+<ol>
+  <li><strong>Nâng cao nhận thức (Raises awareness):</strong> Lãnh đạo biến đổi giúp người theo thấy rõ mục tiêu và giá trị quan trọng hơn — từ "tôi làm việc vì lương" sang "tôi làm việc vì ý nghĩa." Đây là sự dịch chuyển từ nhu cầu thấp (Maslow) lên nhu cầu cao hơn.</li>
+  <li><strong>Biến đổi giá trị (Transforms values):</strong> Người theo không chỉ thay đổi hành vi mà thay đổi giá trị và niềm tin cốt lõi — điều mà transactional leadership không làm được. Họ không làm vì thưởng hay phạt mà vì họ thực sự tin vào điều đó.</li>
+  <li><strong>Tạo lãnh đạo từ người theo (Creates leaders from followers):</strong> Burns nhấn mạnh đặc điểm độc đáo này — người theo của lãnh đạo biến đổi không chỉ là người thực thi mà được phát triển thành lãnh đạo. Tổ chức có nhiều lãnh đạo hơn, không phụ thuộc vào một người.</li>
+  <li><strong>Vượt qua lợi ích cá nhân (Transcends self-interest):</strong> Lãnh đạo biến đổi thúc đẩy người theo hành động vì lợi ích tập thể — vì tổ chức, vì cộng đồng — không chỉ vì lợi ích cá nhân tức thì.</li>
+</ol>
+
+<hr/>
+
+<h3>5.2 Pseudotransformational Leadership</h3>
+
+<div class="definition">
+  <strong>Pseudotransformational Leadership (Lãnh đạo Biến đổi Giả):</strong> Lãnh đạo có charisma và khả năng truyền cảm hứng cao (giống transformational về hình thức), nhưng sử dụng những năng lực này để phục vụ lợi ích <em>cá nhân</em> của họ và duy trì quyền lực, không phải vì lợi ích của người theo và xã hội. Bass gọi đây là "self-serving, exploitative, power-oriented" leadership.
+</div>
+
+<p><strong>Đặc điểm phân biệt Transformational vs. Pseudotransformational:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tiêu chí</th>
+      <th style="color:#1a6e3c;">Transformational Thực sự</th>
+      <th style="color:#8b1a1a;">Pseudotransformational</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Mục tiêu cuối cùng</strong></td>
+      <td>Lợi ích người theo và xã hội</td>
+      <td>Lợi ích cá nhân lãnh đạo; duy trì quyền lực</td>
+    </tr>
+    <tr>
+      <td><strong>Giá trị đạo đức</strong></td>
+      <td>Nhất quán và hướng đến đạo đức cao hơn</td>
+      <td>Công cụ — sử dụng khi có lợi, bỏ khi không cần</td>
+    </tr>
+    <tr>
+      <td><strong>Sự phát triển của người theo</strong></td>
+      <td>Phát triển người theo thành lãnh đạo độc lập</td>
+      <td>Tạo ra sự phụ thuộc — người theo cần lãnh đạo</td>
+    </tr>
+    <tr>
+      <td><strong>Tầm nhìn</strong></td>
+      <td>Phục vụ mục tiêu chung, có căn cứ thực tế</td>
+      <td>Phục vụ lãnh đạo; có thể xa rời thực tế (grandiose)</td>
+    </tr>
+    <tr>
+      <td><strong>Phản ứng với phê bình</strong></td>
+      <td>Chào đón phản hồi và điều chỉnh</td>
+      <td>Không chịu đựng sự không đồng ý; loại bỏ người phản đối</td>
+    </tr>
+    <tr>
+      <td><strong>Ví dụ điển hình</strong></td>
+      <td>Nelson Mandela, Abraham Lincoln, Gandhi</td>
+      <td>Hitler, một số CEO "visionary" dẫn công ty đến phá sản</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout important">
+  <strong>Tại sao phân biệt này quan trọng:</strong><br>
+  Pseudotransformational leadership là nguy hiểm vì bề ngoài nó <em>trông giống</em> transformational — charismatic, có tầm nhìn, có khả năng truyền cảm hứng. Người theo thường không nhận ra ngay sự khác biệt. Chỉ khi xem xét kết quả lâu dài và phân tích động cơ thực sự mới có thể phân biệt. Đây là lý do tại sao Burns (1978) nhấn mạnh chiều kích <em>đạo đức</em> là yếu tố cốt lõi của Transformational Leadership thực sự.
+</div>
+
+<h3>5.3 Điểm mạnh và Phê bình của Transformational Leadership</h3>
+
+<h4>Điểm mạnh:</h4>
+<ol>
+  <li><strong>Phổ biến và được nghiên cứu rộng rãi:</strong> Transformational Leadership là một trong những lý thuyết lãnh đạo được nghiên cứu nhiều nhất trong 30 năm qua. Hàng nghìn nghiên cứu xác nhận mối liên hệ với hiệu suất tổ chức, sự hài lòng của người theo, và nhiều kết quả tích cực khác.</li>
+  <li><strong>Tầm nhìn toàn diện:</strong> Full Range Leadership Model là một trong những mô hình toàn diện nhất — bao gồm cả các phong cách tiêu cực (laissez-faire) và tích cực, tạo ra bức tranh đầy đủ về phổ lãnh đạo.</li>
+  <li><strong>Nhấn mạnh đạo đức:</strong> Là một trong số ít lý thuyết lãnh đạo tường minh về chiều kích đạo đức — lãnh đạo không chỉ là về hiệu quả mà còn về việc làm đúng.</li>
+  <li><strong>Công cụ đo lường tốt:</strong> MLQ (Multifactor Leadership Questionnaire) là công cụ đo lường được xác nhận tốt — có thể dùng cho self-assessment và 360-degree feedback.</li>
+  <li><strong>Ứng dụng rộng:</strong> Lý thuyết có thể áp dụng từ lãnh đạo nhóm nhỏ đến lãnh đạo tổ chức lớn và lãnh đạo chính trị.</li>
+</ol>
+
+<h4>Phê bình/Hạn chế:</h4>
+<ol>
+  <li><strong>Thiếu sự rõ ràng về khái niệm:</strong> Ranh giới giữa bốn thành phần 4 I's không phải lúc nào cũng rõ ràng — trong thực tế, chúng chồng lấp nhau nhiều. MLQ không phải lúc nào cũng phân biệt tốt bốn I's trong phân tích thống kê.</li>
+  <li><strong>Thiếu rõ ràng về quy trình:</strong> Lý thuyết nói lãnh đạo transformational "biến đổi" người theo — nhưng <em>cơ chế cụ thể</em> của sự biến đổi đó chưa được giải thích rõ ràng.</li>
+  <li><strong>Nguy cơ "hero leadership":</strong> Transformational Leadership dễ bị hiểu theo nghĩa một lãnh đạo vĩ đại cứu rỗi tổ chức — điều này cản trở phát triển lãnh đạo phân tán và tập thể.</li>
+  <li><strong>Thiên vị trong đánh giá:</strong> MLQ thường được người theo đánh giá — và người theo của lãnh đạo transformational có thể bị ảnh hưởng bởi charisma khi đánh giá, tạo ra bias.</li>
+  <li><strong>Vấn đề giới và văn hóa:</strong> Các đặc điểm của transformational leadership (charisma, vision, intellectual stimulation) có thể được biểu hiện và được đánh giá khác nhau trong các nền văn hóa và với các giới tính khác nhau — vấn đề về tính phổ quát của lý thuyết.</li>
+  <li><strong>Ranh giới với Pseudotransformational:</strong> Dù lý thuyết phân biệt rõ, trong thực tiễn rất khó nhận ra pseudotransformational từ sớm — làm suy yếu tính ứng dụng của lý thuyết trong phát hiện lãnh đạo độc hại.</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="s6">6. Mô hình & Khung lý thuyết tổng hợp</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 6 – Models & Frameworks</div>
+
+<h3>6.1 Cấu trúc tổng thể Transformational vs. Transactional</h3>
+
+<div class="callout">
+  <pre style="font-family:monospace; font-size:0.87rem; line-height:1.8;">
+FULL RANGE LEADERSHIP MODEL (Bass & Avolio, 1994)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TRANSFORMATIONAL LEADERSHIP [Tích cực / Hiệu quả cao]
+  I₁ Idealized Influence (Attributed)  — Role model, được ngưỡng mộ
+  I₁ Idealized Influence (Behavioral)  — Hành vi đạo đức, hy sinh cá nhân
+  I₂ Inspirational Motivation          — Tầm nhìn, truyền cảm hứng, nhiệt tình
+  I₃ Intellectual Stimulation          — Sáng tạo, thách thức giả định
+  I₄ Individualized Consideration      — Mentor, coach, cá nhân hóa
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TRANSACTIONAL LEADERSHIP [Trung bình]
+  Contingent Reward    — Khen thưởng có điều kiện (hiệu quả)
+  MBE-Active           — Giám sát chủ động
+  MBE-Passive          — Phản ứng sau sự kiện
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+LAISSEZ-FAIRE [Thụ động / Kém hiệu quả nhất]
+  Không quyết định, không can thiệp, vắng mặt lãnh đạo
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  </pre>
+</div>
+
+<h3>6.2 So sánh Transformational vs. Transactional Leadership</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tiêu chí</th>
+      <th>Transactional Leadership</th>
+      <th>Transformational Leadership</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Cơ chế ảnh hưởng</strong></td>
+      <td>Trao đổi (exchange) — phần thưởng và trừng phạt</td>
+      <td>Biến đổi giá trị, niềm tin, và bản sắc</td>
+    </tr>
+    <tr>
+      <td><strong>Động lực người theo</strong></td>
+      <td>Extrinsic — vì phần thưởng hoặc tránh phạt</td>
+      <td>Intrinsic — vì ý nghĩa, giá trị, và mục đích</td>
+    </tr>
+    <tr>
+      <td><strong>Tầm nhìn</strong></td>
+      <td>Tập trung vào mục tiêu ngắn hạn cụ thể</td>
+      <td>Tầm nhìn dài hạn và mục đích lớn hơn</td>
+    </tr>
+    <tr>
+      <td><strong>Thay đổi hay Ổn định?</strong></td>
+      <td>Duy trì hiện trạng — hệ thống khen thưởng hiện tại</td>
+      <td>Tạo ra sự thay đổi — biến đổi tổ chức và người theo</td>
+    </tr>
+    <tr>
+      <td><strong>Hiệu quả trong môi trường</strong></td>
+      <td>Ổn định, có cấu trúc, kết quả đo lường được</td>
+      <td>Biến động, cần đổi mới, cần cam kết cao</td>
+    </tr>
+    <tr>
+      <td><strong>Quan hệ lãnh đạo–người theo</strong></td>
+      <td>Giao dịch — mỗi bên có lợi ích riêng</td>
+      <td>Biến đổi — cả hai bên phát triển</td>
+    </tr>
+    <tr>
+      <td><strong>Theo Burns hay Bass?</strong></td>
+      <td>Burns: đối lập; Bass: bổ sung</td>
+      <td>Burns: đối lập; Bass: bổ sung và cao hơn transactional</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>6.3 4 I's — Bảng phân tích nhanh</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>I</th>
+      <th>Tên</th>
+      <th>Câu hỏi cốt lõi</th>
+      <th>Cơ chế</th>
+      <th>Kết quả</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>I₁</strong></td>
+      <td>Idealized Influence</td>
+      <td>Lãnh đạo là ai — có đáng để ngưỡng mộ và tin theo?</td>
+      <td>Referent power; role modeling</td>
+      <td>Niềm tin và tôn trọng sâu sắc</td>
+    </tr>
+    <tr>
+      <td><strong>I₂</strong></td>
+      <td>Inspirational Motivation</td>
+      <td>Tương lai là gì — có đáng để theo đuổi?</td>
+      <td>Vision; symbolic communication; enthusiasm</td>
+      <td>Động lực cao; tinh thần đội nhóm</td>
+    </tr>
+    <tr>
+      <td><strong>I₃</strong></td>
+      <td>Intellectual Stimulation</td>
+      <td>Cách suy nghĩ — có đang được thách thức và mở rộng?</td>
+      <td>Questioning assumptions; reframing</td>
+      <td>Sáng tạo và đổi mới; tự phát triển tư duy</td>
+    </tr>
+    <tr>
+      <td><strong>I₄</strong></td>
+      <td>Individualized Consideration</td>
+      <td>Tôi là ai — có được nhìn nhận và phát triển?</td>
+      <td>Mentoring; coaching; personalized development</td>
+      <td>Phát triển người theo; cam kết cá nhân sâu</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="s7">7. Ví dụ thực tiễn</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 7 – Practical Examples</div>
+
+<h3>7.1 Case: Steve Jobs — Transformational hay Pseudotransformational?</h3>
+
+<p>Steve Jobs là ví dụ thường được dùng để thảo luận về ranh giới giữa transformational và pseudotransformational:</p>
+<ul>
+  <li><strong>Dấu hiệu Transformational:</strong> Tầm nhìn rõ ràng về "making a dent in the universe" (I₂); truyền cảm hứng thực sự cho nhân viên Apple và khách hàng toàn cầu; kích thích sáng tạo qua "reality distortion field" (I₃); tạo ra sản phẩm thay đổi ngành và xã hội.</li>
+  <li><strong>Dấu hiệu Pseudotransformational:</strong> Nổi tiếng về việc không chịu đựng phê bình, loại bỏ người không đồng ý; đôi khi chiếm công của người khác; hành vi mang tính kiểm soát và đôi khi tàn nhẫn với nhân viên; tầm nhìn thỉnh thoảng xa rời thực tế.</li>
+</ul>
+<p><strong>Kết luận:</strong> Jobs là ví dụ phức tạp — thể hiện cả hai. Điều này cho thấy ranh giới trong thực tế không bao giờ tuyệt đối và sạch sẽ như lý thuyết. Trong bài thi, đây là ví dụ tốt để thảo luận về sự phức tạp của lý thuyết.</p>
+
+<h3>7.2 Case: Áp dụng 4 I's trong Tổ chức Việt Nam</h3>
+
+<p><strong>Tình huống:</strong> Giám đốc sản phẩm của startup EdTech Việt Nam dẫn dắt nhóm 15 người qua giai đoạn khủng hoảng — funding round sắp hết, cần tái cơ cấu và ra sản phẩm mới trong 3 tháng:</p>
+
+<ul>
+  <li><strong>I₁ — Idealized Influence:</strong> Từ chối nhận lương tháng đó cùng với co-founder ("Chúng tôi cùng chịu với team"); minh bạch hoàn toàn về tình hình tài chính; không đổ lỗi cho thị trường — nhận trách nhiệm về chiến lược trước đó.</li>
+  <li><strong>I₂ — Inspirational Motivation:</strong> Tổ chức all-hands meeting và nói thẳng về khó khăn, nhưng đồng thời vẽ ra tầm nhìn rõ ràng về sản phẩm mới sẽ giải quyết vấn đề thực sự cho học sinh Việt Nam. "Đây là lý do chúng ta ở đây — không phải để kiếm tiền, mà để thay đổi cách học của một thế hệ."</li>
+  <li><strong>I₃ — Intellectual Stimulation:</strong> Tổ chức design sprint — yêu cầu mỗi người viết ra 3 giả định của mình về thị trường và thách thức nhau. "Chúng ta đã sai ở điểm nào? Điều gì chúng ta chưa thử?" Không có ý tưởng nào bị coi là ngớ ngẩn.</li>
+  <li><strong>I₄ — Individualized Consideration:</strong> Gặp riêng từng người để hiểu lo lắng cá nhân (tài chính, nghề nghiệp), điều chỉnh vai trò để phù hợp với điểm mạnh và sở thích của từng người trong sprint 3 tháng. Cung cấp reference letter sẵn cho bất ai muốn tìm việc mới — không ép buộc.</li>
+</ul>
+<p><strong>Kết quả:</strong> Trong 85 ngày, nhóm ra được MVP mới — 80% team ở lại dù không có lương đầy đủ, vì họ tin vào lãnh đạo và vào sứ mệnh.</p>
+
+<h3>7.3 Phân biệt Transformational và Transactional trong Cuộc sống thực</h3>
+
+<table>
+  <thead>
+    <tr><th>Tình huống</th><th>Cách Transactional</th><th>Cách Transformational</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Muốn nhóm làm việc chăm hơn</td>
+      <td>"Ai đạt KPI tháng này được thưởng 2 triệu"</td>
+      <td>Giải thích tại sao dự án quan trọng; kết nối công việc hàng ngày với tầm nhìn lớn hơn; thể hiện sự tin tưởng vào khả năng của nhóm</td>
+    </tr>
+    <tr>
+      <td>Khi nhóm gặp thất bại</td>
+      <td>Rà soát ai không đạt KPI; điều chỉnh hệ thống khen thưởng/phạt</td>
+      <td>Phân tích cùng nhóm: chúng ta đã giả định sai gì? Học được gì? Làm thế nào chúng ta trở nên mạnh hơn từ thất bại này?</td>
+    </tr>
+    <tr>
+      <td>Phát triển nhân viên giỏi</td>
+      <td>Tăng lương hoặc thăng chức để giữ người</td>
+      <td>Hiểu mục tiêu dài hạn của họ; giao nhiệm vụ stretch assignment; mentor họ; thể hiện sự tin tưởng vào tiềm năng của họ</td>
+    </tr>
+    <tr>
+      <td>Ra quyết định quan trọng</td>
+      <td>Tự quyết dựa trên phân tích; thông báo kết quả</td>
+      <td>Chia sẻ bối cảnh; hỏi ý kiến nhóm về những góc mà mình có thể bỏ qua; giải thích quyết định cuối cùng và lý do</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="s8">8. Lưu ý học tập & Bẫy nhận thức phổ biến</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 8 – Study Notes & Common Pitfalls</div>
+
+<div class="callout warning">
+  <strong>Bẫy 1: Nhầm Burns và Bass về quan hệ Transactional–Transformational</strong><br>
+  Burns (1978): hai cực đối lập — lãnh đạo dùng một hoặc cái kia. Bass (1985): bổ sung nhau — transformational xây dựng trên nền transactional, "augmentation effect." Đây là câu hỏi phân biệt tác giả thường xuất hiện trong bài thi.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 2: Nhầm "4 I's" — đặc biệt nhầm I₁ và I₂</strong><br>
+  I₁ (Idealized Influence) = về <em>người lãnh đạo LÀ AI</em> — giá trị, đạo đức, role model. I₂ (Inspirational Motivation) = về <em>TẦM NHÌN và THÔNG ĐIỆP</em> — tương lai, nhiệt tình, câu chuyện. Hai thành phần này liên quan nhưng khác nhau. Trong bài thi không được gộp chúng làm một.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 3: Nhầm Laissez-Faire (Full Range) với S4 Delegating (SLII)</strong><br>
+  S4 Delegating = lãnh đạo <em>chủ ý</em> trao quyền cho người D4 — vẫn theo dõi kết quả và sẵn sàng hỗ trợ. Laissez-faire = <em>vắng mặt lãnh đạo</em> — không quyết định, không hỗ trợ, không theo dõi. Đây là bẫy quan trọng khi so sánh hai lý thuyết.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 4: Cho rằng Transformational Leadership là "tốt" còn Transactional là "xấu"</strong><br>
+  Không đúng theo Bass. Contingent Reward (transactional) là phong cách lãnh đạo hiệu quả và cần thiết. Tổ chức cần cả hai. Transformational "bổ sung" transactional — không thay thế. Laissez-faire mới là vấn đề thực sự.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 5: Nhầm Charisma với Idealized Influence</strong><br>
+  Charisma là một thành phần của Idealized Influence (I₁), nhưng Idealized Influence rộng hơn charisma — nó bao gồm cả hành vi đạo đức cụ thể, không chỉ sức lôi cuốn cá nhân. Hơn nữa, charisma có thể tồn tại mà không có Idealized Influence thực sự (trường hợp Pseudotransformational).
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 6: Quên phân biệt II-Attributed vs. II-Behavioral</strong><br>
+  Idealized Influence có hai dạng: (A) Attributed — cách người theo NHẬN THỨC lãnh đạo; (B) Behavioral — hành vi CỤ THỂ của lãnh đạo thể hiện giá trị và đạo đức. MLQ đo lường cả hai riêng biệt. Đây là chi tiết mức độ cao thường hỏi trong bài thi chuyên sâu.
+</div>
+
+<h3>Câu hỏi ôn tập</h3>
+<ol>
+  <li>Burns (1978) và Bass (1985) có quan niệm khác nhau về mối quan hệ giữa Transactional và Transformational Leadership như thế nào? Quan niệm nào bạn cho là thực tế hơn và tại sao?</li>
+  <li>Mô tả bốn thành phần "4 I's" của Transformational Leadership. Tại sao Individualized Consideration được xem là transformational chứ không chỉ là lãnh đạo tốt thông thường?</li>
+  <li>Giải thích Full Range Leadership Model. Vị trí của Contingent Reward trong mô hình này cho thấy điều gì về quan hệ giữa Transactional và Transformational?</li>
+  <li>Pseudotransformational Leadership là gì và làm thế nào để phân biệt nó với Transformational Leadership thực sự? Cho ví dụ về từng loại.</li>
+  <li>Phân tích điểm mạnh và hạn chế của Transformational Leadership. Hạn chế nào bạn cho là quan trọng nhất và tại sao?</li>
+</ol>
+
+<h3>Từ khóa quan trọng</h3>
+<table>
+  <thead><tr><th>Thuật ngữ</th><th>Định nghĩa ngắn</th><th>Nguồn</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Transformational Leadership</strong></td><td>Lãnh đạo biến đổi giá trị, niềm tin người theo; tạo lãnh đạo từ người theo</td><td>Burns (1978); Bass (1985)</td></tr>
+    <tr><td><strong>Transactional Leadership</strong></td><td>Lãnh đạo dựa trên trao đổi phần thưởng và hiệu suất</td><td>Burns (1978); Bass (1985)</td></tr>
+    <tr><td><strong>Idealized Influence (I₁)</strong></td><td>Role model đạo đức; được ngưỡng mộ và tin tưởng sâu sắc; có cả Attributed và Behavioral</td><td>Bass (1985)</td></tr>
+    <tr><td><strong>Inspirational Motivation (I₂)</strong></td><td>Tầm nhìn, truyền cảm hứng, nhiệt tình; kết nối công việc với mục đích lớn hơn</td><td>Bass (1985)</td></tr>
+    <tr><td><strong>Intellectual Stimulation (I₃)</strong></td><td>Kích thích sáng tạo; thách thức giả định; tạo môi trường an toàn cho ý tưởng mới</td><td>Bass (1985)</td></tr>
+    <tr><td><strong>Individualized Consideration (I₄)</strong></td><td>Mentor và coach từng cá nhân; phát triển người theo dài hạn</td><td>Bass (1985)</td></tr>
+    <tr><td><strong>Contingent Reward</strong></td><td>Trao đổi rõ ràng: phần thưởng khi đạt mục tiêu — hiệu quả nhất trong transactional</td><td>Bass (1985)</td></tr>
+    <tr><td><strong>MBE-Active</strong></td><td>Giám sát chủ động; sửa lỗi trước khi nghiêm trọng</td><td>Bass (1985)</td></tr>
+    <tr><td><strong>MBE-Passive</strong></td><td>Chờ vấn đề xảy ra mới can thiệp</td><td>Bass (1985)</td></tr>
+    <tr><td><strong>Laissez-Faire</strong></td><td>Vắng mặt lãnh đạo — tệ nhất trong Full Range Model</td><td>Bass (1985)</td></tr>
+    <tr><td><strong>Full Range Leadership Model</strong></td><td>Mô hình tổng hợp toàn bộ phổ từ laissez-faire đến transformational</td><td>Bass & Avolio (1994)</td></tr>
+    <tr><td><strong>MLQ</strong></td><td>Multifactor Leadership Questionnaire — công cụ đo lường phong cách lãnh đạo</td><td>Bass & Avolio</td></tr>
+    <tr><td><strong>Pseudotransformational</strong></td><td>Charisma và tầm nhìn nhưng phục vụ lợi ích cá nhân lãnh đạo — không đạo đức</td><td>Bass (1998)</td></tr>
+    <tr><td><strong>Augmentation Effect</strong></td><td>Transformational bổ sung và khuếch đại hiệu quả của transactional</td><td>Bass (1985)</td></tr>
+  </tbody>
+</table>
+
+<hr/>
+<p style="text-align:center; color:var(--muted); font-size:0.85rem;">GK5009 – Quản lý và Lãnh đạo | HK252 | Tài liệu học tập tổng hợp | Nguồn: Northouse (2021), 7th ed., Chapter 8; Burns (1978); Bass (1985); Bass & Avolio (1994, 2004)</p>
+</body>
+</html>

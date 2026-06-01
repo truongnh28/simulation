@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.7 — Neural Networks | MLA HK252</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']], processEscapes: true },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:0;left:0;width:258px;height:100vh;background:#0a1f10;overflow-y:auto;z-index:100;flex-shrink:0}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:#2d6a4f;border-radius:2px}
+.sb-title{padding:1.25rem 1rem .75rem;border-bottom:1px solid #1a3a20}
+.sb-title h1{color:#86efac;font-size:.95rem;font-weight:700;line-height:1.4}
+.sb-title p{color:#6ee7b7;font-size:.7rem;margin-top:.2rem}
+.sb-group{padding:.6rem 1rem .15rem;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#4ade80}
+.sb-link{display:flex;align-items:center;gap:.45rem;padding:.35rem 1rem;color:#bbf7d0;font-size:.8rem;text-decoration:none;border-left:3px solid transparent;transition:all .15s}
+.sb-link:hover{background:rgba(74,222,128,.1);border-left-color:#4ade80;color:#fff}
+.sb-link i{width:14px;font-size:.7rem;color:#4ade80;flex-shrink:0}
+
+/* MAIN */
+#main{margin-left:258px;min-height:100vh;padding:2rem 2.5rem;max-width:calc(100% - 258px)}
+
+/* CHAPTER HEADER */
+.ch-hdr{background:linear-gradient(135deg,#14532d,#16a34a);color:#fff;padding:1.75rem 2rem;border-radius:10px;margin-bottom:1.75rem;box-shadow:0 4px 12px rgba(20,83,45,.3)}
+.ch-hdr .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#86efac;font-weight:700}
+.ch-hdr h2{font-size:1.75rem;font-weight:800;margin:.2rem 0 .4rem}
+.ch-hdr p{color:#d1fae5;font-size:.9rem}
+.ch-hdr-blue{background:linear-gradient(135deg,#1e3a5f,#1e4d8c)}
+.ch-hdr-blue .lbl{color:#93c5fd}
+.ch-hdr-blue p{color:#bfdbfe}
+
+/* SECTION TITLES */
+.s-title{font-size:1.2rem;font-weight:700;color:#14532d;border-left:4px solid #16a34a;padding-left:.7rem;margin:1.75rem 0 .9rem}
+.ss-title{font-size:1rem;font-weight:600;color:#166534;margin:1.25rem 0 .6rem}
+
+/* ALERTS */
+.alert{border-radius:0 8px 8px 0;padding:.85rem 1.1rem;margin:.85rem 0;font-size:.875rem}
+.alert-title{font-weight:700;margin-bottom:.3rem;font-size:.85rem}
+.al-blue{background:#eff6ff;border-left:4px solid #3b82f6}
+.al-blue .alert-title{color:#1d4ed8}
+.al-green{background:#f0fdf4;border-left:4px solid #22c55e}
+.al-green .alert-title{color:#15803d}
+.al-yellow{background:#fffbeb;border-left:4px solid #f59e0b}
+.al-yellow .alert-title{color:#b45309}
+.al-red{background:#fef2f2;border-left:4px solid #ef4444}
+.al-red .alert-title{color:#b91c1c}
+.al-purple{background:#faf5ff;border-left:4px solid #9333ea}
+.al-purple .alert-title{color:#7e22ce}
+
+/* FORMULA */
+.flabel{display:inline-block;background:#16a34a;color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .65rem;border-radius:6px 6px 0 0;margin-bottom:-1px}
+.fbox{background:#f8fafc;border:1px solid #cbd5e1;border-top:3px solid #16a34a;border-radius:0 8px 8px 8px;padding:1.1rem 1.5rem;margin:.25rem 0 .85rem;overflow-x:auto;text-align:center}
+.fbox.no-top-radius{border-radius:8px}
+
+/* DETAILS */
+details{border:1px solid #e2e8f0;border-radius:8px;margin:.65rem 0;overflow:hidden}
+details>summary{padding:.65rem 1.1rem;cursor:pointer;font-weight:600;font-size:.875rem;background:#f1f5f9;list-style:none;display:flex;align-items:center;gap:.45rem;user-select:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:'▶';font-size:.65rem;color:#64748b;transition:transform .2s;margin-right:.1rem}
+details[open]>summary::before{transform:rotate(90deg)}
+details[open]>summary{background:#e2e8f0}
+.dc{padding:1.1rem}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.85rem}
+.tbl th{background:#14532d;color:#fff;padding:.5rem .85rem;text-align:left}
+.tbl td{padding:.5rem .85rem;border:1px solid #e2e8f0}
+.tbl tr:nth-child(even){background:#f0fdf4}
+
+/* STEPS */
+.step{display:flex;gap:.85rem;margin:.6rem 0}
+.step-n{background:#16a34a;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.15rem}
+.step-c{flex:1;font-size:.875rem;line-height:1.6}
+
+/* QUIZ */
+.qcard{background:#fff;border:1px solid #e2e8f0;border-radius:8px;margin:1.1rem 0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.qhdr{background:#1e3a5f;color:#fff;padding:.55rem 1.1rem;font-size:.82rem;font-weight:600}
+.qbody{padding:1.1rem}
+.qq{font-size:.875rem;line-height:1.6;margin-bottom:.7rem;font-weight:500}
+.qopt{padding:.35rem .75rem;border-radius:5px;margin:.2rem 0;font-size:.855rem;line-height:1.5}
+.qok{background:#dcfce7;color:#14532d;font-weight:700;border-left:3px solid #16a34a}
+.qwrong{color:#64748b}
+.qexp{background:#fffbeb;border-left:3px solid #f59e0b;padding:.7rem 1rem;border-radius:0 6px 6px 0;margin-top:.7rem;font-size:.84rem;line-height:1.6}
+
+/* CODE */
+.code{background:#1e293b;color:#e2e8f0;padding:.9rem 1.1rem;border-radius:8px;font-family:'Courier New',monospace;font-size:.82rem;margin:.75rem 0;overflow-x:auto;line-height:1.7}
+.kw{color:#7dd3fc}
+.cmt{color:#64748b}
+
+.divider{border:none;border-top:1px solid #e2e8f0;margin:2.25rem 0}
+#back-top{position:fixed;bottom:1.5rem;right:1.5rem;background:#14532d;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.2);font-size:.85rem}
+#back-top:hover{background:#15803d}
+
+p{font-size:.9rem;line-height:1.65;margin:.5rem 0}
+li{font-size:.875rem;line-height:1.65}
+ul,ol{padding-left:1.4rem;margin:.4rem 0}
+strong{color:#1e293b}
+
+@media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+</style>
+</head>
+
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sb-title">
+    <h1><i class="fas fa-brain"></i> Học Máy &amp; Ứng Dụng</h1>
+    <p>Ôn thi Cuối Kỳ — HK252 | CO5175</p>
+  </div>
+  <div class="sb-group">Trang chủ</div>
+  <a href="index.html" class="sb-link"><i class="fas fa-home"></i>Tổng quan các chương</a>
+  <div class="sb-group">Phân loại có giám sát</div>
+  <a href="knn.html" class="sb-link"><i class="fas fa-map-marker-alt"></i>Ch.3 — K-Nearest Neighbors</a>
+  <a href="bayes.html" class="sb-link"><i class="fas fa-calculator"></i>Ch.4 — Naive Bayes</a>
+  <a href="dtree.html" class="sb-link"><i class="fas fa-tree"></i>Ch.5 — Decision Trees</a>
+  <a href="nn.html" class="sb-link" style="background:rgba(74,222,128,.15);border-left-color:#4ade80;color:#fff"><i class="fas fa-network-wired"></i>Ch.7 — Neural Networks</a>
+  <a href="svm.html" class="sb-link"><i class="fas fa-compress-arrows-alt"></i>Ch.8 — Support Vector Machines</a>
+  <a href="ensemble.html" class="sb-link"><i class="fas fa-layer-group"></i>Ch.9 — Ensemble Methods</a>
+  <a href="deep.html" class="sb-link"><i class="fas fa-microchip"></i>Ch.12 — Deep Learning</a>
+  <div class="sb-group">Chuyên đề ôn thi</div>
+  <a href="hmm.html" class="sb-link"><i class="fas fa-random"></i>Hidden Markov Models</a>
+  <a href="kmeans.html" class="sb-link"><i class="fas fa-object-group"></i>K-Means Clustering</a>
+  <a href="logreg.html" class="sb-link"><i class="fas fa-chart-line"></i>Logistic Regression</a>
+  <div class="sb-group">Thi thử</div>
+  <a href="mock.html" class="sb-link"><i class="fas fa-file-alt"></i>Đề Thi Thử 2026</a>
+  <a href="exam2025.html" class="sb-link"><i class="fas fa-graduation-cap"></i>Đề CK Thật 2025</a>
+</nav>
+
+<main id="main">
+
+<!-- ========== CH7: NEURAL NETWORKS ========== -->
+<section id="nn">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-book-open"></i> Chương 7</div>
+  <h2>Mạng Nơ-ron Nhân tạo &amp; Backpropagation</h2>
+  <p>Từ Perceptron đơn giản đến mạng nhiều lớp và thuật toán lan truyền ngược.</p>
+</div>
+
+<div class="s-title">1. Mô hình Perceptron</div>
+<div class="flabel">Perceptron Output</div>
+<div class="fbox">\[ o = \mathrm{sign}\!\left(\sum_i w_i x_i - \theta\right) = \mathrm{sign}(\mathbf{w}\cdot\mathbf{x} + b) \]</div>
+<p>Phương trình siêu phẳng quyết định: \(\mathbf{w}\cdot\mathbf{x} + b = 0\)</p>
+
+<div class="s-title">2. Luật học Perceptron</div>
+<div class="flabel">Perceptron Update Rule</div>
+<div class="fbox">\[ \Delta w_i = \eta(t - o)x_i \]</div>
+<p>Chỉ cập nhật khi phân loại sai. Converges nếu dữ liệu linearly separable.</p>
+<div class="alert al-yellow">
+  <div class="alert-title">Giới hạn Perceptron</div>
+  Không giải được bài toán XOR — dẫn đến "AI Winter" (1969–1986). Cần mạng nhiều lớp + backpropagation.
+</div>
+
+<div class="s-title">3. Delta Rule / Gradient Descent</div>
+<div class="flabel">Training Error (MSE)</div>
+<div class="fbox">\[ E(\mathbf{w}) = \frac{1}{2}\sum_{d \in D}(t_d - o_d)^2 \]</div>
+<div class="flabel">Weight Update (Batch GD)</div>
+<div class="fbox">\[ \Delta w_i = \eta \sum_{d \in D}(t_d - o_d) \cdot x_{id} \]</div>
+
+<div class="s-title">4. Sigmoid và vấn đề Gradient Vanishing</div>
+<div class="flabel">Sigmoid &amp; Derivative</div>
+<div class="fbox">\[ \sigma(z) = \frac{1}{1+e^{-z}}, \qquad \sigma'(z) = \sigma(z)(1-\sigma(z)) = \hat{y}(1-\hat{y}) \]</div>
+
+<div class="alert al-red">
+  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> MSE + Sigmoid = Gradient Vanishing (Câu 12)</div>
+  <div class="fbox no-top-radius">\[ \frac{\partial E_{MSE}}{\partial z} = (\hat{y}-y)\cdot\underbrace{\hat{y}(1-\hat{y})}_{\to 0 \text{ khi } \hat{y}\to 0 \text{ hoặc } 1} \]</div>
+  <p>Khi dự đoán sai lệch cực độ, gradient tiệm cận 0 → học rất chậm. Giải pháp: dùng <strong>Cross-Entropy</strong>.</p>
+</div>
+
+<div class="s-title">5. Cross-Entropy Loss</div>
+<div class="flabel">Binary Cross-Entropy</div>
+<div class="fbox">\[ L_{CE} = -y\log\hat{y} - (1-y)\log(1-\hat{y}) \]</div>
+<div class="flabel">Gradient theo logit z (Câu 13)</div>
+<div class="fbox">\[ \frac{\partial L_{CE}}{\partial z} = \hat{y} - y \]</div>
+<div class="alert al-green">
+  <div class="alert-title">Ưu điểm Cross-Entropy</div>
+  Gradient \(\hat{y}-y\) đơn giản, không bị triệt tiêu. Sai số lớn → gradient lớn → học nhanh.
+</div>
+
+<div class="s-title">6. Backpropagation</div>
+<div class="step"><div class="step-n">1</div><div class="step-c"><strong>Forward pass:</strong> Tính đầu ra từng lớp từ input đến output.</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c"><strong>Compute loss:</strong> Tính L từ đầu ra cuối và nhãn đúng.</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c"><strong>Backward pass:</strong> Chain Rule lan truyền ngược gradient, tính \(\partial L/\partial w\) cho từng trọng số.</div></div>
+<div class="step"><div class="step-n">4</div><div class="step-c"><strong>Update:</strong> \(w \leftarrow w - \eta \frac{\partial L}{\partial w}\)</div></div>
+</section>
+
+
+</main>
+
+<a href="#" id="back-top" title="Về đầu trang"><i class="fas fa-arrow-up"></i></a>
+
+<script>
+mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+</script>
+</body>
+</html>

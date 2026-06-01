@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GK5009 — Tổng Quan Khóa Học | Quản lý và Lãnh đạo</title>
+<style>
+  :root {
+    --primary: #0d2137;
+    --secondary: #1a4f72;
+    --accent: #f39c12;
+    --accent2: #e74c3c;
+    --light: #eaf3fb;
+    --lighter: #f5fbff;
+    --border: #b8d4e8;
+    --text: #1a1a2e;
+    --muted: #546e7a;
+    --white: #ffffff;
+    --success: #27ae60;
+    --purple: #6c3483;
+    --green: #145a32;
+    --teal: #2e4057;
+    --indigo: #2e1f5e;
+    --red: #7b2d00;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    background: #f0f4f8;
+    color: var(--text);
+    line-height: 1.75;
+    font-size: 15px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, var(--primary) 0%, #1a3a5c 60%, var(--secondary) 100%);
+    color: white;
+    padding: 52px 40px 40px;
+    border-bottom: 4px solid var(--accent);
+    text-align: center;
+  }
+  header .tag {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  header .subtitle {
+    font-size: 1.15rem;
+    opacity: 0.88;
+    margin-bottom: 20px;
+  }
+  header .instructor {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--primary);
+    padding: 0 40px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    border-bottom: 3px solid var(--secondary);
+    justify-content: center;
+  }
+  nav a {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    padding: 14px 18px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -3px;
+    transition: all 0.2s;
+  }
+  nav a:hover { color: white; border-bottom-color: var(--accent); }
+
+  /* ── MAIN ── */
+  main { max-width: 1150px; margin: 0 auto; padding: 40px 30px; }
+
+  /* ── SECTION ── */
+  .section {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 36px;
+    box-shadow: 0 2px 12px rgba(13,33,55,0.08);
+    overflow: hidden;
+  }
+  .section-header {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 22px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .section-number {
+    width: 44px; height: 44px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; font-weight: 900; flex-shrink: 0;
+    color: var(--primary);
+  }
+  .section-header h2 { font-size: 1.35rem; font-weight: 800; }
+  .section-header .en { font-size: 0.85rem; opacity: 0.78; margin-top: 2px; font-style: italic; }
+  .section-body { padding: 32px; }
+
+  /* ── TYPOGRAPHY ── */
+  h3 {
+    font-size: 1.15rem;
+    color: var(--primary);
+    font-weight: 700;
+    margin: 28px 0 12px;
+    padding-left: 12px;
+    border-left: 4px solid var(--accent);
+  }
+  h4 {
+    font-size: 1rem;
+    color: var(--secondary);
+    font-weight: 700;
+    margin: 20px 0 8px;
+  }
+  p { margin-bottom: 14px; }
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { margin-bottom: 6px; }
+  strong { color: var(--primary); }
+
+  /* ── OBJECTIVES ── */
+  .obj-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .obj-item {
+    display: flex;
+    gap: 16px;
+    background: var(--light);
+    border-radius: 10px;
+    padding: 16px 20px;
+    align-items: flex-start;
+    border-left: 4px solid var(--secondary);
+  }
+  .obj-num {
+    width: 32px; height: 32px;
+    background: var(--secondary);
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  .obj-text { font-size: 0.93rem; }
+
+  /* ── SCHEDULE TABLE ── */
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+  .schedule-table th {
+    background: var(--primary);
+    color: white;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 0.88rem;
+  }
+  .schedule-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    vertical-align: top;
+  }
+  .schedule-table tr:nth-child(even) { background: #f8fafe; }
+  .schedule-table .session-num {
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: var(--accent);
+    text-align: center;
+    white-space: nowrap;
+  }
+  .schedule-table .source-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin: 2px 2px 2px 0;
+    color: white;
+  }
+  .tag-northouse { background: #1a3c6e; }
+  .tag-carpenter { background: #6c3483; }
+  .tag-whetten { background: #145a32; }
+  .tag-unit0 { background: #2e1f5e; }
+  .tag-hbr { background: #7b2d00; }
+  .tag-humphrey { background: #2e4057; }
+  .tag-other { background: #546e7a; }
+
+  /* ── MATERIALS GRID ── */
+  .materials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .mat-card {
+    border-radius: 10px;
+    padding: 20px;
+    border-top: 4px solid transparent;
+  }
+  .mat-card.northouse { border-top-color: #1a3c6e; background: #eef2f9; }
+  .mat-card.carpenter { border-top-color: #6c3483; background: #f5eefe; }
+  .mat-card.whetten { border-top-color: #145a32; background: #eaf6ec; }
+  .mat-card.hbr { border-top-color: #7b2d00; background: #fdf2ec; }
+  .mat-card.ivey { border-top-color: #7f8c8d; background: #f7f8f9; }
+  .mat-card .mat-type { font-size: 0.72rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+  .mat-card.northouse .mat-type { color: #1a3c6e; }
+  .mat-card.carpenter .mat-type { color: #6c3483; }
+  .mat-card.whetten .mat-type { color: #145a32; }
+  .mat-card.hbr .mat-type { color: #7b2d00; }
+  .mat-card.ivey .mat-type { color: #546e7a; }
+  .mat-card h4 { margin-top: 0; font-size: 0.95rem; margin-bottom: 6px; }
+  .mat-card p { font-size: 0.82rem; margin-bottom: 0; color: var(--muted); }
+
+  /* ── EVALUATION ── */
+  .eval-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin: 20px 0;
+  }
+  .eval-card {
+    border-radius: 12px;
+    padding: 26px 24px;
+    text-align: center;
+  }
+  .eval-card.mini { background: #eaf3fb; border: 2px solid #2980b9; }
+  .eval-card.group { background: #fef9e7; border: 2px solid #f39c12; }
+  .eval-card.final { background: #fdedec; border: 2px solid #e74c3c; }
+  .eval-pct {
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .eval-card.mini .eval-pct { color: #2980b9; }
+  .eval-card.group .eval-pct { color: #e67e22; }
+  .eval-card.final .eval-pct { color: #e74c3c; }
+  .eval-name { font-weight: 700; font-size: 1.05rem; margin-bottom: 10px; color: var(--primary); }
+  .eval-details { font-size: 0.82rem; color: var(--muted); text-align: left; }
+  .eval-details li { margin-bottom: 4px; }
+
+  /* ── DOCUMENT LINKS ── */
+  .doc-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .doc-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .doc-link:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .doc-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; flex-shrink: 0;
+    color: white;
+    font-weight: 900; font-size: 0.75rem;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .doc-info { flex: 1; }
+  .doc-title { font-weight: 700; font-size: 0.92rem; color: var(--primary); margin-bottom: 2px; }
+  .doc-sub { font-size: 0.78rem; color: var(--muted); }
+  .doc-link.northouse { background: #eef2f9; border-color: #1a3c6e; }
+  .doc-link.northouse .doc-icon { background: #1a3c6e; }
+  .doc-link.carpenter { background: #f5eefe; border-color: #6c3483; }
+  .doc-link.carpenter .doc-icon { background: #6c3483; }
+  .doc-link.whetten { background: #eaf6ec; border-color: #145a32; }
+  .doc-link.whetten .doc-icon { background: #145a32; }
+  .doc-link.hbr { background: #fdf2ec; border-color: #7b2d00; }
+  .doc-link.hbr .doc-icon { background: #7b2d00; }
+  .doc-link.humphrey { background: #eaf4f6; border-color: #2e4057; }
+  .doc-link.humphrey .doc-icon { background: #2e4057; }
+  .doc-link.unit0 { background: #f0edfb; border-color: #2e1f5e; }
+  .doc-link.unit0 .doc-icon { background: #2e1f5e; }
+
+  /* ── GROUP EXERCISE ── */
+  .ge-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px 0;
+  }
+  .ge-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 14px 18px;
+    background: var(--light);
+    border-radius: 8px;
+    border-left: 4px solid var(--accent);
+  }
+  .ge-num {
+    width: 28px; height: 28px;
+    background: var(--accent);
+    color: var(--primary);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+  .ge-text { font-size: 0.9rem; }
+  .ge-text strong { display: block; margin-bottom: 2px; }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 18px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .callout.info { background: #e8f4fd; border-left: 4px solid #2980b9; }
+  .callout.warn { background: #fef9e7; border-left: 4px solid #f39c12; }
+  .callout.tip { background: #eafaf1; border-left: 4px solid var(--success); }
+  .callout.key { background: #f0edfb; border-left: 4px solid #5c3bc7; }
+  .callout-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+  .callout-body strong { display: block; margin-bottom: 4px; color: var(--primary); }
+  .callout-body p { margin-bottom: 0; font-size: 0.92rem; }
+
+  /* ── BIG STAT ── */
+  .stat-row {
+    display: flex;
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .stat-box {
+    flex: 1;
+    text-align: center;
+    background: var(--light);
+    border-radius: 10px;
+    padding: 22px 16px;
+    border-top: 4px solid var(--secondary);
+  }
+  .stat-box .big { font-size: 2rem; font-weight: 900; color: var(--accent); }
+  .stat-box .label { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+
+  /* ── CONTACT BOX ── */
+  .contact-box {
+    background: var(--primary);
+    color: white;
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin: 24px 0;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+  .contact-box .contact-text h4 { color: var(--accent); font-size: 1.1rem; margin-bottom: 8px; }
+  .contact-box .contact-text p { opacity: 0.85; margin-bottom: 6px; font-size: 0.92rem; }
+  .contact-box .contact-text code {
+    background: rgba(255,255,255,0.15);
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 0.88rem;
+  }
+
+  /* ── INTEGRITY ── */
+  .integrity-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .int-item {
+    background: #fff5f5;
+    border: 1px solid #f0caca;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 0.9rem;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .int-item .int-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--primary);
+    color: rgba(255,255,255,0.75);
+    text-align: center;
+    padding: 28px 40px;
+    font-size: 0.82rem;
+    margin-top: 20px;
+  }
+  footer .doc-map {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  footer .dm-tag {
+    background: rgba(255,255,255,0.1);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.85);
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  @media (max-width: 768px) {
+    .materials-grid, .eval-grid { grid-template-columns: 1fr; }
+    .doc-grid { grid-template-columns: 1fr; }
+    .integrity-list { grid-template-columns: 1fr; }
+    .stat-row { flex-wrap: wrap; }
+    header h1 { font-size: 1.7rem; }
+    main { padding: 24px 16px; }
+    .section-body { padding: 20px; }
+    .contact-box { flex-direction: column; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tag">Syllabus &amp; Hướng dẫn khóa học</div>
+  <h1>GK5009 — Quản lý và Lãnh đạo</h1>
+  <div class="subtitle">Leadership and Management · Tổng Quan Khóa Học &amp; Bản Đồ Tài Liệu</div>
+  <div class="instructor">Assoc. Prof. Dr. Nguyen Manh Tuan &nbsp;|&nbsp; 2025</div>
+</header>
+
+<nav>
+  <a href="#objectives">Mục tiêu</a>
+  <a href="#schedule">Lịch học</a>
+  <a href="#materials">Tài liệu</a>
+  <a href="#evaluation">Đánh giá</a>
+  <a href="#group">Bài nhóm</a>
+  <a href="#docs">Bản đồ HTML</a>
+  <a href="#policies">Quy định</a>
+</nav>
+
+<main>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION 1: MỤC TIÊU HỌC TẬP -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section class="section" id="objectives">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div>
+        <h2>Mục Tiêu Học Tập / Learning Objectives</h2>
+        <div class="en">What students will be able to do upon completion</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <p>Sau khi hoàn thành khóa học GK5009, sinh viên có khả năng:</p>
+
+      <div class="obj-list">
+        <div class="obj-item">
+          <div class="obj-num">1</div>
+          <div class="obj-text"><strong>Mô tả và thảo luận các khái niệm &amp; quan điểm về lãnh đạo và quản lý</strong> — lịch sử, tiến hóa, các approach và quan điểm lý thuyết. <em>(Covers: Northouse Introduction, Carpenter Principles)</em></div>
+        </div>
+        <div class="obj-item">
+          <div class="obj-num">2</div>
+          <div class="obj-text"><strong>Mô tả và thảo luận các vấn đề cốt lõi trong lãnh đạo và quản lý tổ chức</strong> — tính cách, thái độ, hành vi làm việc, dẫn dắt con người. <em>(Covers: Northouse Ch2–8, Whetten, Humphrey)</em></div>
+        </div>
+        <div class="obj-item">
+          <div class="obj-num">3</div>
+          <div class="obj-text"><strong>Phát triển kỹ thuật và năng lực cần thiết cho nhà lãnh đạo và quản lý</strong> — systems/critical thinking, strategic management, managerial skills. <em>(Covers: Unit 0, Carpenter Ch05–06, Whetten Ch06–08)</em></div>
+        </div>
+        <div class="obj-item">
+          <div class="obj-num">4</div>
+          <div class="obj-text"><strong>Trình bày và thảo luận các vấn đề mới nổi trong lãnh đạo và quản lý</strong> — mindful business leadership, change management, business model. <em>(Covers: HBR papers, Drucker, Friedman)</em></div>
+        </div>
+        <div class="obj-item">
+          <div class="obj-num">5</div>
+          <div class="obj-text"><strong>Hiểu và áp dụng systems thinking &amp; case study method</strong> để giải quyết các vấn đề lãnh đạo và quản lý trong tổ chức. <em>(Covers: Unit 0 — Ellet, Checkland, Peirce, Gharajedaghi)</em></div>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="big">10</div>
+          <div class="label">Buổi học (sessions)</div>
+        </div>
+        <div class="stat-box">
+          <div class="big">3</div>
+          <div class="label">Sách giáo khoa chính</div>
+        </div>
+        <div class="stat-box">
+          <div class="big">15</div>
+          <div class="label">Tài liệu HTML đã biên soạn</div>
+        </div>
+        <div class="stat-box">
+          <div class="big">50%</div>
+          <div class="label">Trọng số thi cuối kỳ</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION 2: LỊCH HỌC -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section class="section" id="schedule">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div>
+        <h2>Lịch Học / Schedule of Classes</h2>
+        <div class="en">Session-by-session topics and source materials</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <table class="schedule-table">
+        <thead>
+          <tr>
+            <th style="width:80px; text-align:center;">Session</th>
+            <th>Chủ đề bài giảng</th>
+            <th>Nguồn tài liệu</th>
+            <th>Hoạt động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="session-num">1</td>
+            <td>
+              <strong>Overview &amp; Introduction to Problem Solving Methods</strong><br>
+              Science and research paradigm<br>
+              Systems thinking · Guarantors of the truth<br>
+              Argumentation · Case method
+            </td>
+            <td>
+              <span class="source-tag tag-unit0">Unit 0</span>
+            </td>
+            <td>Thành lập nhóm; Giới thiệu syllabus</td>
+          </tr>
+          <tr>
+            <td class="session-num">2</td>
+            <td>
+              <strong>Introduction to Leadership</strong><br>
+              Khái niệm lãnh đạo, phân biệt leadership vs. management
+            </td>
+            <td>
+              <span class="source-tag tag-northouse">Northouse Ch01</span>
+            </td>
+            <td>Reading #1</td>
+          </tr>
+          <tr>
+            <td class="session-num">3–4–5</td>
+            <td>
+              <strong>Approaches of Leadership</strong><br>
+              Trait Approach · Skills Approach<br>
+              Behavioral Approach · Situational Leadership<br>
+              Path-Goal Theory · Leader-Member Exchange<br>
+              Transformational Leadership
+            </td>
+            <td>
+              <span class="source-tag tag-northouse">Northouse Ch02</span>
+              <span class="source-tag tag-northouse">Ch03</span>
+              <span class="source-tag tag-northouse">Ch04</span>
+              <span class="source-tag tag-northouse">Ch05</span>
+              <span class="source-tag tag-northouse">Ch06</span>
+              <span class="source-tag tag-northouse">Ch07</span>
+              <span class="source-tag tag-northouse">Ch08</span>
+            </td>
+            <td>Reading #1 (tiếp)</td>
+          </tr>
+          <tr>
+            <td class="session-num">6–7</td>
+            <td>
+              <strong>Principles of Management</strong><br>
+              Personality, attitudes &amp; work behaviors<br>
+              History, globalization &amp; value-based leadership<br>
+              Developing missions, visions, values<br>
+              Strategizing · Goals and objectives<br>
+              Organizational structure and change
+            </td>
+            <td>
+              <span class="source-tag tag-carpenter">Carpenter Ch01</span>
+              <span class="source-tag tag-carpenter">Ch04</span>
+              <span class="source-tag tag-carpenter">Ch05</span>
+              <span class="source-tag tag-carpenter">Ch06</span>
+            </td>
+            <td>Reading #2</td>
+          </tr>
+          <tr>
+            <td class="session-num">8–9</td>
+            <td>
+              <strong>Developing Management Skills</strong><br>
+              Personal skills · Interpersonal skills<br>
+              Group skills · Specific communications skills<br>
+              Smart thinking and critical thinking skills<br>
+              <em style="font-size:0.85rem; color:var(--muted);">+ Mitroff's smart thinking; Cottrell's critical thinking</em>
+            </td>
+            <td>
+              <span class="source-tag tag-whetten">Whetten Ch06</span>
+              <span class="source-tag tag-whetten">Ch08</span>
+              <span class="source-tag tag-hbr">Friedman HBR</span>
+              <span class="source-tag tag-hbr">Drucker HBR</span>
+              <span class="source-tag tag-humphrey">Humphrey</span>
+            </td>
+            <td>Reading #2 (tiếp)</td>
+          </tr>
+          <tr>
+            <td class="session-num">9</td>
+            <td>
+              <strong>Other Issues (tentative)</strong><br>
+              Mindful business leadership<br>
+              Business model · Change management
+            </td>
+            <td>
+              <span class="source-tag tag-other">TBD</span>
+            </td>
+            <td>Group exercise due</td>
+          </tr>
+          <tr>
+            <td class="session-num">10</td>
+            <td>
+              <strong>Group Exercise Presentation</strong><br>
+              Business case write-ups &amp; presentations
+            </td>
+            <td>—</td>
+            <td>Presentations + Final Exam</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout info">
+        <div class="callout-icon">📅</div>
+        <div class="callout-body">
+          <strong>Lưu ý về lịch học</strong>
+          <p>Lịch học là <em>tentative</em> (có thể thay đổi). Session 9 và Other Issues có thể được điều chỉnh theo tiến độ lớp học. Đọc tài liệu được giao <strong>trước</strong> buổi học sẽ được thảo luận.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION 3: TÀI LIỆU KHÓA HỌC -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section class="section" id="materials">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div>
+        <h2>Tài Liệu Khóa Học / Course Materials</h2>
+        <div class="en">Textbooks · Reference books · Research articles · Business cases</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <h3>Sách giáo khoa chính (Textbooks)</h3>
+      <div class="materials-grid">
+        <div class="mat-card northouse">
+          <div class="mat-type">Textbook #1</div>
+          <h4>Northouse (2022)</h4>
+          <p><em>Leadership: Theory and Practice.</em> 9th ed. SAGE.<br>Bìa xanh đậm — lý thuyết lãnh đạo toàn diện từ trait đến transformational.</p>
+        </div>
+        <div class="mat-card carpenter">
+          <div class="mat-type">Textbook #2</div>
+          <h4>Carpenter et al. (2012)</h4>
+          <p><em>Principles of Management.</em><br>Nền tảng quản trị: mission/vision, strategy, goals, organizational structure.</p>
+        </div>
+        <div class="mat-card whetten">
+          <div class="mat-type">Textbook #3</div>
+          <h4>Whetten et al. (2016)</h4>
+          <p><em>Developing Managing Skills.</em> 9th ed. Pearson.<br>Kỹ năng thực hành: motivation, empowerment, delegation, leadership style.</p>
+        </div>
+        <div class="mat-card hbr">
+          <div class="mat-type">Reference</div>
+          <h4>Drucker (2001)</h4>
+          <p><em>Management Challenges for the 21st Century.</em><br>Gồm cả bài HBR của Friedman (Total Leadership) và Drucker (Managing Oneself).</p>
+        </div>
+        <div class="mat-card ivey">
+          <div class="mat-type">Case Book</div>
+          <h4>Row &amp; Guerrero (2011)</h4>
+          <p><em>Cases in Leadership.</em> 2nd ed. Ivey.<br>Tình huống thực tế để phân tích và áp dụng lý thuyết lãnh đạo.</p>
+        </div>
+        <div class="mat-card northouse" style="border-top-color: #2e1f5e; background:#f0edfb;">
+          <div class="mat-type" style="color:#2e1f5e;">Reference</div>
+          <h4>Ellet (2007)</h4>
+          <p><em>The Case Study Handbook.</em> HBS Press.<br>Hướng dẫn 5 bước C1–C5 phân tích tình huống (→ Unit 0).</p>
+        </div>
+      </div>
+
+      <h3>Bài báo nghiên cứu được chọn (Research Articles)</h3>
+      <ul>
+        <li><strong>Humphrey (2002).</strong> "The many faces of emotional leadership." <em>Leadership Quarterly.</em></li>
+        <li><strong>Tannenbaum et al. (2016).</strong> "How to choose a leadership pattern." <em>HBR.</em></li>
+        <li><strong>Fairhurst et al. (2014).</strong> "Leadership: A communicative perspective."</li>
+        <li><strong>Tourish (2018).</strong> "Is Complexity Leadership Theory Complex Enough? A critical appraisal."</li>
+        <li><strong>Rowe (2001).</strong> "Creating wealth in organizations: the role of strategic leadership."</li>
+        <li><strong>Algahtani (2014).</strong> "Are leadership and management different?"</li>
+        <li><strong>Harris (2009).</strong> "Help Wanted: T-Shaped Skills to Meet 21st Century Needs."</li>
+        <li><strong>Grönroos (1994).</strong> "From Scientific Management to Service Management."</li>
+        <li><strong>Maglio &amp; Spohrer (2013).</strong> "A service science perspective on business model innovation."</li>
+        <li><strong>Immelt et al. (2009).</strong> "How GE Is Disrupting Itself." <em>HBR.</em></li>
+        <li><strong>Yoo et al. (2015).</strong> "How Samsung Became a Design Powerhouse."</li>
+        <li><strong>Winter et al. (2015).</strong> "Engineering Reverse Innovations."</li>
+        <li><strong>Doug DeVos (2013).</strong> "Amway's president on reinventing the business to succeed in China."</li>
+      </ul>
+
+      <h3>Business Cases</h3>
+      <ul>
+        <li><strong>Daou et al. (2024).</strong> "Toters Delivery: Culture Driving Performance." <em>Ivey.</em></li>
+        <li><strong>Agnihotri et al. (2022).</strong> "Google's Chief Executive: In Need of a Change Leadership Style?" <em>Ivey.</em></li>
+        <li><strong>Drucker (2009).</strong> <em>Management Cases.</em></li>
+      </ul>
+
+      <div class="callout warn">
+        <div class="callout-icon">📚</div>
+        <div class="callout-body">
+          <strong>Đọc trước buổi học là bắt buộc</strong>
+          <p>Phương pháp case study yêu cầu sinh viên đọc và chuẩn bị <em>trước khi đến lớp</em> — không giống phương pháp bài giảng truyền thống. Business cases và articles sẽ được giao cụ thể trong học kỳ. Bài báo và tình huống có thể thay đổi theo từng năm.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION 4: ĐÁNH GIÁ -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section class="section" id="evaluation">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div>
+        <h2>Đánh Giá / Evaluation of Performance</h2>
+        <div class="en">Grading breakdown and assessment types</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="eval-grid">
+        <div class="eval-card mini">
+          <div class="eval-pct">15%</div>
+          <div class="eval-name">Mini-test</div>
+          <ul class="eval-details">
+            <li>Câu hỏi True/False</li>
+            <li>Short answers / Critical essays</li>
+            <li>Home assignments (làm ở nhà)</li>
+            <li>Có thể có nhiều lần trong kỳ</li>
+          </ul>
+        </div>
+        <div class="eval-card group">
+          <div class="eval-pct">35%</div>
+          <div class="eval-name">Group Exercise</div>
+          <ul class="eval-details">
+            <li>Business case write-ups</li>
+            <li>Làm theo nhóm (X sinh viên tối đa)</li>
+            <li>Có thể có hoặc không có thuyết trình</li>
+            <li>Nộp trước Session 9</li>
+          </ul>
+        </div>
+        <div class="eval-card final">
+          <div class="eval-pct">50%</div>
+          <div class="eval-name">Final Exam</div>
+          <ul class="eval-details">
+            <li>True/False + Multiple choices</li>
+            <li>Short answers / Critical essays</li>
+            <li>Case analysis (phân tích tình huống)</li>
+            <li>Session 10</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout key">
+        <div class="callout-icon">🎯</div>
+        <div class="callout-body">
+          <strong>Trọng tâm thi: Case Analysis chiếm ưu thế</strong>
+          <p>Với 50% thi cuối kỳ và phần "Case analysis" xuất hiện trong cả mini-test lẫn final exam, kỹ năng phân tích tình huống theo 5 bước C1–C5 của Ellet (Unit 0) là <strong>kỹ năng quan trọng nhất</strong> cần luyện tập trong suốt khóa học. Thuyết phục bằng lập luận dựa trên bằng chứng — không phải ý kiến cá nhân.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION 5: BÀI TẬP NHÓM -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section class="section" id="group">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div>
+        <h2>Bài Tập Nhóm / Group Exercise</h2>
+        <div class="en">Business case write-up format and requirements</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <p>Bài tập nhóm yêu cầu viết và trình bày phân tích một <strong>business case</strong> (tình huống thực tế). Bài viết phải tích hợp <em>các khái niệm của khóa học</em> vào phân tích — không phải chỉ mô tả tình huống.</p>
+
+      <div class="ge-steps">
+        <div class="ge-step">
+          <div class="ge-num">1</div>
+          <div class="ge-text">
+            <strong>Case Summary — Tóm tắt tình huống</strong>
+            Mô tả ngắn gọn: tình huống xảy ra ở đâu, ai là protagonist, vấn đề cốt lõi là gì.
+          </div>
+        </div>
+        <div class="ge-step">
+          <div class="ge-num">2</div>
+          <div class="ge-text">
+            <strong>Motivation Behind the Case — Động lực phía sau tình huống</strong>
+            Tại sao case này quan trọng? Tại sao nó được chọn? Ý nghĩa với lĩnh vực quản lý / lãnh đạo là gì?
+          </div>
+        </div>
+        <div class="ge-step">
+          <div class="ge-num">3</div>
+          <div class="ge-text">
+            <strong>Company Background &amp; Organizational Problems — Bối cảnh &amp; Vấn đề tổ chức</strong>
+            Thông tin công ty: ngành, quy mô, lịch sử liên quan. Xác định rõ vấn đề tổ chức (organizational problems) cụ thể.
+          </div>
+        </div>
+        <div class="ge-step">
+          <div class="ge-num">4</div>
+          <div class="ge-text">
+            <strong>How to Resolve Problems — Cách giải quyết, tại sao và giải pháp cuối</strong>
+            Đây là phần quan trọng nhất. Bao gồm:
+            <ul style="margin-top:8px; font-size:0.88rem;">
+              <li><strong>Integration of course concepts:</strong> Áp dụng lý thuyết từ khóa học (Northouse, Carpenter, Whetten, v.v.)</li>
+              <li><strong>Some critiques of the paper:</strong> So sánh, đối chiếu các quan điểm; phê phán có cơ sở</li>
+              <li><strong>Challenges and concerns:</strong> Thách thức trong quá trình giải quyết vấn đề</li>
+            </ul>
+          </div>
+        </div>
+        <div class="ge-step">
+          <div class="ge-num">5</div>
+          <div class="ge-text">
+            <strong>Comments and Conclusions — Nhận xét và Kết luận</strong>
+            Đánh giá tổng thể; bài học rút ra; khuyến nghị cho tương lai.
+          </div>
+        </div>
+        <div class="ge-step">
+          <div class="ge-num">6</div>
+          <div class="ge-text">
+            <strong>Case Translation — Dịch tình huống</strong>
+            Nếu case bằng tiếng Anh → cung cấp bản dịch sang tiếng Việt.
+          </div>
+        </div>
+        <div class="ge-step">
+          <div class="ge-num">7</div>
+          <div class="ge-text">
+            <strong>Annex — Phụ lục</strong>
+            Trả lời các câu hỏi (case questions) nếu có kèm theo case.
+          </div>
+        </div>
+      </div>
+
+      <div class="callout tip">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>Áp dụng C1–C5 vào Group Exercise</strong>
+          <p>Framework 5 bước của Ellet (Unit 0) là hướng dẫn thực tiễn nhất cho bài tập nhóm. <strong>C1</strong> → mục 1 (situation summary); <strong>C2–C3</strong> → mục 3 (vấn đề &amp; hypothesis); <strong>C4</strong> → mục 4 (chứng minh &amp; giải pháp); <strong>C5</strong> → mục 4 phần critiques &amp; alternatives. Phần 5 (kết luận) tương đương "what we learned from this exercise."</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION 6: BẢN ĐỒ TÀI LIỆU HTML -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section class="section" id="docs">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <div>
+        <h2>Bản Đồ Tài Liệu HTML / Study Document Map</h2>
+        <div class="en">All compiled study documents for GK5009</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <p>Các tài liệu HTML sau đây đã được biên soạn toàn diện, tích hợp đầy đủ nội dung từ sách gốc và bài báo, theo 5 phần chuẩn: Tổng quan / Phân tích chuyên sâu / Mô hình & Công thức / Ví dụ thực tiễn / Ghi chú ôn tập.</p>
+
+      <h3>Nhóm Unit 0 (Nền tảng tư duy)</h3>
+      <div class="doc-grid">
+        <div class="doc-link unit0">
+          <div class="doc-icon" style="background:#2e1f5e;">Unit<br>0</div>
+          <div class="doc-info">
+            <div class="doc-title">Unit 0: Problem Solving Framework</div>
+            <div class="doc-sub">Nguyen Manh Tuan (2023) · Ellet C1–C5 · Deduction/Induction/Abduction · Systems Thinking · TOP Perspectives</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Nhóm Northouse — Leadership: Theory and Practice</h3>
+      <div class="doc-grid">
+        <div class="doc-link northouse">
+          <div class="doc-icon">N<br>Ch1</div>
+          <div class="doc-info">
+            <div class="doc-title">Chapter 01: Introduction to Leadership</div>
+            <div class="doc-sub">Leadership vs. management · Power · Leadership levels · Authentic leadership</div>
+          </div>
+        </div>
+        <div class="doc-link northouse">
+          <div class="doc-icon">N<br>Ch2</div>
+          <div class="doc-info">
+            <div class="doc-title">Chapter 02: Trait Approach</div>
+            <div class="doc-sub">Big Five personality · Intelligence · Drive · Leadership traits từ Stogdill &amp; Mann</div>
+          </div>
+        </div>
+        <div class="doc-link northouse">
+          <div class="doc-icon">N<br>Ch3</div>
+          <div class="doc-info">
+            <div class="doc-title">Chapter 03: Skills Approach</div>
+            <div class="doc-sub">Katz's 3 skills · Mumford's Skills Model · Problem-solving skills</div>
+          </div>
+        </div>
+        <div class="doc-link northouse">
+          <div class="doc-icon">N<br>Ch4</div>
+          <div class="doc-info">
+            <div class="doc-title">Chapter 04: Behavioral Approach</div>
+            <div class="doc-sub">Ohio State / Michigan studies · Task vs. relationship behaviors · Managerial Grid (Blake &amp; Mouton)</div>
+          </div>
+        </div>
+        <div class="doc-link northouse">
+          <div class="doc-icon">N<br>Ch5</div>
+          <div class="doc-info">
+            <div class="doc-title">Chapter 05: Situational Approach</div>
+            <div class="doc-sub">Hersey &amp; Blanchard · Development levels D1–D4 · Leadership styles S1–S4</div>
+          </div>
+        </div>
+        <div class="doc-link northouse">
+          <div class="doc-icon">N<br>Ch6</div>
+          <div class="doc-info">
+            <div class="doc-title">Chapter 06: Path-Goal Theory</div>
+            <div class="doc-sub">House (1971, 1996) · 4 leadership behaviors · Follower &amp; task characteristics</div>
+          </div>
+        </div>
+        <div class="doc-link northouse">
+          <div class="doc-icon">N<br>Ch7</div>
+          <div class="doc-info">
+            <div class="doc-title">Chapter 07: LMX Theory</div>
+            <div class="doc-sub">Leader-Member Exchange · In-group vs. Out-group · Relationship quality</div>
+          </div>
+        </div>
+        <div class="doc-link northouse">
+          <div class="doc-icon">N<br>Ch8</div>
+          <div class="doc-info">
+            <div class="doc-title">Chapter 08: Transformational Leadership</div>
+            <div class="doc-sub">Burns (1978) · Bass (1985) · 4 I's · Transformational vs. Transactional</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Nhóm Carpenter — Principles of Management</h3>
+      <div class="doc-grid">
+        <div class="doc-link carpenter">
+          <div class="doc-icon" style="background:#6c3483;">C<br>Ch1</div>
+          <div class="doc-info">
+            <div class="doc-title">Ch01: Introduction to Principles of Management</div>
+            <div class="doc-sub">POLC framework · P-O-L-C · History of management thought · Henri Fayol</div>
+          </div>
+        </div>
+        <div class="doc-link carpenter">
+          <div class="doc-icon" style="background:#6c3483;">C<br>Ch4</div>
+          <div class="doc-info">
+            <div class="doc-title">Ch04: Developing Mission, Vision, Values</div>
+            <div class="doc-sub">Mission statement · Vision · Core values · Stakeholder analysis</div>
+          </div>
+        </div>
+        <div class="doc-link carpenter">
+          <div class="doc-icon" style="background:#6c3483;">C<br>Ch5</div>
+          <div class="doc-info">
+            <div class="doc-title">Ch05: Strategic Management</div>
+            <div class="doc-sub">SWOT · Porter's 5 Forces · Generic strategies · Strategy formulation &amp; execution</div>
+          </div>
+        </div>
+        <div class="doc-link carpenter">
+          <div class="doc-icon" style="background:#6c3483;">C<br>Ch6</div>
+          <div class="doc-info">
+            <div class="doc-title">Ch06: Goals and Objectives</div>
+            <div class="doc-sub">SMART goals · Balanced Scorecard · OKRs · Goal alignment</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Nhóm Whetten — Developing Managing Skills</h3>
+      <div class="doc-grid">
+        <div class="doc-link whetten">
+          <div class="doc-icon" style="background:#145a32;">W<br>Ch6</div>
+          <div class="doc-info">
+            <div class="doc-title">Ch06: Motivating Others</div>
+            <div class="doc-sub">Performance = Ability × Motivation · Goal Setting (SCAF) · Need Theories · Equity Theory · Integrative Model</div>
+          </div>
+        </div>
+        <div class="doc-link whetten">
+          <div class="doc-icon" style="background:#145a32;">W<br>Ch8</div>
+          <div class="doc-info">
+            <div class="doc-title">Ch08: Empowering and Delegating</div>
+            <div class="doc-sub">5 Dimensions of Empowerment · Dirty Dozen · 9 Strategies · SMART · 10 Delegation Guidelines</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Nhóm HBR Papers &amp; Research Articles</h3>
+      <div class="doc-grid">
+        <div class="doc-link hbr">
+          <div class="doc-icon" style="background:#7b2d00;">Fried<br>man</div>
+          <div class="doc-info">
+            <div class="doc-title">Friedman: Total Leadership (HBR 2008)</div>
+            <div class="doc-sub">4 Domains · Four-way wins · Be Real/Whole/Innovative · 9 Experiment Types · +20-39% satisfaction</div>
+          </div>
+        </div>
+        <div class="doc-link hbr">
+          <div class="doc-icon" style="background:#1a1a2e;">Druc<br>ker</div>
+          <div class="doc-info">
+            <div class="doc-title">Drucker: Managing Oneself (HBR)</div>
+            <div class="doc-sub">Feedback Analysis · Reader vs Listener · 5 Key Questions · Strengths · Values · Second Half of Life</div>
+          </div>
+        </div>
+        <div class="doc-link humphrey">
+          <div class="doc-icon" style="background:#2e4057;">Hum<br>phrey</div>
+          <div class="doc-info">
+            <div class="doc-title">Humphrey: Many Faces of Emotional Leadership (2002)</div>
+            <div class="doc-sub">Empathy · EI · Frustration/Optimism · Transformational vs Transactional · Disconnect Effect · AET</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SECTION 7: QUY ĐỊNH KHÓA HỌC -->
+  <!-- ═══════════════════════════════════════════ -->
+  <section class="section" id="policies">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <div>
+        <h2>Quy Định Khóa Học / Academic Policies</h2>
+        <div class="en">Integrity, citation standards, and contact information</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <h3>Liêm chính học thuật (Academic Integrity)</h3>
+      <p>Khóa học lấy sinh viên làm trung tâm (<em>student centered</em>) với giảng viên đóng vai trò <em>coach và facilitator</em>. Đạo đức chuyên môn và liêm chính cá nhân là yêu cầu bắt buộc:</p>
+
+      <div class="integrity-list">
+        <div class="int-item">
+          <div class="int-icon">✅</div>
+          <div><strong>Individual work = your own work alone</strong><br>Bài cá nhân là công việc của một mình bạn — không chia sẻ hay nhận trợ giúp từ người khác.</div>
+        </div>
+        <div class="int-item">
+          <div class="int-icon">🚫</div>
+          <div><strong>No plagiarism!</strong><br>Không đạo văn dưới mọi hình thức — kể cả trích dẫn quá nhiều không ghi nguồn.</div>
+        </div>
+        <div class="int-item">
+          <div class="int-icon">📖</div>
+          <div><strong>Proper citations — APA style</strong><br>Trích dẫn đúng quy cách APA. Hạn chế trích dẫn nguyên văn (quotation) — ưu tiên diễn giải lại (rephrase).</div>
+        </div>
+        <div class="int-item">
+          <div class="int-icon">📝</div>
+          <div><strong>Limited quotations</strong><br>Trích dẫn nguyên văn nên hạn chế; luôn diễn giải bằng ngôn ngữ của mình và chỉ ra nguồn gốc.</div>
+        </div>
+      </div>
+
+      <h3>Liên hệ giảng viên</h3>
+
+      <div class="contact-box">
+        <div style="font-size:3rem;">👨‍🏫</div>
+        <div class="contact-text">
+          <h4>Assoc. Prof. Dr. Nguyen Manh Tuan</h4>
+          <p>Liên hệ: <strong>theo lịch hẹn</strong> (by appointment)</p>
+          <p>Email: <code>n.m.tuan@hcmut.edu.vn</code></p>
+          <p>Tiêu đề email phải bắt đầu bằng: <code>[LM-252]</code></p>
+          <p style="font-size:0.82rem; opacity:0.7; margin-top:8px;">Ví dụ: Subject: <em>[LM-252] Question about Group Exercise deadline</em></p>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <div class="callout-icon">📬</div>
+        <div class="callout-body">
+          <strong>Quy tắc email</strong>
+          <p>Mọi email gửi cho giảng viên BẮT BUỘC phải có <code>[LM-252]</code> là phần đầu tiên của tiêu đề (subject line). Email không có tiêu đề đúng chuẩn có thể không được phản hồi.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="doc-map">
+    <span class="dm-tag">📚 Unit 0 ✓</span>
+    <span class="dm-tag">📘 Northouse Ch01-08 ✓</span>
+    <span class="dm-tag">📙 Carpenter Ch01,04,05,06 ✓</span>
+    <span class="dm-tag">📗 Whetten Ch06,08 ✓</span>
+    <span class="dm-tag">📰 Friedman &amp; Drucker HBR ✓</span>
+    <span class="dm-tag">🔬 Humphrey 2002 ✓</span>
+    <span class="dm-tag">🗺 Course Overview ✓</span>
+  </div>
+  <strong>GK5009 — Quản lý và Lãnh đạo</strong> &nbsp;|&nbsp;
+  Assoc. Prof. Dr. Nguyen Manh Tuan &nbsp;|&nbsp; HCMUT 2025 &nbsp;|&nbsp;
+  Syllabus: l-m syllabus 252.pdf
+</footer>
+
+</body>
+</html>

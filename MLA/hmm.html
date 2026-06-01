@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hidden Markov Models | MLA HK252</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']], processEscapes: true },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex}
+#sidebar{position:fixed;top:0;left:0;width:258px;height:100vh;background:#0a1f10;overflow-y:auto;z-index:100;flex-shrink:0}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:#2d6a4f;border-radius:2px}
+.sb-title{padding:1.25rem 1rem .75rem;border-bottom:1px solid #1a3a20}
+.sb-title h1{color:#86efac;font-size:.95rem;font-weight:700;line-height:1.4}
+.sb-title p{color:#6ee7b7;font-size:.7rem;margin-top:.2rem}
+.sb-group{padding:.6rem 1rem .15rem;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#4ade80}
+.sb-link{display:flex;align-items:center;gap:.45rem;padding:.35rem 1rem;color:#bbf7d0;font-size:.8rem;text-decoration:none;border-left:3px solid transparent;transition:all .15s}
+.sb-link:hover{background:rgba(74,222,128,.1);border-left-color:#4ade80;color:#fff}
+.sb-link i{width:14px;font-size:.7rem;color:#4ade80;flex-shrink:0}
+#main{margin-left:258px;min-height:100vh;padding:2rem 2.5rem;max-width:calc(100% - 258px)}
+.ch-hdr{background:linear-gradient(135deg,#14532d,#16a34a);color:#fff;padding:1.75rem 2rem;border-radius:10px;margin-bottom:1.75rem;box-shadow:0 4px 12px rgba(20,83,45,.3)}
+.ch-hdr .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#86efac;font-weight:700}
+.ch-hdr h2{font-size:1.75rem;font-weight:800;margin:.2rem 0 .4rem}
+.ch-hdr p{color:#d1fae5;font-size:.9rem}
+.s-title{font-size:1.2rem;font-weight:700;color:#14532d;border-left:4px solid #16a34a;padding-left:.7rem;margin:1.75rem 0 .9rem}
+.ss-title{font-size:1rem;font-weight:600;color:#166534;margin:1.25rem 0 .6rem;border-left:3px solid #86efac;padding-left:.5rem}
+.sss-title{font-size:.92rem;font-weight:600;color:#1e293b;margin:1rem 0 .5rem;text-decoration:underline;text-underline-offset:3px}
+.alert{border-radius:0 8px 8px 0;padding:.85rem 1.1rem;margin:.85rem 0;font-size:.875rem}
+.alert-title{font-weight:700;margin-bottom:.3rem;font-size:.85rem}
+.al-blue{background:#eff6ff;border-left:4px solid #3b82f6}
+.al-blue .alert-title{color:#1d4ed8}
+.al-green{background:#f0fdf4;border-left:4px solid #22c55e}
+.al-green .alert-title{color:#15803d}
+.al-yellow{background:#fffbeb;border-left:4px solid #f59e0b}
+.al-yellow .alert-title{color:#b45309}
+.al-red{background:#fef2f2;border-left:4px solid #ef4444}
+.al-red .alert-title{color:#b91c1c}
+.al-purple{background:#faf5ff;border-left:4px solid #9333ea}
+.al-purple .alert-title{color:#7e22ce}
+.al-teal{background:#f0fdfa;border-left:4px solid #14b8a6}
+.al-teal .alert-title{color:#0f766e}
+.flabel{display:inline-block;background:#16a34a;color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .65rem;border-radius:6px 6px 0 0;margin-bottom:-1px}
+.fbox{background:#f8fafc;border:1px solid #cbd5e1;border-top:3px solid #16a34a;border-radius:0 8px 8px 8px;padding:1.1rem 1.5rem;margin:.25rem 0 .85rem;overflow-x:auto;text-align:center}
+.fbox.no-top-radius{border-radius:8px}
+details{border:1px solid #e2e8f0;border-radius:8px;margin:.65rem 0;overflow:hidden}
+details>summary{padding:.65rem 1.1rem;cursor:pointer;font-weight:600;font-size:.875rem;background:#f1f5f9;list-style:none;display:flex;align-items:center;gap:.45rem;user-select:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:'▶';font-size:.65rem;color:#64748b;transition:transform .2s;margin-right:.1rem}
+details[open]>summary::before{transform:rotate(90deg)}
+details[open]>summary{background:#e2e8f0}
+.dc{padding:1.1rem}
+.tbl{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.85rem}
+.tbl th{background:#14532d;color:#fff;padding:.5rem .85rem;text-align:left}
+.tbl td{padding:.5rem .85rem;border:1px solid #e2e8f0}
+.tbl tr:nth-child(even){background:#f0fdf4}
+.step{display:flex;gap:.85rem;margin:.6rem 0}
+.step-n{background:#16a34a;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.15rem}
+.step-c{flex:1;font-size:.875rem;line-height:1.6}
+.qcard{background:#fff;border:1px solid #e2e8f0;border-radius:8px;margin:1.1rem 0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.qhdr{background:#1e3a5f;color:#fff;padding:.55rem 1.1rem;font-size:.82rem;font-weight:600}
+.qbody{padding:1.1rem}
+.qq{font-size:.875rem;line-height:1.6;margin-bottom:.7rem;font-weight:500}
+.qopt{padding:.35rem .75rem;border-radius:5px;margin:.2rem 0;font-size:.855rem;line-height:1.5}
+.qok{background:#dcfce7;color:#14532d;font-weight:700;border-left:3px solid #16a34a}
+.qwrong{color:#64748b}
+.qexp{background:#fffbeb;border-left:3px solid #f59e0b;padding:.7rem 1rem;border-radius:0 6px 6px 0;margin-top:.7rem;font-size:.84rem;line-height:1.6}
+.divider{border:none;border-top:2px solid #e2e8f0;margin:2.25rem 0}
+#back-top{position:fixed;bottom:1.5rem;right:1.5rem;background:#14532d;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.2);font-size:.85rem}
+#back-top:hover{background:#15803d}
+p{font-size:.9rem;line-height:1.7;margin:.5rem 0}
+li{font-size:.875rem;line-height:1.7}
+ul,ol{padding-left:1.4rem;margin:.4rem 0}
+strong{color:#1e293b}
+.hmm-nav{display:flex;flex-wrap:wrap;gap:.4rem;margin:1rem 0 1.5rem}
+.hmm-nav a{background:#e2e8f0;color:#334155;font-size:.78rem;padding:.3rem .75rem;border-radius:20px;text-decoration:none;transition:all .15s;border:1px solid #cbd5e1}
+.hmm-nav a:hover{background:#14532d;color:#fff;border-color:#14532d}
+.insight{background:linear-gradient(135deg,#faf5ff,#f3e8ff);border:1px solid #d8b4fe;border-radius:8px;padding:1rem 1.25rem;margin:.75rem 0}
+.insight-title{font-weight:700;color:#7e22ce;margin-bottom:.4rem;font-size:.85rem}
+.key-eq{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #16a34a;border-radius:8px;padding:1rem 1.5rem;margin:.75rem 0;text-align:center}
+.analogy{background:#fefce8;border:1px solid #fde047;border-left:4px solid #eab308;border-radius:0 8px 8px 0;padding:.85rem 1.1rem;margin:.85rem 0;font-size:.875rem}
+.analogy-title{font-weight:700;color:#854d0e;margin-bottom:.3rem;font-size:.85rem}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0}
+@media(max-width:900px){.two-col{grid-template-columns:1fr}}
+.col-card{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:1rem}
+.col-card h4{font-weight:700;margin-bottom:.5rem;font-size:.9rem}
+.trace-table{width:100%;border-collapse:collapse;font-size:.83rem;margin:.75rem 0}
+.trace-table th{background:#1e3a5f;color:#fff;padding:.4rem .7rem;text-align:center}
+.trace-table td{padding:.4rem .7rem;border:1px solid #cbd5e1;text-align:center}
+.trace-table .best{background:#dcfce7;font-weight:700;color:#14532d}
+.trace-table .head-row{background:#f1f5f9;font-weight:600}
+@media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+</style>
+</head>
+<body>
+<nav id="sidebar">
+  <div class="sb-title">
+    <h1><i class="fas fa-brain"></i> Học Máy &amp; Ứng Dụng</h1>
+    <p>Ôn thi Cuối Kỳ — HK252 | CO5175</p>
+  </div>
+  <div class="sb-group">Trang chủ</div>
+  <a href="index.html" class="sb-link"><i class="fas fa-home"></i>Tổng quan các chương</a>
+  <div class="sb-group">Phân loại có giám sát</div>
+  <a href="knn.html" class="sb-link"><i class="fas fa-map-marker-alt"></i>Ch.3 — K-Nearest Neighbors</a>
+  <a href="bayes.html" class="sb-link"><i class="fas fa-calculator"></i>Ch.4 — Naive Bayes</a>
+  <a href="dtree.html" class="sb-link"><i class="fas fa-tree"></i>Ch.5 — Decision Trees</a>
+  <a href="nn.html" class="sb-link"><i class="fas fa-network-wired"></i>Ch.7 — Neural Networks</a>
+  <a href="svm.html" class="sb-link"><i class="fas fa-compress-arrows-alt"></i>Ch.8 — Support Vector Machines</a>
+  <a href="ensemble.html" class="sb-link"><i class="fas fa-layer-group"></i>Ch.9 — Ensemble Methods</a>
+  <a href="deep.html" class="sb-link"><i class="fas fa-microchip"></i>Ch.12 — Deep Learning</a>
+  <div class="sb-group">Chuyên đề ôn thi</div>
+  <a href="hmm.html" class="sb-link" style="background:rgba(74,222,128,.15);border-left-color:#4ade80;color:#fff"><i class="fas fa-random"></i>Hidden Markov Models</a>
+  <a href="kmeans.html" class="sb-link"><i class="fas fa-object-group"></i>K-Means Clustering</a>
+  <a href="logreg.html" class="sb-link"><i class="fas fa-chart-line"></i>Logistic Regression</a>
+  <div class="sb-group">Thi thử</div>
+  <a href="mock.html" class="sb-link"><i class="fas fa-file-alt"></i>Đề Thi Thử 2026</a>
+  <a href="exam2025.html" class="sb-link"><i class="fas fa-graduation-cap"></i>Đề CK Thật 2025</a>
+</nav>
+
+<main id="main">
+<section id="hmm">
+
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-star"></i> Chuyên đề trọng tâm #1</div>
+  <h2>Hidden Markov Models (HMM)</h2>
+  <p>Mô hình xác suất cho chuỗi thời gian với trạng thái ẩn — phân tích sâu từng khái niệm, cơ chế, và cách tư duy end-to-end.</p>
+</div>
+
+<div class="hmm-nav">
+  <a href="#s0">0. Động lực</a>
+  <a href="#s1">1. Mô hình λ=(A,B,π)</a>
+  <a href="#s2">2. Markov Property</a>
+  <a href="#s3">3. Ba bài toán</a>
+  <a href="#s4">4. Forward Algorithm</a>
+  <a href="#s5">5. Viterbi</a>
+  <a href="#s6">6. Forward-Backward</a>
+  <a href="#s7">7. Baum-Welch EM</a>
+  <a href="#s8">8. Log-space</a>
+  <a href="#s9">9. Khởi tạo</a>
+  <a href="#s10">10. Bậc Markov</a>
+  <a href="#s11">11. Ví dụ end-to-end</a>
+  <a href="#s12">12. Ứng dụng</a>
+  <a href="#s13">13. Tóm tắt &amp; checklist</a>
+</div>
+
+<!-- ====================================================
+     SECTION 0: MOTIVATION
+==================================================== -->
+<div class="s-title" id="s0">0. Động lực — Tại sao phải có HMM?</div>
+
+<p>Trước khi học thuật toán, cần hiểu rõ <strong>bài toán thực sự mà HMM giải quyết</strong> là gì. Đây là điểm mà nhiều người bỏ qua và sau đó không thể connect các công thức với nhau.</p>
+
+<div class="ss-title">0.1 Vấn đề cốt lõi: Quan sát và Ẩn</div>
+
+<p>Trong thế giới thực, ta thường đứng trước tình huống: <em>ta thấy kết quả, nhưng không thấy nguyên nhân</em>. Nguyên nhân (trạng thái ẩn) mới là thứ ta quan tâm — nhưng nó không trực tiếp quan sát được.</p>
+
+<div class="two-col">
+<div class="col-card">
+<h4 style="color:#14532d">Thế giới quan sát được (Observations)</h4>
+<ul>
+  <li>Âm thanh phát ra từ miệng người nói</li>
+  <li>Giáo sư hôm nay có mang cà phê không</li>
+  <li>Giá cổ phiếu tăng hay giảm mỗi ngày</li>
+  <li>Chuỗi nucleotide trong gene DNA</li>
+  <li>Người dùng click hay không click quảng cáo</li>
+</ul>
+</div>
+<div class="col-card">
+<h4 style="color:#7e22ce">Thế giới ẩn (Hidden States)</h4>
+<ul>
+  <li>Người đó đang phát âm vị gì (phoneme)</li>
+  <li>Hôm nay thời tiết nóng hay lạnh</li>
+  <li>Thị trường đang ở chế độ bull hay bear</li>
+  <li>Đoạn gene này mã hóa protein hay không</li>
+  <li>Người dùng đang ở giai đoạn mua sắm nào</li>
+</ul>
+</div>
+</div>
+
+<p>Điểm mấu chốt: các trạng thái ẩn <strong>không phải là ngẫu nhiên bừa bãi</strong> — chúng tuân theo một quá trình có cấu trúc (Markov chain). Và từ mỗi trạng thái ẩn, quan sát được tạo ra theo một xác suất nhất định. HMM mô hình hóa chính xác kiến trúc này.</p>
+
+<div class="ss-title">0.2 Ví dụ trực giác — Giáo sư và Thời tiết (CIS511)</div>
+
+<div class="analogy">
+<div class="analogy-title"><i class="fas fa-sun"></i> Bài toán: Suy ra thời tiết từ hành vi giáo sư</div>
+<p>Mỗi ngày bạn quan sát: giáo sư có mang đồ uống vào lớp không (D=yes, N=no). <strong>Thời tiết hôm đó bạn không biết</strong> — đó là trạng thái ẩn (Hot hay Cold).</p>
+<p>Bạn biết từ kinh nghiệm:</p>
+<ul>
+  <li>Ngày nóng: giáo sư mang đồ uống với P=0.7 (tất nhiên vì khát)</li>
+  <li>Ngày lạnh: giáo sư mang đồ uống với P=0.2 (ít khát hơn)</li>
+  <li>Thời tiết hôm nay phụ thuộc hôm qua: Hot→Hot (0.75), Hot→Cold (0.25), Cold→Hot (0.3), Cold→Cold (0.7)</li>
+</ul>
+<p>Sau một học kỳ, bạn ghi được: [N, N, N, D]. <strong>Hỏi: những ngày đó thời tiết ra sao?</strong> → Đây là Decoding Problem.</p>
+</div>
+
+<div class="ss-title">0.3 Tại sao HMM phức tạp hơn Naive Bayes hay Markov thường?</div>
+
+<table class="tbl">
+<thead><tr><th>Mô hình</th><th>Cấu trúc</th><th>Giới hạn</th></tr></thead>
+<tbody>
+<tr><td><strong>Naive Bayes</strong></td><td>Quan sát phụ thuộc một lớp/nhãn cố định</td><td>Không mô hình được chuỗi thời gian — mỗi điểm độc lập</td></tr>
+<tr><td><strong>Markov Chain</strong></td><td>Chuỗi trạng thái, nhưng trạng thái TRỰC TIẾP quan sát</td><td>Không có lớp ẩn — trạng thái = quan sát</td></tr>
+<tr><td><strong>HMM</strong></td><td>Chuỗi trạng thái ẩn + chuỗi quan sát tương ứng</td><td>Phức tạp hơn nhưng hiện thực hơn — trạng thái ẩn!</td></tr>
+</tbody>
+</table>
+
+<p>Nói đơn giản: <em>HMM = Markov Chain trên trạng thái ẩn + Naive Bayes tại mỗi bước</em>. Ta không thể observe chuỗi trạng thái, chỉ observe chuỗi "tín hiệu" phát ra từ mỗi trạng thái.</p>
+
+<!-- ====================================================
+     SECTION 1: MODEL
+==================================================== -->
+<div class="s-title" id="s1">1. Cấu trúc Mô hình λ = (A, B, π) — Phân tích từng thành phần</div>
+
+<div class="ss-title">1.1 Ký hiệu tổng quan</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-list"></i> Các ký hiệu cơ bản của HMM</div>
+  <table class="tbl" style="margin-top:.4rem">
+  <thead><tr><th>Ký hiệu</th><th>Tên</th><th>Ý nghĩa</th><th>Kích thước</th></tr></thead>
+  <tbody>
+  <tr><td>\(N\)</td><td>Số trạng thái ẩn</td><td>Số lượng hidden states</td><td>scalar</td></tr>
+  <tr><td>\(K\)</td><td>Số ký hiệu quan sát</td><td>Kích thước vocabulary quan sát</td><td>scalar</td></tr>
+  <tr><td>\(T\)</td><td>Độ dài chuỗi</td><td>Số bước thời gian</td><td>scalar</td></tr>
+  <tr><td>\(\mathcal{S}=\{s_1,\ldots,s_N\}\)</td><td>Tập trạng thái</td><td>Các giá trị có thể của hidden state</td><td>set</td></tr>
+  <tr><td>\(\mathcal{V}=\{v_1,\ldots,v_K\}\)</td><td>Tập quan sát</td><td>Các ký hiệu quan sát có thể</td><td>set</td></tr>
+  <tr><td>\(Q=(q_1,\ldots,q_T)\)</td><td>Chuỗi trạng thái ẩn</td><td>Hidden state sequence — <strong>KHÔNG quan sát được</strong></td><td>\(N^T\) khả năng</td></tr>
+  <tr><td>\(O=(o_1,\ldots,o_T)\)</td><td>Chuỗi quan sát</td><td>Observation sequence — <strong>QUAN SÁT ĐƯỢC</strong></td><td>\(K^T\) khả năng</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<div class="ss-title">1.2 Tham số π — Initial Distribution (Phân phối ban đầu)</div>
+
+<div class="flabel">π — Initial Distribution</div>
+<div class="fbox">
+\[ \pi_i = P(q_1 = s_i), \quad i = 1, \ldots, N \qquad \text{với ràng buộc: } \sum_{i=1}^N \pi_i = 1 \]
+</div>
+
+<p><strong>Ý nghĩa vật lý:</strong> \(\pi_i\) là xác suất chuỗi <em>bắt đầu</em> ở trạng thái \(s_i\). Đây là phân phối tại thời điểm \(t=1\) trước khi bất kỳ quan sát nào xuất hiện.</p>
+
+<div class="insight">
+<div class="insight-title">Tại sao cần π riêng thay vì dùng A?</div>
+<p>Nếu mô hình đã chạy từ lâu (stationary), trạng thái ban đầu có thể lấy từ stationary distribution của A. Nhưng trong thực tế, mô hình có thể chưa đạt trạng thái dừng, hoặc ta biết trước điều kiện ban đầu. Ví dụ: nhận dạng giọng nói — mỗi câu nói đều bắt đầu từ trạng thái silence, tức \(\pi_{silence}=1\).</p>
+</div>
+
+<div class="ss-title">1.3 Tham số A — Transition Matrix (Ma trận chuyển trạng thái)</div>
+
+<div class="flabel">A — Transition Matrix</div>
+<div class="fbox">
+\[ a_{ij} = P(q_t = s_j \mid q_{t-1} = s_i) \qquad \text{với ràng buộc: } \sum_{j=1}^N a_{ij} = 1 \;\;\forall i \]
+</div>
+
+<p><strong>Cấu trúc ma trận:</strong> A là ma trận \(N \times N\). Phần tử \(a_{ij}\) tại hàng \(i\), cột \(j\). Mỗi <em>hàng</em> tổng bằng 1 (row-stochastic).</p>
+
+<div class="analogy">
+<div class="analogy-title">Ví dụ minh họa ma trận A (N=2)</div>
+<p>Mô hình Active (S1) / Idle (S2):</p>
+\[ A = \begin{pmatrix} a_{11} & a_{12} \\ a_{21} & a_{22} \end{pmatrix} = \begin{pmatrix} 0.8 & 0.2 \\ 0.4 & 0.6 \end{pmatrix} \]
+<p>Đọc: hàng 1 = từ S1 chuyển đi đâu (0.8→S1, 0.2→S2). Hàng 2 = từ S2 chuyển đi đâu (0.4→S1, 0.6→S2). Mỗi hàng tổng = 1. Nhìn vào đường chéo: \(a_{11}=0.8\) nghĩa là S1 "dính" với nhau — khi đã Active thì có xu hướng giữ Active.</p>
+</div>
+
+<div class="alert al-purple">
+<div class="alert-title"><i class="fas fa-brain"></i> A bất biến theo thời gian (Time-homogeneous)</div>
+<p>Giả định then chốt: ma trận A <em>không đổi theo t</em>. Xác suất chuyển từ S1→S2 lúc sáng sớm bằng buổi chiều. Đây là đơn giản hóa cần thiết để mô hình tractable. Trong thực tế, có các mô hình non-homogeneous HMM phức tạp hơn, nhưng không nằm trong phạm vi môn học này.</p>
+</div>
+
+<div class="ss-title">1.4 Tham số B — Emission Matrix (Ma trận phát xạ)</div>
+
+<div class="flabel">B — Emission Matrix</div>
+<div class="fbox">
+\[ b_j(v_k) = P(o_t = v_k \mid q_t = s_j) \qquad \text{với ràng buộc: } \sum_{k=1}^K b_j(v_k) = 1 \;\;\forall j \]
+</div>
+
+<p><strong>B là ma trận \(N \times K\).</strong> Hàng \(j\) = phân phối quan sát khi đang ở trạng thái \(s_j\). Mỗi hàng tổng bằng 1.</p>
+
+<div class="analogy">
+<div class="analogy-title">Ví dụ minh họa ma trận B (N=2, K=2)</div>
+\[ B = \begin{pmatrix} b_1(\text{View}) & b_1(\text{NoView}) \\ b_2(\text{View}) & b_2(\text{NoView}) \end{pmatrix} = \begin{pmatrix} 0.9 & 0.1 \\ 0.2 & 0.8 \end{pmatrix} \]
+<p>Đọc: hàng 1 (S1=Active) — khi Active, 90% thấy View, 10% thấy NoView. Hàng 2 (S2=Idle) — khi Idle, chỉ 20% thấy View, 80% thấy NoView. Trực giác: người Active thường xem nội dung, người Idle thường không.</p>
+</div>
+
+<div class="alert al-yellow">
+<div class="alert-title"><i class="fas fa-star"></i> Giả định quan trọng của B: Quan sát độc lập với lịch sử</div>
+<p>\(P(o_t | q_t, q_{t-1}, \ldots, q_1, o_{t-1}, \ldots, o_1) = P(o_t | q_t)\)</p>
+<p>Quan sát tại bước \(t\) chỉ phụ thuộc vào trạng thái tại bước \(t\), không phụ thuộc lịch sử. Đây là <strong>Output Independence Assumption</strong>. Kết hợp với Markov property, ta có hai lớp độc lập có điều kiện — đây là lý do Forward/Backward có thể tách biệt quá khứ và tương lai.</p>
+</div>
+
+<div class="ss-title">1.5 Bộ tham số đầy đủ và số tham số tự do</div>
+
+<table class="tbl">
+<thead><tr><th>Tham số</th><th>Kích thước</th><th>Ràng buộc</th><th>Số bậc tự do</th></tr></thead>
+<tbody>
+<tr><td>\(\pi\)</td><td>\(N\)</td><td>\(\sum \pi_i = 1\)</td><td>\(N-1\)</td></tr>
+<tr><td>\(A\)</td><td>\(N \times N\)</td><td>Mỗi hàng tổng = 1 (N ràng buộc)</td><td>\(N(N-1)\)</td></tr>
+<tr><td>\(B\)</td><td>\(N \times K\)</td><td>Mỗi hàng tổng = 1 (N ràng buộc)</td><td>\(N(K-1)\)</td></tr>
+<tr><td><strong>Tổng</strong></td><td></td><td></td><td>\((N-1) + N(N-1) + N(K-1)\)</td></tr>
+</tbody>
+</table>
+
+<p>Ví dụ với \(N=2, K=2\): \((2-1) + 2(2-1) + 2(2-1) = 1+2+2 = 5\) tham số tự do. Nhiều hơn là thừa, ít hơn là không đủ biểu đạt độ phức tạp của quá trình.</p>
+
+<!-- ====================================================
+     SECTION 2: MARKOV PROPERTY
+==================================================== -->
+<div class="s-title" id="s2">2. Tính chất Markov — Nền tảng của mọi tính toán</div>
+
+<div class="ss-title">2.1 Phát biểu chính thức</div>
+
+<div class="flabel">Markov Property (bậc 1)</div>
+<div class="fbox">
+\[ P(q_t \mid q_{t-1}, q_{t-2}, \ldots, q_1) = P(q_t \mid q_{t-1}) \]
+</div>
+
+<p><strong>Đọc là:</strong> Trạng thái hiện tại \(q_t\) chỉ phụ thuộc vào trạng thái ngay trước đó \(q_{t-1}\), không phụ thuộc vào toàn bộ lịch sử \(q_{t-2}, q_{t-3}, \ldots\)</p>
+
+<div class="ss-title">2.2 Tại sao giả định này mạnh đến vậy?</div>
+
+<div class="insight">
+<div class="insight-title">Markov Property = "Trạng thái hiện tại tóm gọn toàn bộ lịch sử"</div>
+<p>Khi biết \(q_{t-1}\), mọi thông tin về \(q_{t-2}, q_{t-3}, \ldots\) đều <em>vô dụng</em> để dự đoán \(q_t\). Trạng thái \(q_{t-1}\) đã là một <strong>sufficient statistic</strong> của toàn bộ lịch sử trước đó.</p>
+<p>Điều này tạo ra một cấu trúc cực kỳ đặc biệt: <strong>conditional independence</strong>. Cho biết \(q_t\), thì phần tương lai \((q_{t+1}, q_{t+2}, \ldots)\) độc lập với phần quá khứ \((q_{t-1}, q_{t-2}, \ldots)\). Đây chính xác là điều cho phép Forward-Backward tách biệt \(\alpha\) và \(\beta\)!</p>
+</div>
+
+<div class="ss-title">2.3 Factorization của Joint Probability P(Q, O|λ)</div>
+
+<p>Nhờ Markov property + Output Independence, ta có thể viết joint probability theo dạng tích tuần tự:</p>
+
+<div class="flabel">Joint Probability Factorization</div>
+<div class="fbox">
+\[ P(Q, O \mid \lambda) = \underbrace{\pi_{q_1}}_{\text{bắt đầu}} \cdot \underbrace{b_{q_1}(o_1)}_{\text{emit} o_1} \cdot \prod_{t=2}^{T} \underbrace{a_{q_{t-1},q_t}}_{\text{chuyển}} \cdot \underbrace{b_{q_t}(o_t)}_{\text{emit} o_t} \]
+</div>
+
+<p>Đây là công thức nền tảng của mọi tính toán HMM. Mỗi thành phần có ý nghĩa vật lý rõ ràng:</p>
+<ul>
+  <li>\(\pi_{q_1}\): xác suất xuất phát từ trạng thái đầu</li>
+  <li>\(b_{q_1}(o_1)\): xác suất phát ra quan sát đầu tiên từ trạng thái đầu</li>
+  <li>\(a_{q_{t-1},q_t}\): xác suất chuyển trạng thái tại bước \(t\)</li>
+  <li>\(b_{q_t}(o_t)\): xác suất phát ra quan sát tại bước \(t\)</li>
+</ul>
+
+<details>
+<summary><i class="fas fa-calculator"></i> Kiểm tra: Tính P(Q=[S1,S2], O=[View,NoView]) từng bước</summary>
+<div class="dc">
+<div class="step"><div class="step-n">1</div><div class="step-c">Trạng thái đầu: \(\pi_{S1} = 0.7\)</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c">Phát quan sát đầu (View) từ S1: \(b_{S1}(\text{View}) = 0.9\). Tích lũy: \(0.7 \times 0.9 = 0.63\)</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c">Chuyển từ S1→S2: \(a_{S1,S2} = 0.2\). Tích lũy: \(0.63 \times 0.2 = 0.126\)</div></div>
+<div class="step"><div class="step-n">4</div><div class="step-c">Phát quan sát 2 (NoView) từ S2: \(b_{S2}(\text{NoView}) = 0.8\). Kết quả: \(0.126 \times 0.8 = \mathbf{0.1008}\)</div></div>
+<div class="alert al-green" style="margin-top:.5rem">
+P([S1,S2], [View,NoView] | λ) = 0.7 × 0.9 × 0.2 × 0.8 = <strong>0.1008</strong> — đây là xác suất joint của đường đi cụ thể này.
+</div>
+</div>
+</details>
+
+<!-- ====================================================
+     SECTION 3: THREE PROBLEMS
+==================================================== -->
+<div class="s-title" id="s3">3. Ba Bài Toán Cốt Lõi — Tổng quan</div>
+
+<table class="tbl">
+<thead><tr><th>#</th><th>Bài toán</th><th>Câu hỏi đặt ra</th><th>Thuật toán</th><th>Complexity</th><th>Dùng khi</th></tr></thead>
+<tbody>
+<tr><td><strong>1</strong></td><td>Evaluation</td><td>\(P(O|\lambda) = ?\)</td><td>Forward</td><td>\(O(N^2 T)\)</td><td>So sánh mô hình, scoring</td></tr>
+<tr><td><strong>2a</strong></td><td>Decoding (global)</td><td>\(Q^* = \arg\max P(Q,O|\lambda)\)</td><td>Viterbi</td><td>\(O(N^2 T)\)</td><td>Cần chuỗi trạng thái hoàn chỉnh</td></tr>
+<tr><td><strong>2b</strong></td><td>Decoding (marginal)</td><td>\(\hat{q}_t = \arg\max P(q_t|O,\lambda)\)</td><td>Forward-Backward</td><td>\(O(N^2 T)\)</td><td>Cần xác suất từng bước</td></tr>
+<tr><td><strong>3</strong></td><td>Learning</td><td>\(\lambda^* = \arg\max P(O|\lambda)\)</td><td>Baum-Welch (EM)</td><td>\(O(N^2 T)\) / iter</td><td>Học tham số từ dữ liệu thô</td></tr>
+</tbody>
+</table>
+
+<div class="alert al-blue">
+<div class="alert-title"><i class="fas fa-lightbulb"></i> Ba bài toán liên kết với nhau như thế nào?</div>
+<p>Baum-Welch (Learning) <em>dùng</em> Forward-Backward (Evaluation + Decoding) trong từng iteration. Cụ thể: E-step của Baum-Welch chính là Forward-Backward để tính \(\gamma\) và \(\xi\). M-step dùng \(\gamma, \xi\) để cập nhật tham số. Vậy: <strong>học tham số = lặp đi lặp lại bài toán Evaluation + Decoding mềm.</strong></p>
+</div>
+
+<!-- ====================================================
+     SECTION 4: FORWARD ALGORITHM
+==================================================== -->
+<div class="s-title" id="s4">4. Forward Algorithm — Tính P(O|λ) hiệu quả</div>
+
+<div class="ss-title">4.1 Tại sao brute-force thất bại</div>
+
+<p>Để tính \(P(O|\lambda)\), ta cần tổng hợp qua <em>tất cả</em> chuỗi trạng thái có thể:</p>
+<div class="fbox no-top-radius">
+\[ P(O|\lambda) = \sum_{\text{mọi } Q} P(O, Q|\lambda) = \sum_{q_1}\sum_{q_2}\cdots\sum_{q_T} P(O, Q|\lambda) \]
+</div>
+<p>Số chuỗi Q có thể = \(N^T\). Ví dụ N=10, T=50: \(10^{50}\) — nhiều hơn số nguyên tử trong vũ trụ quan sát được (\(\approx 10^{80}\)). Rõ ràng không thể enumerate.</p>
+
+<div class="ss-title">4.2 Key Insight — Subproblem chung (Shared Subproblems)</div>
+
+<div class="insight">
+<div class="insight-title">Tại sao Dynamic Programming hoạt động ở đây?</div>
+<p>Xét hai chuỗi khác nhau nhưng đều kết thúc ở \((t, s_j)\):</p>
+<ul>
+  <li>Path A: \(S1 \to S2 \to S1 \to \mathbf{s_j}\)</li>
+  <li>Path B: \(S2 \to S1 \to S1 \to \mathbf{s_j}\)</li>
+</ul>
+<p>Khi cả hai đã đến \((t, s_j)\), phần tương lai từ \(t+1\) đến \(T\) của chúng <strong>hoàn toàn giống nhau</strong> — vì theo Markov property, tương lai chỉ phụ thuộc vào trạng thái hiện tại \(s_j\), không phụ thuộc vào cách ta đến đó.</p>
+<p>Vậy ta không cần tính riêng từng đường đi. Chỉ cần lưu <strong>TỔNG xác suất</strong> của mọi đường đến \((t, s_j)\), gọi là \(\alpha_t(j)\). Sau đó mở rộng sang \((t+1, s_k)\) bằng cách nhân với \(a_{jk}\).</p>
+</div>
+
+<div class="ss-title">4.3 Định nghĩa biến Forward α</div>
+
+<div class="key-eq">
+\[ \alpha_t(i) = P(o_1, o_2, \ldots, o_t,\; q_t = s_i \mid \lambda) \]
+<p style="margin-top:.5rem;font-size:.85rem">"Xác suất của việc đã thấy quan sát \(o_1,...,o_t\) VÀ đang ở trạng thái \(s_i\) tại thời điểm \(t\)."</p>
+</div>
+
+<p>Lưu ý quan trọng: \(\alpha_t(i)\) là xác suất <em>joint</em> (của cả quan sát và trạng thái), không phải xác suất điều kiện. Ta có thể recover \(P(O|\lambda) = \sum_i \alpha_T(i)\).</p>
+
+<div class="ss-title">4.4 Đệ quy Forward — Cơ chế hoạt động</div>
+
+<div class="flabel">Khởi tạo t=1</div>
+<div class="fbox">
+\[ \alpha_1(i) = \pi_i \cdot b_i(o_1) \]
+</div>
+<p>Giải thích: Xuất phát ở \(s_i\) (xác suất \(\pi_i\)) và phát ra \(o_1\) từ \(s_i\) (xác suất \(b_i(o_1)\)). Nhân hai xác suất độc lập có điều kiện.</p>
+
+<div class="flabel">Đệ quy t = 2, 3, ..., T</div>
+<div class="fbox">
+\[ \alpha_t(j) = \underbrace{\left[\sum_{i=1}^{N} \alpha_{t-1}(i) \cdot a_{ij}\right]}_{\text{Bước 1: tổng hợp từ tất cả trạng thái trước}} \cdot \underbrace{b_j(o_t)}_{\text{Bước 2: lọc bởi quan sát}} \]
+</div>
+
+<div class="alert al-blue">
+<div class="alert-title"><i class="fas fa-lightbulb"></i> Giải phẫu công thức đệ quy Forward</div>
+<p><strong>Phần trong ngoặc vuông</strong> \(\sum_{i} \alpha_{t-1}(i) \cdot a_{ij}\): Đây là "xác suất đến trạng thái \(s_j\) tại bước \(t\), qua mọi con đường có thể". Nó tổng hợp từ tất cả trạng thái trước (\(s_1, s_2, \ldots, s_N\)) và nhân với xác suất chuyển đến \(s_j\). <em>Đây là phần Dynamic Programming</em> — thay vì re-compute từng path riêng.</p>
+<p><strong>Nhân với \(b_j(o_t)\)</strong>: Sau khi đến \(s_j\), ta "lọc" bằng xác suất phát ra quan sát \(o_t\). Nếu \(o_t\) rất khó xảy ra từ \(s_j\), thì \(\alpha_t(j)\) sẽ nhỏ — trạng thái \(s_j\) kém khả năng ở thời điểm này.</p>
+</div>
+
+<div class="flabel">Kết thúc</div>
+<div class="fbox">
+\[ P(O|\lambda) = \sum_{i=1}^{N} \alpha_T(i) \]
+</div>
+<p>Tại bước cuối T, \(\alpha_T(i)\) = xác suất thấy toàn bộ chuỗi quan sát VÀ kết thúc ở \(s_i\). Tổng qua mọi trạng thái kết thúc = xác suất thấy toàn bộ chuỗi (bất kể kết thúc ở đâu).</p>
+
+<div class="ss-title">4.5 Phân tích độ phức tạp</div>
+
+<table class="tbl">
+<thead><tr><th>Thuật toán</th><th>Số phép tính</th><th>Bộ nhớ</th><th>N=10, T=100</th></tr></thead>
+<tbody>
+<tr><td>Brute-force</td><td>\(O(N^T \cdot T)\)</td><td>\(O(N^T)\)</td><td>\(10^{100}\) phép → không thể!</td></tr>
+<tr><td>Forward DP</td><td>\(O(N^2 \cdot T)\)</td><td>\(O(N \cdot T)\)</td><td>\(10^2 \times 100 = 10{,}000\) phép → ngay lập tức!</td></tr>
+</tbody>
+</table>
+
+<p>Tại mỗi bước \(t\), với mỗi trạng thái \(j\) (N cái), cần tính tổng qua N trạng thái trước → \(N^2\) phép nhân mỗi bước. Tổng T bước → \(O(N^2 T)\). Giảm từ exponential về polynomial — đây là sức mạnh của DP.</p>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Ví dụ số đầy đủ — Forward với O=[View, NoView]</summary>
+<div class="dc">
+<p><strong>Mô hình:</strong> S1=Active, S2=Idle; π=[0.7,0.3]; A=[[0.8,0.2],[0.4,0.6]]; B: b₁(View)=0.9, b₁(NoView)=0.1, b₂(View)=0.2, b₂(NoView)=0.8</p>
+<p><strong>t=1, o₁=View:</strong></p>
+<div class="fbox no-top-radius">
+\[\alpha_1(S1) = \pi_{S1} \cdot b_{S1}(\text{View}) = 0.7 \times 0.9 = \mathbf{0.63}\]
+\[\alpha_1(S2) = \pi_{S2} \cdot b_{S2}(\text{View}) = 0.3 \times 0.2 = \mathbf{0.06}\]
+\[\text{Tổng} = 0.69 = P(o_1=\text{View}|\lambda) \quad\checkmark\]
+</div>
+<p><strong>t=2, o₂=NoView:</strong></p>
+<div class="fbox no-top-radius">
+\[\alpha_2(S1) = \bigl[\alpha_1(S1)\cdot a_{11} + \alpha_1(S2)\cdot a_{21}\bigr]\cdot b_{S1}(\text{NoView})\]
+\[= [0.63\times0.8 + 0.06\times0.4]\times0.1 = [0.504+0.024]\times0.1 = 0.528\times0.1 = \mathbf{0.0528}\]
+\[\alpha_2(S2) = \bigl[\alpha_1(S1)\cdot a_{12} + \alpha_1(S2)\cdot a_{22}\bigr]\cdot b_{S2}(\text{NoView})\]
+\[= [0.63\times0.2 + 0.06\times0.6]\times0.8 = [0.126+0.036]\times0.8 = 0.162\times0.8 = \mathbf{0.1296}\]
+\[P(O|\lambda) = 0.0528 + 0.1296 = \mathbf{0.1824}\]
+</div>
+<table class="trace-table">
+<thead><tr><th></th><th>t=1 (View)</th><th>t=2 (NoView)</th></tr></thead>
+<tbody>
+<tr class="head-row"><td>α(S1)</td><td>0.6300</td><td>0.0528</td></tr>
+<tr><td>α(S2)</td><td>0.0600</td><td>0.1296</td></tr>
+<tr class="best"><td>Tổng = P(O₁..ₜ|λ)</td><td>0.6900</td><td>0.1824 = P(O|λ)</td></tr>
+</tbody>
+</table>
+<div class="alert al-green" style="margin-top:.5rem">
+Kiểm tra brute-force: [S1,S1]=0.0504, [S1,S2]=0.1008, [S2,S1]=0.0024, [S2,S2]=0.0288. Tổng = 0.1824 ✓. Forward đúng và nhanh hơn nhiều lần.
+</div>
+</div>
+</details>
+
+<div class="ss-title">4.6 Xử lý quan sát bị thiếu — Marginalization</div>
+
+<p>Nếu tại bước \(k\), không có quan sát (missing data), đặt \(b_j(o_k) = 1\) cho mọi \(j\).</p>
+
+<div class="insight">
+<div class="insight-title">Tại sao đặt b_j = 1 khi thiếu dữ liệu?</div>
+<p>Khi thiếu quan sát tại bước \(k\), ta cần marginalize: \(P(o_k|\text{hidden}) = \sum_{v \in \mathcal{V}} P(o_k = v|\text{hidden}) = 1\). Nói cách khác, "quan sát không biết" = tổng xác suất qua mọi giá trị có thể = 1. Thuật toán Forward tiếp tục bình thường, chỉ là bước \(k\) không filter thêm thông tin nào.</p>
+</div>
+
+<!-- ====================================================
+     SECTION 5: VITERBI
+==================================================== -->
+<div class="s-title" id="s5">5. Viterbi Algorithm — Giải mã Tối ưu Toàn cục</div>
+
+<div class="ss-title">5.1 Câu hỏi khác với Forward</div>
+
+<p>Forward hỏi: "Chuỗi quan sát O này có xác suất bao nhiêu?" (marginalize qua mọi Q).<br>
+Viterbi hỏi: <strong>"Chuỗi trạng thái ẩn Q nào tốt nhất giải thích O?"</strong> (tìm Q maximize joint probability).</p>
+
+<div class="fbox no-top-radius">
+\[ Q^* = \arg\max_{Q} P(Q, O \mid \lambda) \]
+</div>
+
+<div class="ss-title">5.2 Nguyên lý tối ưu Bellman — Chứng minh chi tiết</div>
+
+<div class="alert al-purple">
+<div class="alert-title"><i class="fas fa-brain"></i> Bellman's Principle of Optimality — Phát biểu</div>
+<p>"Một chuỗi quyết định tối ưu có tính chất: bất kỳ đoạn con nào của nó cũng tối ưu cho bài toán con tương ứng."</p>
+</div>
+
+<p><strong>Áp dụng vào HMM:</strong> Giả sử \(Q^* = [q_1^*, q_2^*, \ldots, q_T^*]\) là chuỗi tối ưu. Bellman phát biểu: đoạn con \([q_1^*, \ldots, q_t^*]\) là đường đi tốt nhất đến trạng thái \(q_t^*\) tại bước \(t\).</p>
+
+<div class="insight">
+<div class="insight-title">Chứng minh bằng phản chứng</div>
+<p>Giả sử ngược lại: \([q_1^*, \ldots, q_t^*]\) không phải đường tốt nhất đến \((t, q_t^*)\). Tức tồn tại đường khác \([q_1', \ldots, q_{t-1}', q_t^*]\) tốt hơn:</p>
+\[P(q_1',\ldots,q_{t-1}',q_t^*, o_1,\ldots,o_t) > P(q_1^*,\ldots,q_{t-1}^*,q_t^*, o_1,\ldots,o_t)\]
+<p>Do Markov property, tương lai từ \(t\) trở đi chỉ phụ thuộc vào \(q_t^*\) — không phụ thuộc đường đi đến đó. Vậy ta có thể thay đoạn \([q_1^*,...,q_{t-1}^*]\) bằng \([q_1',...,q_{t-1}']\) mà không ảnh hưởng phần từ \(t+1\) trở đi.</p>
+<p>Kết quả: chuỗi mới \([q_1',...,q_{t-1}',q_t^*,q_{t+1}^*,...,q_T^*]\) có joint probability lớn hơn \(Q^*\). Mâu thuẫn với giả sử \(Q^*\) là tối ưu. ∎</p>
+</div>
+
+<div class="ss-title">5.3 Biến δ và con trỏ ψ — Định nghĩa đầy đủ</div>
+
+<div class="flabel">Biến Viterbi δ_t(j)</div>
+<div class="fbox">
+\[ \delta_t(j) = \max_{q_1,\ldots,q_{t-1}} P(q_1,\ldots,q_{t-1},\; q_t = s_j,\; o_1,\ldots,o_t \mid \lambda) \]
+</div>
+<p>"Xác suất cao nhất của bất kỳ chuỗi nào kết thúc ở \(s_j\) tại \(t\), đồng thời tạo ra quan sát \(o_1,...,o_t\)." Đây là giá trị DP tích lũy tốt nhất đến ô \((t, j)\) trong trellis diagram.</p>
+
+<div class="flabel">Con trỏ backtrack ψ_t(j)</div>
+<div class="fbox">
+\[ \psi_t(j) = \arg\max_{i=1}^{N} \bigl[\delta_{t-1}(i) \cdot a_{ij}\bigr] \]
+</div>
+<p>"Trạng thái tốt nhất tại \(t-1\) để chuyển sang \(s_j\) tại \(t\)." ψ lưu lại để backtrack sau khi tìm được \(q_T^*\).</p>
+
+<div class="ss-title">5.4 Công thức đệ quy đầy đủ</div>
+
+<div class="flabel">Khởi tạo (t=1)</div>
+<div class="fbox">
+\[\delta_1(j) = \pi_j \cdot b_j(o_1), \quad \psi_1(j) = 0 \quad \forall j\]
+</div>
+
+<div class="flabel">Đệ quy (t=2,...,T)</div>
+<div class="fbox">
+\[\delta_t(j) = \max_{i=1}^{N}\bigl[\delta_{t-1}(i)\cdot a_{ij}\bigr]\cdot b_j(o_t)\]
+\[\psi_t(j) = \arg\max_{i=1}^{N}\bigl[\delta_{t-1}(i)\cdot a_{ij}\bigr]\]
+</div>
+
+<div class="flabel">Kết thúc và Backtrack</div>
+<div class="fbox">
+\[q_T^* = \arg\max_{j=1}^{N} \delta_T(j)\]
+\[q_t^* = \psi_{t+1}(q_{t+1}^*), \quad t = T-1, T-2, \ldots, 1\]
+</div>
+
+<div class="ss-title">5.5 Tại sao cần backtrack? Tại sao không lưu trực tiếp chuỗi?</div>
+
+<div class="insight">
+<div class="insight-title">Lý do cần backtrack pointer ψ</div>
+<p>Sau khi tính xong δ, ta biết giá trị tốt nhất cuối cùng \(\delta_T(j^*)\). Nhưng ta không biết trực tiếp đường đi dẫn đến đó. ψ lưu lại tại mỗi ô \((t, j)\) trạng thái nào ở bước trước dẫn đến ô này trên đường tối ưu. Backtrack từ \(q_T^*\) ngược lại qua ψ sẽ reconstruct toàn bộ đường đi tối ưu.</p>
+<p>Tương tự như trong bài toán shortest path: Dijkstra tính khoảng cách ngắn nhất, nhưng để tìm đường đi thực sự, cần lưu "previous node" tại mỗi bước.</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Ví dụ số đầy đủ — Viterbi Trace với O=[View, NoView]</summary>
+<div class="dc">
+<p><strong>t=1, o₁=View:</strong></p>
+<div class="fbox no-top-radius">
+\[\delta_1(S1)=0.7\times0.9=\mathbf{0.63},\;\psi_1(S1)=0\]
+\[\delta_1(S2)=0.3\times0.2=\mathbf{0.06},\;\psi_1(S2)=0\]
+</div>
+<p><strong>t=2, o₂=NoView — tính từng ứng viên:</strong></p>
+<div class="fbox no-top-radius">
+\[\text{Đến S1 từ S1: } \delta_1(S1)\cdot a_{11} = 0.63\times0.8 = 0.504\]
+\[\text{Đến S1 từ S2: } \delta_1(S2)\cdot a_{21} = 0.06\times0.4 = 0.024\]
+\[\Rightarrow \max = 0.504\;\text{(từ S1)}\;\Rightarrow \psi_2(S1)=S1\]
+\[\delta_2(S1) = 0.504\times b_{S1}(\text{NoView}) = 0.504\times0.1 = \mathbf{0.0504}\]
+\[\text{Đến S2 từ S1: } \delta_1(S1)\cdot a_{12} = 0.63\times0.2 = 0.126\]
+\[\text{Đến S2 từ S2: } \delta_1(S2)\cdot a_{22} = 0.06\times0.6 = 0.036\]
+\[\Rightarrow \max = 0.126\;\text{(từ S1)}\;\Rightarrow \psi_2(S2)=S1\]
+\[\delta_2(S2) = 0.126\times b_{S2}(\text{NoView}) = 0.126\times0.8 = \mathbf{0.1008}\]
+</div>
+<p><strong>Kết thúc và Backtrack:</strong></p>
+<div class="fbox no-top-radius">
+\[q_2^* = \arg\max[\delta_2(S1)=0.0504,\;\delta_2(S2)=0.1008] = \mathbf{S2}\]
+\[q_1^* = \psi_2(q_2^*=S2) = \mathbf{S1}\]
+\[\Rightarrow Q^* = [S1, S2],\;\text{xác suất} = 0.1008\]
+</div>
+<table class="trace-table">
+<thead><tr><th>Bảng δ/ψ</th><th>t=1 (View)</th><th>t=2 (NoView)</th></tr></thead>
+<tbody>
+<tr class="head-row"><td>δ(S1)</td><td>0.6300</td><td>0.0504</td></tr>
+<tr><td>δ(S2)</td><td>0.0600</td><td class="best">0.1008 ← Best</td></tr>
+<tr class="head-row"><td>ψ(S1)</td><td>0</td><td>S1</td></tr>
+<tr><td>ψ(S2)</td><td>0</td><td>S1</td></tr>
+</tbody>
+</table>
+<div class="alert al-green" style="margin-top:.5rem">
+<strong>Q* = [S1→S2]</strong> với xác suất 0.1008. Kiểm tra: bảng tính joint tay cho thấy [S1,S2]=0.1008 là đường đi lớn nhất ✓. Viterbi &lt; Forward (0.1008 &lt; 0.1824) vì max ≤ sum.
+</div>
+</div>
+</details>
+
+<!-- ====================================================
+     SECTION 6: FORWARD-BACKWARD
+==================================================== -->
+<div class="s-title" id="s6">6. Forward-Backward Algorithm — Xác suất biên từng bước</div>
+
+<div class="ss-title">6.1 Motivation — Khi nào cần FB thay vì Viterbi?</div>
+
+<p>Viterbi tìm <em>một</em> chuỗi Q* tối ưu toàn cục. Nhưng đôi khi ta cần biết: <strong>"Tại bước t cụ thể, trạng thái nào có posterior probability cao nhất?"</strong> — đây là marginal posterior, không phải global optimal.</p>
+
+<p>Ngoài ra, Forward-Backward cung cấp \(\gamma_t(i)\) và \(\xi_t(i,j)\) — các đại lượng cần thiết cho Baum-Welch E-step. Không có FB, không thể học tham số HMM.</p>
+
+<div class="ss-title">6.2 Biến Backward β_t(i) — Định nghĩa và ý nghĩa</div>
+
+<div class="key-eq">
+\[ \beta_t(i) = P(o_{t+1}, o_{t+2}, \ldots, o_T \mid q_t = s_i,\; \lambda) \]
+<p style="margin-top:.5rem;font-size:.85rem">"Xác suất của phần CUỐI chuỗi quan sát (từ t+1 đến T), điều kiện là đang ở trạng thái \(s_i\) tại bước t."</p>
+</div>
+
+<p>Hãy so sánh với Forward: \(\alpha_t(i)\) nhìn về <em>quá khứ</em> (từ đầu đến t), còn \(\beta_t(i)\) nhìn về <em>tương lai</em> (từ t+1 đến cuối). Kết hợp hai hướng tại điểm t cho ta bức tranh đầy đủ.</p>
+
+<div class="flabel">Khởi tạo β (t=T)</div>
+<div class="fbox">
+\[\beta_T(i) = 1, \quad \forall i = 1,\ldots,N\]
+</div>
+
+<div class="insight">
+<div class="insight-title">Tại sao β_T(i) = 1, không phải 0 hay giá trị khác?</div>
+<p>Tại bước cuối T, "chuỗi quan sát tương lai" là chuỗi rỗng. Xác suất của sự kiện rỗng = 1 (sự kiện chắc chắn — không có gì để xảy ra sai). Vì vậy \(\beta_T(i) = P(\text{chuỗi rỗng} | q_T=s_i) = 1\) cho mọi \(i\).</p>
+<p>Đây khác với \(\alpha_1(i) = \pi_i \cdot b_i(o_1) \neq 1\) vì ở đầu chuỗi, bước khởi tạo phải tính xác suất của trạng thái ban đầu và quan sát đầu tiên.</p>
+</div>
+
+<div class="flabel">Đệ quy Backward (t = T-1, T-2, ..., 1)</div>
+<div class="fbox">
+\[\beta_t(i) = \sum_{j=1}^{N} a_{ij} \cdot b_j(o_{t+1}) \cdot \beta_{t+1}(j)\]
+</div>
+
+<p>Đọc từng hạng tử trong tổng: Từ \(s_i\) tại \(t\), chuyển sang \(s_j\) (xác suất \(a_{ij}\)), phát ra \(o_{t+1}\) từ \(s_j\) (\(b_j(o_{t+1})\)), rồi phần còn lại của chuỗi từ \(s_j\) tại \(t+1\) (\(\beta_{t+1}(j)\)). Tổng qua mọi trạng thái kế tiếp \(j\).</p>
+
+<div class="alert al-blue">
+<div class="alert-title"><i class="fas fa-lightbulb"></i> So sánh chiều tính của Forward và Backward</div>
+<p>Forward lan truyền từ <strong>trái sang phải</strong> (t=1 → T), tích lũy xác suất quá khứ.<br>
+Backward lan truyền từ <strong>phải sang trái</strong> (t=T → 1), tích lũy xác suất tương lai.<br>
+Khi gặp nhau tại bất kỳ t nào: \(\alpha_t(i) \cdot \beta_t(i) = P(O, q_t=s_i|\lambda)\).</p>
+</div>
+
+<div class="ss-title">6.3 Posterior γ_t(i) — Kết hợp Forward và Backward</div>
+
+<div class="flabel">State Posterior Probability</div>
+<div class="fbox">
+\[\gamma_t(i) = P(q_t = s_i \mid O, \lambda) = \frac{\alpha_t(i) \cdot \beta_t(i)}{P(O|\lambda)} = \frac{\alpha_t(i) \cdot \beta_t(i)}{\displaystyle\sum_{k=1}^{N} \alpha_t(k) \cdot \beta_t(k)}\]
+</div>
+
+<div class="insight">
+<div class="insight-title">Tại sao tích α × β = P(O, q_t=i | λ)?</div>
+<p>Phân tích bằng chain rule và Markov property:</p>
+<p>\(\alpha_t(i) = P(o_1,...,o_t, q_t=i|\lambda)\) — xác suất của quá khứ + trạng thái hiện tại</p>
+<p>\(\beta_t(i) = P(o_{t+1},...,o_T|q_t=i,\lambda)\) — xác suất tương lai khi biết trạng thái hiện tại</p>
+<p>Tích: \(\alpha_t(i)\cdot\beta_t(i) = P(o_1,...,o_t,q_t=i|\lambda)\cdot P(o_{t+1},...,o_T|q_t=i,\lambda)\)</p>
+<p>Do output independence (quan sát tương lai độc lập quá khứ khi biết \(q_t\)):</p>
+\[= P(o_1,...,o_t, q_t=i, o_{t+1},...,o_T|\lambda) = P(O, q_t=i|\lambda)\]
+<p>Chia cho \(P(O|\lambda)\): → posterior \(P(q_t=i|O,\lambda) = \gamma_t(i)\). ■</p>
+</div>
+
+<p><strong>Tính chất:</strong> \(\sum_{i=1}^N \gamma_t(i) = 1\) tại mọi bước \(t\) — đây là phân phối xác suất hợp lệ.</p>
+
+<div class="ss-title">6.4 Joint Posterior ξ_t(i,j) — Dùng cho Baum-Welch</div>
+
+<div class="flabel">ξ_t(i,j) — Xác suất chuyển trạng thái tại bước t</div>
+<div class="fbox">
+\[\xi_t(i,j) = P(q_t=s_i,\; q_{t+1}=s_j \mid O, \lambda) = \frac{\alpha_t(i)\cdot a_{ij}\cdot b_j(o_{t+1})\cdot\beta_{t+1}(j)}{P(O|\lambda)}\]
+</div>
+
+<div class="insight">
+<div class="insight-title">Giải phẫu công thức ξ</div>
+<p>Tử số \(\alpha_t(i)\cdot a_{ij}\cdot b_j(o_{t+1})\cdot\beta_{t+1}(j)\) là xác suất của toàn bộ sự kiện sau:</p>
+<ol style="margin-top:.3rem">
+  <li>Thấy \(o_1,...,o_t\) VÀ ở trạng thái \(s_i\) tại t: → \(\alpha_t(i)\)</li>
+  <li>Chuyển từ \(s_i\) sang \(s_j\): → \(a_{ij}\)</li>
+  <li>Phát ra \(o_{t+1}\) từ \(s_j\): → \(b_j(o_{t+1})\)</li>
+  <li>Phần còn lại chuỗi quan sát từ \(s_j\): → \(\beta_{t+1}(j)\)</li>
+</ol>
+<p>Chia cho \(P(O|\lambda)\) → posterior.</p>
+</div>
+
+<p><strong>Quan hệ giữa ξ và γ:</strong></p>
+<div class="fbox no-top-radius">
+\[\gamma_t(i) = \sum_{j=1}^{N} \xi_t(i,j) \quad \text{(tổng qua tất cả trạng thái kế tiếp)}\]
+\[\sum_{i=1}^{N}\sum_{j=1}^{N} \xi_t(i,j) = 1 \quad \text{(tổng toàn bộ = 1)}\]
+</div>
+
+<div class="ss-title">6.5 Nhược điểm của FB Decoding — Phân tích chi tiết</div>
+
+<div class="alert al-red">
+<div class="alert-title"><i class="fas fa-exclamation-triangle"></i> FB Decoding có thể tạo chuỗi trạng thái KHÔNG HỢP LỆ</div>
+<p>FB chọn trạng thái tốt nhất tại mỗi bước t <strong>độc lập</strong>:</p>
+\[\hat{q}_t = \arg\max_i \gamma_t(i) \quad\text{cho mỗi t riêng lẻ}\]
+<p>Nhưng không có đảm bảo rằng chuỗi \([\hat{q}_1, \hat{q}_2, \ldots, \hat{q}_T]\) là một đường đi hợp lệ trong mô hình. Cụ thể: nếu \(a_{\hat{q}_t, \hat{q}_{t+1}} = 0\) (chuyển bị cấm), thì joint probability = 0!</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-exclamation-circle"></i> Ví dụ cụ thể: FB tạo chuỗi với P(Q,O|λ) = 0</summary>
+<div class="dc">
+<p><strong>HMM giả định:</strong> 2 trạng thái S1, S2. Ma trận A:</p>
+<div class="fbox no-top-radius">
+\[A = \begin{pmatrix} a_{11}=0.3 & a_{12}=0 \\ a_{21}=1 & a_{22}=0 \end{pmatrix}\]
+Chú ý: \(a_{12}=0\) — cấm tuyệt đối S1→S2!
+</div>
+<p>Giả sử FB tính được:</p>
+<div class="fbox no-top-radius">
+\[\gamma_1(S1)=0.7,\;\gamma_1(S2)=0.3 \Rightarrow \hat{q}_1=S1\]
+\[\gamma_2(S2)=0.6,\;\gamma_2(S1)=0.4 \Rightarrow \hat{q}_2=S2\]
+</div>
+<p>FB Decoding cho chuỗi: [S1, S2]. Nhưng \(a_{S1,S2}=0\)!</p>
+<div class="fbox no-top-radius">
+\[P([S1,S2], O|\lambda) = \pi_{S1}\cdot b_{S1}(o_1)\cdot\underbrace{a_{12}}_{=0}\cdot b_{S2}(o_2) = 0\]
+</div>
+<div class="alert al-red" style="margin-top:.5rem">
+Chuỗi [S1,S2] có joint probability = 0 — nghĩa là KHÔNG THỂ xảy ra trong mô hình! FB đã tạo ra một chuỗi vô nghĩa bằng cách tối ưu hóa từng bước độc lập.
+</div>
+<p style="margin-top:.5rem"><strong>Tại sao Viterbi không gặp vấn đề này?</strong> Vì Viterbi tính \(\delta_t(j) = \max_i [\delta_{t-1}(i)\cdot a_{ij}]\cdot b_j(o_t)\). Khi \(a_{12}=0\), hạng tử \(\delta_{t-1}(S1)\cdot 0 = 0\) — nhánh S1→S2 cho điểm 0, không bao giờ được chọn nếu có nhánh khác dương. Viterbi tự nhiên tránh các chuyển bị cấm.</p>
+</div>
+</details>
+
+<table class="tbl">
+<thead><tr><th>Tiêu chí so sánh</th><th>Viterbi</th><th>FB Decoding</th></tr></thead>
+<tbody>
+<tr><td>Mục tiêu tối ưu</td><td>\(\arg\max_Q P(Q,O|\lambda)\) — toàn cục</td><td>\(\arg\max_{q_t} P(q_t|O,\lambda)\) — từng bước</td></tr>
+<tr><td>Chuỗi kết quả</td><td>Luôn hợp lệ (joint prob > 0)</td><td>Có thể không hợp lệ (joint prob = 0)</td></tr>
+<tr><td>Khi nào dùng</td><td>Cần chuỗi trạng thái hoàn chỉnh nhất quán</td><td>Cần marginal posterior từng bước (Baum-Welch)</td></tr>
+<tr><td>Ứng dụng chính</td><td>ASR, POS tagging</td><td>Training (E-step của Baum-Welch)</td></tr>
+</tbody>
+</table>
+
+<!-- ====================================================
+     SECTION 7: BAUM-WELCH
+==================================================== -->
+<div class="s-title" id="s7">7. Baum-Welch Algorithm — EM cho HMM</div>
+
+<!-- ======================================================
+     7.1  TẠI SAO KHÓ
+====================================================== -->
+<div class="ss-title">7.1 Bài toán học và lý do khó</div>
+
+<p><strong>Input:</strong> Chuỗi quan sát \(O=(o_1,\ldots,o_T)\) — <em>không có nhãn trạng thái</em>.<br>
+<strong>Output:</strong> \(\lambda^*=(A^*,B^*,\pi^*)\) tối đa hóa \(P(O|\lambda)\).</p>
+
+<div class="analogy">
+<div class="analogy-title"><i class="fas fa-question-circle"></i> Tại sao không có closed-form solution?</div>
+<p>Log-likelihood chứa <strong>log của tổng</strong> — không thể lấy đạo hàm rồi đặt bằng 0 một cách độc lập theo từng tham số:</p>
+<div class="fbox no-top-radius">
+\[\log P(O|\lambda) = \log \underbrace{\sum_{\mathbf{Q}} P(O,\mathbf{Q}|\lambda)}_{N^T \text{ số hạng}} \quad\longleftarrow\; \text{log của tổng — không separable}\]
+</div>
+<p>Ngược lại, nếu biết chuỗi trạng thái \(\mathbf{Q}\) (complete data), log-likelihood tách ngay thành tổng độc lập của 3 nhóm tham số và có MLE dạng đóng. Vì \(\mathbf{Q}\) ẩn → dùng EM để "giả lập" việc biết \(\mathbf{Q}\) thông qua phân phối posterior.</p>
+</div>
+
+<!-- ======================================================
+     7.2  EM ALGORITHM — FRAMEWORK TỔNG QUÁT
+====================================================== -->
+<div class="ss-title">7.2 EM Algorithm — Framework tổng quát</div>
+
+<div class="insight">
+<div class="insight-title"><i class="fas fa-cube"></i> Bài toán tổng quát EM</div>
+<table class="tbl" style="font-size:.83rem;margin:.5rem 0">
+<thead><tr><th>Thành phần</th><th>Ký hiệu</th><th>Mô tả</th></tr></thead>
+<tbody>
+<tr><td>Dữ liệu quan sát</td><td>\(X\)</td><td>Phần ta thấy được</td></tr>
+<tr><td>Biến ẩn</td><td>\(Z\)</td><td>Phần bị che khuất (latent / hidden)</td></tr>
+<tr><td>Tham số</td><td>\(\theta\)</td><td>Muốn ước lượng</td></tr>
+<tr><td>Mục tiêu</td><td>\(\max_\theta \log P(X|\theta)\)</td><td>\(= \max_\theta \log\sum_Z P(X,Z|\theta)\)</td></tr>
+</tbody>
+</table>
+<p><strong>Ý tưởng:</strong> Thay vì tối ưu trực tiếp \(\log P(X|\theta)\), xây dựng một <em>cận dưới</em> (ELBO) dễ tối ưu hơn, rồi lặp đi lặp lại nâng cận dưới lên để likelihood tăng dần.</p>
+</div>
+
+<div class="sss-title">Định nghĩa hàm Q — Expected Complete-data Log-likelihood</div>
+
+<div class="flabel">Hàm Q</div>
+<div class="fbox">
+\[Q(\theta \mid \theta^{\text{old}}) \;=\; \mathbb{E}_{Z \mid X,\,\theta^{\text{old}}}\!\bigl[\log P(X,Z|\theta)\bigr] \;=\; \sum_Z P(Z|X,\theta^{\text{old}})\cdot \log P(X,Z|\theta)\]
+</div>
+
+<p>Đây là kỳ vọng của <em>complete-data</em> log-likelihood \(\log P(X,Z|\theta)\) lấy theo phân phối posterior hiện tại \(P(Z|X,\theta^{\text{old}})\). Hai bước của mỗi vòng lặp:</p>
+
+<div class="step"><div class="step-n">E</div><div class="step-c"><strong>E-step (Expectation):</strong> Tính \(Q(\theta\mid\theta^{\text{old}})\) — thực chất là tính <em>sufficient statistics</em> \(\mathbb{E}_{Z|X,\theta^{\text{old}}}[f(Z)]\) đủ để đánh giá Q mà không cần tường minh \(P(Z|X,\theta^{\text{old}})\) toàn bộ.</div></div>
+<div class="step"><div class="step-n">M</div><div class="step-c"><strong>M-step (Maximization):</strong> \(\theta^{\text{new}} = \arg\max_\theta Q(\theta\mid\theta^{\text{old}})\). Vì Q thường tách thành tổng của log, M-step thường có <em>closed-form</em>.</div></div>
+
+<div class="sss-title">Bất đẳng thức Jensen và ELBO — Nền tảng lý thuyết</div>
+
+<div class="insight">
+<div class="insight-title"><i class="fas fa-balance-scale"></i> Bất đẳng thức Jensen (dạng dùng ở đây)</div>
+<p>Hàm \(\log\) là <strong>lõm (concave)</strong>. Với trọng số \(w_i \geq 0,\; \sum_i w_i = 1\):</p>
+<div class="fbox no-top-radius">
+\[\log\!\left(\sum_i w_i\, x_i\right) \;\geq\; \sum_i w_i \log x_i\]
+</div>
+<p>Dấu bằng xảy ra khi và chỉ khi tất cả \(x_i\) bằng nhau.</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Dẫn xuất ELBO — Chứng minh cận dưới từng bước</summary>
+<div class="dc">
+<p>Đưa phân phối \(P(Z|X,\theta^{\text{old}})\) vào bằng cách nhân tử và mẫu:</p>
+<div class="fbox no-top-radius">
+\[\begin{aligned}
+\log P(X|\theta)
+&= \log \sum_Z P(X,Z|\theta) \\[4pt]
+&= \log \sum_Z \underbrace{P(Z|X,\theta^{\text{old}})}_{\displaystyle w_Z,\;\sum_Z w_Z=1}
+   \cdot \underbrace{\frac{P(X,Z|\theta)}{P(Z|X,\theta^{\text{old}})}}_{\displaystyle r_Z(\theta)} \\[6pt]
+&\geq \sum_Z P(Z|X,\theta^{\text{old}})\cdot \log\frac{P(X,Z|\theta)}{P(Z|X,\theta^{\text{old}})}
+\qquad\text{[Jensen: log lõm]} \\[4pt]
+&= \underbrace{\sum_Z P(Z|X,\theta^{\text{old}})\cdot \log P(X,Z|\theta)}_{Q(\theta\mid\theta^{\text{old}})}
+   \;-\; \underbrace{\sum_Z P(Z|X,\theta^{\text{old}})\cdot \log P(Z|X,\theta^{\text{old}})}_{\mathcal{H}\;=\;\text{entropy, hằng số theo }\theta}
+\end{aligned}\]
+</div>
+<div class="key-eq">
+\[\log P(X|\theta) \;\geq\; \underbrace{Q(\theta\mid\theta^{\text{old}}) + \mathcal{H}}_{\displaystyle\mathcal{L}(\theta)\;\triangleq\;\text{ELBO}} \qquad \forall\,\theta\]
+</div>
+<p><strong>Điều kiện bằng tại \(\theta = \theta^{\text{old}}\):</strong><br>
+Jensen cho dấu bằng khi tất cả các \(r_Z(\theta)\) bằng nhau. Tại \(\theta = \theta^{\text{old}}\):</p>
+<div class="fbox no-top-radius">
+\[\frac{P(X,Z|\theta^{\text{old}})}{P(Z|X,\theta^{\text{old}})} = \frac{P(X,Z|\theta^{\text{old}})}{P(X,Z|\theta^{\text{old}})/P(X|\theta^{\text{old}})} = P(X|\theta^{\text{old}}) = \text{const} \;\;\forall Z\]
+</div>
+<p>→ Tất cả hạng tử bằng nhau → Jensen bằng → \(\log P(X|\theta^{\text{old}}) = \mathcal{L}(\theta^{\text{old}})\).<br>
+Nói cách khác: <strong>ELBO tiếp xúc với log-likelihood tại điểm hiện tại</strong>.</p>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-shield-alt"></i> Chứng minh EM đảm bảo P(X|θ<sup>new</sup>) ≥ P(X|θ<sup>old</sup>)</summary>
+<div class="dc">
+<p>Kết hợp 3 sự kiện: (1) ELBO là cận dưới mọi nơi, (2) ELBO bằng likelihood tại \(\theta^{\text{old}}\), (3) M-step tăng ELBO:</p>
+<div class="fbox no-top-radius">
+\[\begin{aligned}
+\log P(X|\theta^{\text{old}}) &= \mathcal{L}(\theta^{\text{old}}) = Q(\theta^{\text{old}}|\theta^{\text{old}}) + \mathcal{H}
+  \quad\text{[tiếp xúc tại }\theta^{\text{old}}\text{]}\\[4pt]
+\log P(X|\theta^{\text{new}}) &\geq \mathcal{L}(\theta^{\text{new}}) = Q(\theta^{\text{new}}|\theta^{\text{old}}) + \mathcal{H}
+  \quad\text{[ELBO là cận dưới]}\\[4pt]
+&\geq Q(\theta^{\text{old}}|\theta^{\text{old}}) + \mathcal{H}
+  \quad\text{[M-step: }\theta^{\text{new}}=\arg\max Q \geq Q(\theta^{\text{old}})\text{]}\\[4pt]
+&= \log P(X|\theta^{\text{old}})
+\end{aligned}\]
+</div>
+<div class="alert al-green" style="margin-top:.5rem">
+<div class="alert-title">Kết luận: P(X|θ<sup>new</sup>) ≥ P(X|θ<sup>old</sup>) — mỗi vòng lặp EM không bao giờ giảm likelihood</div>
+Ba bất đẳng thức nối tiếp nhau tạo thành "đường dẫn" từ \(P(X|\theta^{\text{old}})\) đến \(P(X|\theta^{\text{new}})\).
+</div>
+<div class="alert al-red" style="margin-top:.5rem">
+<div class="alert-title"><i class="fas fa-exclamation-triangle"></i> Giới hạn: Chỉ đảm bảo local maximum</div>
+Mỗi bước tăng ELBO, không nhảy sang đỉnh khác. Nếu khởi đầu gần local max, EM hội tụ về đó — không "nhìn" được toàn cục.
+</div>
+</div>
+</details>
+
+<!-- ======================================================
+     7.3  BAUM-WELCH LÀ EM
+====================================================== -->
+<div class="ss-title">7.3 Baum-Welch LÀ EM — Ánh xạ từng thành phần</div>
+
+<table class="tbl">
+<thead><tr><th>EM tổng quát</th><th>HMM (Baum-Welch)</th></tr></thead>
+<tbody>
+<tr><td>Dữ liệu quan sát \(X\)</td><td>\(O=(o_1,\ldots,o_T)\) — chuỗi quan sát</td></tr>
+<tr><td>Biến ẩn \(Z\)</td><td>\(\mathbf{Q}=(q_1,\ldots,q_T)\) — chuỗi trạng thái</td></tr>
+<tr><td>Tham số \(\theta\)</td><td>\(\lambda=(A,B,\pi)\)</td></tr>
+<tr><td>E-step: tính \(P(Z|X,\theta^{\text{old}})\)</td><td>Chạy <strong>Forward-Backward</strong> → tính \(\gamma_t(i), \xi_t(i,j)\)</td></tr>
+<tr><td>M-step: \(\arg\max_\theta Q\)</td><td>Cập nhật \(\hat\pi, \hat A, \hat B\) bằng công thức Lagrange</td></tr>
+</tbody>
+</table>
+
+<div class="sss-title">Complete-data log P(O,Q|λ) — Factorization và tách thành 3 hạng tử</div>
+
+<p>Joint probability của HMM factorizes theo Markov property và Output Independence:</p>
+<div class="fbox no-top-radius">
+\[P(O,\mathbf{Q}|\lambda) = \pi_{q_1}\cdot\prod_{t=1}^{T}b_{q_t}(o_t)\cdot\prod_{t=1}^{T-1}a_{q_t,q_{t+1}}\]
+</div>
+<p>Lấy log (biến tích thành tổng):</p>
+<div class="flabel">Complete-data log-likelihood</div>
+<div class="fbox">
+\[\log P(O,\mathbf{Q}|\lambda) = \underbrace{\log\pi_{q_1}}_{\text{hạng tử }\pi} + \underbrace{\sum_{t=1}^{T-1}\log a_{q_t,q_{t+1}}}_{\text{hạng tử }A} + \underbrace{\sum_{t=1}^{T}\log b_{q_t}(o_t)}_{\text{hạng tử }B}\]
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Dẫn xuất Q = Q<sub>π</sub> + Q<sub>A</sub> + Q<sub>B</sub> — từng bước</summary>
+<div class="dc">
+<p>Lấy kỳ vọng theo \(P(\mathbf{Q}|O,\lambda^{\text{old}})\). Do log tách thành 3 số hạng, kỳ vọng cũng tách:</p>
+
+<p><strong>Hạng tử Q_π — nhóm theo q₁:</strong></p>
+<div class="fbox no-top-radius">
+\[Q_\pi = \sum_\mathbf{Q} P(\mathbf{Q}|O,\lambda^{\text{old}})\log\pi_{q_1}
+= \sum_{i=1}^N \underbrace{\left(\sum_{q_2,\ldots,q_T}P(\mathbf{Q}|O,\lambda^{\text{old}})\right)}_{= P(q_1=i|O,\lambda^{\text{old}})\;=\;\gamma_1(i)} \log\pi_i
+= \sum_{i=1}^N \gamma_1(i)\log\pi_i\]
+</div>
+
+<p><strong>Hạng tử Q_A — đổi thứ tự tổng, nhóm theo cặp (q_t, q_{t+1}):</strong></p>
+<div class="fbox no-top-radius">
+\[Q_A = \sum_{t=1}^{T-1}\sum_\mathbf{Q}P(\mathbf{Q}|O,\lambda^{\text{old}})\log a_{q_t,q_{t+1}}
+= \sum_{t=1}^{T-1}\sum_{i,j}\underbrace{P(q_t=i,q_{t+1}=j|O,\lambda^{\text{old}})}_{\xi_t(i,j)}\log a_{ij}
+= \sum_i\sum_j\!\left[\sum_{t=1}^{T-1}\xi_t(i,j)\right]\!\log a_{ij}\]
+</div>
+
+<p><strong>Hạng tử Q_B — nhóm theo q_t, rồi phân hoạch t theo symbol v_k:</strong></p>
+<div class="fbox no-top-radius">
+\[Q_B = \sum_{t=1}^T\sum_j\underbrace{P(q_t=j|O,\lambda^{\text{old}})}_{\gamma_t(j)}\log b_j(o_t)
+= \sum_j\sum_{k=1}^K\!\left[\sum_{\substack{t=1\\o_t=v_k}}^T\gamma_t(j)\right]\!\log b_j(v_k)\]
+</div>
+
+<div class="key-eq">
+\[\boxed{Q(\lambda|\lambda^{\text{old}}) = \underbrace{\sum_i\gamma_1(i)\log\pi_i}_{Q_\pi(\pi)} \;+\; \underbrace{\sum_i\sum_j\!\left[\sum_t\xi_t(i,j)\right]\!\log a_{ij}}_{Q_A(A)} \;+\; \underbrace{\sum_j\sum_k\!\left[\sum_{t:\,o_t=v_k}\!\gamma_t(j)\right]\!\log b_j(v_k)}_{Q_B(B)}}\]
+</div>
+<div class="alert al-green" style="margin-top:.5rem">
+<div class="alert-title">Hệ quả: 3 bài toán tối ưu hoàn toàn độc lập</div>
+\(Q_\pi\) chỉ phụ thuộc \(\pi\); \(Q_A\) chỉ phụ thuộc \(A\); \(Q_B\) chỉ phụ thuộc \(B\). → M-step tối ưu từng hạng tử <strong>độc lập</strong> — lý do có closed-form cho từng tham số.
+</div>
+</div>
+</details>
+
+<!-- ======================================================
+     7.4  E-STEP
+====================================================== -->
+<div class="ss-title">7.4 E-step — Tính sufficient statistics bằng Forward-Backward</div>
+
+<p>Chạy Forward và Backward với \(\lambda^{\text{old}}\):</p>
+<div class="step"><div class="step-n">1</div><div class="step-c">Forward → \(\alpha_t(i)\) &nbsp;+&nbsp; Backward → \(\beta_t(i)\) &nbsp;+&nbsp; \(P(O|\lambda) = \sum_i\alpha_T(i)\)</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c">\(\gamma_t(i) = \dfrac{\alpha_t(i)\beta_t(i)}{P(O|\lambda)}\) &nbsp;→&nbsp; sufficient statistic cho \(Q_\pi\) và \(Q_B\)</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c">\(\xi_t(i,j) = \dfrac{\alpha_t(i)\cdot a_{ij}\cdot b_j(o_{t+1})\cdot\beta_{t+1}(j)}{P(O|\lambda)}\) &nbsp;→&nbsp; sufficient statistic cho \(Q_A\)</div></div>
+
+<!-- ======================================================
+     7.5  M-STEP PROOFS
+====================================================== -->
+<div class="ss-title">7.5 M-step — Chứng minh sơ cấp bằng Lagrange Multipliers</div>
+
+<p>Mỗi bài toán con có cùng cấu trúc: tối đa hóa \(\sum_i c_i \log p_i\) theo \(\sum_i p_i = 1\). Áp dụng nhân tử Lagrange, nghiệm luôn là \(p_i^* = c_i / \sum_j c_j\). Ba tham số \(\pi, A, B\) mỗi cái là một instance của dạng này.</p>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Chứng minh 1 — π̂<sub>i</sub> = γ₁(i)</summary>
+<div class="dc">
+<p><strong>Bài toán:</strong> \(\max_\pi Q_\pi = \sum_{i=1}^N \gamma_1(i)\log\pi_i \quad\text{s.t.}\quad \sum_i\pi_i = 1\)</p>
+<p><strong>Lagrangian:</strong></p>
+<div class="fbox no-top-radius">
+\[\mathcal{L}(\pi,\lambda) = \sum_{i=1}^N\gamma_1(i)\log\pi_i + \lambda\!\left(1-\sum_{i=1}^N\pi_i\right)\]
+</div>
+<p><strong>Điều kiện tối ưu \(\partial\mathcal{L}/\partial\pi_i = 0\):</strong></p>
+<div class="fbox no-top-radius">
+\[\frac{\gamma_1(i)}{\pi_i} - \lambda = 0 \quad\Longrightarrow\quad \pi_i = \frac{\gamma_1(i)}{\lambda}\]
+</div>
+<p><strong>Xác định λ từ ràng buộc \(\sum_i\pi_i=1\):</strong></p>
+<div class="fbox no-top-radius">
+\[\sum_{i=1}^N\frac{\gamma_1(i)}{\lambda} = 1 \quad\Longrightarrow\quad \lambda = \sum_{i=1}^N\gamma_1(i) = 1\]
+</div>
+<p style="font-size:.83rem;color:#64748b">\(\sum_i\gamma_1(i)=1\) vì \(\gamma_1(i)=P(q_1=i|O,\lambda)\) là phân phối xác suất đầy đủ tại \(t=1\).</p>
+<div class="alert al-green" style="margin-top:.4rem">
+<div class="alert-title">Kết quả</div>
+\[\hat{\pi}_i = \gamma_1(i)\]
+Xác suất khởi đầu ở \(s_i\) = posterior probability tại bước 1. Nếu dữ liệu cho thấy 70% khả năng bắt đầu ở \(S_1\), cập nhật \(\hat\pi_1=0.7\).
+</div>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Chứng minh 2 — â<sub>ij</sub> = Σ<sub>t</sub>ξ<sub>t</sub>(i,j) / Σ<sub>t</sub>γ<sub>t</sub>(i)</summary>
+<div class="dc">
+<p><strong>Bài toán (với i cố định — tối ưu hàng i của A):</strong></p>
+<p>\(\max_{a_{i\cdot}} \sum_j A_{ij}\log a_{ij} \quad\text{s.t.}\quad \sum_j a_{ij}=1\), &nbsp; trong đó \(A_{ij}=\sum_{t=1}^{T-1}\xi_t(i,j)\).</p>
+<p><strong>Lagrangian:</strong></p>
+<div class="fbox no-top-radius">
+\[\mathcal{L}_i(a_{i\cdot},\mu_i) = \sum_{j=1}^N A_{ij}\log a_{ij} + \mu_i\!\left(1-\sum_{j=1}^N a_{ij}\right)\]
+</div>
+<p><strong>Điều kiện tối ưu:</strong></p>
+<div class="fbox no-top-radius">
+\[\frac{A_{ij}}{a_{ij}}-\mu_i=0 \quad\Longrightarrow\quad a_{ij}=\frac{A_{ij}}{\mu_i}\]
+</div>
+<p><strong>Xác định μ<sub>i</sub> từ ràng buộc:</strong></p>
+<div class="fbox no-top-radius">
+\[\sum_{j=1}^N a_{ij}=1 \;\Longrightarrow\; \mu_i = \sum_{j=1}^N A_{ij} = \sum_{j=1}^N\sum_{t=1}^{T-1}\xi_t(i,j) = \sum_{t=1}^{T-1}\underbrace{\sum_{j=1}^N\xi_t(i,j)}_{\text{bước then chốt}}\]
+</div>
+<div class="insight">
+<div class="insight-title"><i class="fas fa-key"></i> Bước then chốt: Σ<sub>j</sub> ξ<sub>t</sub>(i,j) = γ<sub>t</sub>(i)</div>
+<div class="fbox no-top-radius">
+\[\sum_{j=1}^N\xi_t(i,j) = \sum_{j=1}^N P(q_t=i,\,q_{t+1}=j\mid O,\lambda^{\text{old}}) = P(q_t=i\mid O,\lambda^{\text{old}}) = \gamma_t(i)\]
+</div>
+<p>Marginalize theo trạng thái tiếp theo \(q_{t+1}\): tổng xác suất chuyển từ \(i\) đến mọi \(j\) = xác suất đang ở \(i\). Tương tự \(\sum_j P(X=i,Y=j)=P(X=i)\).</p>
+</div>
+<p>Thay vào: \(\mu_i = \sum_{t=1}^{T-1}\gamma_t(i)\)</p>
+<div class="alert al-green" style="margin-top:.4rem">
+<div class="alert-title">Kết quả</div>
+\[\hat{a}_{ij} = \frac{\displaystyle\sum_{t=1}^{T-1}\xi_t(i,j)}{\displaystyle\sum_{t=1}^{T-1}\gamma_t(i)} = \frac{\text{Expected \# chuyển }i\to j}{\text{Expected \# lần ở trạng thái }i}\]
+Đây là MLE của categorical distribution trên soft counts: trong số những lần ở \(i\), bao nhiêu phần đi sang \(j\)?
+</div>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Chứng minh 3 — b̂<sub>j</sub>(v<sub>k</sub>) = Σ<sub>t:o_t=v_k</sub> γ<sub>t</sub>(j) / Σ<sub>t</sub> γ<sub>t</sub>(j)</summary>
+<div class="dc">
+<p><strong>Bài toán (với j cố định — tối ưu hàng j của B):</strong></p>
+<p>\(\max_{b_j(\cdot)}\sum_k B_{jk}\log b_j(v_k) \quad\text{s.t.}\quad \sum_k b_j(v_k)=1\), &nbsp; trong đó \(B_{jk}=\sum_{t:\,o_t=v_k}\gamma_t(j)\).</p>
+<p><strong>Lagrangian:</strong></p>
+<div class="fbox no-top-radius">
+\[\mathcal{L}_j(b_j(\cdot),\nu_j) = \sum_{k=1}^K B_{jk}\log b_j(v_k) + \nu_j\!\left(1-\sum_{k=1}^K b_j(v_k)\right)\]
+</div>
+<p><strong>Điều kiện tối ưu:</strong></p>
+<div class="fbox no-top-radius">
+\[\frac{B_{jk}}{b_j(v_k)}-\nu_j=0 \quad\Longrightarrow\quad b_j(v_k)=\frac{B_{jk}}{\nu_j}\]
+</div>
+<p><strong>Xác định ν<sub>j</sub> từ ràng buộc:</strong></p>
+<div class="fbox no-top-radius">
+\[\sum_{k=1}^K b_j(v_k)=1 \;\Longrightarrow\; \nu_j = \sum_{k=1}^K B_{jk} = \sum_{k=1}^K\sum_{\substack{t=1\\o_t=v_k}}^T\gamma_t(j)\]
+</div>
+<div class="insight">
+<div class="insight-title"><i class="fas fa-key"></i> Bước then chốt: phân hoạch theo symbol v<sub>k</sub></div>
+<p>Mỗi bước \(t\) thuộc đúng một bucket \(v_k\) (vì \(o_t\) là ký hiệu duy nhất). Tổng theo các bucket rồi hợp lại = tổng trên toàn bộ \(t\):</p>
+<div class="fbox no-top-radius">
+\[\sum_{k=1}^K\sum_{\substack{t=1\\o_t=v_k}}^T\gamma_t(j) = \sum_{t=1}^T\gamma_t(j) \quad\text{(mỗi }t\text{ được đếm đúng 1 lần)}\]
+</div>
+</div>
+<p>Thay vào: \(\nu_j = \sum_{t=1}^T\gamma_t(j)\)</p>
+<div class="alert al-green" style="margin-top:.4rem">
+<div class="alert-title">Kết quả</div>
+\[\hat{b}_j(v_k) = \frac{\displaystyle\sum_{t:\,o_t=v_k}\gamma_t(j)}{\displaystyle\sum_{t=1}^T\gamma_t(j)} = \frac{\text{Expected \# lần ở }j\text{ VÀ phát xạ }v_k}{\text{Expected \# lần ở trạng thái }j}\]
+Trong số những lần mô hình ở trạng thái \(j\), bao nhiêu phần đang phát xạ ký hiệu \(v_k\)?
+</div>
+</div>
+</details>
+
+<!-- ======================================================
+     7.6  IDENTITY TRAP
+====================================================== -->
+<div class="ss-title">7.6 Vì sao Identity Matrix là thảm họa?</div>
+
+<div class="alert al-red">
+<div class="alert-title"><i class="fas fa-lock"></i> A = I → Mô hình bị "Khóa Cứng" vĩnh viễn</div>
+<p>Nếu khởi tạo \(A = I\) (ma trận đơn vị), tức \(a_{ii}=1,\; a_{ij}=0\) với \(i\neq j\):</p>
+\[\xi_t(i,j) = \frac{\alpha_t(i)\cdot\underbrace{a_{ij}}_{=\,0\;\text{nếu }i\neq j}\cdot b_j(o_{t+1})\cdot\beta_{t+1}(j)}{P(O|\lambda)} = 0 \qquad\forall\, i\neq j,\; \forall\,t\]
+<p>M-step: \(\hat{a}_{ij} = \dfrac{\sum_t \xi_t(i,j)}{\sum_t\gamma_t(i)} = \dfrac{0}{\cdot} = 0\) &nbsp;→ &nbsp;sau update \(a_{ij}\) vẫn = 0 &nbsp;→ &nbsp;iteration tiếp vẫn = 0 &nbsp;→ &nbsp;<strong>mãi mãi bị khóa!</strong></p>
+</div>
+
+<!-- ======================================================
+     7.7  CONVERGENCE
+====================================================== -->
+<div class="ss-title">7.7 Hội tụ EM — Đảm bảo và Giới hạn</div>
+
+<div class="two-col">
+<div class="col-card">
+<h4 style="color:#15803d">Điều đảm bảo được ✅</h4>
+<ul>
+  <li>\(P(O|\lambda^{(k+1)}) \geq P(O|\lambda^{(k)})\) — likelihood không giảm</li>
+  <li>Hội tụ về một điểm dừng (stationary point)</li>
+  <li>Mỗi iteration tính toán hữu hạn</li>
+</ul>
+</div>
+<div class="col-card">
+<h4 style="color:#b91c1c">Điều KHÔNG đảm bảo ❌</h4>
+<ul>
+  <li>Global maximum — chỉ local max hoặc saddle point</li>
+  <li>Hội tụ trong số hữu hạn iteration (chỉ đảm bảo asymptotically)</li>
+  <li>Uniqueness — nhiều initialization → nhiều local optima</li>
+</ul>
+</div>
+</div>
+
+<p><strong>Hệ quả thực tế:</strong> Chạy Baum-Welch nhiều lần với initialization ngẫu nhiên khác nhau, chọn kết quả có \(P(O|\lambda)\) cao nhất. Đây là "random restart" strategy phổ biến trong tất cả các thuật toán EM.</p>
+
+<!-- ====================================================
+     SECTION 8: LOG-SPACE
+==================================================== -->
+<div class="s-title" id="s8">8. Tính toán trong Không gian Logarithm</div>
+
+<div class="ss-title">8.1 Vấn đề Numerical Underflow — Định lượng</div>
+
+<div class="alert al-red">
+<div class="alert-title"><i class="fas fa-exclamation-triangle"></i> Underflow thực sự nghiêm trọng như thế nào?</div>
+<p>Xét Forward algorithm: mỗi bước t nhân thêm một xác suất ∈ (0,1). Giả sử xác suất trung bình mỗi bước là \(p = 0.1\):</p>
+<table class="tbl" style="margin-top:.4rem">
+<thead><tr><th>T (độ dài chuỗi)</th><th>Tích xác suất ≈</th><th>Float64 biểu diễn được?</th></tr></thead>
+<tbody>
+<tr><td>T = 50</td><td>\(0.1^{50} = 10^{-50}\)</td><td>Được (min ≈ \(10^{-308}\))</td></tr>
+<tr><td>T = 100</td><td>\(0.1^{100} = 10^{-100}\)</td><td>Được nhưng gần giới hạn</td></tr>
+<tr><td>T = 200</td><td>\(0.1^{200} = 10^{-200}\)</td><td>Nguy hiểm — tiếp cận 0</td></tr>
+<tr><td>T = 320+</td><td>\(< 10^{-308}\)</td><td>UNDERFLOW về 0 → mất thông tin!</td></tr>
+</tbody>
+</table>
+<p>Trong nhận dạng giọng nói, chuỗi âm thanh T=500-1000+ bước là bình thường → underflow bắt buộc phải xử lý.</p>
+</div>
+
+<div class="ss-title">8.2 Giải pháp: Log-space Computation</div>
+
+<p>Thay vì lưu \(\delta_t(j)\), ta lưu \(L_t(j) = \log\delta_t(j)\). Tích → tổng trong log domain:</p>
+
+<div class="flabel">Viterbi trong Log-space</div>
+<div class="fbox">
+\[L_t(j) = \log\delta_t(j) = \max_{i}\bigl[L_{t-1}(i) + \log a_{ij}\bigr] + \log b_j(o_t)\]
+</div>
+
+<p>Mọi phép nhân trở thành phép cộng — không có underflow vì log của số dương là số thực hữu hạn (âm).</p>
+
+<div class="ss-title">8.3 Xử lý xác suất bằng 0 trong Log-space</div>
+
+<table class="tbl">
+<thead><tr><th>Tình huống</th><th>Giá trị gốc</th><th>Log-space</th><th>Hành vi</th></tr></thead>
+<tbody>
+<tr><td>Transition hợp lệ</td><td>\(a_{ij} = 0.3\)</td><td>\(\log 0.3 \approx -1.20\)</td><td>Số âm hữu hạn — OK</td></tr>
+<tr><td>Transition bị cấm</td><td>\(a_{ij} = 0\)</td><td>\(\log 0 = -\infty\)</td><td>max(-∞ + X) = -∞ → đường đi bị loại tự động</td></tr>
+<tr><td>Emission không thể</td><td>\(b_j(o_t) = 0\)</td><td>\(\log 0 = -\infty\)</td><td>Ô (t,j) bị loại khỏi mọi path</td></tr>
+</tbody>
+</table>
+
+<div class="alert al-green">
+<div class="alert-title"><i class="fas fa-check-circle"></i> Xác suất 0 được xử lý HOÀN TOÀN TỰ ĐỘNG trong log-space</div>
+<p>Đây là lý do log-space không chỉ giải quyết underflow mà còn xử lý gracefully các transition/emission bị cấm. Không cần code đặc biệt: \(-\infty\) trong max sẽ không bao giờ thắng giá trị hữu hạn → đường đi đi qua \(a_{ij}=0\) tự bị loại.</p>
+</div>
+
+<div class="ss-title">8.4 Tại sao Forward không thể dùng log trực tiếp?</div>
+
+<div class="alert al-yellow">
+<div class="alert-title"><i class="fas fa-exclamation-circle"></i> Forward dùng SUM — không thể log trực tiếp</div>
+<p>Với Viterbi: \(\log(\max) = \max(\log)\) — hoán đổi được hoàn toàn.</p>
+<p>Với Forward: \(\log(\sum_i x_i) \neq \sum_i \log(x_i)\) — không hoán đổi được!</p>
+<p>Giải pháp cho Forward: <strong>log-sum-exp trick</strong>:</p>
+\[\log\sum_{i=1}^N e^{x_i} = x_{\max} + \log\sum_{i=1}^N e^{x_i - x_{\max}}\]
+<p>Trừ \(x_{\max}\) khỏi mỗi hạng tử trước khi exp → tránh overflow. Vì \(e^{x_i - x_{\max}} \leq 1\), tổng ≤ N — an toàn.</p>
+<p>Ngoài ra, Forward thường dùng <strong>scaling factors</strong>: tại mỗi bước t, chia \(\alpha_t\) cho \(\sum_j\alpha_t(j)\) để normalize. Track tổng các scaling factor bằng log để recover log-likelihood.</p>
+</div>
+
+<!-- ====================================================
+     SECTION 9: INITIALIZATION
+==================================================== -->
+<div class="s-title" id="s9">9. Chiến lược Khởi tạo và EM Landscape</div>
+
+<div class="ss-title">9.1 Tại sao khởi tạo quan trọng?</div>
+
+<p>EM chỉ đảm bảo tìm <em>local maximum</em>, không phải global. Điểm hội tụ phụ thuộc vào điểm khởi đầu. Log-likelihood landscape của HMM có nhiều local maxima và saddle points.</p>
+
+<div class="two-col">
+<div class="col-card" style="border-color:#b91c1c">
+<h4 style="color:#b91c1c">A = Identity Matrix ❌</h4>
+<p>Khởi tạo tệ nhất có thể. Mọi \(a_{ij}=0\) với \(i\neq j\) → ξ≡0 → không bao giờ cập nhật được → mô hình bị "đóng băng".</p>
+<p><strong>Tuyệt đối không dùng trong Baum-Welch.</strong></p>
+</div>
+<div class="col-card" style="border-color:#eab308">
+<h4 style="color:#854d0e">A = Uniform (1/N) ⚠️</h4>
+<p>Chấp nhận được. Nhưng symmetric → mọi trạng thái như nhau → dễ rơi vào degenerate solution nơi các trạng thái không phân biệt được.</p>
+</div>
+</div>
+<div class="two-col">
+<div class="col-card" style="border-color:#15803d">
+<h4 style="color:#15803d">A = Random với nhiễu nhỏ ✅</h4>
+<p>Thêm noise ngẫu nhiên vào Uniform: \(a_{ij} = 1/N + \epsilon_{ij}\) rồi normalize. Phá vỡ symmetry → thuật toán "chọn" hướng tốt hơn.</p>
+</div>
+<div class="col-card" style="border-color:#15803d">
+<h4 style="color:#15803d">K-Means / Domain knowledge ✅✅</h4>
+<p>Khởi tạo từ clustering hoặc expert knowledge → warm start gần optimal → ít iteration hơn, chất lượng tốt hơn.</p>
+</div>
+</div>
+
+<div class="ss-title">9.2 Chiến lược thực tế: Multiple Random Restarts</div>
+<div class="step"><div class="step-n">1</div><div class="step-c">Chạy Baum-Welch với K bộ initialization ngẫu nhiên khác nhau (K = 10-50 trong thực tế)</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c">Mỗi run chạy đến convergence (hoặc max iterations)</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c">Tính \(P(O|\lambda)\) cho mỗi run</div></div>
+<div class="step"><div class="step-n">4</div><div class="step-c">Chọn \(\lambda\) có \(P(O|\lambda)\) cao nhất</div></div>
+
+<!-- ====================================================
+     SECTION 10: MARKOV ORDER
+==================================================== -->
+<div class="s-title" id="s10">10. Markov Bậc 1 vs Bậc 2 — Phân tích chi tiết</div>
+
+<div class="ss-title">10.1 Markov bậc 1 — HMM chuẩn</div>
+
+<div class="flabel">Markov Bậc 1</div>
+<div class="fbox">
+\[P(q_t \mid q_{t-1}, q_{t-2}, \ldots, q_1) = P(q_t \mid q_{t-1})\]
+</div>
+<p>Ma trận A: \(N\times N\). Phần tử \(a_{ij} = P(q_t=j|q_{t-1}=i)\). Tổng tham số tự do: \(N(N-1)\).</p>
+
+<div class="ss-title">10.2 Markov bậc 2 — Nhớ thêm một bước</div>
+
+<div class="flabel">Markov Bậc 2</div>
+<div class="fbox">
+\[P(q_t \mid q_{t-1}, q_{t-2}, \ldots, q_1) = P(q_t \mid q_{t-1}, q_{t-2})\]
+\[a_{ijk} = P(q_t = s_k \mid q_{t-1} = s_j, q_{t-2} = s_i) \quad\Rightarrow\quad \text{Tensor } N\times N\times N\]
+</div>
+
+<table class="tbl">
+<thead><tr><th>Đặc điểm</th><th>Bậc 1</th><th>Bậc 2</th></tr></thead>
+<tbody>
+<tr><td>Kích thước A</td><td>\(N\times N\)</td><td>Tensor \(N\times N\times N\)</td></tr>
+<tr><td>Số tham số A</td><td>\(N(N-1)\)</td><td>\(N^2(N-1)\)</td></tr>
+<tr><td>Forward complexity</td><td>\(O(N^2 T)\)</td><td>\(O(N^3 T)\)</td></tr>
+<tr><td>Viterbi complexity</td><td>\(O(N^2 T)\)</td><td>\(O(N^3 T)\)</td></tr>
+<tr><td>Ví dụ N=5</td><td>20 tham số A</td><td>100 tham số A</td></tr>
+</tbody>
+</table>
+
+<div class="insight">
+<div class="insight-title">Khi nào dùng bậc 2?</div>
+<p>Bậc 2 hữu ích khi trạng thái hiện tại phụ thuộc có ý nghĩa vào hai bước trước — ví dụ trong language modeling (từ hiện tại phụ thuộc hai từ trước — trigram model). Tuy nhiên, số tham số tăng N lần và complexity tăng N lần → cần nhiều dữ liệu hơn để estimate reliably. Thực tế, bậc 1 vẫn là lựa chọn mặc định trong hầu hết ứng dụng HMM.</p>
+</div>
+
+<!-- ====================================================
+     SECTION 11: FULL WORKED EXAMPLE
+==================================================== -->
+<div class="s-title" id="s11">11. Ví dụ End-to-End Hoàn chỉnh</div>
+
+<div class="alert al-blue">
+<div class="alert-title"><i class="fas fa-database"></i> Mô hình dùng xuyên suốt ví dụ (Đề thi 2025, Câu 18)</div>
+<table class="tbl" style="margin-top:.4rem">
+<thead><tr><th>Tham số</th><th>S1 = Active</th><th>S2 = Idle</th></tr></thead>
+<tbody>
+<tr><td>π (Initial)</td><td>0.7</td><td>0.3</td></tr>
+<tr><td>Chuyển sang S1 (a_{·1})</td><td>a₁₁ = 0.8</td><td>a₂₁ = 0.4</td></tr>
+<tr><td>Chuyển sang S2 (a_{·2})</td><td>a₁₂ = 0.2</td><td>a₂₂ = 0.6</td></tr>
+<tr><td>b(View)</td><td>b₁(View) = 0.9</td><td>b₂(View) = 0.2</td></tr>
+<tr><td>b(NoView)</td><td>b₁(NoView) = 0.1</td><td>b₂(NoView) = 0.8</td></tr>
+</tbody>
+</table>
+<p style="margin-top:.5rem"><strong>Chuỗi quan sát:</strong> O = [View, NoView], T=2</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-list-ol"></i> STEP A — Enumerate tất cả đường đi (Ground truth)</summary>
+<div class="dc">
+<table class="trace-table">
+<thead><tr><th>Đường đi Q</th><th>Tính chi tiết</th><th>P(Q,O|λ)</th></tr></thead>
+<tbody>
+<tr><td>[S1,S1]</td><td>0.7×0.9×0.8×0.1</td><td>0.0504</td></tr>
+<tr class="best"><td>[S1,S2] ← Q*</td><td>0.7×0.9×0.2×0.8</td><td>0.1008 ← MAX</td></tr>
+<tr><td>[S2,S1]</td><td>0.3×0.2×0.4×0.1</td><td>0.0024</td></tr>
+<tr><td>[S2,S2]</td><td>0.3×0.2×0.6×0.8</td><td>0.0288</td></tr>
+<tr class="head-row"><td colspan="2">P(O|λ) = Tổng</td><td>0.1824</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> STEP B — Forward Algorithm (α table)</summary>
+<div class="dc">
+<p><strong>t=1 (o₁=View):</strong></p>
+<div class="fbox no-top-radius">
+\[\alpha_1(S1) = 0.7\times0.9 = 0.63 \qquad \alpha_1(S2) = 0.3\times0.2 = 0.06\]
+</div>
+<p><strong>t=2 (o₂=NoView):</strong></p>
+<div class="fbox no-top-radius">
+\[\alpha_2(S1) = [\underbrace{0.63\times0.8}_{0.504}+\underbrace{0.06\times0.4}_{0.024}]\times0.1 = 0.528\times0.1 = 0.0528\]
+\[\alpha_2(S2) = [\underbrace{0.63\times0.2}_{0.126}+\underbrace{0.06\times0.6}_{0.036}]\times0.8 = 0.162\times0.8 = 0.1296\]
+\[P(O|\lambda) = 0.0528+0.1296 = \mathbf{0.1824}\;\checkmark\]
+</div>
+<table class="trace-table">
+<thead><tr><th></th><th>t=1</th><th>t=2</th></tr></thead>
+<tbody>
+<tr class="head-row"><td>α(S1)</td><td>0.6300</td><td>0.0528</td></tr>
+<tr><td>α(S2)</td><td>0.0600</td><td>0.1296</td></tr>
+<tr class="best"><td>Σα = P(O₁..t|λ)</td><td>0.6900</td><td>0.1824</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> STEP C — Viterbi (δ, ψ, backtrack)</summary>
+<div class="dc">
+<p><strong>t=1:</strong> δ=α (khởi tạo giống nhau)</p>
+<div class="fbox no-top-radius">
+\[\delta_1(S1)=0.63,\;\psi_1(S1)=0\qquad \delta_1(S2)=0.06,\;\psi_1(S2)=0\]
+</div>
+<p><strong>t=2:</strong></p>
+<div class="fbox no-top-radius">
+\[\text{candidates đến S1: } [0.63\times0.8=0.504, 0.06\times0.4=0.024]\Rightarrow\max=0.504\text{ (từ S1)}\]
+\[\delta_2(S1)=0.504\times0.1=\mathbf{0.0504},\;\psi_2(S1)=S1\]
+\[\text{candidates đến S2: } [0.63\times0.2=0.126, 0.06\times0.6=0.036]\Rightarrow\max=0.126\text{ (từ S1)}\]
+\[\delta_2(S2)=0.126\times0.8=\mathbf{0.1008},\;\psi_2(S2)=S1\]
+\[q_2^*=\arg\max[0.0504,0.1008]=S2\qquad q_1^*=\psi_2(S2)=S1\]
+\[\mathbf{Q^*=[S1,S2],\;P^*=0.1008}\]
+</div>
+<table class="trace-table">
+<thead><tr><th></th><th>t=1</th><th>t=2</th></tr></thead>
+<tbody>
+<tr class="head-row"><td>δ(S1)</td><td>0.6300</td><td>0.0504</td></tr>
+<tr><td>δ(S2)</td><td>0.0600</td><td class="best">0.1008 ← best</td></tr>
+<tr class="head-row"><td>ψ(S1)</td><td>—</td><td>S1</td></tr>
+<tr><td>ψ(S2)</td><td>—</td><td>S1</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> STEP D — Backward (β), Posterior (γ), Joint (ξ)</summary>
+<div class="dc">
+<p><strong>Backward — tính từ phải sang trái:</strong></p>
+<div class="fbox no-top-radius">
+\[\beta_2(S1)=1,\;\beta_2(S2)=1\quad\text{(khởi tạo)}\]
+\[\beta_1(S1) = a_{11}\cdot b_{S1}(\text{NoView})\cdot\beta_2(S1) + a_{12}\cdot b_{S2}(\text{NoView})\cdot\beta_2(S2)\]
+\[= 0.8\times0.1\times1 + 0.2\times0.8\times1 = 0.08+0.16 = \mathbf{0.24}\]
+\[\beta_1(S2) = a_{21}\cdot b_{S1}(\text{NoView})\cdot\beta_2(S1) + a_{22}\cdot b_{S2}(\text{NoView})\cdot\beta_2(S2)\]
+\[= 0.4\times0.1\times1 + 0.6\times0.8\times1 = 0.04+0.48 = \mathbf{0.52}\]
+</div>
+<p><strong>Kiểm tra:</strong> \(\alpha_1(S1)\cdot\beta_1(S1)+\alpha_1(S2)\cdot\beta_1(S2) = 0.63\times0.24+0.06\times0.52 = 0.1512+0.0312 = 0.1824 = P(O|\lambda)\;\checkmark\)</p>
+<p style="margin-top:.75rem"><strong>Posterior γ:</strong></p>
+<div class="fbox no-top-radius">
+\[\gamma_1(S1)=\frac{0.63\times0.24}{0.1824}=\frac{0.1512}{0.1824}\approx\mathbf{0.829}\qquad\gamma_1(S2)\approx\mathbf{0.171}\]
+\[\gamma_2(S1)=\frac{0.0528\times1}{0.1824}\approx\mathbf{0.290}\qquad\gamma_2(S2)=\frac{0.1296\times1}{0.1824}\approx\mathbf{0.710}\]
+\[\text{Kiểm tra: }\gamma_1(S1)+\gamma_1(S2)=0.829+0.171=1.0\;\checkmark\qquad\gamma_2(S1)+\gamma_2(S2)=1.0\;\checkmark\]
+</div>
+<p><strong>FB Decoding từ γ:</strong> t=1 → S1 (0.829 > 0.171), t=2 → S2 (0.710 > 0.290) → Q=[S1,S2] (trùng Viterbi lần này!)</p>
+<p style="margin-top:.75rem"><strong>Joint posterior ξ (chỉ có t=1 vì T=2):</strong></p>
+<div class="fbox no-top-radius">
+\[\xi_1(S1,S1)=\frac{0.63\times0.8\times0.1\times1}{0.1824}=\frac{0.0504}{0.1824}\approx\mathbf{0.276}\]
+\[\xi_1(S1,S2)=\frac{0.63\times0.2\times0.8\times1}{0.1824}=\frac{0.1008}{0.1824}\approx\mathbf{0.553}\]
+\[\xi_1(S2,S1)=\frac{0.06\times0.4\times0.1\times1}{0.1824}=\frac{0.0024}{0.1824}\approx\mathbf{0.013}\]
+\[\xi_1(S2,S2)=\frac{0.06\times0.6\times0.8\times1}{0.1824}=\frac{0.0288}{0.1824}\approx\mathbf{0.158}\]
+\[\text{Tổng: }0.276+0.553+0.013+0.158=1.000\;\checkmark\]
+</div>
+<p style="margin-top:.75rem"><strong>Baum-Welch update từ ξ và γ:</strong></p>
+<div class="fbox no-top-radius">
+\[\hat{\pi}_{S1}=\gamma_1(S1)=0.829\qquad\hat{\pi}_{S2}=\gamma_1(S2)=0.171\]
+\[\hat{a}_{S1\to S1}=\frac{\xi_1(S1,S1)}{\gamma_1(S1)}=\frac{0.276}{0.829}\approx\mathbf{0.333}\quad(\text{cũ: }0.8)\]
+\[\hat{a}_{S1\to S2}=\frac{\xi_1(S1,S2)}{\gamma_1(S1)}=\frac{0.553}{0.829}\approx\mathbf{0.667}\quad(\text{cũ: }0.2)\]
+\[\hat{b}_{S2}(\text{View})=\frac{\mathbf{1}[o_2=\text{View}]\cdot\gamma_2(S2)}{\gamma_1(S2)+\gamma_2(S2)}=\frac{0\cdot0.710}{0.171+0.710}=\frac{0}{0.881}\approx\mathbf{0}\]
+\[\hat{b}_{S2}(\text{NoView})=\frac{\mathbf{1}[o_2=\text{NoView}]\cdot\gamma_2(S2)}{\gamma_1(S2)+\gamma_2(S2)}=\frac{1\times0.710}{0.881}\approx\mathbf{0.806}\quad(\text{cũ: }0.8)\]
+</div>
+<div class="alert al-yellow" style="margin-top:.5rem">
+Lưu ý: với T=2 và chỉ 1 sequence, estimate sẽ rất noisy. Trong thực tế cần nhiều sequence dài để estimate chính xác. Ví dụ trên chỉ minh họa cơ chế tính toán, không phải kết quả hội tụ.
+</div>
+<table class="trace-table">
+<thead><tr><th></th><th>t=1</th><th>t=2</th></tr></thead>
+<tbody>
+<tr class="head-row"><td>α(S1)</td><td>0.6300</td><td>0.0528</td></tr>
+<tr><td>α(S2)</td><td>0.0600</td><td>0.1296</td></tr>
+<tr class="head-row"><td>β(S1)</td><td>0.2400</td><td>1.0000</td></tr>
+<tr><td>β(S2)</td><td>0.5200</td><td>1.0000</td></tr>
+<tr class="head-row"><td>γ(S1)</td><td>0.829</td><td>0.290</td></tr>
+<tr><td>γ(S2)</td><td>0.171</td><td>0.710</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<!-- ====================================================
+     SECTION 12: APPLICATIONS
+==================================================== -->
+<div class="s-title" id="s12">12. Ứng dụng Thực tế — HMM trong thế giới thực</div>
+
+<div class="ss-title">12.1 Nhận dạng Giọng nói (ASR)</div>
+
+<p>Đây là ứng dụng lịch sử đầu tiên của HMM (James K. Baker, 1975). Pipeline:</p>
+<div class="step"><div class="step-n">1</div><div class="step-c"><strong>Feature extraction:</strong> Chuỗi âm thanh → MFCC vectors (40 chiều) mỗi 10ms = T ~ 500-1000 bước</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c"><strong>Acoustic model:</strong> Mỗi từ (word) có một HMM. Mỗi trạng thái ẩn = một phoneme (âm vị). B_j(o_t) = P(MFCC frame | đang phát âm phoneme j)</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c"><strong>Scoring:</strong> Tính P(O | λ_word) cho mỗi từ trong từ điển — Forward algorithm</div></div>
+<div class="step"><div class="step-n">4</div><div class="step-c"><strong>Decoding:</strong> Chọn từ có score cao nhất — Viterbi trên lattice</div></div>
+<div class="step"><div class="step-n">5</div><div class="step-c"><strong>Language model:</strong> Kết hợp với n-gram để lọc kết quả vô nghĩa về mặt ngữ pháp</div></div>
+
+<div class="alert al-yellow">
+<div class="alert-title"><i class="fas fa-star"></i> Câu 24 đề thi 2025</div>
+<p>Trong ASR, \(b_j(o_t)\) có ý nghĩa gì? → P(đặc trưng âm thanh \(o_t\) | đang ở âm vị \(j\)) → <strong>Đáp án B</strong>.</p>
+</div>
+
+<div class="ss-title">12.2 POS Tagging (Part-of-Speech)</div>
+
+<p>Xác định nhãn từ loại (noun, verb, adj, ...) cho mỗi từ trong câu:</p>
+<ul>
+  <li><strong>Trạng thái ẩn:</strong> POS tags {Noun, Verb, Adjective, Adverb, ...}</li>
+  <li><strong>Quan sát:</strong> Từ trong câu</li>
+  <li><strong>A:</strong> Xác suất chuyển từ tag này sang tag khác (e.g., Adj → Noun = 0.4)</li>
+  <li><strong>B:</strong> Xác suất từ được phát ra bởi một tag (e.g., P("dog" | Noun) = 0.001)</li>
+  <li><strong>Giải mã:</strong> Viterbi → chuỗi POS tags</li>
+</ul>
+
+<div class="ss-title">12.3 Bioinformatics — Gene Finding</div>
+
+<table class="tbl">
+<thead><tr><th>Thành phần</th><th>Ý nghĩa sinh học</th></tr></thead>
+<tbody>
+<tr><td>Trạng thái ẩn</td><td>Vùng exon / intron / intergenic</td></tr>
+<tr><td>Quan sát</td><td>Nucleotide (A, T, G, C)</td></tr>
+<tr><td>Transition A</td><td>P(bắt đầu exon | kết thúc intron)</td></tr>
+<tr><td>Emission B</td><td>P(nucleotide X | đang trong exon)</td></tr>
+<tr><td>Decoding</td><td>Xác định ranh giới gene</td></tr>
+</tbody>
+</table>
+
+<!-- ====================================================
+     SECTION 13: SUMMARY
+==================================================== -->
+<div class="s-title" id="s13">13. Tóm tắt và Checklist Ôn thi</div>
+
+<div class="ss-title">13.1 Bảng tổng hợp tất cả biến</div>
+
+<table class="tbl">
+<thead><tr><th>Biến/Tham số</th><th>Ký hiệu</th><th>Định nghĩa đầy đủ</th><th>Size</th><th>Tính bằng</th></tr></thead>
+<tbody>
+<tr><td>Initial distribution</td><td>\(\pi_i\)</td><td>\(P(q_1=s_i)\)</td><td>N</td><td>Khởi tạo / BW update</td></tr>
+<tr><td>Transition matrix</td><td>\(a_{ij}\)</td><td>\(P(q_t=s_j|q_{t-1}=s_i)\)</td><td>N×N</td><td>Khởi tạo / BW update</td></tr>
+<tr><td>Emission matrix</td><td>\(b_j(v_k)\)</td><td>\(P(o_t=v_k|q_t=s_j)\)</td><td>N×K</td><td>Khởi tạo / BW update</td></tr>
+<tr><td>Forward variable</td><td>\(\alpha_t(i)\)</td><td>\(P(o_{1:t},q_t=s_i|\lambda)\)</td><td>N×T</td><td>Forward DP (→)</td></tr>
+<tr><td>Backward variable</td><td>\(\beta_t(i)\)</td><td>\(P(o_{t+1:T}|q_t=s_i,\lambda)\)</td><td>N×T</td><td>Backward DP (←)</td></tr>
+<tr><td>State posterior</td><td>\(\gamma_t(i)\)</td><td>\(P(q_t=s_i|O,\lambda)=\alpha_t\beta_t/P(O|\lambda)\)</td><td>N×T</td><td>α × β / P(O|λ)</td></tr>
+<tr><td>Transition posterior</td><td>\(\xi_t(i,j)\)</td><td>\(P(q_t=s_i,q_{t+1}=s_j|O,\lambda)\)</td><td>N×N×(T-1)</td><td>α·a·b·β / P(O|λ)</td></tr>
+<tr><td>Viterbi score</td><td>\(\delta_t(j)\)</td><td>\(\max_{q_{1:t-1}}P(q_{1:t-1},q_t=s_j,o_{1:t}|\lambda)\)</td><td>N×T</td><td>Viterbi DP (→, max)</td></tr>
+<tr><td>Viterbi backptr</td><td>\(\psi_t(j)\)</td><td>\(\arg\max_i[\delta_{t-1}(i)\cdot a_{ij}]\)</td><td>N×T</td><td>Viterbi DP (→)</td></tr>
+</tbody>
+</table>
+
+<div class="ss-title">13.2 Điểm khác nhau then chốt: Forward vs Viterbi</div>
+
+<div class="two-col">
+<div class="col-card">
+<h4 style="color:#1d4ed8">Forward: dùng SUM ∑</h4>
+<div class="fbox no-top-radius" style="font-size:.83rem">
+\[\alpha_t(j) = \left[\sum_i \alpha_{t-1}(i)\cdot a_{ij}\right]\cdot b_j(o_t)\]
+</div>
+<p>Tổng hợp từ tất cả đường đến (t,j) — marginalize quá khứ. Kết quả: P(O|λ) = total probability.</p>
+</div>
+<div class="col-card">
+<h4 style="color:#7e22ce">Viterbi: dùng MAX</h4>
+<div class="fbox no-top-radius" style="font-size:.83rem">
+\[\delta_t(j) = \left[\max_i \delta_{t-1}(i)\cdot a_{ij}\right]\cdot b_j(o_t)\]
+</div>
+<p>Giữ lại chỉ đường tốt nhất đến (t,j). Kết quả: best path probability ≤ P(O|λ).</p>
+</div>
+</div>
+
+<hr class="divider">
+
+<div class="alert al-yellow">
+<div class="alert-title"><i class="fas fa-graduation-cap"></i> CHECKLIST cuối kỳ — 15 điểm không được quên</div>
+<ol style="margin-top:.3rem">
+  <li><strong>Forward = SUM, Viterbi = MAX</strong> — đây là sự khác biệt duy nhất trong công thức đệ quy</li>
+  <li><strong>Viterbi ≤ Forward</strong> — max của một tập ≤ sum của tập đó (nếu các phần tử dương)</li>
+  <li><strong>FB Decoding</strong> có thể tạo chuỗi với joint prob = 0 khi \(a_{ij}=0\) tồn tại</li>
+  <li><strong>Viterbi luôn cho chuỗi hợp lệ</strong> — vì đường đi qua \(a_{ij}=0\) bị loại trong max</li>
+  <li><strong>β_T(i) = 1</strong> cho mọi i — xác suất chuỗi rỗng = 1</li>
+  <li><strong>α_t(i)·β_t(i) = P(O, q_t=i|λ)</strong> — joint, không phải conditional</li>
+  <li><strong>γ_t(i) = α_t(i)·β_t(i) / P(O|λ)</strong> — chia để normalize thành posterior</li>
+  <li><strong>A = Identity → Baum-Welch bị khóa</strong> — vì ξ_t(i,j)=0 với i≠j, không update được</li>
+  <li><strong>Baum-Welch = EM</strong> cho HMM — mỗi iteration tăng likelihood, không giảm</li>
+  <li><strong>EM không đảm bảo global maximum</strong> — chỉ local max hoặc stationary point</li>
+  <li><strong>Quan sát thiếu</strong> tại bước k: đặt b_j(o_k)=1 cho mọi j</li>
+  <li><strong>log(0) = -∞</strong> — trong Viterbi log-space, transition bị cấm tự động bị loại</li>
+  <li><strong>Markov bậc 2</strong>: A là tensor N×N×N, complexity = O(N³T)</li>
+  <li><strong>Markov bậc 1</strong>: A là N×N, complexity = O(N²T)</li>
+  <li><strong>π_i = γ_1(i)</strong> — update π trong Baum-Welch = posterior tại t=1</li>
+</ol>
+</div>
+
+</section>
+</main>
+
+<a href="#" id="back-top" title="Về đầu trang"><i class="fas fa-arrow-up"></i></a>
+<script>
+mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+</script>
+</body>
+</html>

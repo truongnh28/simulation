@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GK5009 – Chương 7: Lý thuyết Trao đổi Lãnh đạo–Thành viên (LMX)</title>
+  <style>
+    :root {
+      --primary: #1a3c6e;
+      --secondary: #2e6da4;
+      --accent: #e8a020;
+      --light: #f4f7fb;
+      --text: #1c1c1c;
+      --muted: #5a6a7a;
+      --border: #d0daea;
+      --green: #1a6e3c;
+      --red: #8b1a1a;
+      --ingroup: #1a6e3c;
+      --outgroup: #8b1a1a;
+      --phase1: #8b1a1a;
+      --phase2: #d68910;
+      --phase3: #1a6e3c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Georgia','Times New Roman',serif; font-size:16px; line-height:1.8; color:var(--text); background:#fff; max-width:1100px; margin:0 auto; padding:40px 30px; }
+    h1 { font-size:2.2rem; color:var(--primary); border-bottom:4px solid var(--accent); padding-bottom:12px; margin-bottom:8px; }
+    h2 { font-size:1.6rem; color:var(--primary); margin-top:48px; margin-bottom:16px; border-left:6px solid var(--accent); padding-left:14px; }
+    h3 { font-size:1.25rem; color:var(--secondary); margin-top:32px; margin-bottom:12px; }
+    h4 { font-size:1.05rem; color:var(--primary); margin-top:20px; margin-bottom:8px; font-style:italic; }
+    p { margin-bottom:14px; }
+    ul, ol { margin:10px 0 14px 28px; } li { margin-bottom:7px; }
+    .term { font-weight:bold; color:var(--primary); }
+    .definition { background:var(--light); border-left:4px solid var(--secondary); padding:12px 16px; margin:14px 0; border-radius:4px; }
+    .callout { background:#eaf4ff; border:1px solid var(--secondary); padding:14px 18px; margin:18px 0; border-radius:6px; }
+    .callout.warning { background:#fff4e0; border-color:var(--accent); }
+    .callout.important { background:#fdecea; border-color:var(--red); }
+    .callout.success { background:#e8f5ee; border-color:var(--green); }
+    table { width:100%; border-collapse:collapse; margin:20px 0; font-size:0.95rem; }
+    th { background:var(--primary); color:#fff; padding:10px 14px; text-align:left; }
+    td { border:1px solid var(--border); padding:9px 14px; vertical-align:top; }
+    tr:nth-child(even) td { background:var(--light); }
+    .section-label { display:inline-block; background:var(--primary); color:#fff; font-size:0.78rem; font-weight:bold; letter-spacing:1px; padding:3px 10px; border-radius:3px; margin-bottom:6px; text-transform:uppercase; }
+    .toc { background:var(--light); border:1px solid var(--border); padding:18px 24px; margin:24px 0 40px; border-radius:6px; }
+    .toc h3 { color:var(--primary); margin-top:0; margin-bottom:10px; }
+    .toc a { color:var(--secondary); text-decoration:none; }
+    .toc a:hover { text-decoration:underline; }
+    .meta { color:var(--muted); font-size:0.9rem; margin-bottom:30px; }
+    .highlight { background:#fffbcc; padding:2px 4px; border-radius:2px; }
+    hr { border:none; border-top:2px solid var(--border); margin:36px 0; }
+    .badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:0.82rem; font-weight:bold; }
+    .badge-green { background:#d4f0e0; color:var(--green); }
+    .badge-red { background:#fde4e4; color:var(--red); }
+    .badge-blue { background:#daeeff; color:var(--primary); }
+
+    /* In-group / Out-group cards */
+    .group-card { border-radius:8px; padding:18px 22px; margin:14px 0; }
+    .ingroup-card { background:#f0faf4; border:2px solid var(--ingroup); }
+    .outgroup-card { background:#fef5f5; border:2px solid var(--outgroup); }
+
+    /* Phase cards */
+    .phase-card { border-radius:8px; padding:14px 18px; margin:12px 0; border-left:6px solid; }
+    .p1 { border-left-color:var(--phase1); background:#fef5f5; }
+    .p2 { border-left-color:var(--phase2); background:#fef9ec; }
+    .p3 { border-left-color:var(--phase3); background:#f0faf4; }
+
+    /* Dyad diagram */
+    .dyad { display:flex; align-items:center; justify-content:center; gap:12px; margin:20px 0; flex-wrap:wrap; }
+    .dyad-box { background:var(--light); border:2px solid var(--primary); border-radius:8px; padding:12px 20px; text-align:center; min-width:130px; }
+    .dyad-arrow { font-size:1.8rem; color:var(--accent); font-weight:bold; }
+    .dyad-label { font-size:0.8rem; color:var(--muted); margin-top:4px; }
+  </style>
+</head>
+<body>
+
+<div class="section-label">GK5009 – Quản lý và Lãnh đạo | HK252</div>
+<h1>Chương 7: Lý thuyết Trao đổi Lãnh đạo–Thành viên<br><small style="font-size:1rem;color:var(--muted);">Leader-Member Exchange Theory (LMX Theory)</small></h1>
+<p class="meta">Nguồn: Northouse, P. G. (2021). <em>Leadership: Theory and Practice</em> (7th ed.). SAGE Publications. — Chapter 7 | Dansereau, Graen & Haga (1975); Graen & Uhl-Bien (1995)</p>
+
+<div class="toc">
+  <h3>Mục lục</h3>
+  <ol>
+    <li><a href="#s1">Tổng quan & Sự đột phá của LMX Theory</a></li>
+    <li><a href="#s2">Phân tích chuyên sâu: In-Group, Out-Group & Chất lượng LMX</a></li>
+    <li><a href="#s3">Ba giai đoạn phát triển mối quan hệ</a></li>
+    <li><a href="#s4">Leadership Making — Xây dựng LMX chất lượng cao</a></li>
+    <li><a href="#s5">Mô hình & Khung lý thuyết</a></li>
+    <li><a href="#s6">Ví dụ thực tiễn</a></li>
+    <li><a href="#s7">Lưu ý học tập & Bẫy nhận thức phổ biến</a></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s1">1. Tổng quan & Sự đột phá của LMX Theory</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 1 – Overview</div>
+
+<p>LMX Theory (Leader-Member Exchange Theory — Lý thuyết Trao đổi Lãnh đạo–Thành viên) đánh dấu một bước chuyển mang tính cách mạng trong tư duy về lãnh đạo. Tất cả các lý thuyết trước — Trait, Skills, Behavioral, Situational, Path-Goal — đều nhìn lãnh đạo từ góc độ của <em>người lãnh đạo</em>: người đó có đặc điểm gì, kỹ năng gì, hành vi gì, phong cách gì. LMX Theory chuyển trọng tâm sang <strong>mối quan hệ giữa lãnh đạo và từng người theo cụ thể</strong>.</p>
+
+<div class="callout">
+  <strong>Câu hỏi trọng tâm của LMX Theory:</strong><br>
+  Không phải "Lãnh đạo làm gì?" mà là: <em>"Mối quan hệ giữa lãnh đạo và MỖI NGƯỜI THEO CỤ THỂ như thế nào — và chất lượng mối quan hệ đó ảnh hưởng như thế nào đến hiệu quả lãnh đạo và kết quả tổ chức?"</em>
+</div>
+
+<p>Điểm đột phá quan trọng nhất: LMX Theory thừa nhận điều mà ai cũng trực giác biết nhưng ít lý thuyết nào dám nói thẳng — <span class="highlight">lãnh đạo KHÔNG đối xử bình đẳng với tất cả nhân viên</span>. Họ có mối quan hệ <em>khác nhau về chất lượng</em> với từng người — và điều này tác động sâu sắc đến cả người theo lẫn tổ chức.</p>
+
+<h3>1.1 Lịch sử phát triển</h3>
+
+<p><strong>Dansereau, Graen & Haga (1975)</strong> là công bố gốc — lúc đó gọi là <em>Vertical Dyad Linkage (VDL) Theory</em> (Lý thuyết Liên kết Song đôi Dọc). "Dyad" chỉ mối quan hệ giữa hai người; "vertical" chỉ quan hệ theo chiều dọc tổ chức (lãnh đạo và người theo). Nghiên cứu gốc phát hiện rằng lãnh đạo không tạo ra một phong cách thống nhất với tất cả nhân viên — họ tạo ra các mối quan hệ riêng biệt với từng cá nhân.</p>
+
+<p><strong>Graen & Uhl-Bien (1995)</strong> phát triển lý thuyết này xa hơn, đổi tên thành LMX Theory, và thêm phần <em>Leadership Making</em> — một khung quy phạm (prescriptive) về cách lãnh đạo nên chủ động xây dựng mối quan hệ chất lượng cao với tất cả người theo (không chỉ một số).</p>
+
+<div class="dyad">
+  <div class="dyad-box">
+    <strong style="color:var(--primary);">LEADER</strong>
+    <div class="dyad-label">Người Lãnh đạo</div>
+  </div>
+  <div>
+    <div class="dyad-arrow">⟷</div>
+    <div style="text-align:center; font-size:0.82rem; color:var(--muted);">LMX Relationship<br>(Chất lượng Quan hệ)</div>
+  </div>
+  <div class="dyad-box">
+    <strong style="color:var(--secondary);">MEMBER</strong>
+    <div class="dyad-label">Người Theo (cụ thể)</div>
+  </div>
+</div>
+
+<p>Điểm then chốt: LMX Theory phân tích lãnh đạo ở cấp độ <em>dyadic</em> (song đôi) — một cặp lãnh đạo-người theo cụ thể — không phải cấp độ nhóm (lãnh đạo và toàn nhóm). Mỗi mối quan hệ song đôi là duy nhất và có chất lượng riêng.</p>
+
+<!-- ============================================================ -->
+<h2 id="s2">2. In-Group, Out-Group & Chất lượng LMX</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 2 – In-Group vs. Out-Group</div>
+
+<h3>2.1 Sự hình thành In-Group và Out-Group</h3>
+
+<p>Trong thực tế, các lãnh đạo thường chia nhân viên một cách <em>tự nhiên và thường không có ý thức</em> thành hai nhóm khác nhau về chất lượng mối quan hệ:</p>
+
+<div class="group-card ingroup-card">
+  <h4 style="color:var(--ingroup); font-style:normal;">IN-GROUP (Nhóm Bên trong — Chất lượng LMX Cao)</h4>
+  <p><strong>Đặc điểm mối quan hệ:</strong> Lãnh đạo có mối quan hệ tin cậy, tôn trọng, và trách nhiệm lẫn nhau cao với những người này. Quan hệ vượt ra ngoài hợp đồng chính thức — dựa trên sự hiểu biết lẫn nhau, tin tưởng cá nhân, và cam kết.</p>
+  <p><strong>Người theo trong In-Group nhận được:</strong></p>
+  <ul>
+    <li>Nhiều thông tin hơn — được chia sẻ thông tin nội bộ, kế hoạch tương lai, và bối cảnh chiến lược</li>
+    <li>Nhiều ảnh hưởng hơn — ý kiến của họ được cân nhắc nghiêm túc hơn trong quyết định</li>
+    <li>Sự tự tin và sự tham gia vào quyết định nhiều hơn — lãnh đạo hỏi ý kiến họ</li>
+    <li>Sự quan tâm và hỗ trợ cá nhân từ lãnh đạo</li>
+    <li>Cơ hội thú vị và phát triển nghề nghiệp — dự án tốt, đào tạo, mentoring</li>
+    <li>Sự bảo vệ từ lãnh đạo khi cần thiết</li>
+  </ul>
+  <p><strong>Người theo trong In-Group đóng góp:</strong></p>
+  <ul>
+    <li>Thực hiện các nhiệm vụ ngoài phạm vi mô tả công việc chính thức (extra-role activities)</li>
+    <li>Chủ động và sáng tạo hơn trong công việc</li>
+    <li>Cam kết cao hơn với mục tiêu tổ chức</li>
+    <li>Chia sẻ trách nhiệm với lãnh đạo</li>
+  </ul>
+  <p><strong>Kết quả:</strong> In-group members thường có hiệu suất cao hơn, ít nghỉ việc hơn, và hài lòng với công việc hơn.</p>
+</div>
+
+<div class="group-card outgroup-card">
+  <h4 style="color:var(--outgroup); font-style:normal;">OUT-GROUP (Nhóm Bên ngoài — Chất lượng LMX Thấp)</h4>
+  <p><strong>Đặc điểm mối quan hệ:</strong> Lãnh đạo có mối quan hệ mang tính giao kèo chính thức hơn với những người này — dựa trên hợp đồng lao động và nghĩa vụ chính thức, ít tin tưởng và chia sẻ cá nhân.</p>
+  <p><strong>Người theo trong Out-Group nhận được:</strong></p>
+  <ul>
+    <li>Ít thông tin nội bộ hơn — chỉ nhận thông tin cần thiết để làm việc</li>
+    <li>Ít cơ hội tham gia vào quyết định hơn</li>
+    <li>Ít sự hỗ trợ và quan tâm cá nhân từ lãnh đạo hơn</li>
+    <li>Ít cơ hội phát triển và dự án thú vị hơn</li>
+  </ul>
+  <p><strong>Người theo trong Out-Group đóng góp:</strong></p>
+  <ul>
+    <li>Thực hiện các nhiệm vụ trong phạm vi mô tả công việc chính thức (in-role activities)</li>
+    <li>Ít chủ động ngoài yêu cầu</li>
+    <li>Cam kết giữ ở mức "đủ để không bị kỷ luật"</li>
+  </ul>
+  <p><strong>Kết quả:</strong> Out-group members thường có hiệu suất trung bình hoặc thấp hơn, tỷ lệ nghỉ việc cao hơn, và ít hài lòng hơn với công việc.</p>
+</div>
+
+<h3>2.2 Làm thế nào mà In-Group và Out-Group hình thành?</h3>
+
+<p>Nghiên cứu cho thấy việc phân loại vào in-group hay out-group xảy ra tương đối <em>sớm</em> trong mối quan hệ — đôi khi chỉ vài tuần sau khi người theo bắt đầu làm việc với lãnh đạo. Các yếu tố ảnh hưởng bao gồm:</p>
+
+<ul>
+  <li><strong>Sự tương đồng (Similarity):</strong> Lãnh đạo thường tự nhiên thích những người có giá trị, phong cách làm việc, hoặc nền tảng tương tự họ — có thể vô thức.</li>
+  <li><strong>Năng lực (Competence):</strong> Người thể hiện được năng lực từ sớm thường được lãnh đạo đầu tư nhiều hơn.</li>
+  <li><strong>Tính mở rộng (Expandability):</strong> Mức độ người theo sẵn sàng nhận thêm trách nhiệm ngoài mô tả công việc.</li>
+  <li><strong>Ngoại hướng (Extraversion):</strong> Người chủ động giao tiếp với lãnh đạo thường dễ vào in-group hơn.</li>
+  <li><strong>Sự ủy thác (Trust):</strong> Lãnh đạo "thử" tin tưởng người theo — nếu người theo không phụ kỳ vọng, họ được tiếp tục đầu tư.</li>
+</ul>
+
+<div class="callout important">
+  <strong>Vấn đề đạo đức của In-Group/Out-Group:</strong><br>
+  LMX Theory mô tả một thực tế phổ biến, nhưng không có nghĩa là thực tế đó đúng về mặt đạo đức. Khi in-group/out-group hình thành dựa trên <em>thiên vị có ý thức hay vô thức</em> (không phải năng lực), điều này có thể:<br>
+  <ul>
+    <li>Tạo ra sự bất bình đẳng và cảm giác không công bằng trong tổ chức</li>
+    <li>Phân biệt đối xử dựa trên giới tính, sắc tộc, tuổi tác, hay các yếu tố không liên quan đến năng lực</li>
+    <li>Làm giảm tinh thần và hiệu suất của out-group — tạo ra "prophecy tự hoàn thành" (self-fulfilling prophecy) tiêu cực</li>
+    <li>Tạo ra văn hóa "cánh hẩu" (favoritism) làm suy yếu niềm tin tổ chức</li>
+  </ul>
+  Đây là lý do tại sao phần <em>Leadership Making</em> (phần 4) quan trọng — nó hướng dẫn lãnh đạo XÂY DỰNG mối quan hệ chất lượng cao với TẤT CẢ người theo.
+</div>
+
+<h3>2.3 Đo lường Chất lượng LMX</h3>
+
+<p>Chất lượng LMX thường được đo bằng <strong>LMX-7 Scale</strong> (7 câu hỏi) — công cụ được phát triển bởi Graen & Uhl-Bien. Các câu hỏi đo lường các chiều:</p>
+<ul>
+  <li><strong>Affect (Tình cảm):</strong> Mức độ thích và tôn trọng lẫn nhau</li>
+  <li><strong>Loyalty (Trung thành):</strong> Mức độ bảo vệ lẫn nhau trước người khác</li>
+  <li><strong>Contribution (Đóng góp):</strong> Mức độ mỗi bên đóng góp vào nhiệm vụ</li>
+  <li><strong>Professional Respect (Tôn trọng Chuyên môn):</strong> Danh tiếng chuyên môn lẫn nhau</li>
+</ul>
+
+<p>Cả <em>lãnh đạo và người theo đều tự đánh giá</em> — và so sánh hai đánh giá có thể tiết lộ "perception gap" (khoảng cách nhận thức): lãnh đạo nghĩ mối quan hệ tốt nhưng người theo không cảm thấy vậy, hay ngược lại.</p>
+
+<!-- ============================================================ -->
+<h2 id="s3">3. Ba giai đoạn phát triển mối quan hệ LMX</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 3 – Phases of Leadership Development</div>
+
+<p>Graen & Uhl-Bien (1991) mô tả mối quan hệ LMX phát triển qua ba giai đoạn — từ "stranger" (người lạ) đến "partner" (đối tác). Cả lãnh đạo lẫn người theo đều chủ động trong quá trình này.</p>
+
+<div class="phase-card p1">
+  <strong style="color:var(--phase1);">Giai đoạn 1: STRANGER (Người lạ)</strong><br><br>
+  <p><strong>Tính chất trao đổi:</strong> Giao dịch kinh tế thuần túy — vai trò được xác định bởi mô tả công việc chính thức. Mỗi bên tuân theo quy trình tổ chức và ảnh hưởng của lãnh đạo dựa trên legitimate authority (quyền lực hợp pháp từ vị trí).</p>
+  <p><strong>Đặc điểm:</strong></p>
+  <ul>
+    <li>Giao tiếp ở mức tối thiểu — chỉ những gì cần thiết cho công việc</li>
+    <li>Ít chia sẻ thông tin cá nhân hay giá trị</li>
+    <li>Người theo tuân thủ vì "đó là công việc của tôi," không phải vì cam kết thực sự</li>
+    <li>Lãnh đạo không đặc biệt đầu tư vào mối quan hệ với người theo này</li>
+    <li>Chất lượng LMX: <span class="badge badge-red">Thấp</span></li>
+  </ul>
+  <p><strong>Ví dụ:</strong> Nhân viên mới vào công ty — họ làm đúng theo job description, báo cáo lên sếp theo quy trình, và không có mối quan hệ cá nhân đặc biệt.</p>
+</div>
+
+<div class="phase-card p2">
+  <strong style="color:var(--phase2);">Giai đoạn 2: ACQUAINTANCE (Người quen)</strong><br><br>
+  <p><strong>Tính chất trao đổi:</strong> Thử nghiệm (testing phase) — lãnh đạo và người theo bắt đầu chia sẻ nhiều thông tin hơn, kể cả một số thông tin cá nhân, nghề nghiệp, và về giá trị. Lãnh đạo "thử" cung cấp cho người theo cơ hội để thể hiện năng lực và cam kết nhiều hơn. Người theo "thử" bằng cách chấp nhận (hay từ chối) cơ hội đó.</p>
+  <p><strong>Đặc điểm:</strong></p>
+  <ul>
+    <li>Giao tiếp tăng về tần suất và chiều sâu</li>
+    <li>Bắt đầu chia sẻ thông tin ngoài công việc chính thức</li>
+    <li>Sự tin tưởng bắt đầu được xây dựng nhưng chưa cao</li>
+    <li>Người theo bắt đầu làm thêm một số việc ngoài mô tả công việc</li>
+    <li>Chất lượng LMX: <span class="badge" style="background:#fff3cd;color:#856404;">Trung bình</span></li>
+  </ul>
+  <p><strong>Giai đoạn quan trọng:</strong> Đây là giai đoạn "phân nhánh" — mối quan hệ có thể tiến tới Partner hoặc quay lại Stranger tùy vào kết quả của quá trình "thử nghiệm" lẫn nhau.</p>
+</div>
+
+<div class="phase-card p3">
+  <strong style="color:var(--phase3);">Giai đoạn 3: PARTNER (Đối tác)</strong><br><br>
+  <p><strong>Tính chất trao đổi:</strong> Trao đổi xã hội chất lượng cao — mối quan hệ dựa trên sự tin tưởng lẫn nhau (mutual trust), tôn trọng lẫn nhau (mutual respect), và trách nhiệm lẫn nhau (mutual obligation). Ảnh hưởng của lãnh đạo không còn chỉ dựa vào legitimate authority mà chủ yếu dựa vào referent power và expert power.</p>
+  <p><strong>Đặc điểm:</strong></p>
+  <ul>
+    <li>Giao tiếp cởi mở, trung thực, và thường xuyên — kể cả những điều khó nói</li>
+    <li>Lãnh đạo chia sẻ thông tin chiến lược và nội bộ quan trọng</li>
+    <li>Người theo thực hiện nhiều extra-role activities tự nguyện</li>
+    <li>Cả hai bên bảo vệ nhau trước người ngoài khi cần</li>
+    <li>Sự cam kết vượt ra ngoài lợi ích cá nhân tức thời</li>
+    <li>Chất lượng LMX: <span class="badge badge-green">Cao</span></li>
+  </ul>
+  <p><strong>Ví dụ:</strong> Senior manager và CEO có thể gọi nhau lúc 10 giờ tối để thảo luận về vấn đề khủng hoảng; senior manager tự nguyện làm thêm dự án quan trọng mà không cần đàm phán lương; CEO thực sự lắng nghe và đôi khi thay đổi quyết định dựa trên phản hồi của senior manager.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s4">4. Leadership Making — Xây dựng LMX chất lượng cao</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 4 – Leadership Making</div>
+
+<p><strong>Graen & Uhl-Bien (1991)</strong> đề xuất khái niệm <em>Leadership Making</em> — một cách tiếp cận <em>quy phạm (prescriptive)</em> để lãnh đạo chủ động xây dựng mối quan hệ chất lượng cao với <em>tất cả</em> người theo, không chỉ một số.</p>
+
+<div class="definition">
+  <strong>Leadership Making:</strong> Quá trình lãnh đạo chủ động mời và tạo điều kiện cho người theo phát triển qua ba giai đoạn (Stranger → Acquaintance → Partner) bằng cách: cung cấp thêm quyền tự chủ, thông tin, và trách nhiệm; thể hiện sự tin tưởng và tôn trọng; và xây dựng cam kết lẫn nhau theo thời gian.
+</div>
+
+<h3>Tại sao Leadership Making quan trọng?</h3>
+
+<ol>
+  <li><strong>Tối đa hóa hiệu suất tổ chức:</strong> Nếu tất cả nhân viên đều ở mức Partner (in-group), tổ chức hoạt động tốt hơn nhiều so với khi chỉ một số nhỏ ở in-group.</li>
+  <li><strong>Công bằng và đạo đức:</strong> Leadership Making là cách lãnh đạo thực hiện trách nhiệm đạo đức — không để việc phân loại in-group/out-group xảy ra một cách tùy tiện hay dựa trên thiên vị.</li>
+  <li><strong>Phát triển người theo:</strong> Đưa người theo từ Stranger đến Partner là một hình thức phát triển nhân tài quan trọng — người theo được trao cơ hội, trách nhiệm, và sự tin tưởng ngày càng cao.</li>
+  <li><strong>Xây dựng văn hóa tổ chức lành mạnh:</strong> Khi tất cả mọi người cảm thấy được đối xử công bằng và được tin tưởng, văn hóa tổ chức trở nên tích cực và hợp tác hơn.</li>
+</ol>
+
+<h3>Cách thực hiện Leadership Making trong thực tế</h3>
+
+<ul>
+  <li><strong>Trao cơ hội sớm:</strong> Với nhân viên mới, chủ động giao cho họ nhiệm vụ quan trọng hơn mô tả công việc — đây là "lời mời" để họ thể hiện và bắt đầu chuyển từ Stranger sang Acquaintance.</li>
+  <li><strong>Thể hiện sự tin tưởng rõ ràng:</strong> Chia sẻ thông tin nội bộ, hỏi ý kiến, và thực sự xem xét phản hồi của người theo — không chỉ làm ra vẻ hỏi.</li>
+  <li><strong>Đầu tư thời gian 1:1:</strong> Dành thời gian gặp riêng từng người để hiểu mục tiêu nghề nghiệp, thách thức cá nhân, và kỳ vọng của họ.</li>
+  <li><strong>Trao thêm quyền tự chủ dần dần:</strong> Khi người theo thể hiện được năng lực và tin cậy, tiếp tục mở rộng quyền tự chủ và trách nhiệm của họ.</li>
+  <li><strong>Theo dõi và điều chỉnh:</strong> Nhận thức về các dấu hiệu thiên vị vô thức trong cách mình đối xử với các thành viên trong nhóm — và chủ động điều chỉnh.</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="s5">5. Mô hình & Khung lý thuyết</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 5 – Models & Frameworks</div>
+
+<h3>5.1 Mô hình tổng thể LMX Theory</h3>
+
+<div class="callout">
+  <pre style="font-family: monospace; font-size: 0.87rem; line-height: 1.7;">
+                   LÃNH ĐẠO
+                  /    |    \
+                 /     |     \
+               LMX   LMX    LMX
+               cao  trung   thấp
+               /      |      \
+              /       |       \
+         [Member A] [Member B] [Member C]
+         In-Group  Acquaint.  Out-Group
+         (Partner)            (Stranger)
+
+Kết quả:
+• Member A: Extra-role, hiệu suất cao, hài lòng, trung thành
+• Member B: Đang phát triển — có thể vào in-group hoặc ra out-group
+• Member C: In-role only, hiệu suất trung bình, ít gắn kết, dễ nghỉ việc
+  </pre>
+</div>
+
+<h3>5.2 So sánh Ba giai đoạn phát triển LMX</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Đặc điểm</th>
+      <th style="color:#c0392b;">Stranger</th>
+      <th style="color:#d68910;">Acquaintance</th>
+      <th style="color:#1a6e3c;">Partner</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Loại trao đổi</strong></td>
+      <td>Kinh tế (quy tắc và quy trình)</td>
+      <td>Hỗn hợp (kinh tế + xã hội)</td>
+      <td>Xã hội (tin tưởng và tôn trọng)</td>
+    </tr>
+    <tr>
+      <td><strong>Ảnh hưởng của lãnh đạo</strong></td>
+      <td>Legitimate authority</td>
+      <td>Kết hợp</td>
+      <td>Referent + Expert power</td>
+    </tr>
+    <tr>
+      <td><strong>Sự tham gia người theo</strong></td>
+      <td>In-role activities only</td>
+      <td>Bắt đầu extra-role</td>
+      <td>Nhiều extra-role tự nguyện</td>
+    </tr>
+    <tr>
+      <td><strong>Mức độ tin tưởng</strong></td>
+      <td>Thấp</td>
+      <td>Đang xây dựng</td>
+      <td>Cao — mutual</td>
+    </tr>
+    <tr>
+      <td><strong>Chất lượng LMX</strong></td>
+      <td><span class="badge badge-red">Thấp</span></td>
+      <td><span class="badge" style="background:#fff3cd;color:#856404;">Trung bình</span></td>
+      <td><span class="badge badge-green">Cao</span></td>
+    </tr>
+    <tr>
+      <td><strong>Kết quả kỳ vọng</strong></td>
+      <td>Hoàn thành công việc cơ bản</td>
+      <td>Tiến bộ dần</td>
+      <td>Hiệu suất cao, cam kết, trung thành</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>5.3 LMX và Kết quả Tổ chức — Bằng chứng Nghiên cứu</h3>
+
+<p>Graen & Uhl-Bien (1995) tổng hợp hàng chục nghiên cứu và kết luận rằng chất lượng LMX cao tương quan dương với:</p>
+<ul>
+  <li>Hiệu suất làm việc (job performance)</li>
+  <li>Hành vi công dân tổ chức (organizational citizenship behavior — OCB)</li>
+  <li>Sự hài lòng với công việc (job satisfaction)</li>
+  <li>Cam kết với tổ chức (organizational commitment)</li>
+  <li>Tiến bộ nghề nghiệp (career progress)</li>
+  <li>Giảm ý định nghỉ việc (reduced turnover intention)</li>
+</ul>
+
+<h3>5.4 Điểm mạnh và Phê bình của LMX Theory</h3>
+
+<h4>Điểm mạnh:</h4>
+<ol>
+  <li><strong>Mô tả đúng thực tế:</strong> LMX Theory là một trong những lý thuyết trung thực nhất về cách lãnh đạo thực sự diễn ra — không lý tưởng hóa mà thừa nhận sự khác biệt trong mối quan hệ.</li>
+  <li><strong>Đặt mối quan hệ vào trung tâm:</strong> Là lý thuyết đầu tiên tập trung vào dyadic relationship — cặp lãnh đạo-người theo — thay vì nhìn lãnh đạo là hành động một chiều.</li>
+  <li><strong>Bằng chứng nghiên cứu phong phú:</strong> Có nhiều bằng chứng thực nghiệm hỗ trợ mối liên hệ giữa chất lượng LMX và các kết quả tổ chức tích cực.</li>
+  <li><strong>Leadership Making có giá trị thực tiễn:</strong> Khung Leadership Making cung cấp hướng dẫn cụ thể cho lãnh đạo về cách xây dựng mối quan hệ tốt hơn với tất cả người theo.</li>
+  <li><strong>Nhắc nhở về đạo đức lãnh đạo:</strong> Bằng cách chỉ ra sự bất bình đẳng trong in-group/out-group, LMX Theory thúc đẩy tư duy về công bằng và đạo đức trong lãnh đạo.</li>
+</ol>
+
+<h4>Phê bình/Hạn chế:</h4>
+<ol>
+  <li><strong>Không giải thích tại sao in-group hình thành:</strong> Lý thuyết mô tả rằng in-group/out-group tồn tại, nhưng không đủ rõ ràng về quá trình — dựa trên tiêu chí nào, bởi ai, và có thể thay đổi không.</li>
+  <li><strong>Tiềm năng dẫn đến thiên vị và phân biệt đối xử:</strong> Nếu in-group hình thành dựa trên sự tương đồng với lãnh đạo (similarity bias), điều này có thể dẫn đến phân biệt đối xử vô thức dựa trên giới tính, sắc tộc, hay nền tảng.</li>
+  <li><strong>Vấn đề đo lường:</strong> Chất lượng LMX được đo bởi cả lãnh đạo lẫn người theo — nhưng hai bên thường có nhận thức khác nhau về cùng một mối quan hệ. Không rõ đánh giá của ai "đúng" hơn.</li>
+  <li><strong>Ít hướng dẫn cụ thể về cách thay đổi LMX thấp thành cao:</strong> Leadership Making là bước đi đúng hướng, nhưng còn thiếu chi tiết về can thiệp cụ thể.</li>
+  <li><strong>Bỏ qua yếu tố nhóm và tổ chức:</strong> Phân tích dyadic bỏ qua ảnh hưởng của động lực nhóm, văn hóa tổ chức, và yếu tố tình huống rộng hơn.</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="s6">6. Ví dụ thực tiễn</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 6 – Practical Examples</div>
+
+<h3>6.1 Case: In-Group/Out-Group trong Doanh nghiệp</h3>
+
+<p><strong>Tình huống:</strong> Giám đốc phòng Marketing có 8 nhân viên. Qua quan sát, có thể thấy rõ:</p>
+<ul>
+  <li><strong>In-Group (3 người):</strong> Được mời dự họp chiến lược; biết về kế hoạch launch sản phẩm mới trước 3 tháng; được giao dự án tốt nhất; khi deadline bị trễ, sếp giúp đỡ; được đề cử tham gia chương trình leadership development.</li>
+  <li><strong>Out-Group (5 người):</strong> Không biết về kế hoạch chiến lược cho đến khi được thông báo chính thức; được giao các công việc routine; khi gặp vấn đề, ít nhận được hỗ trợ; không được đề cử cho cơ hội phát triển.</li>
+</ul>
+<p><strong>Hệ quả quan sát được:</strong> 3 người in-group năm nào cũng được đánh giá "Exceeds Expectations"; 5 người out-group thường được "Meets Expectations." Trong vòng 2 năm, 3 trong số 5 người out-group đã nghỉ việc. → LMX Theory giải thích đây không phải chỉ là vấn đề năng lực — mà là mối quan hệ khác nhau tạo ra kết quả khác nhau.</p>
+
+<h3>6.2 Ứng dụng Leadership Making trong Onboarding</h3>
+
+<p><strong>Chương trình Onboarding được thiết kế theo Leadership Making:</strong></p>
+<ul>
+  <li><strong>Tuần 1–4 (Stranger → Acquaintance):</strong> Manager gặp 1:1 hàng tuần với nhân viên mới. Hỏi về mục tiêu nghề nghiệp, kỳ vọng, và lo lắng. Chia sẻ thông tin về văn hóa công ty và cách mọi thứ thực sự hoạt động (không chỉ theo handbook).</li>
+  <li><strong>Tháng 2–3 (Acquaintance):</strong> Giao cho nhân viên mới một dự án thực sự (không phải dự án "tập") — có trách nhiệm thực và kết quả đo lường được. Nhận phản hồi về cách họ tiếp cận.</li>
+  <li><strong>Tháng 4–6 (Acquaintance → Partner):</strong> Mời nhân viên mới vào các cuộc họp chiến lược. Hỏi ý kiến thực sự về quyết định liên quan đến công việc của họ. Khi họ có ý kiến tốt, thực sự thực hiện.</li>
+</ul>
+<p><strong>Kết quả:</strong> Nhân viên mới cảm thấy được đầu tư và tôn trọng từ sớm, dẫn đến gắn kết cao hơn và retention tốt hơn trong năm đầu.</p>
+
+<!-- ============================================================ -->
+<h2 id="s7">7. Lưu ý học tập & Bẫy nhận thức phổ biến</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 7 – Study Notes & Common Pitfalls</div>
+
+<div class="callout warning">
+  <strong>Bẫy 1: Nhầm LMX Theory với lý thuyết mô tả (descriptive) chứ không có tính quy phạm</strong><br>
+  LMX Theory có cả hai phần: (1) Mô tả thực tế — in-group/out-group tồn tại và tác động thế nào; (2) Quy phạm — Leadership Making chỉ ra lãnh đạo NÊN làm gì (xây dựng LMX cao với tất cả). Trong bài thi, cần đề cập cả hai phần.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 2: Nhầm "In-Group" của LMX với "In-group" trong tâm lý học xã hội</strong><br>
+  "In-group" trong LMX Theory chỉ nhóm người theo có LMX chất lượng cao với lãnh đạo — khái niệm riêng của LMX Theory. Không phải "in-group" theo nghĩa nhóm tự đồng nhất (social identity theory). Đây là hai khái niệm khác nhau dùng cùng thuật ngữ.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 3: Cho rằng In-Group/Out-Group là cố định và không thể thay đổi</strong><br>
+  Không phải. Mối quan hệ LMX có thể phát triển (từ Stranger → Partner) và cũng có thể suy giảm (từ Partner → Stranger) nếu tin tưởng bị phá vỡ. Leadership Making nhấn mạnh rằng lãnh đạo có thể chủ động thay đổi và cải thiện chất lượng LMX.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 4: Nhầm tên gọi lịch sử — VDL và LMX</strong><br>
+  Vertical Dyad Linkage (VDL) Theory là tên gọi ban đầu (Dansereau et al., 1975). LMX Theory là tên gọi được phổ biến sau này (Graen & Uhl-Bien, 1995). Cùng một dòng lý thuyết, khác tên. Khi trích dẫn nghiên cứu gốc hãy dùng "VDL"; khi nói về lý thuyết chung dùng "LMX."
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 5: Quên tên ba giai đoạn</strong><br>
+  Ba giai đoạn của Leadership Making: <strong>Stranger → Acquaintance → Partner</strong>. Không phải "Beginner → Intermediate → Expert" hay bất kỳ tên nào khác. Đây là thuật ngữ đặc thù của Graen & Uhl-Bien.
+</div>
+
+<h3>Câu hỏi ôn tập</h3>
+<ol>
+  <li>LMX Theory đột phá như thế nào so với các lý thuyết lãnh đạo trước đó? Tại sao việc tập trung vào mối quan hệ dyadic là quan trọng?</li>
+  <li>Mô tả sự khác biệt giữa In-Group và Out-Group theo LMX Theory. Người theo trong mỗi nhóm nhận được gì và đóng góp gì khác nhau?</li>
+  <li>Mô tả ba giai đoạn phát triển của mối quan hệ LMX (Stranger → Acquaintance → Partner). Điều gì xảy ra trong giai đoạn Acquaintance mà làm nó là giai đoạn "phân nhánh" quan trọng?</li>
+  <li>Leadership Making là gì và tại sao nó quan trọng? Làm thế nào một lãnh đạo có thể áp dụng Leadership Making trong môi trường làm việc thực tế?</li>
+  <li>Phân tích các vấn đề đạo đức liên quan đến In-Group/Out-Group trong LMX Theory. Lãnh đạo có thể làm gì để giảm thiểu thiên vị không công bằng?</li>
+</ol>
+
+<h3>Từ khóa quan trọng</h3>
+<table>
+  <thead><tr><th>Thuật ngữ</th><th>Định nghĩa ngắn</th></tr></thead>
+  <tbody>
+    <tr><td><strong>LMX Theory</strong></td><td>Lý thuyết tập trung vào chất lượng mối quan hệ dyadic giữa lãnh đạo và từng người theo</td></tr>
+    <tr><td><strong>VDL Theory</strong></td><td>Vertical Dyad Linkage — tên gốc của LMX Theory (Dansereau et al., 1975)</td></tr>
+    <tr><td><strong>Dyad</strong></td><td>Cặp hai người — trong LMX là cặp lãnh đạo + một người theo cụ thể</td></tr>
+    <tr><td><strong>In-Group</strong></td><td>Người theo có LMX chất lượng cao — nhận nhiều tài nguyên, cơ hội, và tin tưởng; đóng góp extra-role</td></tr>
+    <tr><td><strong>Out-Group</strong></td><td>Người theo có LMX chất lượng thấp — quan hệ chính thức, in-role only</td></tr>
+    <tr><td><strong>Stranger</strong></td><td>Giai đoạn 1 — giao dịch kinh tế thuần túy, LMX thấp</td></tr>
+    <tr><td><strong>Acquaintance</strong></td><td>Giai đoạn 2 — thử nghiệm và xây dựng tin tưởng, LMX trung bình</td></tr>
+    <tr><td><strong>Partner</strong></td><td>Giai đoạn 3 — tin tưởng và tôn trọng lẫn nhau cao, LMX cao</td></tr>
+    <tr><td><strong>Leadership Making</strong></td><td>Khung quy phạm của Graen & Uhl-Bien — lãnh đạo chủ động xây dựng LMX cao với TẤT CẢ người theo</td></tr>
+    <tr><td><strong>Extra-role Activities</strong></td><td>Hành vi vượt ra ngoài mô tả công việc chính thức — đặc trưng của in-group members</td></tr>
+    <tr><td><strong>In-role Activities</strong></td><td>Hành vi trong phạm vi mô tả công việc chính thức — đặc trưng của out-group members</td></tr>
+    <tr><td><strong>LMX-7 Scale</strong></td><td>Công cụ đo lường chất lượng LMX — 7 câu hỏi về affect, loyalty, contribution, professional respect</td></tr>
+  </tbody>
+</table>
+
+<hr/>
+<p style="text-align:center; color:var(--muted); font-size:0.85rem;">GK5009 – Quản lý và Lãnh đạo | HK252 | Tài liệu học tập tổng hợp | Nguồn: Northouse (2021), 7th ed., Chapter 7; Dansereau, Graen & Haga (1975); Graen & Uhl-Bien (1991, 1995)</p>
+</body>
+</html>

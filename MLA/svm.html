@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.8 — Support Vector Machines | MLA HK252</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']], processEscapes: true },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:0;left:0;width:258px;height:100vh;background:#0a1f10;overflow-y:auto;z-index:100;flex-shrink:0}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:#2d6a4f;border-radius:2px}
+.sb-title{padding:1.25rem 1rem .75rem;border-bottom:1px solid #1a3a20}
+.sb-title h1{color:#86efac;font-size:.95rem;font-weight:700;line-height:1.4}
+.sb-title p{color:#6ee7b7;font-size:.7rem;margin-top:.2rem}
+.sb-group{padding:.6rem 1rem .15rem;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#4ade80}
+.sb-link{display:flex;align-items:center;gap:.45rem;padding:.35rem 1rem;color:#bbf7d0;font-size:.8rem;text-decoration:none;border-left:3px solid transparent;transition:all .15s}
+.sb-link:hover{background:rgba(74,222,128,.1);border-left-color:#4ade80;color:#fff}
+.sb-link i{width:14px;font-size:.7rem;color:#4ade80;flex-shrink:0}
+
+/* MAIN */
+#main{margin-left:258px;min-height:100vh;padding:2rem 2.5rem;max-width:calc(100% - 258px)}
+
+/* CHAPTER HEADER */
+.ch-hdr{background:linear-gradient(135deg,#14532d,#16a34a);color:#fff;padding:1.75rem 2rem;border-radius:10px;margin-bottom:1.75rem;box-shadow:0 4px 12px rgba(20,83,45,.3)}
+.ch-hdr .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#86efac;font-weight:700}
+.ch-hdr h2{font-size:1.75rem;font-weight:800;margin:.2rem 0 .4rem}
+.ch-hdr p{color:#d1fae5;font-size:.9rem}
+.ch-hdr-blue{background:linear-gradient(135deg,#1e3a5f,#1e4d8c)}
+.ch-hdr-blue .lbl{color:#93c5fd}
+.ch-hdr-blue p{color:#bfdbfe}
+
+/* SECTION TITLES */
+.s-title{font-size:1.2rem;font-weight:700;color:#14532d;border-left:4px solid #16a34a;padding-left:.7rem;margin:1.75rem 0 .9rem}
+.ss-title{font-size:1rem;font-weight:600;color:#166534;margin:1.25rem 0 .6rem}
+
+/* ALERTS */
+.alert{border-radius:0 8px 8px 0;padding:.85rem 1.1rem;margin:.85rem 0;font-size:.875rem}
+.alert-title{font-weight:700;margin-bottom:.3rem;font-size:.85rem}
+.al-blue{background:#eff6ff;border-left:4px solid #3b82f6}
+.al-blue .alert-title{color:#1d4ed8}
+.al-green{background:#f0fdf4;border-left:4px solid #22c55e}
+.al-green .alert-title{color:#15803d}
+.al-yellow{background:#fffbeb;border-left:4px solid #f59e0b}
+.al-yellow .alert-title{color:#b45309}
+.al-red{background:#fef2f2;border-left:4px solid #ef4444}
+.al-red .alert-title{color:#b91c1c}
+.al-purple{background:#faf5ff;border-left:4px solid #9333ea}
+.al-purple .alert-title{color:#7e22ce}
+
+/* FORMULA */
+.flabel{display:inline-block;background:#16a34a;color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .65rem;border-radius:6px 6px 0 0;margin-bottom:-1px}
+.fbox{background:#f8fafc;border:1px solid #cbd5e1;border-top:3px solid #16a34a;border-radius:0 8px 8px 8px;padding:1.1rem 1.5rem;margin:.25rem 0 .85rem;overflow-x:auto;text-align:center}
+.fbox.no-top-radius{border-radius:8px}
+
+/* DETAILS */
+details{border:1px solid #e2e8f0;border-radius:8px;margin:.65rem 0;overflow:hidden}
+details>summary{padding:.65rem 1.1rem;cursor:pointer;font-weight:600;font-size:.875rem;background:#f1f5f9;list-style:none;display:flex;align-items:center;gap:.45rem;user-select:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:'▶';font-size:.65rem;color:#64748b;transition:transform .2s;margin-right:.1rem}
+details[open]>summary::before{transform:rotate(90deg)}
+details[open]>summary{background:#e2e8f0}
+.dc{padding:1.1rem}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.85rem}
+.tbl th{background:#14532d;color:#fff;padding:.5rem .85rem;text-align:left}
+.tbl td{padding:.5rem .85rem;border:1px solid #e2e8f0}
+.tbl tr:nth-child(even){background:#f0fdf4}
+
+/* STEPS */
+.step{display:flex;gap:.85rem;margin:.6rem 0}
+.step-n{background:#16a34a;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.15rem}
+.step-c{flex:1;font-size:.875rem;line-height:1.6}
+
+/* QUIZ */
+.qcard{background:#fff;border:1px solid #e2e8f0;border-radius:8px;margin:1.1rem 0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.qhdr{background:#1e3a5f;color:#fff;padding:.55rem 1.1rem;font-size:.82rem;font-weight:600}
+.qbody{padding:1.1rem}
+.qq{font-size:.875rem;line-height:1.6;margin-bottom:.7rem;font-weight:500}
+.qopt{padding:.35rem .75rem;border-radius:5px;margin:.2rem 0;font-size:.855rem;line-height:1.5}
+.qok{background:#dcfce7;color:#14532d;font-weight:700;border-left:3px solid #16a34a}
+.qwrong{color:#64748b}
+.qexp{background:#fffbeb;border-left:3px solid #f59e0b;padding:.7rem 1rem;border-radius:0 6px 6px 0;margin-top:.7rem;font-size:.84rem;line-height:1.6}
+
+/* CODE */
+.code{background:#1e293b;color:#e2e8f0;padding:.9rem 1.1rem;border-radius:8px;font-family:'Courier New',monospace;font-size:.82rem;margin:.75rem 0;overflow-x:auto;line-height:1.7}
+.kw{color:#7dd3fc}
+.cmt{color:#64748b}
+
+.divider{border:none;border-top:1px solid #e2e8f0;margin:2.25rem 0}
+#back-top{position:fixed;bottom:1.5rem;right:1.5rem;background:#14532d;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.2);font-size:.85rem}
+#back-top:hover{background:#15803d}
+
+p{font-size:.9rem;line-height:1.65;margin:.5rem 0}
+li{font-size:.875rem;line-height:1.65}
+ul,ol{padding-left:1.4rem;margin:.4rem 0}
+strong{color:#1e293b}
+
+@media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+</style>
+</head>
+
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sb-title">
+    <h1><i class="fas fa-brain"></i> Học Máy &amp; Ứng Dụng</h1>
+    <p>Ôn thi Cuối Kỳ — HK252 | CO5175</p>
+  </div>
+  <div class="sb-group">Trang chủ</div>
+  <a href="index.html" class="sb-link"><i class="fas fa-home"></i>Tổng quan các chương</a>
+  <div class="sb-group">Phân loại có giám sát</div>
+  <a href="knn.html" class="sb-link"><i class="fas fa-map-marker-alt"></i>Ch.3 — K-Nearest Neighbors</a>
+  <a href="bayes.html" class="sb-link"><i class="fas fa-calculator"></i>Ch.4 — Naive Bayes</a>
+  <a href="dtree.html" class="sb-link"><i class="fas fa-tree"></i>Ch.5 — Decision Trees</a>
+  <a href="nn.html" class="sb-link"><i class="fas fa-network-wired"></i>Ch.7 — Neural Networks</a>
+  <a href="svm.html" class="sb-link" style="background:rgba(74,222,128,.15);border-left-color:#4ade80;color:#fff"><i class="fas fa-compress-arrows-alt"></i>Ch.8 — Support Vector Machines</a>
+  <a href="ensemble.html" class="sb-link"><i class="fas fa-layer-group"></i>Ch.9 — Ensemble Methods</a>
+  <a href="deep.html" class="sb-link"><i class="fas fa-microchip"></i>Ch.12 — Deep Learning</a>
+  <div class="sb-group">Chuyên đề ôn thi</div>
+  <a href="hmm.html" class="sb-link"><i class="fas fa-random"></i>Hidden Markov Models</a>
+  <a href="kmeans.html" class="sb-link"><i class="fas fa-object-group"></i>K-Means Clustering</a>
+  <a href="logreg.html" class="sb-link"><i class="fas fa-chart-line"></i>Logistic Regression</a>
+  <div class="sb-group">Thi thử</div>
+  <a href="mock.html" class="sb-link"><i class="fas fa-file-alt"></i>Đề Thi Thử 2026</a>
+  <a href="exam2025.html" class="sb-link"><i class="fas fa-graduation-cap"></i>Đề CK Thật 2025</a>
+</nav>
+
+<main id="main">
+
+<!-- ========== CH8: SVM ========== -->
+<section id="svm">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-book-open"></i> Chương 8</div>
+  <h2>Support Vector Machines (SVM)</h2>
+  <p>Tìm Maximum Marginal Hyperplane — siêu phẳng phân tách với biên lớn nhất.</p>
+</div>
+
+<div class="s-title">1. Siêu phẳng quyết định</div>
+<div class="fbox no-top-radius">\[ \mathbf{w}\cdot\mathbf{x} + b = 0 \]</div>
+<p>Với dữ liệu 2D (A₁, A₂): \(w_0 + w_1 x_1 + w_2 x_2 = 0\).<br>
+Điểm phía trên: \(w_0+w_1x_1+w_2x_2 &gt; 0\) (lớp +1); phía dưới: &lt; 0 (lớp −1).</p>
+
+<div class="s-title">2. Support Hyperplanes &amp; Support Vectors</div>
+<div class="fbox no-top-radius">
+\[ H_1: \mathbf{w}\cdot\mathbf{x}+b = +1 \quad\text{(lề lớp +1)} \]
+\[ H_2: \mathbf{w}\cdot\mathbf{x}+b = -1 \quad\text{(lề lớp -1)} \]
+\[ \text{Ràng buộc: } y_i(\mathbf{w}\cdot\mathbf{x}_i+b) \geq 1, \;\forall i \]
+</div>
+<p><strong>Support Vectors</strong> là các điểm nằm trên H₁ hoặc H₂ — chúng hoàn toàn xác định siêu phẳng quyết định.</p>
+
+<div class="s-title">3. Margin Width = 2/||W||</div>
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-ruler"></i> Công thức Margin</div>
+  <div class="fbox no-top-radius">
+  \[ \text{Khoảng cách từ siêu phẳng đến H}_1 = \frac{1}{\|\mathbf{w}\|} \]
+  \[ \text{Margin width (total)} = \frac{2}{\|\mathbf{w}\|} \]
+  </div>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Câu 6 — Tính Margin Width</summary>
+<div class="dc">
+<p>\(H_1: 2x_1+x_2-3=0\), \(H_2: 2x_1+x_2+1=0\). Khoảng cách giữa 2 đường song song:</p>
+<div class="fbox no-top-radius">
+\[ \|\mathbf{w}\| = \sqrt{2^2+1^2} = \sqrt{5}, \qquad \text{margin} = \frac{|3-(-1)|}{\sqrt{5}} = \frac{4}{\sqrt{5}} \]
+</div>
+<p>→ Đáp án: <strong>A. \(4/\sqrt{5}\)</strong></p>
+</div>
+</details>
+
+<div class="s-title">4. Bài toán tối ưu (Hard-margin SVM)</div>
+<div class="flabel">Constrained Optimization</div>
+<div class="fbox">
+\[ \min_{\mathbf{w},b} \frac{1}{2}\|\mathbf{w}\|^2 \quad \text{s.t. } y_i(\mathbf{w}\cdot\mathbf{x}_i+b)\geq 1,\;\forall i \]
+</div>
+
+<div class="s-title">5. Lagrange &amp; Dual Formulation</div>
+<div class="fbox no-top-radius">
+\[ L(\mathbf{w},b) = \frac{1}{2}\|\mathbf{w}\|^2 - \sum_{i}\alpha_i\left[y_i(\mathbf{w}\cdot\mathbf{x}_i+b)-1\right] \]
+\[ \Rightarrow \mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i, \quad \sum_i \alpha_i y_i = 0 \]
+\[ W(\boldsymbol{\alpha}) = \sum_i\alpha_i - \frac{1}{2}\sum_{i,j}\alpha_i\alpha_j y_i y_j(\mathbf{x}_i\cdot\mathbf{x}_j) \]
+</div>
+
+<div class="s-title">6. Soft-Margin SVM — Tham số C</div>
+<div class="flabel">Soft-margin Objective</div>
+<div class="fbox">
+\[ \min_{\mathbf{w},b,\boldsymbol{\xi}} \frac{1}{2}\|\mathbf{w}\|^2 + C\sum_i\xi_i \quad \text{s.t. } y_i(\mathbf{w}\cdot\mathbf{x}_i+b)\geq 1-\xi_i,\;\xi_i\geq 0 \]
+</div>
+<table class="tbl">
+<thead><tr><th>C</th><th>Phạt lỗi</th><th>Margin</th><th>Hiện tượng</th></tr></thead>
+<tbody>
+<tr><td>Nhỏ</td><td>Ít</td><td>Lớn</td><td>Underfit</td></tr>
+<tr><td>Lớn</td><td>Nhiều</td><td>Nhỏ</td><td>Overfit</td></tr>
+<tr><td>→∞</td><td>Không cho phép lỗi</td><td>Rất nhỏ</td><td>Hard-margin (Overfit)</td></tr>
+</tbody>
+</table>
+
+<div class="s-title">7. Kernel Trick — RBF Kernel</div>
+<div class="fbox no-top-radius">\[ K(\mathbf{x},\mathbf{x}') = \exp\!\left(-\gamma\|\mathbf{x}-\mathbf{x}'\|^2\right) \]</div>
+<table class="tbl">
+<thead><tr><th>γ</th><th>Ma trận Gram</th><th>Hệ quả</th></tr></thead>
+<tbody>
+<tr><td>γ → ∞</td><td>→ Identity matrix</td><td>Overfit cực đại (Câu 7 → B)</td></tr>
+<tr><td>γ → 0</td><td>Tất cả phần tử → 1</td><td>Underfit</td></tr>
+</tbody>
+</table>
+
+<div class="s-title">8. SVM vs Logistic Regression</div>
+<table class="tbl">
+<thead><tr><th>Tiêu chí</th><th>Logistic Regression</th><th>SVM</th></tr></thead>
+<tbody>
+<tr><td>Hàm mất mát</td><td>Cross-Entropy (Log-loss)</td><td>Hinge Loss: max(0, 1−yf(x))</td></tr>
+<tr><td>Mục tiêu</td><td>Max Log-Likelihood</td><td>Max Margin</td></tr>
+<tr><td>Regularization</td><td>L2 (Ridge)</td><td>L2 (|w|²)</td></tr>
+</tbody>
+</table>
+<div class="alert al-yellow">
+  <div class="alert-title">Câu 20 — Điểm khác biệt cốt lõi</div>
+  Hàm mất mát: Logistic = Cross-Entropy, SVM = Hinge Loss. Cả hai dùng L2-regularization. → <strong>Đáp án B</strong>
+</div>
+
+<div class="s-title">9. Phân tách tuyến tính — Từ 1D đến n chiều</div>
+
+<table class="tbl">
+<thead><tr><th>Không gian</th><th>Decision Boundary</th><th>Hình dạng</th></tr></thead>
+<tbody>
+<tr><td>1D (1 đặc trưng)</td><td>Một ngưỡng trên trục số \(x=\theta\)</td><td>Điểm</td></tr>
+<tr><td>2D (2 đặc trưng)</td><td>Đường thẳng \(w_1x_1+w_2x_2+b=0\)</td><td>Đường thẳng, chia mặt phẳng</td></tr>
+<tr><td>3D</td><td>Mặt phẳng \(w_1x_1+w_2x_2+w_3x_3+b=0\)</td><td>Mặt phẳng, chia không gian 3D</td></tr>
+<tr><td>n chiều</td><td>Siêu phẳng (Hyperplane) \(\mathbf{w}^\top\mathbf{x}+b=0\)</td><td>Subspace (n-1) chiều</td></tr>
+</tbody>
+</table>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-info-circle"></i> Tại sao cần Kernel khi không linearly separable?</div>
+  <p>Trong 2D: hai vòng tròn đồng tâm không thể tách bằng đường thẳng. RBF Kernel map ngầm định vào không gian vô hạn chiều trong đó hai lớp có thể linearly separable → SVM với RBF tạo biên cong trong không gian gốc mà không cần tính explcitly \(\phi(x)\).</p>
+</div>
+
+<div class="s-title">10. Chứng minh Margin Width = 2/||W||</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Dẫn xuất công thức Margin từ khoảng cách hai siêu phẳng</summary>
+<div class="dc">
+<p>Hai siêu phẳng song song H₁ và H₂:</p>
+<div class="fbox no-top-radius">
+\[ H_1: \mathbf{w}\cdot\mathbf{x}+b = +1, \quad H_2: \mathbf{w}\cdot\mathbf{x}+b = -1 \]
+</div>
+<p>Lấy điểm \(\mathbf{x}_+\in H_1\) và \(\mathbf{x}_-\in H_2\). Vector nối hai điểm chiếu lên hướng pháp tuyến \(\hat{\mathbf{n}} = \frac{\mathbf{w}}{\|\mathbf{w}\|}\):</p>
+<div class="fbox no-top-radius">
+\[ \text{Margin} = (\mathbf{x}_+ - \mathbf{x}_-)\cdot\frac{\mathbf{w}}{\|\mathbf{w}\|} = \frac{\mathbf{w}\cdot\mathbf{x}_+ - \mathbf{w}\cdot\mathbf{x}_-}{\|\mathbf{w}\|} = \frac{(1-b)-(-1-b)}{\|\mathbf{w}\|} = \frac{2}{\|\mathbf{w}\|} \]
+</div>
+<div class="alert al-green" style="margin-top:.5rem">
+<div class="alert-title">Kết luận</div>
+Maximize Margin \(= \frac{2}{\|\mathbf{w}\|}\) ⟺ Minimize \(\|\mathbf{w}\|\) ⟺ Minimize \(\frac{1}{2}\|\mathbf{w}\|^2\) (convex, dễ đạo hàm).
+</div>
+</div>
+</details>
+
+<div class="s-title">11. Hinge Loss — Phân tích hình học so với Cross-Entropy</div>
+
+<div class="flabel">Hinge Loss cho một điểm</div>
+<div class="fbox">
+\[ L_{\text{hinge}}(y, f(\mathbf{x})) = \max(0,\; 1 - y \cdot f(\mathbf{x})) \]
+</div>
+
+<table class="tbl">
+<thead><tr><th>Vị trí điểm</th><th>y·f(x)</th><th>Hinge Loss</th><th>CE Loss</th></tr></thead>
+<tbody>
+<tr><td>Đúng, xa biên (f=+5, y=+1)</td><td>5 ≫ 1</td><td>0 (không phạt gì)</td><td>Nhỏ nhưng &gt; 0 mãi</td></tr>
+<tr><td>Đúng, gần biên (f=+0.3, y=+1)</td><td>0.3 &lt; 1</td><td>0.7 (phạt vì trong margin)</td><td>Nhỏ</td></tr>
+<tr><td>Trên biên (f=0, y=+1)</td><td>0</td><td>1</td><td>ln(2) ≈ 0.693</td></tr>
+<tr><td>Sai (f=−2, y=+1)</td><td>−2</td><td>3 (phạt tuyến tính)</td><td>Lớn (log-scale)</td></tr>
+</tbody>
+</table>
+
+<div class="alert al-yellow">
+  <div class="alert-title"><i class="fas fa-lightbulb"></i> Khác biệt bản chất hình học</div>
+  <ul>
+    <li><strong>Hinge Loss (SVM):</strong> Hàm <em>piecewise linear</em>. Gradient = 0 khi điểm đã đúng và ngoài margin — chỉ các <em>support vectors</em> (điểm gần/vi phạm biên) mới ảnh hưởng đến nghiệm. Không có gradient với điểm dễ phân loại.</li>
+    <li><strong>Cross-Entropy (LR):</strong> Hàm <em>smooth và lồi</em>. Luôn có gradient ≠ 0 — tiếp tục update kể cả điểm đã phân loại đúng. Phân biệt được mức độ chắc chắn → calibrated probabilities.</li>
+    <li><strong>Hệ quả:</strong> SVM sparse (chỉ dùng support vectors để predict), LR dùng tất cả training data. SVM không cho probability output trực tiếp, LR có.</li>
+  </ul>
+</div>
+
+<div class="s-title">12. Gram Matrix và hành vi γ trong RBF Kernel</div>
+
+<details open>
+<summary><i class="fas fa-table"></i> Phân tích Gram Matrix K khi γ thay đổi</summary>
+<div class="dc">
+<p>Gram Matrix: \(K_{ij} = K(\mathbf{x}_i,\mathbf{x}_j) = \exp(-\gamma\|\mathbf{x}_i-\mathbf{x}_j\|^2)\). Ma trận \(n\times n\), luôn là positive semi-definite.</p>
+<table class="tbl" style="font-size:.82rem">
+<thead><tr><th>γ</th><th>K_{ij} khi i≠j (||x_i-x_j||²=d)</th><th>Gram Matrix</th><th>Mô hình</th></tr></thead>
+<tbody>
+<tr><td>γ → 0</td><td>e^{-0} = 1 mọi cặp</td><td>Ma trận toàn số 1</td><td>Mọi điểm giống nhau → Linear SVM → Underfit</td></tr>
+<tr><td>γ nhỏ (e.g. 0.01)</td><td>Gần 1 nếu d vừa phải (influence rộng)</td><td>Dense, smooth</td><td>Biên mượt, tổng quát tốt</td></tr>
+<tr><td>γ lớn (e.g. 100)</td><td>≈ 0 trừ khi x_i rất gần x_j</td><td>Gần diagonal</td><td>Mỗi điểm = "đảo" riêng biệt → Overfit</td></tr>
+<tr><td>γ → ∞</td><td>= 0 với mọi i≠j (chỉ K_{ii}=1)</td><td>Identity matrix I</td><td>Tương đương 1-NN → Training Error = 0, Test Error rất cao</td></tr>
+</tbody>
+</table>
+<div class="alert al-red" style="margin-top:.6rem">
+<div class="alert-title">Khi γ → ∞: Gram Matrix → I</div>
+Kernel SVM với Gram matrix = I tương đương phân loại theo nearest neighbor (mỗi training point là "prototype" của chính mình). Training Error = 0 nhưng mô hình không tổng quát hóa được.
+</div>
+</div>
+</details>
+
+<div class="s-title">13. Ví dụ số đầy đủ — Tìm Support Vectors, Phương trình H₁/H₂ và Margin</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-database"></i> Dataset — 4 điểm, 2 chiều (Hard-margin SVM)</div>
+  <p>Cho 4 điểm huấn luyện trong không gian 2D. Tìm maximum-margin hyperplane.</p>
+  <table class="tbl" style="font-size:.83rem;margin-top:.5rem">
+  <thead><tr><th>Điểm</th><th>X₁</th><th>X₂</th><th>Nhãn y</th></tr></thead>
+  <tbody>
+  <tr><td><strong>A</strong></td><td>1</td><td>3</td><td>+1</td></tr>
+  <tr><td><strong>B</strong></td><td>2</td><td>2</td><td>+1</td></tr>
+  <tr><td><strong>C</strong></td><td>1</td><td>1</td><td>−1</td></tr>
+  <tr><td><strong>D</strong></td><td>2</td><td>0</td><td>−1</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<details open>
+<summary><i class="fas fa-search"></i> Bước 1 — Xác định Support Vectors bằng quan sát hình học</summary>
+<div class="dc">
+<p>Support Vectors là các điểm <em>nằm trên H₁ hoặc H₂</em>, tức là điểm gần biên quyết định nhất. Tính tổng x₁+x₂ cho từng điểm:</p>
+<table class="tbl" style="font-size:.83rem">
+<thead><tr><th>Điểm</th><th>x₁+x₂</th><th>Nhãn</th><th>Nhận xét</th></tr></thead>
+<tbody>
+<tr><td>A(1,3)</td><td>4</td><td>+1</td><td style="background:#dcfce7">Lớp +1 nằm trên đường x₁+x₂ = 4</td></tr>
+<tr><td>B(2,2)</td><td>4</td><td>+1</td><td style="background:#dcfce7">Lớp +1 nằm trên đường x₁+x₂ = 4</td></tr>
+<tr><td>C(1,1)</td><td>2</td><td>−1</td><td style="background:#fee2e2">Lớp −1 nằm trên đường x₁+x₂ = 2</td></tr>
+<tr><td>D(2,0)</td><td>2</td><td>−1</td><td style="background:#fee2e2">Lớp −1 nằm trên đường x₁+x₂ = 2</td></tr>
+</tbody>
+</table>
+<p>Hai lớp nằm cách đều nhau trên hai đường song song — biên quyết định nằm giữa tại x₁+x₂=3. <strong>Cả 4 điểm đều là support vectors</strong> vì tất cả đều nằm sát H₁ hoặc H₂.</p>
+<div class="fbox no-top-radius" style="text-align:left;padding:.9rem 1.5rem">
+<pre style="font-family:monospace;font-size:.82rem;line-height:1.8">  X₂
+   4 │  A(1,3) ●              H₁: x₁+x₂=4 (+1 side)
+   3 │         ·  B(2,2) ●
+   2 │ · · · · · · · · · ·    ← Decision boundary: x₁+x₂=3
+   1 │  C(1,1) ○
+   0 │               D(2,0) ○ H₂: x₁+x₂=2 (−1 side)
+     └────────────────────── X₁
+       0    1    2    3    4
+● = Class +1    ○ = Class −1    (tất cả là support vectors)</pre>
+</div>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Bước 2 — Lập hệ phương trình tìm w và b</summary>
+<div class="dc">
+<p>Đặt w=(w₁,w₂). Dùng 3 support vectors A, B (trên H₁) và C (trên H₂) để lập hệ:</p>
+<div class="fbox no-top-radius">
+\[ \text{A trên } H_1:\quad w_1 \cdot 1 + w_2 \cdot 3 + b = +1 \quad\cdots(1) \]
+\[ \text{B trên } H_1:\quad w_1 \cdot 2 + w_2 \cdot 2 + b = +1 \quad\cdots(2) \]
+\[ \text{C trên } H_2:\quad w_1 \cdot 1 + w_2 \cdot 1 + b = -1 \quad\cdots(3) \]
+</div>
+<p><strong>Giải hệ 3 phương trình, 3 ẩn (w₁, w₂, b):</strong></p>
+<div class="fbox no-top-radius">
+\[ (1)-(3):\quad 2w_2 = 2 \implies \boxed{w_2 = 1} \]
+\[ (2)-(1):\quad w_1 - w_2 = 0 \implies w_1 = w_2 \implies \boxed{w_1 = 1} \]
+\[ \text{Thay vào (3): } 1 + 1 + b = -1 \implies \boxed{b = -3} \]
+</div>
+<div class="alert al-green" style="margin-top:.5rem">
+<div class="alert-title">Nghiệm: w = (1, 1), b = −3</div>
+Phương trình các siêu phẳng: H₁: x₁+x₂−3=+1 ⟹ <strong>x₁+x₂=4</strong> &nbsp;|&nbsp; H₂: x₁+x₂−3=−1 ⟹ <strong>x₁+x₂=2</strong> &nbsp;|&nbsp; Boundary: <strong>x₁+x₂=3</strong>
+</div>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-check-circle"></i> Bước 3 — Kiểm tra tất cả ràng buộc y_i(w·x_i+b) ≥ 1</summary>
+<div class="dc">
+<table class="tbl" style="font-size:.83rem">
+<thead><tr><th>Điểm</th><th>w·x+b = x₁+x₂−3</th><th>y_i</th><th>y_i(w·x+b)</th><th>Kết quả</th></tr></thead>
+<tbody>
+<tr><td>A(1,3)</td><td>1+3−3 = <strong>1</strong></td><td>+1</td><td>+1</td><td style="background:#dcfce7;font-weight:700">= 1 ✓ &nbsp;(SV, nằm trên H₁)</td></tr>
+<tr><td>B(2,2)</td><td>2+2−3 = <strong>1</strong></td><td>+1</td><td>+1</td><td style="background:#dcfce7;font-weight:700">= 1 ✓ &nbsp;(SV, nằm trên H₁)</td></tr>
+<tr><td>C(1,1)</td><td>1+1−3 = <strong>−1</strong></td><td>−1</td><td>(−1)(−1)=+1</td><td style="background:#dcfce7;font-weight:700">= 1 ✓ &nbsp;(SV, nằm trên H₂)</td></tr>
+<tr><td>D(2,0)</td><td>2+0−3 = <strong>−1</strong></td><td>−1</td><td>(−1)(−1)=+1</td><td style="background:#dcfce7;font-weight:700">= 1 ✓ &nbsp;(SV, nằm trên H₂)</td></tr>
+</tbody>
+</table>
+<p>Tất cả 4 điểm thỏa mãn ràng buộc với dấu bằng → cả 4 đều là support vectors, không có điểm "ngoài vùng margin".</p>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-ruler"></i> Bước 4 — Tính Margin và predict điểm mới</summary>
+<div class="dc">
+<div class="fbox no-top-radius">
+\[ \|\mathbf{w}\| = \|(1,1)\| = \sqrt{1^2+1^2} = \sqrt{2} \]
+\[ \textbf{Margin} = \frac{2}{\|\mathbf{w}\|} = \frac{2}{\sqrt{2}} = \sqrt{2} \approx 1.414 \]
+</div>
+<p><strong>Dự đoán điểm mới:</strong></p>
+<table class="tbl" style="font-size:.83rem">
+<thead><tr><th>Điểm mới</th><th>f(x) = x₁+x₂−3</th><th>Dấu</th><th>Predict</th></tr></thead>
+<tbody>
+<tr><td>E(3,2)</td><td>3+2−3 = <strong>2</strong></td><td>+2 &gt; 0</td><td style="background:#dcfce7">+1 &nbsp;(ngoài H₁, xa biên √2)</td></tr>
+<tr><td>F(1,−1)</td><td>1+(−1)−3 = <strong>−3</strong></td><td>−3 &lt; 0</td><td style="background:#fee2e2">−1 &nbsp;(ngoài H₂, xa biên 3/√2)</td></tr>
+<tr><td>G(2,1)</td><td>2+1−3 = <strong>0</strong></td><td>= 0</td><td style="background:#fffbeb">Nằm đúng trên Decision Boundary</td></tr>
+</tbody>
+</table>
+<div class="alert al-yellow" style="margin-top:.5rem">
+  <div class="alert-title"><i class="fas fa-lightbulb"></i> Khoảng cách từ điểm bất kỳ đến Decision Boundary</div>
+  Khoảng cách từ điểm x đến boundary = \(\frac{|f(\mathbf{x})|}{\|\mathbf{w}\|} = \frac{|w_1x_1+w_2x_2+b|}{\sqrt{w_1^2+w_2^2}}\). Ví dụ: khoảng cách từ E(3,2) đến boundary = \(\frac{|2|}{\sqrt{2}} = \sqrt{2}\) — bằng đúng 1 margin. E nằm trên H₁.
+</div>
+</div>
+</details>
+
+<div class="alert al-purple">
+  <div class="alert-title"><i class="fas fa-bookmark"></i> Công thức tổng kết — Quy trình thi</div>
+  <div class="step"><div class="step-n">1</div><div class="step-c"><strong>Identify SVs:</strong> Điểm gần boundary nhất từ mỗi lớp (thường nhận ra qua quan sát hình học hoặc khoảng cách giữa các cặp điểm khác lớp).</div></div>
+  <div class="step"><div class="step-n">2</div><div class="step-c"><strong>Lập hệ:</strong> Mỗi SV cho 1 phương trình: \(y_i(\mathbf{w}\cdot\mathbf{x}_i+b)=1\). Cần ít nhất D+1 phương trình cho D chiều.</div></div>
+  <div class="step"><div class="step-n">3</div><div class="step-c"><strong>Giải w, b:</strong> Trừ các phương trình để khử b, tìm từng thành phần w, cuối cùng tính b.</div></div>
+  <div class="step"><div class="step-n">4</div><div class="step-c"><strong>Margin = 2/||w||.</strong> Kiểm tra tất cả điểm: \(y_i(\mathbf{w}\cdot\mathbf{x}_i+b)\geq 1\).</div></div>
+  <div class="step"><div class="step-n">5</div><div class="step-c"><strong>Predict:</strong> \(\hat{y}=\text{sign}(\mathbf{w}\cdot\mathbf{x}+b)\). Khoảng cách đến boundary = \(|f(\mathbf{x})|/\|\mathbf{w}\|\).</div></div>
+</div>
+
+</section>
+
+
+</main>
+
+<a href="#" id="back-top" title="Về đầu trang"><i class="fas fa-arrow-up"></i></a>
+
+<script>
+mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+</script>
+</body>
+</html>

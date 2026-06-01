@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GK5009 – Chương 6: Lý thuyết Đường dẫn–Mục tiêu (Path-Goal Theory)</title>
+  <style>
+    :root {
+      --primary: #1a3c6e;
+      --secondary: #2e6da4;
+      --accent: #e8a020;
+      --light: #f4f7fb;
+      --text: #1c1c1c;
+      --muted: #5a6a7a;
+      --border: #d0daea;
+      --green: #1a6e3c;
+      --red: #8b1a1a;
+      --dir: #c0392b;
+      --sup: #27ae60;
+      --par: #2980b9;
+      --ach: #8e44ad;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 16px; line-height: 1.8;
+      color: var(--text); background: #fff;
+      max-width: 1100px; margin: 0 auto; padding: 40px 30px;
+    }
+    h1 { font-size: 2.2rem; color: var(--primary); border-bottom: 4px solid var(--accent); padding-bottom: 12px; margin-bottom: 8px; }
+    h2 { font-size: 1.6rem; color: var(--primary); margin-top: 48px; margin-bottom: 16px; border-left: 6px solid var(--accent); padding-left: 14px; }
+    h3 { font-size: 1.25rem; color: var(--secondary); margin-top: 32px; margin-bottom: 12px; }
+    h4 { font-size: 1.05rem; color: var(--primary); margin-top: 20px; margin-bottom: 8px; font-style: italic; }
+    p { margin-bottom: 14px; }
+    ul, ol { margin: 10px 0 14px 28px; } li { margin-bottom: 7px; }
+    .term { font-weight: bold; color: var(--primary); }
+    .definition { background: var(--light); border-left: 4px solid var(--secondary); padding: 12px 16px; margin: 14px 0; border-radius: 4px; }
+    .callout { background: #eaf4ff; border: 1px solid var(--secondary); padding: 14px 18px; margin: 18px 0; border-radius: 6px; }
+    .callout.warning { background: #fff4e0; border-color: var(--accent); }
+    .callout.important { background: #fdecea; border-color: var(--red); }
+    .callout.success { background: #e8f5ee; border-color: var(--green); }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95rem; }
+    th { background: var(--primary); color: #fff; padding: 10px 14px; text-align: left; }
+    td { border: 1px solid var(--border); padding: 9px 14px; vertical-align: top; }
+    tr:nth-child(even) td { background: var(--light); }
+    .section-label { display: inline-block; background: var(--primary); color: #fff; font-size: 0.78rem; font-weight: bold; letter-spacing: 1px; padding: 3px 10px; border-radius: 3px; margin-bottom: 6px; text-transform: uppercase; }
+    .toc { background: var(--light); border: 1px solid var(--border); padding: 18px 24px; margin: 24px 0 40px; border-radius: 6px; }
+    .toc h3 { color: var(--primary); margin-top: 0; margin-bottom: 10px; }
+    .toc a { color: var(--secondary); text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+    .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 30px; }
+    .highlight { background: #fffbcc; padding: 2px 4px; border-radius: 2px; }
+    hr { border: none; border-top: 2px solid var(--border); margin: 36px 0; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.82rem; font-weight: bold; }
+    .badge-red { background: #fde4e4; color: var(--red); }
+    .badge-green { background: #d4f0e0; color: var(--green); }
+    .badge-blue { background: #daeeff; color: var(--primary); }
+    .badge-purple { background: #f0e4ff; color: var(--ach); }
+    /* Leader behavior cards */
+    .lb-card { border-radius: 8px; padding: 16px 20px; margin: 14px 0; border-left: 6px solid; }
+    .lb-dir { border-left-color: var(--dir); background: #fef5f5; }
+    .lb-sup { border-left-color: var(--sup); background: #f0faf4; }
+    .lb-par { border-left-color: var(--par); background: #eef5ff; }
+    .lb-ach { border-left-color: var(--ach); background: #f7eeff; }
+    .lb-card h4 { font-style: normal; margin-top: 0; margin-bottom: 8px; }
+    /* Expectancy theory boxes */
+    .exp-chain { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 20px 0; }
+    .exp-box { background: var(--light); border: 2px solid var(--secondary); border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 120px; }
+    .exp-box strong { color: var(--primary); display: block; margin-bottom: 4px; }
+    .exp-arrow { font-size: 1.5rem; color: var(--accent); font-weight: bold; }
+    .exp-label { font-size: 0.8rem; color: var(--muted); text-align: center; }
+  </style>
+</head>
+<body>
+
+<div class="section-label">GK5009 – Quản lý và Lãnh đạo | HK252</div>
+<h1>Chương 6: Lý thuyết Đường dẫn–Mục tiêu<br><small style="font-size:1rem;color:var(--muted);">Path-Goal Theory of Leadership</small></h1>
+<p class="meta">Nguồn: Northouse, P. G. (2021). <em>Leadership: Theory and Practice</em> (7th ed.). SAGE Publications. — Chapter 6 | Evans (1970); House (1971); House & Mitchell (1974); House (1996)</p>
+
+<div class="toc">
+  <h3>Mục lục</h3>
+  <ol>
+    <li><a href="#s1">Tổng quan & Triết lý cốt lõi</a></li>
+    <li><a href="#s2">Nền tảng lý thuyết: Expectancy Theory</a></li>
+    <li><a href="#s3">Bốn phong cách hành vi lãnh đạo</a></li>
+    <li><a href="#s4">Các yếu tố tình huống (Moderators)</a></li>
+    <li><a href="#s5">Mô hình tổng thể & Các mệnh đề (Propositions)</a></li>
+    <li><a href="#s6">Ví dụ thực tiễn</a></li>
+    <li><a href="#s7">Lưu ý học tập & Bẫy nhận thức phổ biến</a></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s1">1. Tổng quan & Triết lý cốt lõi</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 1 – Overview</div>
+
+<p>Path-Goal Theory (Lý thuyết Đường dẫn–Mục tiêu) là một trong những lý thuyết lãnh đạo toàn diện và phức tạp nhất, được phát triển bởi <strong>Martin Evans (1970)</strong> và sau đó mở rộng đáng kể bởi <strong>Robert House (1971)</strong> và <strong>House & Mitchell (1974)</strong>. House tiếp tục cập nhật với phiên bản sửa đổi năm 1996.</p>
+
+<div class="callout">
+  <strong>Triết lý cốt lõi — "Clearing the Path":</strong><br>
+  Nhiệm vụ của người lãnh đạo là <em>dọn dẹp con đường</em> (clear the path) để người theo có thể đạt được mục tiêu của họ — bằng cách:
+  <ol>
+    <li>Xác định mục tiêu cho người theo</li>
+    <li>Làm rõ con đường dẫn đến mục tiêu đó</li>
+    <li>Loại bỏ các rào cản trên con đường đó</li>
+    <li>Cung cấp phần thưởng khi người theo đạt mục tiêu</li>
+  </ol>
+  Nói cách khác: lãnh đạo <strong>phục vụ người theo</strong> — giúp người theo đạt mục tiêu của họ, không phải bắt người theo đạt mục tiêu của lãnh đạo.
+</div>
+
+<p>Path-Goal Theory là lý thuyết <strong>dựa trên động lực (motivation-based)</strong>. Nó lập luận rằng lãnh đạo hiệu quả hoạt động bằng cách tác động vào <em>động lực</em> của người theo — cụ thể là ảnh hưởng đến niềm tin của người theo về kết quả của nỗ lực của họ (Expectancy Theory của Vroom).</p>
+
+<h3>1.1 Lịch sử phát triển</h3>
+
+<div class="definition">
+  <strong>Evans (1970):</strong> Bài báo gốc — đề xuất rằng lãnh đạo ảnh hưởng đến mối quan hệ mà người theo nhận thức giữa hành vi và kết quả (instrumentality perceptions).
+</div>
+<div class="definition">
+  <strong>House (1971):</strong> Mở rộng mô hình — xác định bốn phong cách lãnh đạo và bốn loại yếu tố tình huống ảnh hưởng đến hiệu quả lãnh đạo. Đây là phiên bản kinh điển được giảng dạy phổ biến nhất.
+</div>
+<div class="definition">
+  <strong>House & Mitchell (1974):</strong> Bài báo trong <em>Journal of Contemporary Business</em> — trình bày mô hình đầy đủ nhất và đặt ra các mệnh đề (propositions) cụ thể.
+</div>
+<div class="definition">
+  <strong>House (1996):</strong> Phiên bản sửa đổi — mở rộng lên 8 loại phong cách lãnh đạo và phức tạp hóa mô hình tình huống. Tuy nhiên, Northouse (2021) chủ yếu trình bày phiên bản 1971/1974 với 4 phong cách.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s2">2. Nền tảng lý thuyết: Expectancy Theory (Vroom, 1964)</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 2 – Theoretical Foundation</div>
+
+<p>Path-Goal Theory được xây dựng trên nền tảng của <strong>Expectancy Theory</strong> do Victor Vroom (1964) phát triển trong cuốn <em>Work and Motivation</em>. Để hiểu Path-Goal Theory, cần hiểu rõ Expectancy Theory trước.</p>
+
+<h3>2.1 Ba thành phần của Expectancy Theory</h3>
+
+<div class="exp-chain">
+  <div class="exp-box">
+    <strong>NỖ LỰC</strong>
+    <div style="font-size:0.85rem;">(Effort)</div>
+  </div>
+  <div>
+    <div class="exp-arrow">→</div>
+    <div class="exp-label"><strong>EXPECTANCY</strong><br>(Kỳ vọng)</div>
+  </div>
+  <div class="exp-box">
+    <strong>HIỆU SUẤT</strong>
+    <div style="font-size:0.85rem;">(Performance)</div>
+  </div>
+  <div>
+    <div class="exp-arrow">→</div>
+    <div class="exp-label"><strong>INSTRUMENTALITY</strong><br>(Công cụ tính)</div>
+  </div>
+  <div class="exp-box">
+    <strong>PHẦN THƯỞNG</strong>
+    <div style="font-size:0.85rem;">(Reward)</div>
+  </div>
+  <div>
+    <div class="exp-arrow">→</div>
+    <div class="exp-label"><strong>VALENCE</strong><br>(Giá trị)</div>
+  </div>
+  <div class="exp-box">
+    <strong>MỤC TIÊU</strong>
+    <div style="font-size:0.85rem;">Cá nhân</div>
+  </div>
+</div>
+
+<div class="definition">
+  <strong>1. Expectancy (Kỳ vọng) — Effort → Performance:</strong><br>
+  Niềm tin của người theo rằng <em>nếu họ nỗ lực thì họ sẽ đạt được hiệu suất mong muốn</em>. Câu hỏi: "Nếu tôi cố gắng hết sức, tôi có làm được không?"<br><br>
+  <strong>Ví dụ:</strong> Nhân viên tin rằng nếu họ làm thêm 2 giờ mỗi ngày và học thêm kỹ năng X, họ sẽ hoàn thành dự án thành công → Expectancy cao. Nếu họ nghĩ "dù cố cũng không làm được" → Expectancy thấp → không có động lực cố gắng.
+</div>
+
+<div class="definition">
+  <strong>2. Instrumentality (Công cụ tính) — Performance → Reward:</strong><br>
+  Niềm tin rằng <em>nếu họ đạt được hiệu suất, họ sẽ nhận được phần thưởng tương xứng</em>. Câu hỏi: "Nếu tôi làm tốt, tôi có thực sự được thưởng không?"<br><br>
+  <strong>Ví dụ:</strong> Nhân viên tin rằng nếu đạt KPI, họ sẽ được thăng chức → Instrumentality cao. Nếu họ đã thấy đồng nghiệp đạt KPI nhưng không được thưởng vì lý do chính trị → Instrumentality thấp → dù giỏi cũng không cố gắng.
+</div>
+
+<div class="definition">
+  <strong>3. Valence (Giá trị) — Value of Reward:</strong><br>
+  Mức độ mà người theo <em>coi trọng phần thưởng</em> được hứa hẹn. Câu hỏi: "Phần thưởng đó có quan trọng với tôi không?"<br><br>
+  <strong>Ví dụ:</strong> Phần thưởng là 3 ngày nghỉ thêm — có thể Valence cao với người có gia đình trẻ, nhưng thấp với người trẻ không kết hôn coi trọng tiền mặt hơn. Valence phụ thuộc vào nhu cầu cá nhân, không phải khách quan.
+</div>
+
+<div class="callout">
+  <strong>Công thức Động lực theo Expectancy Theory:</strong><br>
+  <div style="text-align:center; font-size:1.1rem; margin:10px 0;">
+    <strong>Motivation = Expectancy × Instrumentality × Valence</strong>
+  </div>
+  Nếu bất kỳ yếu tố nào = 0 → Motivation = 0. Nghĩa là: dù Valence cao (muốn phần thưởng lắm), nếu không tin rằng mình làm được (Expectancy = 0) → Motivation = 0 và không cố gắng.
+</div>
+
+<h3>2.2 Kết nối với Path-Goal Theory</h3>
+
+<p>Path-Goal Theory sử dụng Expectancy Theory như nền tảng để giải thích <em>cơ chế</em> lãnh đạo: lãnh đạo hiệu quả tác động đến động lực của người theo bằng cách ảnh hưởng đến một hoặc nhiều trong ba thành phần:</p>
+<ul>
+  <li><strong>Tăng Expectancy:</strong> Giúp người theo tự tin hơn rằng nỗ lực của họ sẽ dẫn đến kết quả — bằng cách cung cấp đào tạo, làm rõ cách thực hiện, giảm rào cản.</li>
+  <li><strong>Tăng Instrumentality:</strong> Đảm bảo người theo tin rằng hiệu suất tốt sẽ được thưởng — bằng cách minh bạch về hệ thống khen thưởng, thực hiện đúng cam kết.</li>
+  <li><strong>Tăng Valence:</strong> Hiểu nhu cầu của từng người theo và đảm bảo phần thưởng phù hợp với nhu cầu đó — không phải thưởng "đồng đều" mà thưởng "phù hợp."</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="s3">3. Bốn Phong cách Hành vi Lãnh đạo</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 3 – Four Leader Behaviors</div>
+
+<p>Khác với SLII® (Ch5) — nơi lãnh đạo chọn <em>một</em> phong cách — Path-Goal Theory cho rằng lãnh đạo hiệu quả có thể và nên <strong>sử dụng tất cả bốn phong cách</strong>, lựa chọn phù hợp dựa trên đặc điểm của người theo và đặc điểm của nhiệm vụ/môi trường. Không nhất thiết chỉ một phong cách — có thể kết hợp.</p>
+
+<div class="lb-card lb-dir">
+  <h4 style="color:var(--dir);">Phong cách 1: DIRECTIVE Leadership (Lãnh đạo Chỉ đạo)</h4>
+  <p><strong>Định nghĩa:</strong> Lãnh đạo cho người theo biết những gì được kỳ vọng ở họ và cung cấp hướng dẫn cụ thể về cách thực hiện nhiệm vụ. Bao gồm: lập lịch công việc, duy trì tiêu chuẩn hiệu suất, và làm rõ vai trò của người theo trong nhóm.</p>
+  <p><strong>Hành vi cụ thể:</strong></p>
+  <ul>
+    <li>Nói rõ ràng những gì được kỳ vọng</li>
+    <li>Cung cấp hướng dẫn chi tiết về phương pháp và quy trình</li>
+    <li>Lên lịch công việc cụ thể và đặt deadline</li>
+    <li>Duy trì tiêu chuẩn hiệu suất rõ ràng</li>
+    <li>Thông báo về các quy tắc và quy định cần tuân theo</li>
+  </ul>
+  <p><strong>Cơ chế tác động lên động lực:</strong> Directive leadership tăng <em>Expectancy</em> — khi người theo biết rõ phải làm gì và làm thế nào, họ có nhiều khả năng tin rằng nỗ lực của mình sẽ dẫn đến kết quả tốt. Sự mơ hồ về nhiệm vụ làm giảm Expectancy; sự rõ ràng tăng nó.</p>
+  <p><strong>Hiệu quả nhất khi:</strong> Nhiệm vụ mơ hồ hoặc phức tạp; người theo thiếu kinh nghiệm; không có quy trình rõ ràng sẵn có; môi trường làm việc thiếu cấu trúc.</p>
+  <p><strong>Kém hiệu quả khi:</strong> Nhiệm vụ đã rõ ràng và có cấu trúc; người theo đã có kinh nghiệm và hiểu rõ công việc — trong trường hợp này, Directive behavior trở nên thừa và có thể gây bực bội hoặc cảm giác bị kiểm soát thái quá.</p>
+</div>
+
+<div class="lb-card lb-sup">
+  <h4 style="color:var(--sup);">Phong cách 2: SUPPORTIVE Leadership (Lãnh đạo Hỗ trợ)</h4>
+  <p><strong>Định nghĩa:</strong> Lãnh đạo thân thiện và dễ gần, quan tâm đến sức khỏe và nhu cầu của người theo, đối xử bình đẳng, và tạo ra môi trường làm việc dễ chịu.</p>
+  <p><strong>Hành vi cụ thể:</strong></p>
+  <ul>
+    <li>Thân thiện, dễ gần, và sẵn sàng lắng nghe</li>
+    <li>Quan tâm đến sức khỏe tinh thần và thể chất của người theo</li>
+    <li>Tạo ra bầu không khí làm việc dễ chịu và ít căng thẳng</li>
+    <li>Đối xử với tất cả mọi người bình đẳng và tôn trọng</li>
+    <li>Làm những điều nhỏ để người theo cảm thấy được coi trọng</li>
+  </ul>
+  <p><strong>Cơ chế tác động lên động lực:</strong> Supportive leadership tăng <em>Valence</em> của các phần thưởng nội tại (intrinsic rewards) — người theo coi trọng môi trường làm việc tốt và mối quan hệ tích cực. Khi công việc nhàm chán hoặc căng thẳng, sự hỗ trợ của lãnh đạo làm công việc trở nên chịu đựng được hơn và tăng Valence của kết quả công việc.</p>
+  <p><strong>Hiệu quả nhất khi:</strong> Nhiệm vụ lặp đi lặp lại, nhàm chán, hoặc gây căng thẳng cao; người theo thiếu sự tự tin; quan hệ giữa người theo với nhau hoặc với lãnh đạo căng thẳng.</p>
+  <p><strong>Kém hiệu quả khi:</strong> Người theo đã có sự hài lòng cao với công việc và môi trường — hỗ trợ thêm không tạo ra giá trị gia tăng.</p>
+</div>
+
+<div class="lb-card lb-par">
+  <h4 style="color:var(--par);">Phong cách 3: PARTICIPATIVE Leadership (Lãnh đạo Tham dự)</h4>
+  <p><strong>Định nghĩa:</strong> Lãnh đạo tham khảo ý kiến của người theo và cân nhắc đề xuất của họ trước khi đưa ra quyết định. Lãnh đạo chia sẻ thông tin và hỏi ý kiến người theo về cách tiến hành công việc.</p>
+  <p><strong>Hành vi cụ thể:</strong></p>
+  <ul>
+    <li>Tổ chức các buổi họp để lắng nghe ý kiến trước khi quyết định</li>
+    <li>Hỏi người theo họ nghĩ gì về cách giải quyết vấn đề</li>
+    <li>Chia sẻ thông tin về kế hoạch và chiến lược của tổ chức</li>
+    <li>Thực sự xem xét và đôi khi thực hiện đề xuất của người theo</li>
+    <li>Giải thích lý do đằng sau các quyết định quan trọng</li>
+  </ul>
+  <p><strong>Cơ chế tác động lên động lực:</strong> Participative leadership tăng cả <em>Expectancy</em> lẫn <em>Valence</em>: (1) Khi người theo tham gia xây dựng kế hoạch, họ hiểu rõ hơn phải làm gì và tin rằng mình làm được (Expectancy tăng). (2) Khi họ có "quyền sở hữu" với quyết định, mục tiêu đó trở nên có giá trị hơn với họ (Valence tăng). Ngoài ra, sự tham gia thỏa mãn nhu cầu tự quyết định (autonomy need).</p>
+  <p><strong>Hiệu quả nhất khi:</strong> Nhiệm vụ không có cấu trúc rõ ràng và người theo có kiến thức/kinh nghiệm đóng góp; người theo có internal locus of control (tin vào khả năng kiểm soát kết quả của mình); người theo có nhu cầu tự chủ cao.</p>
+  <p><strong>Kém hiệu quả khi:</strong> Người theo có external locus of control (tin rằng kết quả phụ thuộc vào may mắn hay người khác) — họ không muốn trách nhiệm, participative leadership có thể gây lo lắng. Hoặc khi cần quyết định nhanh trong khủng hoảng.</p>
+</div>
+
+<div class="lb-card lb-ach">
+  <h4 style="color:var(--ach);">Phong cách 4: ACHIEVEMENT-ORIENTED Leadership (Lãnh đạo Định hướng Thành tích)</h4>
+  <p><strong>Định nghĩa:</strong> Lãnh đạo đặt ra những mục tiêu thách thức, kỳ vọng hiệu suất cao nhất từ người theo, và thể hiện sự tự tin rằng người theo có thể đạt được các tiêu chuẩn xuất sắc.</p>
+  <p><strong>Hành vi cụ thể:</strong></p>
+  <ul>
+    <li>Đặt mục tiêu tham vọng và thách thức (vừa đủ khó, không quá sức)</li>
+    <li>Truyền đạt sự tin tưởng vào khả năng của người theo để đạt mục tiêu</li>
+    <li>Nhấn mạnh sự xuất sắc và cải tiến liên tục</li>
+    <li>Tìm kiếm liên tục cải thiện trong hiệu suất</li>
+    <li>Đặt tiêu chuẩn cao cho cả bản thân lẫn người theo</li>
+  </ul>
+  <p><strong>Cơ chế tác động lên động lực:</strong> Achievement-Oriented leadership tăng <em>Expectancy</em> theo cách gián tiếp — khi lãnh đạo thể hiện sự tin tưởng vào người theo ("Tôi biết bạn có thể làm được điều này"), điều đó làm người theo tin vào bản thân hơn. Đây là hiệu ứng Pygmalion (self-fulfilling prophecy): kỳ vọng cao của lãnh đạo → người theo nỗ lực hơn → đạt kết quả tốt hơn.</p>
+  <p><strong>Hiệu quả nhất khi:</strong> Nhiệm vụ phức tạp, không rõ ràng; người theo muốn được thách thức và phát triển; người theo có năng lực nhưng đang hoạt động dưới mức tiềm năng; môi trường cạnh tranh đòi hỏi hiệu suất cao.</p>
+  <p><strong>Kém hiệu quả khi:</strong> Nhiệm vụ đơn giản và lặp lại — đặt mục tiêu cao sẽ tạo áp lực không cần thiết. Hoặc khi người theo đã đang làm việc ở mức tối đa và cần nghỉ ngơi hoặc hỗ trợ.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s4">4. Các yếu tố tình huống (Moderators/Contingency Factors)</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 4 – Situational Moderators</div>
+
+<p>Path-Goal Theory là lý thuyết <em>tình huống (contingency theory)</em> — phong cách lãnh đạo hiệu quả phụ thuộc vào các đặc điểm của tình huống. House (1971) xác định hai loại yếu tố tình huống chính:</p>
+
+<h3>4.1 Đặc điểm của Người theo (Follower Characteristics)</h3>
+
+<p>Đây là những đặc điểm cá nhân của người theo ảnh hưởng đến loại phong cách lãnh đạo nào sẽ hiệu quả nhất với họ:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Đặc điểm</th>
+      <th>Mô tả</th>
+      <th>Hàm ý cho phong cách lãnh đạo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Locus of Control<br>(Điểm kiểm soát)</strong></td>
+      <td>
+        <strong>Internal:</strong> Tin rằng kết quả phụ thuộc vào nỗ lực và hành động của bản thân<br>
+        <strong>External:</strong> Tin rằng kết quả phụ thuộc vào yếu tố bên ngoài (may mắn, người khác)
+      </td>
+      <td>Internal LOC: phản ứng tốt với <span class="badge badge-blue">Participative</span> — muốn tham gia quyết định<br>External LOC: phản ứng tốt với <span class="badge badge-red">Directive</span> — muốn được hướng dẫn rõ ràng</td>
+    </tr>
+    <tr>
+      <td><strong>Need for Affiliation<br>(Nhu cầu Kết nối)</strong></td>
+      <td>Mức độ người theo muốn có mối quan hệ tốt, được yêu thích, và thuộc về một nhóm</td>
+      <td>Người có nhu cầu kết nối cao phản ứng tốt hơn với <span class="badge badge-green">Supportive</span> leadership</td>
+    </tr>
+    <tr>
+      <td><strong>Preferences for Structure<br>(Ưa thích Cấu trúc)</strong></td>
+      <td>Mức độ người theo thích sự rõ ràng, quy tắc, và hướng dẫn cụ thể (vs. thích tự do và linh hoạt)</td>
+      <td>Ưa cấu trúc cao: phản ứng tốt với <span class="badge badge-red">Directive</span><br>Ưa tự do: phản ứng tốt với <span class="badge badge-blue">Participative</span></td>
+    </tr>
+    <tr>
+      <td><strong>Authoritarianism<br>(Tính Uy quyền)</strong></td>
+      <td>Mức độ người theo tin vào và chấp nhận quyền lực, thứ bậc, và sự phục tùng</td>
+      <td>Authoritarianism cao: phản ứng tốt với <span class="badge badge-red">Directive</span><br>Authoritarianism thấp: phản ứng tốt với <span class="badge badge-blue">Participative</span></td>
+    </tr>
+    <tr>
+      <td><strong>Self-Perceived Ability<br>(Tự đánh giá Năng lực)</strong></td>
+      <td>Cách người theo đánh giá năng lực của bản thân đối với nhiệm vụ cụ thể</td>
+      <td>Tự đánh giá thấp: phản ứng tốt với <span class="badge badge-red">Directive</span> và <span class="badge badge-green">Supportive</span><br>Tự đánh giá cao: Directive có thể gây khó chịu; <span class="badge badge-purple">Achievement-Oriented</span> phù hợp hơn</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>4.2 Đặc điểm của Nhiệm vụ và Môi trường (Task Characteristics)</h3>
+
+<p>Đây là những yếu tố bên ngoài người theo — đặc điểm của công việc, cơ cấu tổ chức, và nhóm làm việc:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Yếu tố</th>
+      <th>Mô tả</th>
+      <th>Hàm ý cho phong cách lãnh đạo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Task Design<br>(Thiết kế Nhiệm vụ)</strong></td>
+      <td>Mức độ cấu trúc, độ phức tạp, và độ mơ hồ của nhiệm vụ</td>
+      <td>Nhiệm vụ mơ hồ/phức tạp: cần <span class="badge badge-red">Directive</span><br>Nhiệm vụ lặp lại/nhàm: cần <span class="badge badge-green">Supportive</span><br>Nhiệm vụ không cấu trúc với người có kiến thức: <span class="badge badge-blue">Participative</span> hay <span class="badge badge-purple">Achievement</span></td>
+    </tr>
+    <tr>
+      <td><strong>Formal Authority System<br>(Hệ thống Quyền lực Chính thức)</strong></td>
+      <td>Mức độ mà tổ chức có quy trình, chính sách, và quyền lực chính thức rõ ràng</td>
+      <td>Quyền lực tổ chức mạnh và rõ: <span class="badge badge-red">Directive</span> ít cần thiết hơn (quy tắc đã thay thế)<br>Quyền lực yếu và mơ hồ: lãnh đạo cần <span class="badge badge-red">Directive</span> nhiều hơn để điền khoảng trống</td>
+    </tr>
+    <tr>
+      <td><strong>Primary Work Group<br>(Nhóm Làm việc Chính)</strong></td>
+      <td>Đặc điểm của nhóm đồng nghiệp — chuẩn mực nhóm, sự gắn kết, và mức hỗ trợ lẫn nhau</td>
+      <td>Nhóm gắn kết cao và hỗ trợ nhau: <span class="badge badge-green">Supportive</span> từ lãnh đạo ít cần hơn<br>Nhóm xung đột hoặc không gắn kết: cần <span class="badge badge-green">Supportive</span> nhiều hơn từ lãnh đạo</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>Nguyên tắc "Substitutes for Leadership" liên quan:</strong><br>
+  Một nguyên tắc ngầm quan trọng trong Path-Goal Theory: khi đặc điểm của tình huống <em>đã cung cấp</em> những gì người theo cần, lãnh đạo không cần (và không nên) cung cấp thêm. Ví dụ: nếu nhiệm vụ đã có cấu trúc rõ ràng, lãnh đạo không cần Directive behavior thêm — điều đó chỉ gây thừa và khó chịu. Lãnh đạo nên tập trung vào những gì <em>còn thiếu</em> trong tình huống.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s5">5. Mô hình tổng thể & Các mệnh đề (Propositions)</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 5 – Full Model & Propositions</div>
+
+<h3>5.1 Mô hình cấu trúc Path-Goal Theory</h3>
+
+<div class="callout">
+  <pre style="font-family: monospace; font-size: 0.87rem; line-height: 1.7;">
+FOLLOWER CHARACTERISTICS           TASK CHARACTERISTICS
+(Đặc điểm Người theo)              (Đặc điểm Nhiệm vụ/MT)
+• Locus of Control                 • Task Design
+• Need for Affiliation             • Formal Authority System
+• Pref. for Structure              • Primary Work Group
+• Authoritarianism
+• Self-Perceived Ability
+          │                                   │
+          └──────────────┬────────────────────┘
+                         │ xác định lựa chọn
+                         ▼
+              ┌─────────────────────────────────┐
+              │   LEADER BEHAVIOR (Hành vi LĐ)  │
+              │  Directive | Supportive          │
+              │  Participative | Achievement     │
+              └─────────────────────────────────┘
+                         │ tác động qua
+                         ▼
+              ┌─────────────────────────────────┐
+              │   MOTIVATION (Động lực)          │
+              │  Expectancy × Instrumentality   │
+              │         × Valence               │
+              └─────────────────────────────────┘
+                         │ dẫn đến
+                         ▼
+              ┌─────────────────────────────────┐
+              │   OUTCOMES (Kết quả)             │
+              │  • Job Satisfaction              │
+              │  • Performance / Acceptance      │
+              │    of Leader                     │
+              └─────────────────────────────────┘
+  </pre>
+</div>
+
+<h3>5.2 Các Mệnh đề Quan trọng của Path-Goal Theory</h3>
+
+<p>House & Mitchell (1974) đề xuất các mệnh đề cụ thể về khi nào mỗi phong cách hiệu quả nhất:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Mệnh đề (Proposition)</th>
+      <th>Lý giải theo Expectancy Theory</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>P1</strong></td>
+      <td>Directive leadership phù hợp nhất khi nhiệm vụ mơ hồ và người theo không có cấu trúc rõ ràng</td>
+      <td>Tăng Expectancy: khi biết rõ cần làm gì, người theo tin nỗ lực sẽ dẫn đến kết quả</td>
+    </tr>
+    <tr>
+      <td><strong>P2</strong></td>
+      <td>Directive leadership không phù hợp (thậm chí gây hại) khi nhiệm vụ đã có cấu trúc rõ và người theo có năng lực cao</td>
+      <td>Khi Expectancy đã cao sẵn, Directive behavior không thêm giá trị — chỉ gây khó chịu và giảm Valence của công việc</td>
+    </tr>
+    <tr>
+      <td><strong>P3</strong></td>
+      <td>Supportive leadership phù hợp nhất khi nhiệm vụ nhàm chán, lặp lại, hoặc gây căng thẳng cao</td>
+      <td>Tăng Valence: làm môi trường làm việc dễ chịu hơn, bù đắp cho tính chất không thú vị của công việc</td>
+    </tr>
+    <tr>
+      <td><strong>P4</strong></td>
+      <td>Participative leadership phù hợp với người theo có internal locus of control và nhiệm vụ không cấu trúc</td>
+      <td>Tăng cả Expectancy (hiểu rõ hơn vì tự xây dựng kế hoạch) và Valence (mục tiêu của "mình" quan trọng hơn)</td>
+    </tr>
+    <tr>
+      <td><strong>P5</strong></td>
+      <td>Achievement-oriented leadership phù hợp nhất với nhiệm vụ phức tạp và người theo có năng lực nhưng chưa phát huy tối đa</td>
+      <td>Tăng Expectancy gián tiếp qua Pygmalion effect: kỳ vọng cao của lãnh đạo làm người theo tin vào mình hơn</td>
+    </tr>
+    <tr>
+      <td><strong>P6</strong></td>
+      <td>Lãnh đạo có thể sử dụng kết hợp nhiều phong cách với cùng người theo ở các khía cạnh khác nhau của công việc</td>
+      <td>Mỗi khía cạnh công việc có thể cần Expectancy, Instrumentality, hay Valence khác nhau được tăng cường</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>5.3 Điểm mạnh và Phê bình của Path-Goal Theory</h3>
+
+<h4>Điểm mạnh:</h4>
+<ol>
+  <li><strong>Lý thuyết động lực phong phú nhất:</strong> Path-Goal Theory là lý thuyết lãnh đạo duy nhất tích hợp đầy đủ lý thuyết động lực (Expectancy Theory) — giải thích <em>cơ chế</em> tại sao một phong cách lãnh đạo nhất định lại hiệu quả, không chỉ mô tả <em>cái gì</em> hiệu quả.</li>
+  <li><strong>Thực dụng và hữu ích cho lãnh đạo:</strong> Cung cấp khung rõ ràng cho lãnh đạo để phân tích tình huống và chọn phong cách phù hợp — hữu ích trong thực tiễn quản lý hàng ngày.</li>
+  <li><strong>Bốn phong cách linh hoạt:</strong> Khác với SLII® (một phong cách tại một thời điểm), Path-Goal Theory cho phép kết hợp nhiều phong cách — phản ánh thực tế phức tạp hơn của lãnh đạo.</li>
+  <li><strong>Nhấn mạnh phục vụ người theo:</strong> Triết lý "clearing the path" đặt lợi ích của người theo lên trên — phù hợp với xu hướng servant leadership hiện đại.</li>
+  <li><strong>Được xác nhận bởi nhiều nghiên cứu:</strong> Dù không hoàn hảo, có tương đối nhiều bằng chứng nghiên cứu hỗ trợ các mệnh đề cốt lõi của Path-Goal Theory.</li>
+</ol>
+
+<h4>Phê bình/Hạn chế:</h4>
+<ol>
+  <li><strong>Phức tạp và khó áp dụng:</strong> Với bốn phong cách, nhiều đặc điểm người theo, và nhiều đặc điểm nhiệm vụ — mô hình đầy đủ rất phức tạp để áp dụng trong thực tế mà không có hướng dẫn cụ thể.</li>
+  <li><strong>Bằng chứng hỗn hợp:</strong> Dù có nhiều nghiên cứu, kết quả không phải lúc nào cũng nhất quán — một số mệnh đề được xác nhận mạnh, một số khác yếu hoặc không xác nhận được.</li>
+  <li><strong>Giả định người theo là thụ động:</strong> Mô hình đặt lãnh đạo là chủ thể chủ động tác động lên người theo. Nhưng người theo cũng chủ động — họ lựa chọn, từ chối, hay thương lượng phong cách lãnh đạo. Đây là hạn chế chung của nhiều lý thuyết lãnh đạo.</li>
+  <li><strong>Ít chú ý đến đặc điểm cá nhân của lãnh đạo:</strong> Mô hình giả định lãnh đạo có thể tự do chọn bất kỳ phong cách nào. Nhưng đặc điểm, giá trị, và xu hướng tự nhiên của lãnh đạo cũng ảnh hưởng đến họ có thể thực hiện phong cách nào hiệu quả.</li>
+  <li><strong>Khó kiểm tra hoàn chỉnh:</strong> Mô hình có quá nhiều biến số — để kiểm tra toàn bộ cùng một lúc là thách thức phương pháp học lớn.</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="s6">6. Ví dụ thực tiễn</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 6 – Practical Examples</div>
+
+<h3>6.1 Case: Áp dụng bốn phong cách trong một nhóm</h3>
+
+<p><strong>Tình huống:</strong> Giám đốc sản phẩm (Product Director) tại công ty fintech quản lý nhóm gồm: designer, 2 developers, 1 data analyst, và 1 marketing specialist. Nhóm đang xây dựng tính năng mới hoàn toàn (greenfield project — không có precedent).</p>
+
+<p><strong>Phân tích và lựa chọn phong cách:</strong></p>
+
+<ul>
+  <li><strong>Với Designer mới (thiếu kinh nghiệm fintech, nhiệm vụ mơ hồ):</strong> → <strong>Directive</strong> — cung cấp wireframe template rõ ràng, quy tắc UX của ngành tài chính, và checklist từng bước. Tăng Expectancy cho designer.</li>
+  <li><strong>Với Senior Developer (kinh nghiệm cao, nhiệm vụ phức tạp kỹ thuật nhưng quen thuộc với loại công việc này):</strong> → <strong>Achievement-Oriented</strong> — đặt mục tiêu hiệu suất hệ thống tham vọng (99.99% uptime, latency <200ms), thể hiện tin tưởng. Tăng Expectancy gián tiếp.</li>
+  <li><strong>Với Data Analyst (công việc lặp lại, nhiều report nhàm chán):</strong> → <strong>Supportive</strong> — thường xuyên hỏi thăm, cảm ơn báo cáo cụ thể, tạo cơ hội để analyst trình bày insights với leadership team. Tăng Valence.</li>
+  <li><strong>Với Marketing Specialist (internal LOC cao, muốn tham gia xây dựng chiến lược go-to-market):</strong> → <strong>Participative</strong> — mời tham gia buổi planning, hỏi ý kiến về positioning, thực sự xem xét đề xuất. Tăng Expectancy và Valence.</li>
+</ul>
+
+<h3>6.2 Ứng dụng Expectancy Theory trong Thiết kế Hệ thống Khen thưởng</h3>
+
+<p><strong>Vấn đề thực tế:</strong> Một công ty thực hiện khảo sát và phát hiện nhân viên biết về chương trình thưởng KPI nhưng không cố gắng đạt nó. Phân tích theo Expectancy Theory:</p>
+
+<ul>
+  <li><strong>Expectancy thấp?</strong> Nhân viên không tin họ có thể đạt KPI — KPI quá cao, thiếu nguồn lực, thiếu đào tạo. → Giải pháp: Lãnh đạo cần Directive hoặc Coaching để cung cấp hướng dẫn và nguồn lực.</li>
+  <li><strong>Instrumentality thấp?</strong> Nhân viên đã thấy đồng nghiệp đạt KPI nhưng không được thưởng đúng hứa hẹn (vì lý do ngân sách hay "sếp không thích"). → Giải pháp: Tổ chức cần minh bạch hóa và thực thi hệ thống khen thưởng nhất quán.</li>
+  <li><strong>Valence thấp?</strong> Phần thưởng là tiền mặt, nhưng nhân viên trẻ muốn học hỏi và phát triển nghề nghiệp hơn là tiền. → Giải pháp: Đa dạng hóa phần thưởng — thêm cơ hội đào tạo, mentoring, hoặc exposure với lãnh đạo cấp cao.</li>
+</ul>
+
+<h3>6.3 So sánh Path-Goal Theory với SLII® (Ch5)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tiêu chí</th>
+      <th>SLII® (Ch5)</th>
+      <th>Path-Goal Theory (Ch6)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Câu hỏi trung tâm</strong></td>
+      <td>Mức độ phát triển nào cần phong cách nào?</td>
+      <td>Phong cách nào tác động đến động lực của người theo hiệu quả nhất trong tình huống này?</td>
+    </tr>
+    <tr>
+      <td><strong>Số phong cách</strong></td>
+      <td>4 (S1–S4)</td>
+      <td>4 (Directive, Supportive, Participative, Achievement)</td>
+    </tr>
+    <tr>
+      <td><strong>Cơ sở lý thuyết</strong></td>
+      <td>Pragmatic/experiential — không dựa trên lý thuyết động lực cụ thể</td>
+      <td>Expectancy Theory (Vroom, 1964) — nền tảng lý thuyết rõ ràng</td>
+    </tr>
+    <tr>
+      <td><strong>Biến tình huống chính</strong></td>
+      <td>Development Level (Competence + Commitment)</td>
+      <td>Follower characteristics + Task characteristics</td>
+    </tr>
+    <tr>
+      <td><strong>Tính linh hoạt</strong></td>
+      <td>Một phong cách chính tại một thời điểm</td>
+      <td>Kết hợp nhiều phong cách được khuyến khích</td>
+    </tr>
+    <tr>
+      <td><strong>Dễ ứng dụng</strong></td>
+      <td>Cao hơn — đơn giản hơn cho thực hành</td>
+      <td>Thấp hơn — phức tạp hơn nhưng giải thích sâu hơn</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="s7">7. Lưu ý học tập & Bẫy nhận thức phổ biến</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 7 – Study Notes & Common Pitfalls</div>
+
+<div class="callout warning">
+  <strong>Bẫy 1: Nhầm Directive (Path-Goal) với Initiating Structure (Ohio State) hay S1 (SLII)</strong><br>
+  Ba khái niệm này đều liên quan đến "task-focused behavior" nhưng đến từ các lý thuyết và khung phân tích khác nhau. Initiating Structure là từ Ohio State (đo lường hành vi). S1 Directing là từ SLII® (được chọn dựa trên D-level). Directive trong Path-Goal là một trong bốn phong cách được chọn dựa trên follower + task characteristics và hoạt động qua Expectancy Theory. Trong bài thi, dùng đúng thuật ngữ cho đúng lý thuyết.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 2: Nhầm Supportive (Path-Goal) với Consideration (Ohio State)</strong><br>
+  Tương tự — Consideration (Ohio State) và Supportive behavior (Path-Goal) đều là "people-focused" nhưng bối cảnh lý thuyết khác. Path-Goal giải thích TẠI SAO Supportive behavior hiệu quả (tăng Valence) qua Expectancy Theory — Ohio State chỉ mô tả hành vi mà không giải thích cơ chế.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 3: Nhầm Expectancy với Expectation (kỳ vọng thông thường)</strong><br>
+  "Expectancy" trong Expectancy Theory là thuật ngữ kỹ thuật = niềm tin rằng nỗ lực → hiệu suất (probability belief). Không phải "expectation" (kỳ vọng về kết quả của người khác với mình). Đây là nguồn gốc của rất nhiều nhầm lẫn trong bài làm.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 4: Quên rằng Path-Goal Theory cho phép kết hợp phong cách</strong><br>
+  Khác với SLII® (chọn một phong cách), Path-Goal Theory cho rằng lãnh đạo có thể và nên sử dụng kết hợp nhiều phong cách với cùng người theo ở các khía cạnh công việc khác nhau. Đây là điểm phân biệt quan trọng khi so sánh hai lý thuyết.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 5: Nhầm tác giả</strong><br>
+  Path-Goal Theory: Evans (1970) đề xuất gốc; House (1971) và House & Mitchell (1974) phát triển đầy đủ. Expectancy Theory: Vroom (1964) — KHÔNG phải House hay Evans. Trong bài thi, khi được hỏi về nền tảng lý thuyết, hãy trích dẫn đúng Vroom (1964) cho Expectancy Theory và House (1971) cho Path-Goal Theory.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 6: Nhầm Valence với Instrumentality</strong><br>
+  Valence = giá trị của phần thưởng đối với cá nhân người theo (chủ quan). Instrumentality = niềm tin rằng hiệu suất → phần thưởng (khả năng/xác suất nhận được thưởng). Valence trả lời "Tôi có muốn phần thưởng không?"; Instrumentality trả lời "Nếu tôi làm tốt, tôi có nhận được thưởng không?"
+</div>
+
+<h3>Câu hỏi ôn tập</h3>
+<ol>
+  <li>Triết lý "clearing the path" của Path-Goal Theory có nghĩa là gì? Lãnh đạo thực hiện triết lý này như thế nào?</li>
+  <li>Giải thích ba thành phần của Expectancy Theory (Vroom, 1964). Tại sao Motivation = Expectancy × Instrumentality × Valence? Điều gì xảy ra nếu một trong ba yếu tố = 0?</li>
+  <li>Mô tả bốn phong cách lãnh đạo trong Path-Goal Theory. Mỗi phong cách tác động đến động lực qua thành phần nào của Expectancy Theory?</li>
+  <li>Giải thích vai trò của Locus of Control trong việc xác định phong cách lãnh đạo phù hợp. Người có Internal LOC cần phong cách gì? Tại sao?</li>
+  <li>So sánh Path-Goal Theory (Ch6) với SLII® (Ch5) về: số phong cách, cơ sở lý thuyết, biến tình huống chính, và tính linh hoạt trong sử dụng phong cách.</li>
+</ol>
+
+<h3>Từ khóa quan trọng</h3>
+<table>
+  <thead><tr><th>Thuật ngữ</th><th>Định nghĩa ngắn</th><th>Nguồn</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Path-Goal Theory</strong></td><td>Lý thuyết lãnh đạo dựa trên việc "dọn con đường" để người theo đạt mục tiêu qua tác động vào động lực</td><td>Evans (1970); House (1971)</td></tr>
+    <tr><td><strong>Expectancy Theory</strong></td><td>Động lực = Expectancy × Instrumentality × Valence</td><td>Vroom (1964)</td></tr>
+    <tr><td><strong>Expectancy</strong></td><td>Niềm tin rằng nỗ lực → hiệu suất (E→P probability)</td><td>Vroom</td></tr>
+    <tr><td><strong>Instrumentality</strong></td><td>Niềm tin rằng hiệu suất → phần thưởng (P→R probability)</td><td>Vroom</td></tr>
+    <tr><td><strong>Valence</strong></td><td>Giá trị/mức độ coi trọng phần thưởng đối với cá nhân</td><td>Vroom</td></tr>
+    <tr><td><strong>Directive Leadership</strong></td><td>Hướng dẫn rõ ràng về nhiệm vụ; tăng Expectancy; hiệu quả khi nhiệm vụ mơ hồ</td><td>House (1971)</td></tr>
+    <tr><td><strong>Supportive Leadership</strong></td><td>Thân thiện, quan tâm; tăng Valence; hiệu quả khi nhiệm vụ nhàm/stress cao</td><td>House (1971)</td></tr>
+    <tr><td><strong>Participative Leadership</strong></td><td>Tham khảo ý kiến; tăng Expectancy & Valence; hiệu quả với Internal LOC</td><td>House (1971)</td></tr>
+    <tr><td><strong>Achievement-Oriented Leadership</strong></td><td>Đặt mục tiêu tham vọng; tăng Expectancy gián tiếp qua Pygmalion effect</td><td>House (1971)</td></tr>
+    <tr><td><strong>Locus of Control</strong></td><td>Internal = tin vào bản thân; External = tin vào yếu tố bên ngoài — ảnh hưởng phong cách phù hợp</td><td>Rotter (1966); trong PGT</td></tr>
+    <tr><td><strong>Pygmalion Effect</strong></td><td>Kỳ vọng cao của lãnh đạo → người theo tự tin hơn → thực sự làm tốt hơn</td><td>Rosenthal & Jacobson; trong PGT</td></tr>
+    <tr><td><strong>Follower Characteristics</strong></td><td>Đặc điểm người theo (LOC, need for affiliation, v.v.) ảnh hưởng phong cách phù hợp</td><td>House & Mitchell (1974)</td></tr>
+    <tr><td><strong>Task Characteristics</strong></td><td>Đặc điểm nhiệm vụ/môi trường (task design, authority system, work group) ảnh hưởng phong cách</td><td>House & Mitchell (1974)</td></tr>
+  </tbody>
+</table>
+
+<hr/>
+<p style="text-align:center; color:var(--muted); font-size:0.85rem;">GK5009 – Quản lý và Lãnh đạo | HK252 | Tài liệu học tập tổng hợp | Nguồn: Northouse (2021), 7th ed., Chapter 6; Evans (1970); House (1971); House & Mitchell (1974); Vroom (1964)</p>
+</body>
+</html>

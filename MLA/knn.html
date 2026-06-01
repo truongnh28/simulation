@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.3 — K-Nearest Neighbors | MLA HK252</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']], processEscapes: true },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:0;left:0;width:258px;height:100vh;background:#0a1f10;overflow-y:auto;z-index:100;flex-shrink:0}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:#2d6a4f;border-radius:2px}
+.sb-title{padding:1.25rem 1rem .75rem;border-bottom:1px solid #1a3a20}
+.sb-title h1{color:#86efac;font-size:.95rem;font-weight:700;line-height:1.4}
+.sb-title p{color:#6ee7b7;font-size:.7rem;margin-top:.2rem}
+.sb-group{padding:.6rem 1rem .15rem;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#4ade80}
+.sb-link{display:flex;align-items:center;gap:.45rem;padding:.35rem 1rem;color:#bbf7d0;font-size:.8rem;text-decoration:none;border-left:3px solid transparent;transition:all .15s}
+.sb-link:hover{background:rgba(74,222,128,.1);border-left-color:#4ade80;color:#fff}
+.sb-link i{width:14px;font-size:.7rem;color:#4ade80;flex-shrink:0}
+
+/* MAIN */
+#main{margin-left:258px;min-height:100vh;padding:2rem 2.5rem;max-width:calc(100% - 258px)}
+
+/* CHAPTER HEADER */
+.ch-hdr{background:linear-gradient(135deg,#14532d,#16a34a);color:#fff;padding:1.75rem 2rem;border-radius:10px;margin-bottom:1.75rem;box-shadow:0 4px 12px rgba(20,83,45,.3)}
+.ch-hdr .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#86efac;font-weight:700}
+.ch-hdr h2{font-size:1.75rem;font-weight:800;margin:.2rem 0 .4rem}
+.ch-hdr p{color:#d1fae5;font-size:.9rem}
+.ch-hdr-blue{background:linear-gradient(135deg,#1e3a5f,#1e4d8c)}
+.ch-hdr-blue .lbl{color:#93c5fd}
+.ch-hdr-blue p{color:#bfdbfe}
+
+/* SECTION TITLES */
+.s-title{font-size:1.2rem;font-weight:700;color:#14532d;border-left:4px solid #16a34a;padding-left:.7rem;margin:1.75rem 0 .9rem}
+.ss-title{font-size:1rem;font-weight:600;color:#166534;margin:1.25rem 0 .6rem}
+
+/* ALERTS */
+.alert{border-radius:0 8px 8px 0;padding:.85rem 1.1rem;margin:.85rem 0;font-size:.875rem}
+.alert-title{font-weight:700;margin-bottom:.3rem;font-size:.85rem}
+.al-blue{background:#eff6ff;border-left:4px solid #3b82f6}
+.al-blue .alert-title{color:#1d4ed8}
+.al-green{background:#f0fdf4;border-left:4px solid #22c55e}
+.al-green .alert-title{color:#15803d}
+.al-yellow{background:#fffbeb;border-left:4px solid #f59e0b}
+.al-yellow .alert-title{color:#b45309}
+.al-red{background:#fef2f2;border-left:4px solid #ef4444}
+.al-red .alert-title{color:#b91c1c}
+.al-purple{background:#faf5ff;border-left:4px solid #9333ea}
+.al-purple .alert-title{color:#7e22ce}
+
+/* FORMULA */
+.flabel{display:inline-block;background:#16a34a;color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .65rem;border-radius:6px 6px 0 0;margin-bottom:-1px}
+.fbox{background:#f8fafc;border:1px solid #cbd5e1;border-top:3px solid #16a34a;border-radius:0 8px 8px 8px;padding:1.1rem 1.5rem;margin:.25rem 0 .85rem;overflow-x:auto;text-align:center}
+.fbox.no-top-radius{border-radius:8px}
+
+/* DETAILS */
+details{border:1px solid #e2e8f0;border-radius:8px;margin:.65rem 0;overflow:hidden}
+details>summary{padding:.65rem 1.1rem;cursor:pointer;font-weight:600;font-size:.875rem;background:#f1f5f9;list-style:none;display:flex;align-items:center;gap:.45rem;user-select:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:'▶';font-size:.65rem;color:#64748b;transition:transform .2s;margin-right:.1rem}
+details[open]>summary::before{transform:rotate(90deg)}
+details[open]>summary{background:#e2e8f0}
+.dc{padding:1.1rem}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.85rem}
+.tbl th{background:#14532d;color:#fff;padding:.5rem .85rem;text-align:left}
+.tbl td{padding:.5rem .85rem;border:1px solid #e2e8f0}
+.tbl tr:nth-child(even){background:#f0fdf4}
+
+/* STEPS */
+.step{display:flex;gap:.85rem;margin:.6rem 0}
+.step-n{background:#16a34a;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.15rem}
+.step-c{flex:1;font-size:.875rem;line-height:1.6}
+
+/* QUIZ */
+.qcard{background:#fff;border:1px solid #e2e8f0;border-radius:8px;margin:1.1rem 0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.qhdr{background:#1e3a5f;color:#fff;padding:.55rem 1.1rem;font-size:.82rem;font-weight:600}
+.qbody{padding:1.1rem}
+.qq{font-size:.875rem;line-height:1.6;margin-bottom:.7rem;font-weight:500}
+.qopt{padding:.35rem .75rem;border-radius:5px;margin:.2rem 0;font-size:.855rem;line-height:1.5}
+.qok{background:#dcfce7;color:#14532d;font-weight:700;border-left:3px solid #16a34a}
+.qwrong{color:#64748b}
+.qexp{background:#fffbeb;border-left:3px solid #f59e0b;padding:.7rem 1rem;border-radius:0 6px 6px 0;margin-top:.7rem;font-size:.84rem;line-height:1.6}
+
+/* CODE */
+.code{background:#1e293b;color:#e2e8f0;padding:.9rem 1.1rem;border-radius:8px;font-family:'Courier New',monospace;font-size:.82rem;margin:.75rem 0;overflow-x:auto;line-height:1.7}
+.kw{color:#7dd3fc}
+.cmt{color:#64748b}
+
+.divider{border:none;border-top:1px solid #e2e8f0;margin:2.25rem 0}
+#back-top{position:fixed;bottom:1.5rem;right:1.5rem;background:#14532d;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.2);font-size:.85rem}
+#back-top:hover{background:#15803d}
+
+p{font-size:.9rem;line-height:1.65;margin:.5rem 0}
+li{font-size:.875rem;line-height:1.65}
+ul,ol{padding-left:1.4rem;margin:.4rem 0}
+strong{color:#1e293b}
+
+@media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+</style>
+</head>
+
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sb-title">
+    <h1><i class="fas fa-brain"></i> Học Máy &amp; Ứng Dụng</h1>
+    <p>Ôn thi Cuối Kỳ — HK252 | CO5175</p>
+  </div>
+  <div class="sb-group">Trang chủ</div>
+  <a href="index.html" class="sb-link"><i class="fas fa-home"></i>Tổng quan các chương</a>
+  <div class="sb-group">Phân loại có giám sát</div>
+  <a href="knn.html" class="sb-link" style="background:rgba(74,222,128,.15);border-left-color:#4ade80;color:#fff"><i class="fas fa-map-marker-alt"></i>Ch.3 — K-Nearest Neighbors</a>
+  <a href="bayes.html" class="sb-link"><i class="fas fa-calculator"></i>Ch.4 — Naive Bayes</a>
+  <a href="dtree.html" class="sb-link"><i class="fas fa-tree"></i>Ch.5 — Decision Trees</a>
+  <a href="nn.html" class="sb-link"><i class="fas fa-network-wired"></i>Ch.7 — Neural Networks</a>
+  <a href="svm.html" class="sb-link"><i class="fas fa-compress-arrows-alt"></i>Ch.8 — Support Vector Machines</a>
+  <a href="ensemble.html" class="sb-link"><i class="fas fa-layer-group"></i>Ch.9 — Ensemble Methods</a>
+  <a href="deep.html" class="sb-link"><i class="fas fa-microchip"></i>Ch.12 — Deep Learning</a>
+  <div class="sb-group">Chuyên đề ôn thi</div>
+  <a href="hmm.html" class="sb-link"><i class="fas fa-random"></i>Hidden Markov Models</a>
+  <a href="kmeans.html" class="sb-link"><i class="fas fa-object-group"></i>K-Means Clustering</a>
+  <a href="logreg.html" class="sb-link"><i class="fas fa-chart-line"></i>Logistic Regression</a>
+  <div class="sb-group">Thi thử</div>
+  <a href="mock.html" class="sb-link"><i class="fas fa-file-alt"></i>Đề Thi Thử 2026</a>
+  <a href="exam2025.html" class="sb-link"><i class="fas fa-graduation-cap"></i>Đề CK Thật 2025</a>
+</nav>
+
+<main id="main">
+
+<!-- ========== CH3: KNN ========== -->
+<section id="knn">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-book-open"></i> Chương 3</div>
+  <h2>K-Nearest Neighbor Classifier (KNN)</h2>
+  <p>Phân loại dựa trên k điểm dữ liệu huấn luyện gần nhất — thuật toán học lười (lazy learning).</p>
+</div>
+
+<div class="s-title">1. Nguyên lý hoạt động</div>
+<p>KNN không xây dựng mô hình khi huấn luyện — lưu toàn bộ tập dữ liệu. Khi có điểm mới, tìm k hàng xóm gần nhất và bỏ phiếu đa số.</p>
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-info-circle"></i> Các bước thuật toán</div>
+  <div class="step"><div class="step-n">1</div><div class="step-c">Tính khoảng cách từ điểm mới \(X\) đến <em>tất cả</em> điểm trong tập huấn luyện.</div></div>
+  <div class="step"><div class="step-n">2</div><div class="step-c">Chọn k điểm có khoảng cách nhỏ nhất (k nearest neighbors).</div></div>
+  <div class="step"><div class="step-n">3</div><div class="step-c">Gán lớp cho X theo lớp chiếm đa số trong k hàng xóm đó.</div></div>
+</div>
+
+<div class="s-title">2. Công thức khoảng cách</div>
+
+<details open>
+<summary><i class="fas fa-ruler"></i> Khoảng cách Euclidean (L2-norm) — thường dùng nhất</summary>
+<div class="dc">
+<div class="flabel">Euclidean Distance</div>
+<div class="fbox">\[ d(X,Y) = \sqrt{\sum_{i=1}^{n}(x_i - y_i)^2} \]</div>
+</div>
+</details>
+
+<details>
+<summary><i class="fas fa-ruler"></i> Khoảng cách Manhattan (L1-norm)</summary>
+<div class="dc">
+<div class="fbox no-top-radius">\[ d(X,Y) = \sum_{i=1}^{n}|x_i - y_i| \]</div>
+<div class="alert al-yellow"><div class="alert-title">Quan trọng thi!</div>Khi dùng L1-norm thay L2 trong K-Means → bước cập nhật tâm cụm phải đổi từ <strong>Mean</strong> sang <strong>Median</strong>. (Câu 15)</div>
+</div>
+</details>
+
+<details>
+<summary><i class="fas fa-ruler"></i> Minkowski (tổng quát)</summary>
+<div class="dc">
+<div class="fbox no-top-radius">\[ d(X,Y) = \left(\sum_{i=1}^{n}|x_i - y_i|^p\right)^{1/p} \]</div>
+<p>p=1 → Manhattan; p=2 → Euclidean.</p>
+</div>
+</details>
+
+<div class="s-title">3. Chuẩn hóa dữ liệu (Normalization)</div>
+
+<details open>
+<summary><i class="fas fa-sliders-h"></i> Min-Max Normalization → ánh xạ về [0, 1]</summary>
+<div class="dc">
+<div class="flabel">Min-Max</div>
+<div class="fbox">\[ x'_i = \frac{x_i - \min(A)}{\max(A) - \min(A)} \]</div>
+<p>Ánh xạ về đoạn tùy ý [new_min, new_max]:</p>
+<div class="fbox no-top-radius">\[ x'_i = \frac{x_i - \min(A)}{\max(A) - \min(A)} \cdot (new\_max - new\_min) + new\_min \]</div>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-sliders-h"></i> Z-score Normalization → phân phối chuẩn (mean=0, std=1)</summary>
+<div class="dc">
+<div class="flabel">Z-score</div>
+<div class="fbox">\[ x'_i = \frac{x_i - \mu_A}{\sigma_A} \]</div>
+</div>
+</details>
+
+<div class="s-title">4. Weighted k-NN (KNN có trọng số)</div>
+<p>Thay vì bỏ phiếu đều nhau, mỗi hàng xóm được gán trọng số tỷ lệ nghịch với khoảng cách:</p>
+<div class="flabel">Trọng số</div>
+<div class="fbox">\[ w_i = \frac{1}{d(X, X_i)^2}, \quad \hat{y} = \arg\max_c \sum_{i: y_i=c} w_i \]</div>
+
+<div class="s-title">5. Prototype Selection — Giảm bộ nhớ</div>
+
+<details>
+<summary><i class="fas fa-filter"></i> MDC — Minimum Distance Classifier</summary>
+<div class="dc"><p>Thay mỗi lớp bằng 1 vector trung bình (prototype). Phân loại theo prototype gần nhất. Giảm từ N điểm xuống C điểm (C = số lớp).</p></div>
+</details>
+
+<details>
+<summary><i class="fas fa-filter"></i> CNN — Condensed Nearest Neighbor</summary>
+<div class="dc">
+<div class="step"><div class="step-n">1</div><div class="step-c">Khởi tạo Store với 1 điểm từ mỗi lớp.</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c">Với mỗi điểm x trong tập huấn luyện: dùng 1-NN trên Store phân loại x.</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c">Nếu x bị phân loại <strong>sai</strong>, thêm x vào Store.</div></div>
+<div class="step"><div class="step-n">4</div><div class="step-c">Lặp cho đến khi không có điểm nào được thêm.</div></div>
+</div>
+</details>
+
+<div class="s-title">6. Cấu trúc dữ liệu tối ưu & Hành vi K</div>
+<div class="alert al-yellow">
+  <div class="alert-title"><i class="fas fa-star"></i> Câu hỏi thi quan trọng (Câu 17 & 18)</div>
+  <ul><li><strong>KD-Tree</strong> và <strong>Ball-Tree</strong> giảm chi phí tìm kiếm từ \(\mathcal{O}(N \cdot D)\) xuống \(\mathcal{O}(\log N)\).</li>
+  <li><strong>K=1</strong>: Low Bias, High Variance → Overfit. <strong>K=N</strong>: High Bias, Low Variance → luôn dự đoán lớp đa số (Majority Class), biên quyết định biến mất.</li>
+  <li>Khi K=N: Training Error ≠ 0 (các điểm thuộc lớp thiểu số bị phân loại sai).</li></ul>
+</div>
+
+<div class="s-title">7. KD-Tree — Cấu trúc dữ liệu tối ưu hóa tìm kiếm</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-project-diagram"></i> Tại sao cần KD-Tree / Ball-Tree?</div>
+  <p>Tìm kiếm tuần tự (Brute-force): với N điểm, D chiều → mỗi query cần <strong>O(N·D)</strong> phép tính khoảng cách. Khi N=100.000, D=100 → 10 triệu phép tính/query → quá chậm trên thực tế.</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-tree"></i> KD-Tree — Binary Search Tree trên không gian D chiều</summary>
+<div class="dc">
+<div class="step"><div class="step-n">1</div><div class="step-c"><strong>Xây dựng:</strong> Tại mỗi node, chọn chiều có phương sai lớn nhất, split tại median → chia đôi không gian.</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c"><strong>Query:</strong> Đi xuống cây theo hướng gần query point nhất, sau đó backtrack để kiểm tra nhánh còn lại nếu hypersphere bán kính k-th distance giao với nhánh đó.</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c"><strong>Độ phức tạp:</strong> Trung bình \(\mathcal{O}(D \cdot \log N)\), trường hợp xấu nhất vẫn \(\mathcal{O}(N \cdot D)\) khi D lớn (curse of dimensionality).</div></div>
+<div class="alert al-yellow" style="margin-top:.6rem"><div class="alert-title">Giới hạn thực tế</div>KD-Tree hiệu quả khi \(D \ll N\) (chiều thấp, D &lt; 20). Khi D lớn hơn, Ball-Tree thường tốt hơn. Khi D rất lớn (&gt;100), Brute-force thường cạnh tranh do chi phí backtrack.</div>
+</div>
+</details>
+
+<details>
+<summary><i class="fas fa-circle"></i> Ball-Tree — Cây phân hoạch bằng hình cầu</summary>
+<div class="dc">
+<p>Thay vì chia theo siêu phẳng axis-aligned (KD-Tree), Ball-Tree bao mỗi cụm trong một hình cầu (hypersphere). Khi query, loại cả cụm nếu khoảng cách từ query đến mặt cầu đã lớn hơn khoảng cách ứng viên tốt nhất hiện tại → hiệu quả hơn KD-Tree ở không gian chiều cao.</p>
+</div>
+</details>
+
+<div class="s-title">8. Hành vi của K — Phân tích Bias-Variance đầy đủ</div>
+
+<table class="tbl">
+<thead><tr><th>Giá trị K</th><th>Biên quyết định</th><th>Training Error</th><th>Hiện tượng</th></tr></thead>
+<tbody>
+<tr><td>K = 1</td><td>Rất phức tạp, bám sát từng điểm — Voronoi cells</td><td>0% (tự predict đúng chính mình)</td><td>Overfit — Low Bias, High Variance</td></tr>
+<tr><td>K nhỏ (3–7)</td><td>Khá phức tạp nhưng bắt đầu mượt</td><td>Thấp</td><td>Cân bằng tốt</td></tr>
+<tr><td>K = √N</td><td>Mượt, tổng quát tốt (rule of thumb)</td><td>Thấp</td><td>Thường là vùng tối ưu</td></tr>
+<tr><td>K → N</td><td>Ngày càng đơn giản, mờ dần</td><td>Tăng dần</td><td>Underfit tăng dần</td></tr>
+<tr><td>K = N</td><td>Biến mất — toàn bộ không gian về 1 lớp (Majority Class)</td><td>= Tỷ lệ lớp thiểu số</td><td>Underfit cực đại — High Bias, Low Variance</td></tr>
+</tbody>
+</table>
+
+<div class="alert al-red">
+  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> K=N: Phân tích Training Error chi tiết</div>
+  <p>Khi K=N, mọi điểm đều dùng <em>toàn bộ N điểm huấn luyện</em> làm hàng xóm → bỏ phiếu đa số trên toàn bộ tập → <strong>luôn predict Majority Class cho mọi input</strong>.</p>
+  <p><strong>Ví dụ:</strong> 60 điểm Class A, 40 điểm Class B (N=100). Với K=100: mọi điểm predict Class A. Training Error = 40/100 = 40% (40 điểm Class B bị predict sai). <strong>Training Error ≠ 0</strong> trừ khi tất cả data thuộc cùng 1 lớp.</p>
+  <p><strong>Training Error tại K=N = tỷ lệ lớp thiểu số</strong> = \(1 - \max_c P(c)\).</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-chart-line"></i> Đường cong Training/Test Error theo K</summary>
+<div class="dc">
+<div class="fbox no-top-radius" style="text-align:left;padding:1rem 1.5rem">
+<pre style="font-family:monospace;font-size:.8rem;line-height:1.8">Error (%)
+    |
+High|  /‾‾‾‾‾‾‾‾‾ Test Error ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\
+    | /                                                 \
+    |/               ___________________________________/
+    |            ___/ Training Error (không giảm theo K)
+ Low|_____________________________________________________
+    +--------------------------------------------------→ K
+    1         √N                                      N
+    ^           ^                                     ^
+ Overfit    Optimal K                             Underfit
+(Train=0)  (Elbow point)                     (Train=minority%)</pre>
+</div>
+<p>Tại K=1: Training Error = 0 (mỗi điểm là nearest neighbor của chính nó). Test Error cao do variance cao. Cân bằng tốt nhất thường gần √N.</p>
+</div>
+</details>
+
+<div class="s-title">9. Ví dụ tính toán đầy đủ — KNN Classification</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-database"></i> Dữ liệu — CustomerChurnTrain (5 điểm, X1=SupportTickets, X2=ServiceUsage)</div>
+  <table class="tbl" style="font-size:.83rem">
+  <thead><tr><th>ID</th><th>X1</th><th>X2</th><th>Churn</th></tr></thead>
+  <tbody>
+  <tr><td>TR01</td><td>3</td><td>10</td><td>Yes (+)</td></tr>
+  <tr><td>TR03</td><td>5</td><td>5</td><td>Yes (+)</td></tr>
+  <tr><td>TR04</td><td>1</td><td>40</td><td>No (−)</td></tr>
+  <tr><td>TR07</td><td>0</td><td>30</td><td>No (−)</td></tr>
+  <tr><td>TR08</td><td>6</td><td>3</td><td>Yes (+)</td></tr>
+  </tbody>
+  </table>
+  <p style="margin-top:.4rem">Query: <strong>TS01 = (X1=4, X2=12)</strong>. Dự đoán với K=3.</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Bước 1: Tính khoảng cách Euclidean từ TS01 đến từng điểm</summary>
+<div class="dc">
+<div class="fbox no-top-radius">
+\[ d(\text{TS01}, \text{TR01}) = \sqrt{(4-3)^2+(12-10)^2} = \sqrt{1+4} = \sqrt{5} \approx \mathbf{2.24} \]
+\[ d(\text{TS01}, \text{TR03}) = \sqrt{(4-5)^2+(12-5)^2} = \sqrt{1+49} = \sqrt{50} \approx \mathbf{7.07} \]
+\[ d(\text{TS01}, \text{TR04}) = \sqrt{(4-1)^2+(12-40)^2} = \sqrt{9+784} = \sqrt{793} \approx \mathbf{28.16} \]
+\[ d(\text{TS01}, \text{TR07}) = \sqrt{(4-0)^2+(12-30)^2} = \sqrt{16+324} = \sqrt{340} \approx \mathbf{18.44} \]
+\[ d(\text{TS01}, \text{TR08}) = \sqrt{(4-6)^2+(12-3)^2} = \sqrt{4+81} = \sqrt{85} \approx \mathbf{9.22} \]
+</div>
+<table class="tbl" style="font-size:.83rem">
+<thead><tr><th>Điểm</th><th>Khoảng cách</th><th>Nhãn</th><th>Trong top-3?</th></tr></thead>
+<tbody>
+<tr><td>TR01</td><td>2.24</td><td>Yes</td><td style="background:#dcfce7;font-weight:700">✓ #1</td></tr>
+<tr><td>TR03</td><td>7.07</td><td>Yes</td><td style="background:#dcfce7;font-weight:700">✓ #2</td></tr>
+<tr><td>TR08</td><td>9.22</td><td>Yes</td><td style="background:#dcfce7;font-weight:700">✓ #3</td></tr>
+<tr><td>TR07</td><td>18.44</td><td>No</td><td>✗</td></tr>
+<tr><td>TR04</td><td>28.16</td><td>No</td><td>✗</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-vote-yea"></i> Bước 2: Majority Vote và Weighted Vote</summary>
+<div class="dc">
+<p><strong>Hard Voting (K=3):</strong> Top-3 = {TR01(Yes), TR03(Yes), TR08(Yes)} → 3 Yes, 0 No → Predict <strong>Yes</strong> ✓</p>
+<p><strong>Weighted Voting (nghịch đảo khoảng cách bình phương):</strong></p>
+<div class="fbox no-top-radius">
+\[ w_{TR01} = \frac{1}{2.24^2} = \frac{1}{5.02} \approx 0.199, \quad w_{TR03} = \frac{1}{50} = 0.02, \quad w_{TR08} = \frac{1}{85} = 0.012 \]
+\[ \text{Score(Yes)} = 0.199 + 0.02 + 0.012 = 0.231 \gg \text{Score(No)} = 0 \]
+</div>
+<p>→ Weighted vote cũng cho <strong>Yes</strong>. TR01 đóng góp nhiều nhất (gần nhất).</p>
+</div>
+</details>
+
+<div class="alert al-yellow">
+  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> Tại sao cần Normalization trước khi tính khoảng cách?</div>
+  <p>ServiceUsage (X2) có range 3-60, SupportTickets (X1) có range 0-6. Khoảng cách bị <em>chi phối bởi X2</em> (range lớn hơn). Ví dụ: d(TS01,TR04)=√793 ≈ 28.16 bị X2 (12-40=28) chi phối.</p>
+  <p>Sau Min-Max normalization về [0,1]: các đặc trưng đóng góp công bằng → phân loại chính xác hơn.</p>
+</div>
+</section>
+
+
+</main>
+
+<a href="#" id="back-top" title="Về đầu trang"><i class="fas fa-arrow-up"></i></a>
+
+<script>
+mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+</script>
+</body>
+</html>

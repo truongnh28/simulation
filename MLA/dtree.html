@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.5 — Decision Trees | MLA HK252</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']], processEscapes: true },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex}
+
+#sidebar{position:fixed;top:0;left:0;width:258px;height:100vh;background:#0a1f10;overflow-y:auto;z-index:100;flex-shrink:0}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:#2d6a4f;border-radius:2px}
+.sb-title{padding:1.25rem 1rem .75rem;border-bottom:1px solid #1a3a20}
+.sb-title h1{color:#86efac;font-size:.95rem;font-weight:700;line-height:1.4}
+.sb-title p{color:#6ee7b7;font-size:.7rem;margin-top:.2rem}
+.sb-group{padding:.6rem 1rem .15rem;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#4ade80}
+.sb-link{display:flex;align-items:center;gap:.45rem;padding:.35rem 1rem;color:#bbf7d0;font-size:.8rem;text-decoration:none;border-left:3px solid transparent;transition:all .15s}
+.sb-link:hover{background:rgba(74,222,128,.1);border-left-color:#4ade80;color:#fff}
+.sb-link i{width:14px;font-size:.7rem;color:#4ade80;flex-shrink:0}
+
+#main{margin-left:258px;min-height:100vh;padding:2rem 2.5rem;max-width:calc(100% - 258px)}
+
+.ch-hdr{background:linear-gradient(135deg,#14532d,#16a34a);color:#fff;padding:1.75rem 2rem;border-radius:10px;margin-bottom:1.75rem;box-shadow:0 4px 12px rgba(20,83,45,.3)}
+.ch-hdr .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#86efac;font-weight:700}
+.ch-hdr h2{font-size:1.75rem;font-weight:800;margin:.2rem 0 .4rem}
+.ch-hdr p{color:#d1fae5;font-size:.9rem}
+
+.s-title{font-size:1.2rem;font-weight:700;color:#14532d;border-left:4px solid #16a34a;padding-left:.7rem;margin:1.75rem 0 .9rem}
+.ss-title{font-size:1rem;font-weight:600;color:#166534;margin:1.25rem 0 .6rem;border-left:3px solid #86efac;padding-left:.5rem}
+.sss-title{font-size:.92rem;font-weight:600;color:#1e293b;margin:1rem 0 .5rem;text-decoration:underline;text-underline-offset:3px}
+
+.alert{border-radius:0 8px 8px 0;padding:.85rem 1.1rem;margin:.85rem 0;font-size:.875rem}
+.alert-title{font-weight:700;margin-bottom:.3rem;font-size:.85rem}
+.al-blue{background:#eff6ff;border-left:4px solid #3b82f6}.al-blue .alert-title{color:#1d4ed8}
+.al-green{background:#f0fdf4;border-left:4px solid #22c55e}.al-green .alert-title{color:#15803d}
+.al-yellow{background:#fffbeb;border-left:4px solid #f59e0b}.al-yellow .alert-title{color:#b45309}
+.al-red{background:#fef2f2;border-left:4px solid #ef4444}.al-red .alert-title{color:#b91c1c}
+.al-purple{background:#faf5ff;border-left:4px solid #9333ea}.al-purple .alert-title{color:#7e22ce}
+
+.flabel{display:inline-block;background:#16a34a;color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .65rem;border-radius:6px 6px 0 0;margin-bottom:-1px}
+.fbox{background:#f8fafc;border:1px solid #cbd5e1;border-top:3px solid #16a34a;border-radius:0 8px 8px 8px;padding:1.1rem 1.5rem;margin:.25rem 0 .85rem;overflow-x:auto;text-align:center}
+.fbox.no-top-radius{border-radius:8px}
+
+details{border:1px solid #e2e8f0;border-radius:8px;margin:.65rem 0;overflow:hidden}
+details>summary{padding:.65rem 1.1rem;cursor:pointer;font-weight:600;font-size:.875rem;background:#f1f5f9;list-style:none;display:flex;align-items:center;gap:.45rem;user-select:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:'▶';font-size:.65rem;color:#64748b;transition:transform .2s;margin-right:.1rem}
+details[open]>summary::before{transform:rotate(90deg)}
+details[open]>summary{background:#e2e8f0}
+.dc{padding:1.1rem}
+
+.tbl{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.85rem}
+.tbl th{background:#14532d;color:#fff;padding:.5rem .85rem;text-align:left}
+.tbl td{padding:.5rem .85rem;border:1px solid #e2e8f0}
+.tbl tr:nth-child(even){background:#f0fdf4}
+
+.step{display:flex;gap:.85rem;margin:.6rem 0}
+.step-n{background:#16a34a;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.15rem}
+.step-c{flex:1;font-size:.875rem;line-height:1.6}
+
+.insight{background:linear-gradient(135deg,#faf5ff,#f3e8ff);border:1px solid #d8b4fe;border-radius:8px;padding:1rem 1.25rem;margin:.75rem 0}
+.insight-title{font-weight:700;color:#7e22ce;margin-bottom:.4rem;font-size:.85rem}
+.key-eq{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #16a34a;border-radius:8px;padding:1rem 1.5rem;margin:.75rem 0;text-align:center}
+.analogy{background:#fefce8;border:1px solid #fde047;border-left:4px solid #eab308;border-radius:0 8px 8px 0;padding:.85rem 1.1rem;margin:.85rem 0;font-size:.875rem}
+.analogy-title{font-weight:700;color:#854d0e;margin-bottom:.3rem;font-size:.85rem}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0}
+@media(max-width:900px){.two-col{grid-template-columns:1fr}}
+.col-card{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:1rem}
+.col-card h4{font-weight:700;margin-bottom:.5rem;font-size:.9rem}
+
+.tag-yes{background:#dcfce7;color:#14532d;font-weight:700;padding:.1rem .4rem;border-radius:4px;font-size:.8rem}
+.tag-no{background:#fee2e2;color:#b91c1c;font-weight:700;padding:.1rem .4rem;border-radius:4px;font-size:.8rem}
+.tag-hl{background:#fef9c3;color:#92400e;font-weight:700;padding:.1rem .4rem;border-radius:4px;font-size:.8rem}
+
+.divider{border:none;border-top:1px solid #e2e8f0;margin:2.25rem 0}
+#back-top{position:fixed;bottom:1.5rem;right:1.5rem;background:#14532d;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.2);font-size:.85rem}
+#back-top:hover{background:#15803d}
+
+p{font-size:.9rem;line-height:1.65;margin:.5rem 0}
+li{font-size:.875rem;line-height:1.65}
+ul,ol{padding-left:1.4rem;margin:.4rem 0}
+strong{color:#1e293b}
+
+@media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+</style>
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sb-title">
+    <h1><i class="fas fa-brain"></i> Học Máy &amp; Ứng Dụng</h1>
+    <p>Ôn thi Cuối Kỳ — HK252 | CO5175</p>
+  </div>
+  <div class="sb-group">Trang chủ</div>
+  <a href="index.html" class="sb-link"><i class="fas fa-home"></i>Tổng quan các chương</a>
+  <div class="sb-group">Phân loại có giám sát</div>
+  <a href="knn.html" class="sb-link"><i class="fas fa-map-marker-alt"></i>Ch.3 — K-Nearest Neighbors</a>
+  <a href="bayes.html" class="sb-link"><i class="fas fa-calculator"></i>Ch.4 — Naive Bayes</a>
+  <a href="dtree.html" class="sb-link" style="background:rgba(74,222,128,.15);border-left-color:#4ade80;color:#fff"><i class="fas fa-tree"></i>Ch.5 — Decision Trees</a>
+  <a href="nn.html" class="sb-link"><i class="fas fa-network-wired"></i>Ch.7 — Neural Networks</a>
+  <a href="svm.html" class="sb-link"><i class="fas fa-compress-arrows-alt"></i>Ch.8 — Support Vector Machines</a>
+  <a href="ensemble.html" class="sb-link"><i class="fas fa-layer-group"></i>Ch.9 — Ensemble Methods</a>
+  <a href="deep.html" class="sb-link"><i class="fas fa-microchip"></i>Ch.12 — Deep Learning</a>
+  <div class="sb-group">Chuyên đề ôn thi</div>
+  <a href="hmm.html" class="sb-link"><i class="fas fa-random"></i>Hidden Markov Models</a>
+  <a href="kmeans.html" class="sb-link"><i class="fas fa-object-group"></i>K-Means Clustering</a>
+  <a href="logreg.html" class="sb-link"><i class="fas fa-chart-line"></i>Logistic Regression</a>
+  <div class="sb-group">Thi thử</div>
+  <a href="mock.html" class="sb-link"><i class="fas fa-file-alt"></i>Đề Thi Thử 2026</a>
+  <a href="exam2025.html" class="sb-link"><i class="fas fa-graduation-cap"></i>Đề CK Thật 2025</a>
+</nav>
+
+<main id="main">
+<section id="dtree">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-book-open"></i> Chương 5</div>
+  <h2>Decision Trees</h2>
+  <p>Học tập tập hợp các quy tắc if-else để phân loại — interpretable, greedy, dễ overfit.</p>
+</div>
+
+<!-- ============================================================
+     S1: CẤU TRÚC VÀ TRỰC GIÁC
+============================================================ -->
+<div class="s-title">1. Cấu trúc và Trực giác</div>
+
+<p>Decision Tree chia không gian đặc trưng thành các vùng chữ nhật (axis-parallel) bằng chuỗi quyết định nhị phân. Mỗi internal node đặt câu hỏi về một đặc trưng; mỗi leaf node cho ra nhãn lớp.</p>
+
+<div class="analogy">
+<div class="analogy-title"><i class="fas fa-question"></i> Tư duy xây cây: hỏi câu nào trước?</div>
+<p>Bạn đang chơi game 20 câu hỏi để đoán một con vật. Câu hỏi tốt là câu loại bỏ <strong>tối đa số khả năng</strong> cho dù câu trả lời là gì. "Nó có xương sống không?" tốt hơn "Nó có sọc vàng không?" vì câu đầu chia tập thành hai phần gần bằng nhau. Decision Tree làm y hệt: tìm câu hỏi (feature threshold) giảm sự <em>hỗn loạn (impurity)</em> nhiều nhất.</p>
+</div>
+
+<div class="two-col">
+<div class="col-card">
+<h4><i class="fas fa-sitemap"></i> Thành phần cây</h4>
+<ul>
+  <li><strong>Root node:</strong> điểm khởi đầu, xử lý toàn bộ dữ liệu</li>
+  <li><strong>Internal node:</strong> điều kiện phân chia \(x_j \leq \theta\)</li>
+  <li><strong>Branch:</strong> nhánh dẫn đến nút con</li>
+  <li><strong>Leaf node:</strong> dự đoán — nhãn đa số trong node đó</li>
+  <li><strong>Depth:</strong> độ sâu tối đa từ root đến leaf</li>
+</ul>
+</div>
+<div class="col-card">
+<h4><i class="fas fa-ruler-combined"></i> Axis-parallel splits</h4>
+<p>Mỗi điều kiện chỉ dùng <strong>một đặc trưng tại một thời điểm</strong>:</p>
+<ul>
+  <li>Categorical: \(X_j = \text{value}\)</li>
+  <li>Continuous: \(X_j \leq \theta\) (ngưỡng)</li>
+</ul>
+<p style="margin-top:.4rem">Kết quả: decision boundary là <strong>các đường song song với trục tọa độ</strong> — dạng bậc thang trong không gian 2D.</p>
+</div>
+</div>
+
+<!-- ============================================================
+     S2: BA ĐỘ ĐO TẠP CHẤT
+============================================================ -->
+<div class="s-title">2. Ba Độ đo Tạp chất (Impurity Measures)</div>
+
+<p>Mục tiêu mỗi lần phân chia là <strong>giảm tối đa tạp chất</strong> trong các nút con. Ba độ đo phổ biến, cùng đo "mức độ lộn xộn" nhưng bằng cách khác nhau.</p>
+
+<div class="ss-title">2.1 Entropy — Đo lường sự hỗn độn bằng lý thuyết thông tin</div>
+
+<div class="flabel">Shannon Entropy</div>
+<div class="fbox">
+\[H(N) = -\sum_{j=1}^{c} P(\omega_j)\log_2 P(\omega_j)\]
+</div>
+
+<div class="insight">
+<div class="insight-title"><i class="fas fa-lightbulb"></i> Tại sao dùng log₂ và tại sao có dấu âm?</div>
+<ul>
+<li><strong>log₂:</strong> Đơn vị là <em>bit</em> — số câu hỏi nhị phân tối thiểu cần để mã hóa một lựa chọn. Dùng log₂ cho entropy phân loại là quy ước tiêu chuẩn trong lý thuyết thông tin.</li>
+<li><strong>Dấu âm:</strong> \(\log_2 P(\omega_j) \leq 0\) (vì \(P \in [0,1]\)). Dấu âm để H ≥ 0.</li>
+<li><strong>Quy ước:</strong> \(0 \cdot \log_2 0 = 0\) (giới hạn khi \(P \to 0\)).</li>
+</ul>
+</div>
+
+<table class="tbl">
+<thead><tr><th>Tình huống (2 lớp)</th><th>P(+)</th><th>P(−)</th><th>H (bits)</th><th>Ý nghĩa</th></tr></thead>
+<tbody>
+<tr><td>Hoàn toàn thuần khiết</td><td>1.0</td><td>0.0</td><td>0</td><td>Không cần hỏi gì thêm — chắc chắn 100%</td></tr>
+<tr><td>Thiên lệch nhẹ</td><td>0.9</td><td>0.1</td><td>0.469</td><td>Ít bất định — dễ đoán</td></tr>
+<tr><td>Thiên lệch vừa</td><td>0.7</td><td>0.3</td><td>0.881</td><td>Bất định trung bình</td></tr>
+<tr><td><strong>Tối đa hỗn độn</strong></td><td>0.5</td><td>0.5</td><td><strong>1.0</strong></td><td>Hoàn toàn không biết — cần 1 bit thông tin</td></tr>
+</tbody>
+</table>
+
+<div class="analogy">
+<div class="analogy-title"><i class="fas fa-coins"></i> Trực giác đồng xu</div>
+<p>Tung đồng xu: nếu xác suất ngửa = 0.5 (entropy=1), bạn hoàn toàn không chắc kết quả — cần hỏi để biết. Nếu xác suất ngửa = 0.99 (entropy≈0.08), bạn hầu như biết kết quả rồi — không cần hỏi thêm. <strong>Entropy đo lượng thông tin còn cần để biết kết quả.</strong></p>
+</div>
+
+<div class="fbox no-top-radius" style="text-align:left;padding:.85rem 1.5rem">
+<pre style="font-family:monospace;font-size:.82rem;line-height:1.9">H (bits)
+  1.0 |        *
+      |      *   *
+  0.8 |    *       *
+      |  *           *
+  0.5 | *               *
+      |*                   *
+  0.0 +─────────────────────── P(+)
+      0   0.2  0.4  0.6  0.8  1.0
+      ^                         ^
+    Thuần                     Thuần
+    khiết                     khiết
+   (H=0)                     (H=0)
+              Max tại P=0.5 (H=1 bit)</pre>
+</div>
+
+<div class="ss-title">2.2 Gini Impurity — Dùng trong CART</div>
+
+<div class="flabel">Gini Impurity</div>
+<div class="fbox">
+\[G(N) = 1 - \sum_{j=1}^{c} P(\omega_j)^2\]
+</div>
+
+<div class="insight">
+<div class="insight-title"><i class="fas fa-lightbulb"></i> Ý nghĩa hình học của Gini</div>
+<p>Gini = xác suất phân loại sai nếu chọn nhãn <em>ngẫu nhiên</em> theo phân phối P của nút đó:</p>
+<div class="fbox no-top-radius">
+\[G(N) = \sum_{j} P(\omega_j)\!\underbrace{(1-P(\omega_j))}_{\text{P(chọn sai lớp }j\text{)}} = 1 - \sum_j P(\omega_j)^2\]
+</div>
+<p>Ví dụ: node có 6 Yes, 4 No → G = 1 − (0.6² + 0.4²) = 1 − (0.36+0.16) = 0.48. Nếu random-guess theo phân phối này, 48% bị sai.</p>
+</div>
+
+<table class="tbl">
+<thead><tr><th>Độ đo</th><th>Khoảng giá trị (2 lớp)</th><th>Max tại</th><th>Dùng trong</th><th>Tốc độ tính</th></tr></thead>
+<tbody>
+<tr><td>Entropy</td><td>[0, 1] bit</td><td>P=0.5 → 1 bit</td><td>ID3, C4.5</td><td>Chậm hơn (log)</td></tr>
+<tr><td>Gini</td><td>[0, 0.5]</td><td>P=0.5 → 0.5</td><td>CART, sklearn default</td><td>Nhanh hơn (không log)</td></tr>
+<tr><td>Misclassification</td><td>[0, 0.5]</td><td>P=0.5 → 0.5</td><td>Ít dùng</td><td>Nhanh nhất</td></tr>
+</tbody>
+</table>
+
+<div class="alert al-blue">
+<div class="alert-title"><i class="fas fa-balance-scale"></i> Entropy vs Gini — Khi nào khác nhau?</div>
+<p>Trong hầu hết thực tế, Entropy và Gini chọn cùng feature để split. Entropy <strong>phạt nặng hơn</strong> các node hỗn hợp gần 50/50 (đường cong log dốc hơn ở giữa). Gini <strong>phạt nặng hơn</strong> khi tạp chất đã thấp (đường cong bậc 2 thoải hơn ở 2 đầu). Sự khác biệt thực tế là rất nhỏ.</p>
+</div>
+
+<div class="ss-title">2.3 Misclassification Impurity</div>
+
+<div class="fbox no-top-radius">
+\[M(N) = 1 - \max_j P(\omega_j)\]
+</div>
+<p>Tỷ lệ lỗi nếu luôn dự đoán lớp đa số. Ít dùng để xây cây vì đạo hàm thưa (piecewise constant) — không dẫn hướng thuật toán tốt bằng Entropy hay Gini.</p>
+
+<!-- ============================================================
+     S3: INFORMATION GAIN
+============================================================ -->
+<div class="s-title">3. Information Gain — Công thức chọn Feature phân chia</div>
+
+<div class="flabel">Information Gain (dùng Entropy)</div>
+<div class="fbox">
+\[\text{IG}(N, A) = H(N) - \sum_{k=1}^{K} \frac{|N_k|}{|N|}\, H(N_k)\]
+</div>
+
+<div class="insight">
+<div class="insight-title"><i class="fas fa-lightbulb"></i> Giải phẫu công thức IG</div>
+<table class="tbl" style="font-size:.83rem;margin:.4rem 0">
+<thead><tr><th>Thành phần</th><th>Ý nghĩa</th></tr></thead>
+<tbody>
+<tr><td>\(H(N)\)</td><td>Entropy nút cha — mức độ hỗn độn <em>trước</em> khi phân chia</td></tr>
+<tr><td>\(N_k\)</td><td>Nút con thứ k sau khi phân chia theo feature A</td></tr>
+<tr><td>\(|N_k|/|N|\)</td><td><strong>Trọng số</strong> — nút con lớn hơn đóng góp nhiều hơn</td></tr>
+<tr><td>\(\sum_k \frac{|N_k|}{|N|}H(N_k)\)</td><td>Entropy sau phân chia — trung bình có trọng số</td></tr>
+<tr><td>\(\text{IG}\)</td><td>Lượng entropy giảm — độ "hiệu quả" của câu hỏi</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="insight">
+<div class="insight-title"><i class="fas fa-question-circle"></i> Tại sao là trung bình CÓ trọng số, không phải trung bình đơn giản?</div>
+<p>Một nút con với 100 điểm có H=0.9 đáng lo ngại hơn nhiều so với nút con 2 điểm có H=0.9. Trọng số \(|N_k|/|N|\) đảm bảo nút lớn được tính nặng hơn — phản ánh đúng thực tế: nếu 99% dữ liệu rơi vào một nút con hỗn loạn, việc phân chia đó không có giá trị.</p>
+</div>
+
+<div class="ss-title">3.1 Vấn đề: IG thiên vị feature nhiều giá trị</div>
+
+<div class="alert al-red">
+<div class="alert-title"><i class="fas fa-exclamation-triangle"></i> IG Bias — Feature càng nhiều giá trị, IG càng cao một cách giả tạo</div>
+<p>Nếu "ID khách hàng" là một feature, mỗi ID duy nhất tạo ra một lá thuần khiết → IG(ID) = H(root) = maximum! Nhưng mô hình không học được gì — không tổng quát hóa được cho dữ liệu mới.</p>
+<p><strong>Ví dụ:</strong> Feature Outlook (3 giá trị) vs Feature ID (14 giá trị duy nhất): IG(ID) &gt;&gt; IG(Outlook) nhưng Outlook thực sự hữu ích hơn.</p>
+</div>
+
+<div class="ss-title">3.2 Gain Ratio — Giải pháp của C4.5</div>
+
+<div class="two-col">
+<div class="col-card">
+<h4>Split Information</h4>
+<div class="fbox no-top-radius">
+\[\text{SplitInfo}(N, A) = -\sum_{k=1}^{K} \frac{|N_k|}{|N|}\log_2\frac{|N_k|}{|N|}\]
+</div>
+<p>Đo lường feature A "dàn trải" dữ liệu nhiều đến mức nào. Feature với nhiều nhánh đều nhau có SplitInfo cao.</p>
+</div>
+<div class="col-card">
+<h4>Gain Ratio</h4>
+<div class="fbox no-top-radius">
+\[\text{GainRatio}(N, A) = \frac{\text{IG}(N,A)}{\text{SplitInfo}(N,A)}\]
+</div>
+<p>IG chia cho SplitInfo → <strong>chuẩn hóa</strong> theo mức độ phân tán. Feature nhiều nhánh bị phạt vì SplitInfo lớn.</p>
+</div>
+</div>
+
+<table class="tbl">
+<thead><tr><th>Feature</th><th>IG</th><th>SplitInfo</th><th>GainRatio</th></tr></thead>
+<tbody>
+<tr><td>Outlook (3 giá trị)</td><td>0.246</td><td>1.577</td><td>0.156</td></tr>
+<tr><td>Humidity (2 giá trị)</td><td>0.152</td><td>1.000</td><td>0.152</td></tr>
+<tr><td>Feature "ID" (14 giá trị)</td><td>0.940 (max!)</td><td>3.807</td><td>0.247</td></tr>
+</tbody>
+</table>
+<p style="font-size:.83rem;color:#64748b">Trong thực tế C4.5 áp dụng thêm: chỉ xét features có IG ≥ average IG, sau đó chọn GainRatio cao nhất trong số đó.</p>
+
+<!-- ============================================================
+     S4: VÍ DỤ SỐ ĐẦY ĐỦ — ID3 TRÊN PLAY TENNIS
+============================================================ -->
+<div class="s-title">4. Ví dụ số đầy đủ — ID3 trên Dataset Play Tennis</div>
+
+<div class="alert al-blue">
+<div class="alert-title"><i class="fas fa-database"></i> Dataset Play Tennis — 14 records, 4 features, target: PlayTennis (Yes/No)</div>
+</div>
+
+<div style="overflow-x:auto">
+<table class="tbl" style="font-size:.82rem">
+<thead><tr><th>Day</th><th>Outlook</th><th>Temperature</th><th>Humidity</th><th>Wind</th><th>PlayTennis</th></tr></thead>
+<tbody>
+<tr><td>D1</td><td>Sunny</td><td>Hot</td><td>High</td><td>Weak</td><td><span class="tag-no">No</span></td></tr>
+<tr><td>D2</td><td>Sunny</td><td>Hot</td><td>High</td><td>Strong</td><td><span class="tag-no">No</span></td></tr>
+<tr><td>D3</td><td>Overcast</td><td>Hot</td><td>High</td><td>Weak</td><td><span class="tag-yes">Yes</span></td></tr>
+<tr><td>D4</td><td>Rain</td><td>Mild</td><td>High</td><td>Weak</td><td><span class="tag-yes">Yes</span></td></tr>
+<tr><td>D5</td><td>Rain</td><td>Cool</td><td>Normal</td><td>Weak</td><td><span class="tag-yes">Yes</span></td></tr>
+<tr><td>D6</td><td>Rain</td><td>Cool</td><td>Normal</td><td>Strong</td><td><span class="tag-no">No</span></td></tr>
+<tr><td>D7</td><td>Overcast</td><td>Cool</td><td>Normal</td><td>Strong</td><td><span class="tag-yes">Yes</span></td></tr>
+<tr><td>D8</td><td>Sunny</td><td>Mild</td><td>High</td><td>Weak</td><td><span class="tag-no">No</span></td></tr>
+<tr><td>D9</td><td>Sunny</td><td>Cool</td><td>Normal</td><td>Weak</td><td><span class="tag-yes">Yes</span></td></tr>
+<tr><td>D10</td><td>Rain</td><td>Mild</td><td>Normal</td><td>Weak</td><td><span class="tag-yes">Yes</span></td></tr>
+<tr><td>D11</td><td>Sunny</td><td>Mild</td><td>Normal</td><td>Strong</td><td><span class="tag-yes">Yes</span></td></tr>
+<tr><td>D12</td><td>Overcast</td><td>Mild</td><td>High</td><td>Strong</td><td><span class="tag-yes">Yes</span></td></tr>
+<tr><td>D13</td><td>Overcast</td><td>Hot</td><td>Normal</td><td>Weak</td><td><span class="tag-yes">Yes</span></td></tr>
+<tr><td>D14</td><td>Rain</td><td>Mild</td><td>High</td><td>Strong</td><td><span class="tag-no">No</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<p><strong>Tổng kết:</strong> 14 records. PlayTennis = <span class="tag-yes">9 Yes</span> (D3,D4,D5,D7,D9,D10,D11,D12,D13), <span class="tag-no">5 No</span> (D1,D2,D6,D8,D14).</p>
+
+<div class="ss-title">4.1 Bước 1 — Tính Entropy nút gốc H(root)</div>
+
+<div class="fbox no-top-radius">
+\[H(\text{root}) = -\frac{9}{14}\log_2\!\frac{9}{14} - \frac{5}{14}\log_2\!\frac{5}{14}\]
+\[= -0.6429\times(-0.6375) - 0.3571\times(-1.4855)\]
+\[= 0.4098 + 0.5306 = \mathbf{0.940 \text{ bits}}\]
+</div>
+
+<p>Nút gốc có entropy khá cao (0.940 ≈ 1 bit) vì phân phối lớp gần 2:1. Bây giờ tính IG của mỗi feature để chọn câu hỏi tốt nhất.</p>
+
+<div class="ss-title">4.2 Bước 2 — Tính Information Gain cho từng feature</div>
+
+<details open>
+<summary><i class="fas fa-cloud-sun"></i> IG(Outlook) — Feature 3 giá trị: Sunny / Overcast / Rain</summary>
+<div class="dc">
+<p><strong>Phân chia theo Outlook:</strong></p>
+<table class="tbl" style="font-size:.82rem">
+<thead><tr><th>Nhánh</th><th>Records</th><th>Yes</th><th>No</th><th>Tính H</th><th>H</th></tr></thead>
+<tbody>
+<tr>
+  <td>Sunny</td><td>D1,D2,D8,D9,D11 (5)</td><td>2</td><td>3</td>
+  <td>\(-\frac{2}{5}\log_2\frac{2}{5}-\frac{3}{5}\log_2\frac{3}{5}=0.4{\times}1.322+0.6{\times}0.737\)</td>
+  <td>0.971</td>
+</tr>
+<tr>
+  <td><strong>Overcast</strong></td><td>D3,D7,D12,D13 (4)</td><td>4</td><td>0</td>
+  <td>\(-1{\cdot}\log_2 1 - 0 = 0\) <strong>(thuần khiết!)</strong></td>
+  <td><strong>0</strong></td>
+</tr>
+<tr>
+  <td>Rain</td><td>D4,D5,D6,D10,D14 (5)</td><td>3</td><td>2</td>
+  <td>\(-\frac{3}{5}\log_2\frac{3}{5}-\frac{2}{5}\log_2\frac{2}{5}=0.6{\times}0.737+0.4{\times}1.322\)</td>
+  <td>0.971</td>
+</tr>
+</tbody>
+</table>
+<div class="fbox no-top-radius">
+\[\text{IG(Outlook)} = 0.940 - \left[\frac{5}{14}{\times}0.971 + \frac{4}{14}{\times}0 + \frac{5}{14}{\times}0.971\right] = 0.940 - [0.347 + 0 + 0.347] = \mathbf{0.246 \text{ bits}}\]
+</div>
+<div class="alert al-green" style="margin-top:.4rem">
+<div class="alert-title">Key insight: Overcast luôn Yes (H=0) → "tặng miễn phí" cho IG của Outlook</div>
+Nhánh Overcast có entropy = 0 (thuần khiết) và có trọng số 4/14 = 0.286. Điều này kéo weighted average entropy xuống thấp → IG cao. Feature tốt nhờ có ít nhất một nhánh thuần khiết.
+</div>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-tint"></i> IG(Humidity) — Feature 2 giá trị: High / Normal</summary>
+<div class="dc">
+<table class="tbl" style="font-size:.82rem">
+<thead><tr><th>Nhánh</th><th>Records</th><th>Yes</th><th>No</th><th>H</th></tr></thead>
+<tbody>
+<tr><td>High</td><td>D1,D2,D3,D4,D8,D12,D14 (7)</td><td>3</td><td>4</td><td>\(-\frac{3}{7}\log_2\frac{3}{7}-\frac{4}{7}\log_2\frac{4}{7}=0.524+0.461=0.985\)</td></tr>
+<tr><td>Normal</td><td>D5,D6,D7,D9,D10,D11,D13 (7)</td><td>6</td><td>1</td><td>\(-\frac{6}{7}\log_2\frac{6}{7}-\frac{1}{7}\log_2\frac{1}{7}=0.191+0.401=0.592\)</td></tr>
+</tbody>
+</table>
+<div class="fbox no-top-radius">
+\[\text{IG(Humidity)} = 0.940 - \left[\frac{7}{14}{\times}0.985 + \frac{7}{14}{\times}0.592\right] = 0.940 - [0.493 + 0.296] = \mathbf{0.152 \text{ bits}}\]
+</div>
+</div>
+</details>
+
+<details>
+<summary><i class="fas fa-wind"></i> IG(Wind) — Feature 2 giá trị: Weak / Strong</summary>
+<div class="dc">
+<table class="tbl" style="font-size:.82rem">
+<thead><tr><th>Nhánh</th><th>Records</th><th>Yes</th><th>No</th><th>H</th></tr></thead>
+<tbody>
+<tr><td>Weak</td><td>D1,D3,D4,D5,D8,D9,D10,D13 (8)</td><td>6</td><td>2</td><td>\(-\frac{6}{8}\log_2\frac{6}{8}-\frac{2}{8}\log_2\frac{2}{8}=0.311+0.500=0.811\)</td></tr>
+<tr><td>Strong</td><td>D2,D6,D7,D11,D12,D14 (6)</td><td>3</td><td>3</td><td>\(-\frac{3}{6}\log_2\frac{3}{6}-\frac{3}{6}\log_2\frac{3}{6}=1.0\) (50/50)</td></tr>
+</tbody>
+</table>
+<div class="fbox no-top-radius">
+\[\text{IG(Wind)} = 0.940 - \left[\frac{8}{14}{\times}0.811 + \frac{6}{14}{\times}1.0\right] = 0.940 - [0.463 + 0.429] = \mathbf{0.048 \text{ bits}}\]
+</div>
+</div>
+</details>
+
+<details>
+<summary><i class="fas fa-thermometer-half"></i> IG(Temperature) — Feature 3 giá trị: Hot / Mild / Cool</summary>
+<div class="dc">
+<table class="tbl" style="font-size:.82rem">
+<thead><tr><th>Nhánh</th><th>Records</th><th>Yes</th><th>No</th><th>H</th></tr></thead>
+<tbody>
+<tr><td>Hot</td><td>D1,D2,D3,D13 (4)</td><td>2</td><td>2</td><td>1.0 (50/50)</td></tr>
+<tr><td>Mild</td><td>D4,D8,D10,D11,D12,D14 (6)</td><td>4</td><td>2</td><td>\(-\frac{4}{6}\log_2\frac{4}{6}-\frac{2}{6}\log_2\frac{2}{6}=0.390+0.528=0.918\)</td></tr>
+<tr><td>Cool</td><td>D5,D6,D7,D9 (4)</td><td>3</td><td>1</td><td>\(-\frac{3}{4}\log_2\frac{3}{4}-\frac{1}{4}\log_2\frac{1}{4}=0.311+0.500=0.811\)</td></tr>
+</tbody>
+</table>
+<div class="fbox no-top-radius">
+\[\text{IG(Temp)} = 0.940 - \left[\frac{4}{14}{\times}1.0 + \frac{6}{14}{\times}0.918 + \frac{4}{14}{\times}0.811\right] = 0.940 - [0.286+0.394+0.232] = \mathbf{0.029 \text{ bits}}\]
+</div>
+</div>
+</details>
+
+<div class="key-eq" style="margin-top:.5rem">
+<p><strong>Bảng tổng kết IG tại root node:</strong></p>
+<table class="tbl" style="font-size:.85rem;max-width:450px;margin:.5rem auto">
+<thead><tr><th>Feature</th><th>IG (bits)</th><th>Kết quả</th></tr></thead>
+<tbody>
+<tr style="background:#dcfce7"><td><strong>Outlook</strong></td><td><strong>0.246</strong></td><td><strong>← Chọn làm root!</strong></td></tr>
+<tr><td>Humidity</td><td>0.152</td><td></td></tr>
+<tr><td>Wind</td><td>0.048</td><td></td></tr>
+<tr><td>Temperature</td><td>0.029</td><td></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="ss-title">4.3 Bước 3 — Đệ quy trên nhánh Sunny và Rain</div>
+
+<p>Nhánh <strong>Overcast</strong> → thuần khiết (4 Yes, 0 No) → <span class="tag-yes">Leaf: Yes</span>. Cần đệ quy trên Sunny và Rain.</p>
+
+<details open>
+<summary><i class="fas fa-sun"></i> Nhánh Sunny — D1,D2,D8,D9,D11 (2 Yes, 3 No) → H=0.971</summary>
+<div class="dc">
+<p>Tính IG cho 3 features còn lại trong tập Sunny:</p>
+<table class="tbl" style="font-size:.82rem">
+<thead><tr><th>Feature</th><th>Phân hoạch</th><th>H(N_k)</th><th>IG</th></tr></thead>
+<tbody>
+<tr style="background:#dcfce7">
+  <td><strong>Humidity</strong></td>
+  <td>High={D1,D2,D8}→0Y3N; Normal={D9,D11}→2Y0N</td>
+  <td>H(High)=0, H(Normal)=0</td>
+  <td><strong>0.971 − [3/5·0 + 2/5·0] = 0.971</strong></td>
+</tr>
+<tr>
+  <td>Temperature</td>
+  <td>Hot={D1,D2}→0Y2N; Mild={D8,D11}→1Y1N; Cool={D9}→1Y0N</td>
+  <td>0; 1.0; 0</td>
+  <td>0.971−[2/5·0+2/5·1+1/5·0]=0.571</td>
+</tr>
+<tr>
+  <td>Wind</td>
+  <td>Weak={D1,D8,D9}→1Y2N; Strong={D2,D11}→1Y1N</td>
+  <td>0.918; 1.0</td>
+  <td>0.971−[3/5·0.918+2/5·1]=0.020</td>
+</tr>
+</tbody>
+</table>
+<div class="alert al-green" style="margin-top:.4rem">
+<div class="alert-title">Humidity thắng với IG=0.971 (tối đa có thể!) — cả hai nhánh đều thuần khiết</div>
+Sunny → Humidity=High → <span class="tag-no">No</span> &nbsp;|&nbsp; Sunny → Humidity=Normal → <span class="tag-yes">Yes</span>
+</div>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-cloud-rain"></i> Nhánh Rain — D4,D5,D6,D10,D14 (3 Yes, 2 No) → H=0.971</summary>
+<div class="dc">
+<p>Tính IG cho 3 features còn lại trong tập Rain:</p>
+<table class="tbl" style="font-size:.82rem">
+<thead><tr><th>Feature</th><th>Phân hoạch</th><th>H(N_k)</th><th>IG</th></tr></thead>
+<tbody>
+<tr style="background:#dcfce7">
+  <td><strong>Wind</strong></td>
+  <td>Weak={D4,D5,D10}→3Y0N; Strong={D6,D14}→0Y2N</td>
+  <td>H(Weak)=0, H(Strong)=0</td>
+  <td><strong>0.971 − [3/5·0 + 2/5·0] = 0.971</strong></td>
+</tr>
+<tr>
+  <td>Humidity</td>
+  <td>High={D4,D14}→1Y1N; Normal={D5,D6,D10}→2Y1N</td>
+  <td>1.0; 0.918</td>
+  <td>0.971−[2/5·1+3/5·0.918]=0.020</td>
+</tr>
+<tr>
+  <td>Temperature</td>
+  <td>Mild={D4,D10,D14}→2Y1N; Cool={D5,D6}→1Y1N</td>
+  <td>0.918; 1.0</td>
+  <td>0.971−[3/5·0.918+2/5·1]=0.020</td>
+</tr>
+</tbody>
+</table>
+<div class="alert al-green" style="margin-top:.4rem">
+<div class="alert-title">Wind thắng với IG=0.971 — cả hai nhánh đều thuần khiết</div>
+Rain → Wind=Weak → <span class="tag-yes">Yes</span> &nbsp;|&nbsp; Rain → Wind=Strong → <span class="tag-no">No</span>
+</div>
+</div>
+</details>
+
+<div class="ss-title">4.4 Kết quả — Cây quyết định ID3 hoàn chỉnh</div>
+
+<div class="fbox no-top-radius" style="text-align:left;padding:1rem 1.5rem">
+<pre style="font-family:monospace;font-size:.85rem;line-height:2">
+                  [ Outlook? ]
+                 /      |      \
+         Sunny  /   Overcast    \ Rain
+               /        |        \
+        [Humidity?]    YES      [Wind?]
+        /        \              /     \
+     High       Normal       Weak   Strong
+       |           |           |        |
+      NO          YES         YES       NO</pre>
+</div>
+
+<div class="alert al-green">
+<div class="alert-title">Cây hoàn chỉnh — 5 leaf nodes, depth = 2, zero training error</div>
+Toàn bộ 14 records được phân loại đúng. Cây sâu 2 cấp (không tính root). Feature Temperature không được dùng vì IG quá thấp.
+</div>
+
+<!-- ============================================================
+     S5: CART — GINI BINARY SPLITS
+============================================================ -->
+<div class="s-title">5. CART — Gini và Binary Splits</div>
+
+<p>CART (Classification and Regression Trees) khác ID3 ở hai điểm chính:</p>
+
+<div class="two-col">
+<div class="col-card">
+<h4>ID3 / C4.5</h4>
+<ul>
+  <li>Dùng Entropy / GainRatio</li>
+  <li>Multi-way splits (nhiều nhánh cho categorical)</li>
+  <li>Không xử lý tốt continuous features</li>
+  <li>Chỉ classification</li>
+</ul>
+</div>
+<div class="col-card">
+<h4>CART (sklearn default)</h4>
+<ul>
+  <li>Dùng Gini impurity</li>
+  <li><strong>Chỉ binary splits</strong> (left/right)</li>
+  <li>Xử lý continuous: sort + try all midpoints</li>
+  <li>Cả classification lẫn regression</li>
+</ul>
+</div>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Tính Gini cho Outlook split tại root</summary>
+<div class="dc">
+<p>Gini(root) = \(1 - (9/14)^2 - (5/14)^2 = 1 - 0.413 - 0.128 = 0.459\)</p>
+<table class="tbl" style="font-size:.82rem">
+<thead><tr><th>Nhánh</th><th>Yes</th><th>No</th><th>Gini(N_k)</th><th>Trọng số</th></tr></thead>
+<tbody>
+<tr><td>Sunny (5)</td><td>2</td><td>3</td><td>\(1-(2/5)^2-(3/5)^2=1-0.16-0.36=0.480\)</td><td>5/14</td></tr>
+<tr><td>Overcast (4)</td><td>4</td><td>0</td><td>\(1-1^2-0^2=0\)</td><td>4/14</td></tr>
+<tr><td>Rain (5)</td><td>3</td><td>2</td><td>\(1-(3/5)^2-(2/5)^2=1-0.36-0.16=0.480\)</td><td>5/14</td></tr>
+</tbody>
+</table>
+<div class="fbox no-top-radius">
+\[\text{Weighted Gini} = \frac{5}{14}{\times}0.480 + \frac{4}{14}{\times}0 + \frac{5}{14}{\times}0.480 = 0.171 + 0 + 0.171 = 0.343\]
+\[\text{Gini Gain(Outlook)} = 0.459 - 0.343 = \mathbf{0.116}\]
+</div>
+<p>So sánh với IG dùng Entropy = 0.246 — giá trị khác nhau nhưng <strong>ranking features thường giống nhau</strong>. Outlook vẫn là feature tốt nhất khi dùng Gini.</p>
+</div>
+</details>
+
+<div class="ss-title">5.1 Continuous Features — Tìm ngưỡng tối ưu</div>
+
+<div class="step"><div class="step-n">1</div><div class="step-c"><strong>Sort</strong> tất cả giá trị của feature theo thứ tự tăng dần.</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c"><strong>Tạo candidate thresholds</strong>: midpoint giữa mỗi cặp giá trị kề nhau (N-1 ứng viên).</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c"><strong>Tính Gini Gain</strong> cho mỗi threshold: chia thành Left (\(x \leq \theta\)) và Right (\(x > \theta\)).</div></div>
+<div class="step"><div class="step-n">4</div><div class="step-c"><strong>Chọn threshold</strong> có Gini Gain cao nhất. Độ phức tạp: \(O(n\log n)\) để sort.</div></div>
+
+<details>
+<summary><i class="fas fa-calculator"></i> Ví dụ: Feature liên tục Age = [23, 25, 30, 35, 40], target = [No, No, Yes, Yes, Yes]</summary>
+<div class="dc">
+<p>Candidates: (23+25)/2=24, (25+30)/2=27.5, (30+35)/2=32.5, (35+40)/2=37.5</p>
+<table class="tbl" style="font-size:.82rem">
+<thead><tr><th>Threshold θ</th><th>Left (≤θ)</th><th>Right (&gt;θ)</th><th>Gini Left</th><th>Gini Right</th><th>Weighted Gini</th></tr></thead>
+<tbody>
+<tr><td>θ=24</td><td>{23}→0Y1N</td><td>{25,30,35,40}→3Y1N</td><td>0</td><td>0.375</td><td>1/5·0+4/5·0.375=0.300</td></tr>
+<tr><td>θ=27.5</td><td>{23,25}→0Y2N</td><td>{30,35,40}→3Y0N</td><td>0</td><td>0</td><td><strong>0 ← minimum!</strong></td></tr>
+<tr><td>θ=32.5</td><td>{23,25,30}→1Y2N</td><td>{35,40}→2Y0N</td><td>0.444</td><td>0</td><td>3/5·0.444=0.267</td></tr>
+<tr><td>θ=37.5</td><td>{23,25,30,35}→2Y2N</td><td>{40}→1Y0N</td><td>0.5</td><td>0</td><td>4/5·0.5=0.400</td></tr>
+</tbody>
+</table>
+<p>Chọn θ=27.5 — hai nhánh đều thuần khiết (Gini=0). Split: Age ≤ 27.5 → <span class="tag-no">No</span>, Age &gt; 27.5 → <span class="tag-yes">Yes</span>.</p>
+</div>
+</details>
+
+<!-- ============================================================
+     S6: OVERFITTING VÀ PRUNING
+============================================================ -->
+<div class="s-title">6. Overfitting và Pruning</div>
+
+<div class="alert al-red">
+<div class="alert-title"><i class="fas fa-exclamation-triangle"></i> Tại sao Decision Tree dễ overfit hơn các thuật toán khác?</div>
+<p>ID3 không có cơ chế dừng sớm — cứ chia cho đến khi mỗi leaf có đúng 1 điểm → training error = 0, nhưng mỗi leaf quá cụ thể để tổng quát. Decision tree là <strong>thuật toán có variance cao</strong>: thay đổi một điểm dữ liệu có thể làm thay đổi hoàn toàn cấu trúc cây.</p>
+</div>
+
+<div class="ss-title">6.1 Pre-pruning — Dừng sớm khi xây cây</div>
+
+<table class="tbl">
+<thead><tr><th>Tham số</th><th>Ý nghĩa</th><th>Tác dụng</th></tr></thead>
+<tbody>
+<tr><td><code>max_depth</code></td><td>Độ sâu tối đa</td><td>Giới hạn trực tiếp độ phức tạp cây</td></tr>
+<tr><td><code>min_samples_split</code></td><td>Số điểm tối thiểu để split nút</td><td>Nút nhỏ không được chia tiếp</td></tr>
+<tr><td><code>min_samples_leaf</code></td><td>Số điểm tối thiểu trong leaf</td><td>Tránh leaf quá nhỏ, không đại diện</td></tr>
+<tr><td><code>min_impurity_decrease</code></td><td>IG tối thiểu để split</td><td>Chỉ chia khi thực sự giảm impurity đáng kể</td></tr>
+</tbody>
+</table>
+
+<div class="ss-title">6.2 Post-pruning — Xây xong rồi cắt</div>
+
+<div class="insight">
+<div class="insight-title"><i class="fas fa-cut"></i> Reduced Error Pruning (REP)</div>
+<div class="step"><div class="step-n">1</div><div class="step-c">Xây cây đầy đủ trên training set.</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c">Với mỗi internal node theo thứ tự từ dưới lên: thử thay toàn bộ subtree bằng một leaf dự đoán lớp đa số.</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c">Nếu accuracy trên <strong>validation set</strong> không giảm (hoặc tăng), giữ phiên bản đã prune.</div></div>
+<div class="step"><div class="step-n">4</div><div class="step-c">Lặp lại cho đến khi không còn node nào có thể prune mà không giảm accuracy.</div></div>
+</div>
+
+<div class="insight">
+<div class="insight-title"><i class="fas fa-scissors"></i> Cost-Complexity Pruning (CART — sklearn default)</div>
+<p>Định nghĩa cost của cây T với tham số α:</p>
+<div class="fbox no-top-radius">
+\[R_\alpha(T) = \underbrace{R(T)}_{\text{training error}} + \alpha\cdot\underbrace{|T|}_{\text{số leaf nodes}}\]
+</div>
+<p>Với α=0: cây đầy đủ (ưu tiên accuracy). Khi tăng α: bị phạt vì có nhiều leaf → prune dần. Dùng cross-validation để chọn α tối ưu:</p>
+<div class="step"><div class="step-n">1</div><div class="step-c">Xây chuỗi cây \(T_0 \supset T_1 \supset T_2 \supset \cdots\) bằng cách tăng α.</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c">Dùng k-fold CV đánh giá test error của mỗi cây.</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c">Chọn cây có test error thấp nhất (thường là cây nhỏ nhất trong khoảng 1 std error của minimum).</div></div>
+</div>
+
+<div class="ss-title">6.3 Bias-Variance Tradeoff trong Decision Tree</div>
+
+<div class="fbox no-top-radius" style="text-align:left;padding:.85rem 1.5rem">
+<pre style="font-family:monospace;font-size:.82rem;line-height:1.9">Error
+  ^
+  |  ___________________________________________  Test Error (high variance)
+  | /                                          \
+  |/                 ___________________________\ ← optimal depth
+  |       __________/
+  |______/ Training Error (low, always decreasing)
+  +─────────────────────────────────────────────→ Tree Depth / Complexity
+  1    3    5    7    9    11  ...          max
+  ^                   ^                    ^
+Underfit           Optimal             Overfit
+(max_depth=1)   (balance)         (no pruning)</pre>
+</div>
+
+<!-- ============================================================
+     S7: INSIGHTS QUAN TRỌNG
+============================================================ -->
+<div class="s-title">7. Insights Quan trọng</div>
+
+<div class="ss-title">7.1 Decision Boundary — Staircase Pattern</div>
+
+<div class="two-col">
+<div class="col-card">
+<h4>Axis-parallel (ID3, CART chuẩn)</h4>
+<div class="fbox no-top-radius" style="text-align:left;padding:.6rem 1rem;font-family:monospace;font-size:.82rem">
+X₂
+│   ○ ○ │ ● ● ●
+│ ○ ○ ○ │ ● ● ●
+│───────|───────
+│ ○ ○ ● ● ● ●
+│ ○ ○ ● ● ● ●
+└─────────────── X₁
+</div>
+<p>Boundary là chuỗi đường thẳng vuông góc với trục — dạng "bậc thang". Hiệu quả cho dữ liệu separable bằng điều kiện đơn.</p>
+</div>
+<div class="col-card">
+<h4>Oblique splits (nâng cao)</h4>
+<div class="fbox no-top-radius" style="text-align:left;padding:.6rem 1rem;font-family:monospace;font-size:.82rem">
+X₂
+│  ○ ○ / ● ● ●
+│  ○ /   ● ● ●
+│  /  ● ● ● ●
+│ / ○ ● ● ● ●
+└─────────────── X₁
+</div>
+<p>Điều kiện dạng \(w_1x_1+w_2x_2 \leq \theta\) — đường chéo. Cần ít node hơn để phân tách dữ liệu diagonally separable.</p>
+</div>
+</div>
+
+<div class="ss-title">7.2 Greedy — Không đảm bảo cây tối ưu</div>
+
+<div class="alert al-yellow">
+<div class="alert-title"><i class="fas fa-exclamation-circle"></i> ID3 là thuật toán tham lam (greedy) — local optimal, not global</div>
+<p>Tại mỗi node, ID3 chọn feature tốt nhất <em>tại thời điểm đó</em> mà không nhìn xa hơn. Có thể một feature có IG thấp ở root nhưng lại dẫn đến cây nhỏ hơn tổng thể. Bài toán tìm cây quyết định tối ưu (global) là NP-hard — greedy là heuristic thực tế duy nhất.</p>
+</div>
+
+<div class="ss-title">7.3 So sánh với các thuật toán khác</div>
+
+<table class="tbl">
+<thead><tr><th>Tiêu chí</th><th>Decision Tree</th><th>KNN</th><th>Naive Bayes</th><th>SVM</th></tr></thead>
+<tbody>
+<tr><td>Interpretability</td><td>★★★★★ (nhất)</td><td>★★</td><td>★★★</td><td>★</td></tr>
+<tr><td>Training speed</td><td>O(n·d·n log n)</td><td>O(1)</td><td>O(n·d)</td><td>O(n²–n³)</td></tr>
+<tr><td>Prediction speed</td><td>O(depth)</td><td>O(n·d) brute</td><td>O(d)</td><td>O(n_sv·d)</td></tr>
+<tr><td>Non-linear boundary</td><td>✅ Staircase</td><td>✅ Voronoi</td><td>❌ Linear (thường)</td><td>✅ Kernel</td></tr>
+<tr><td>Overfitting risk</td><td>⚠️ Cao (nếu không prune)</td><td>⚠️ K=1</td><td>✅ Thấp</td><td>✅ Margin lớn</td></tr>
+<tr><td>Xử lý missing data</td><td>✅ Dễ (C4.5)</td><td>❌ Khó</td><td>✅ Dễ</td><td>❌ Khó</td></tr>
+<tr><td>Feature importance</td><td>✅ Tự nhiên từ IG</td><td>❌</td><td>⚠️ Indirect</td><td>⚠️ Weight magnitude</td></tr>
+</tbody>
+</table>
+
+<div class="ss-title">7.4 Vì sao Decision Tree là nền tảng của Ensemble Methods</div>
+
+<div class="insight">
+<div class="insight-title"><i class="fas fa-layer-group"></i> Từ cây đơn → Random Forest → Gradient Boosting</div>
+<p>Decision Tree đơn lẻ: high variance, low bias khi sâu. Ensemble khai thác điểm này:</p>
+<ul>
+<li><strong>Random Forest (Bagging):</strong> Trồng nhiều cây sâu (high variance) trên các bootstrap samples → average → giảm variance, giữ bias thấp.</li>
+<li><strong>Gradient Boosting:</strong> Trồng cây nông (high bias/low variance) nối tiếp nhau, mỗi cây sửa lỗi của cây trước → giảm bias mà không tăng nhiều variance.</li>
+</ul>
+<p>Hiểu Decision Tree = hiểu nền tảng của Random Forest và XGBoost/LightGBM.</p>
+</div>
+
+<!-- ============================================================
+     S8: QUICK REFERENCE
+============================================================ -->
+<div class="s-title">8. Quick Reference — Bảng tổng kết</div>
+
+<table class="tbl">
+<thead><tr><th>Khái niệm</th><th>Công thức</th><th>Khi nào bằng 0</th><th>Khi nào max</th></tr></thead>
+<tbody>
+<tr><td>Entropy H</td><td>\(-\sum P_j \log_2 P_j\)</td><td>Node thuần khiết (1 lớp)</td><td>P đều nhau: H=log₂c</td></tr>
+<tr><td>Gini G</td><td>\(1-\sum P_j^2\)</td><td>Node thuần khiết</td><td>P=1/c: G=1-1/c</td></tr>
+<tr><td>Info Gain IG</td><td>\(H(N)-\sum\frac{|N_k|}{|N|}H(N_k)\)</td><td>Split không giảm entropy</td><td>Tất cả nhánh thuần khiết</td></tr>
+<tr><td>GainRatio</td><td>\(\text{IG}/\text{SplitInfo}\)</td><td>IG=0</td><td>IG cao, SplitInfo nhỏ</td></tr>
+<tr><td>SplitInfo</td><td>\(-\sum\frac{|N_k|}{|N|}\log_2\frac{|N_k|}{|N|}\)</td><td>Chỉ 1 nhánh (no split)</td><td>Tất cả nhánh đều nhau</td></tr>
+</tbody>
+</table>
+
+<div class="alert al-purple">
+<div class="alert-title"><i class="fas fa-bookmark"></i> Checklist thi</div>
+<ul>
+<li>✅ Tính H(node) = \(-\sum P_j \log_2 P_j\)</li>
+<li>✅ Tính IG = H(parent) − Σ weight·H(child) — nhớ trọng số = |N_k|/|N|</li>
+<li>✅ Feature có IG cao nhất → chọn làm split tại node đó</li>
+<li>✅ Overcast → thuần khiết → leaf ngay, không split tiếp</li>
+<li>✅ Đệ quy: sau khi split, áp dụng lại ID3 trên từng nhánh con với <em>features còn lại</em></li>
+<li>✅ Dừng khi: node thuần khiết, không còn feature, hoặc số điểm &lt; min_samples_split</li>
+<li>✅ Gini và Entropy thường chọn cùng feature — khác giá trị nhưng không khác thứ hạng</li>
+<li>✅ IG bị bias bởi feature nhiều giá trị → GainRatio (C4.5) sửa bằng cách chia cho SplitInfo</li>
+</ul>
+</div>
+
+</section>
+</main>
+
+<a href="#" id="back-top" title="Về đầu trang"><i class="fas fa-arrow-up"></i></a>
+
+</body>
+</html>

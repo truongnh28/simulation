@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>DL4CV Cheat Sheet</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{
+    delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+    ignoredTags:['script','noscript','style','textarea']
+  })">
+</script>
+<style>
+@page { size: A4 portrait; margin: 5mm; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Arial Narrow', Arial, sans-serif;
+  font-size: 5.5pt;
+  line-height: 1.15;
+  color: #111;
+}
+.page {
+  width: 200mm; height: 287mm;
+  display: grid; gap: 1.2mm;
+  page-break-after: always; overflow: hidden;
+}
+.page1 { grid-template-columns: 76mm 60mm 64mm; }
+.page2 { grid-template-columns: 64mm 68mm 68mm; }
+.page:last-child { page-break-after: auto; }
+.col { overflow: hidden; }
+
+h1 { font-size: 6.4pt; font-weight: bold; background: #1a3a5f; color: #fff;
+     padding: 1px 3px; margin-bottom: 1px; text-transform: uppercase; }
+h2 { font-size: 5.9pt; font-weight: bold; color: #1a3a5f;
+     border-bottom: .6px solid #1a3a5f; margin: 1.3px 0 .3px; }
+h3 { font-size: 5.5pt; font-weight: bold; color: #a02020; margin: .7px 0 .1px; }
+p  { margin: .2px 0; }
+
+.fb { background:#eef4fb; border-left:1.8px solid #2980b9; padding:.8px 2.5px;
+      margin:.5px 0; line-height:1.44; }
+.ex { font-family:'Courier New',monospace; font-size:4.8pt; background:#fff8e6;
+      border-left:1.8px solid #e08020; padding:.6px 2px; margin:.5px 0;
+      white-space:pre; line-height:1.22; }
+.w  { font-size:5.2pt; background:#fdecea; border:.5px solid #c0392b;
+      padding:.3px 2px; margin:.4px 0; line-height:1.26; }
+.ok { font-size:5.2pt; background:#eafaf1; border:.5px solid #27ae60;
+      padding:.3px 2px; margin:.4px 0; }
+.r  { color:#a02020; font-weight:bold; }
+
+table { border-collapse:collapse; width:100%; font-size:5.0pt;
+        margin:.4px 0; line-height:1.22; }
+th { background:#cdd6e4; border:.4px solid #999; padding:.3px 1.5px;
+     font-weight:bold; text-align:left; }
+td { border:.4px solid #bbb; padding:.3px 1.5px; }
+td.c { text-align:center; }
+
+.katex { font-size:1em !important; }
+.katex-display { margin:0 !important; }
+@media print { body { -webkit-print-color-adjust:exact; print-color-adjust:exact; } }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ TRANG 1 ══════════════ -->
+<div class="page page1">
+
+<!-- ══ COL 1: CNN (rộng hơn) ══ -->
+<div class="col">
+<h1>CNN — Tất Cả Công Thức &amp; Bài Tập Mẫu</h1>
+
+<h2>1. Định Nghĩa: Cross-Correlation vs Convolution</h2>
+<div class="fb">
+Cross-Correlation (PyTorch "Conv2d" thực ra dùng cái này — <b>không flip W</b>):<br>
+$Y(u,v)=\sum_{i=-r}^{r}\sum_{j=-r}^{r}X(u+i,\,v+j)\cdot W(i,j)$<br>
+Convolution thực sự (flip W 180° trước rồi cross-corr):<br>
+$Y(u,v)=\sum_{i=-r}^{r}\sum_{j=-r}^{r}X(u-i,\,v-j)\cdot W(i,j)$<br>
+$r=\lfloor k/2\rfloor$; quan hệ: Conv$(W)$ = XCorr$(\text{Rot}_{180°}(W))$
+</div>
+
+<!-- SVG 1: Sliding window diagram -->
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 272 54">
+  <text x="0" y="6" font-size="5" font-family="Arial" fill="#1a3a5f" font-weight="bold">Sơ đồ: kernel trượt qua input (XCorr, p=0, s=1)</text>
+  <rect x="0"  y="10" width="8" height="8" fill="#c6dcf0" stroke="#2980b9" stroke-width="1"/>
+  <rect x="8"  y="10" width="8" height="8" fill="#c6dcf0" stroke="#2980b9" stroke-width="1"/>
+  <rect x="16" y="10" width="8" height="8" fill="#c6dcf0" stroke="#2980b9" stroke-width="1"/>
+  <rect x="24" y="10" width="8" height="8" fill="#eee"    stroke="#bbb"    stroke-width="0.5"/>
+  <text x="4"  y="17" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#003">3</text>
+  <text x="12" y="17" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#003">1</text>
+  <text x="20" y="17" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#003">0</text>
+  <text x="28" y="17" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#999">1</text>
+  <rect x="0"  y="18" width="8" height="8" fill="#c6dcf0" stroke="#2980b9" stroke-width="1"/>
+  <rect x="8"  y="18" width="8" height="8" fill="#c6dcf0" stroke="#2980b9" stroke-width="1"/>
+  <rect x="16" y="18" width="8" height="8" fill="#c6dcf0" stroke="#2980b9" stroke-width="1"/>
+  <rect x="24" y="18" width="8" height="8" fill="#eee"    stroke="#bbb"    stroke-width="0.5"/>
+  <text x="4"  y="25" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#003">1</text>
+  <text x="12" y="25" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#003">1</text>
+  <text x="20" y="25" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#003">2</text>
+  <text x="28" y="25" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#999">0</text>
+  <rect x="0"  y="26" width="8" height="8" fill="#c6dcf0" stroke="#2980b9" stroke-width="1"/>
+  <rect x="8"  y="26" width="8" height="8" fill="#c6dcf0" stroke="#2980b9" stroke-width="1"/>
+  <rect x="16" y="26" width="8" height="8" fill="#c6dcf0" stroke="#2980b9" stroke-width="1"/>
+  <rect x="24" y="26" width="8" height="8" fill="#eee"    stroke="#bbb"    stroke-width="0.5"/>
+  <text x="4"  y="33" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#003">1</text>
+  <text x="12" y="33" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#003">2</text>
+  <text x="20" y="33" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#003">2</text>
+  <text x="28" y="33" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#999">1</text>
+  <rect x="0"  y="34" width="8" height="8" fill="#eee" stroke="#bbb" stroke-width="0.5"/>
+  <rect x="8"  y="34" width="8" height="8" fill="#eee" stroke="#bbb" stroke-width="0.5"/>
+  <rect x="16" y="34" width="8" height="8" fill="#eee" stroke="#bbb" stroke-width="0.5"/>
+  <rect x="24" y="34" width="8" height="8" fill="#eee" stroke="#bbb" stroke-width="0.5"/>
+  <text x="4"  y="41" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#999">0</text>
+  <text x="12" y="41" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#999">1</text>
+  <text x="20" y="41" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#999">0</text>
+  <text x="28" y="41" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#999">2</text>
+  <text x="16" y="50" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#2980b9">Input 4×4</text>
+  <text x="38" y="28" text-anchor="middle" font-size="9" font-family="Arial" fill="#555">×</text>
+  <rect x="44" y="10" width="8" height="8" fill="#fff0d0" stroke="#e08020" stroke-width="1"/>
+  <rect x="52" y="10" width="8" height="8" fill="#fff0d0" stroke="#e08020" stroke-width="1"/>
+  <rect x="60" y="10" width="8" height="8" fill="#fff0d0" stroke="#e08020" stroke-width="1"/>
+  <text x="48" y="17" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#7a3800">1</text>
+  <text x="56" y="17" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#7a3800">0</text>
+  <text x="64" y="17" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#7a3800">2</text>
+  <rect x="44" y="18" width="8" height="8" fill="#fff0d0" stroke="#e08020" stroke-width="1"/>
+  <rect x="52" y="18" width="8" height="8" fill="#fff0d0" stroke="#e08020" stroke-width="1"/>
+  <rect x="60" y="18" width="8" height="8" fill="#fff0d0" stroke="#e08020" stroke-width="1"/>
+  <text x="48" y="25" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#7a3800">1</text>
+  <text x="56" y="25" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#7a3800">2</text>
+  <text x="64" y="25" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#7a3800">0</text>
+  <rect x="44" y="26" width="8" height="8" fill="#fff0d0" stroke="#e08020" stroke-width="1"/>
+  <rect x="52" y="26" width="8" height="8" fill="#fff0d0" stroke="#e08020" stroke-width="1"/>
+  <rect x="60" y="26" width="8" height="8" fill="#fff0d0" stroke="#e08020" stroke-width="1"/>
+  <text x="48" y="33" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#7a3800">0</text>
+  <text x="56" y="33" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#7a3800">1</text>
+  <text x="64" y="33" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#7a3800">1</text>
+  <text x="56" y="50" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#e08020">W (kernel)</text>
+  <text x="76" y="28" text-anchor="middle" font-size="9" font-family="Arial" fill="#555">=</text>
+  <text x="82" y="14" font-size="4.2" font-family="Arial" fill="#333">3×1+1×0+0×2</text>
+  <text x="82" y="20" font-size="4.2" font-family="Arial" fill="#333">+1×1+1×2+2×0</text>
+  <text x="82" y="26" font-size="4.2" font-family="Arial" fill="#333">+1×0+2×1+2×1</text>
+  <text x="82" y="33" font-size="4.5" font-family="Arial" fill="#1a6e2e" font-weight="bold">=3+0+0+1+2+0+0+2+2=</text>
+  <rect x="188" y="12" width="13" height="13" fill="#b8e0c0" stroke="#27ae60" stroke-width="1.5"/>
+  <rect x="201" y="12" width="13" height="13" fill="#e8f8e8" stroke="#aaa" stroke-width="0.7"/>
+  <rect x="188" y="25" width="13" height="13" fill="#e8f8e8" stroke="#aaa" stroke-width="0.7"/>
+  <rect x="201" y="25" width="13" height="13" fill="#e8f8e8" stroke="#aaa" stroke-width="0.7"/>
+  <text x="194" y="21.5" text-anchor="middle" font-size="7" font-family="Courier New" fill="#1a6e2e" font-weight="bold">12</text>
+  <text x="207" y="21.5" text-anchor="middle" font-size="7" font-family="Courier New" fill="#555">10</text>
+  <text x="194" y="34.5" text-anchor="middle" font-size="7" font-family="Courier New" fill="#555">8</text>
+  <text x="207" y="34.5" text-anchor="middle" font-size="7" font-family="Courier New" fill="#555">12</text>
+  <text x="200" y="50" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#27ae60">Output 2×2</text>
+  <text x="240" y="17" font-size="4.2" font-family="Arial" fill="#2980b9">slide →</text>
+  <text x="240" y="24" font-size="4.2" font-family="Arial" fill="#2980b9">next pos</text>
+  <text x="240" y="31" font-size="4.2" font-family="Arial" fill="#e08020">=10,8,12</text>
+</svg>
+
+<h2>2. Multi-channel Input (D channels)</h2>
+<div class="fb">
+Kernel phải cùng D channels với input; tổng hợp → 1 feature map:<br>
+$Y(u,v)=\sum_{c=1}^{D}\sum_{i=-r}^{r}\sum_{j=-r}^{r}X_c(u+i,v+j)\cdot W_c(i,j)$<br>
+$K$ filters → concat → output $\in\mathbb{R}^{o_1\times o_2\times K}$
+</div>
+<!-- SVG 3: Multi-channel + K filters -->
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 272 40">
+  <text x="0" y="7" font-size="5" font-family="Arial" fill="#1a3a5f" font-weight="bold">D ch input × K filters → K feature maps → concat o×o×K</text>
+  <rect x="2"  y="12" width="22" height="14" fill="#c6dcf0" stroke="#2980b9" stroke-width="0.8"/>
+  <rect x="5"  y="10" width="22" height="14" fill="#c6dcf0" stroke="#2980b9" stroke-width="0.8"/>
+  <rect x="8"  y="8"  width="22" height="14" fill="#c6dcf0" stroke="#2980b9" stroke-width="1.2"/>
+  <text x="19" y="18" text-anchor="middle" font-size="5" font-family="Arial" fill="#003">D ch</text>
+  <text x="38" y="20" text-anchor="middle" font-size="8" font-family="Arial" fill="#555">×</text>
+  <rect x="46" y="18" width="12" height="10" fill="#fff0d0" stroke="#e08020" stroke-width="0.8"/>
+  <rect x="49" y="15" width="12" height="10" fill="#fff0d0" stroke="#e08020" stroke-width="0.8"/>
+  <rect x="52" y="12" width="12" height="10" fill="#fff0d0" stroke="#e08020" stroke-width="1.2"/>
+  <text x="58" y="20" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#7a3800">K flt</text>
+  <text x="72" y="20" text-anchor="middle" font-size="8" font-family="Arial" fill="#555">=</text>
+  <rect x="80" y="18" width="18" height="12" fill="#d0f0d8" stroke="#27ae60" stroke-width="0.8"/>
+  <rect x="83" y="15" width="18" height="12" fill="#d0f0d8" stroke="#27ae60" stroke-width="0.8"/>
+  <rect x="86" y="12" width="18" height="12" fill="#d0f0d8" stroke="#27ae60" stroke-width="1.2"/>
+  <line x1="106" y1="20" x2="112" y2="20" stroke="#555" stroke-width="0.8"/>
+  <polygon points="112,20 110,19 110,21" fill="#555"/>
+  <rect x="113" y="10" width="16" height="28" fill="#b8e0c0" stroke="#27ae60" stroke-width="1.2"/>
+  <line x1="113" y1="19" x2="129" y2="19" stroke="#27ae60" stroke-width="0.4"/>
+  <line x1="113" y1="28" x2="129" y2="28" stroke="#27ae60" stroke-width="0.4"/>
+  <text x="121" y="37" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#27ae60">o×o×K</text>
+  <text x="140" y="14" font-size="4.5" font-family="Arial" fill="#333">1 filter tổng hợp D ch</text>
+  <text x="140" y="20" font-size="4.5" font-family="Arial" fill="#333">→ 1 feature map</text>
+  <text x="140" y="26" font-size="4.5" font-family="Arial" fill="#e08020">K filters → K maps</text>
+  <text x="140" y="32" font-size="4.5" font-family="Arial" fill="#2980b9">1×1 Conv: đổi channel</text>
+</svg>
+
+<h2>3. Kích Thước Output (công thức chung)</h2>
+<div class="fb">
+$o=\lfloor(i+2p-k)/s\rfloor+1$ &nbsp; (áp cho mọi Conv và Pool)
+</div>
+<table>
+<tr><th>Chế độ</th><th>p</th><th>o (s=1)</th><th>Ghi chú</th></tr>
+<tr><td>No padding</td><td>0</td><td>$i-k+1$</td><td>Giảm size nhanh</td></tr>
+<tr><td>Half/Same</td><td>$\lfloor k/2\rfloor$</td><td>$i$ (giữ nguyên)</td><td>k lẻ; phổ biến nhất</td></tr>
+<tr><td>Full</td><td>$k-1$</td><td>$i+k-1$</td><td>Output lớn hơn input</td></tr>
+</table>
+<!-- SVG 2: Padding types comparison -->
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 272 48">
+  <text x="0" y="7" font-size="5" font-family="Arial" fill="#1a3a5f" font-weight="bold">So sánh Padding (i=4, k=3): No→o=2, Same→o=4, Full→o=6</text>
+  <text x="4" y="16" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#a02020" font-weight="bold">No pad p=0</text>
+  <rect x="0" y="18" width="20" height="20" fill="#c6dcf0" stroke="#2980b9" stroke-width="0.7"/>
+  <line x1="5" y1="18" x2="5" y2="38" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="10" y1="18" x2="10" y2="38" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="15" y1="18" x2="15" y2="38" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="0" y1="23" x2="20" y2="23" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="0" y1="28" x2="20" y2="28" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="0" y1="33" x2="20" y2="33" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="22" y1="28" x2="27" y2="28" stroke="#555" stroke-width="0.8"/><polygon points="27,28 25,27 25,29" fill="#555"/>
+  <rect x="28" y="21" width="10" height="10" fill="#b8e0c0" stroke="#27ae60" stroke-width="0.7"/>
+  <line x1="33" y1="21" x2="33" y2="31" stroke="#27ae60" stroke-width="0.3"/>
+  <line x1="28" y1="26" x2="38" y2="26" stroke="#27ae60" stroke-width="0.3"/>
+  <text x="19" y="45" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#333">o=(4-3)+1=2</text>
+  <text x="100" y="16" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#2980b9" font-weight="bold">Same p=1</text>
+  <rect x="74" y="17" width="30" height="30" fill="#e0e0e0" stroke="#999" stroke-width="0.5"/>
+  <rect x="79" y="22" width="20" height="20" fill="#c6dcf0" stroke="#2980b9" stroke-width="0.7"/>
+  <line x1="84" y1="22" x2="84" y2="42" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="89" y1="22" x2="89" y2="42" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="94" y1="22" x2="94" y2="42" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="79" y1="27" x2="99" y2="27" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="79" y1="32" x2="99" y2="32" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="79" y1="37" x2="99" y2="37" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="106" y1="32" x2="111" y2="32" stroke="#555" stroke-width="0.8"/><polygon points="111,32 109,31 109,33" fill="#555"/>
+  <rect x="112" y="22" width="20" height="20" fill="#b8e0c0" stroke="#27ae60" stroke-width="0.7"/>
+  <line x1="117" y1="22" x2="117" y2="42" stroke="#27ae60" stroke-width="0.3"/>
+  <line x1="122" y1="22" x2="122" y2="42" stroke="#27ae60" stroke-width="0.3"/>
+  <line x1="127" y1="22" x2="127" y2="42" stroke="#27ae60" stroke-width="0.3"/>
+  <line x1="112" y1="27" x2="132" y2="27" stroke="#27ae60" stroke-width="0.3"/>
+  <line x1="112" y1="32" x2="132" y2="32" stroke="#27ae60" stroke-width="0.3"/>
+  <line x1="112" y1="37" x2="132" y2="37" stroke="#27ae60" stroke-width="0.3"/>
+  <text x="103" y="45" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#333">o=(4+2-3)+1=4</text>
+  <text x="210" y="16" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#27ae60" font-weight="bold">Full p=2</text>
+  <rect x="172" y="14" width="40" height="40" fill="#d0d0d0" stroke="#999" stroke-width="0.5"/>
+  <rect x="182" y="24" width="20" height="20" fill="#c6dcf0" stroke="#2980b9" stroke-width="0.7"/>
+  <line x1="187" y1="24" x2="187" y2="44" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="192" y1="24" x2="192" y2="44" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="197" y1="24" x2="197" y2="44" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="182" y1="29" x2="202" y2="29" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="182" y1="34" x2="202" y2="34" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="182" y1="39" x2="202" y2="39" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="214" y1="34" x2="219" y2="34" stroke="#555" stroke-width="0.8"/><polygon points="219,34 217,33 217,35" fill="#555"/>
+  <rect x="220" y="19" width="30" height="30" fill="#b8e0c0" stroke="#27ae60" stroke-width="0.7"/>
+  <line x1="225" y1="19" x2="225" y2="49" stroke="#27ae60" stroke-width="0.3"/>
+  <line x1="230" y1="19" x2="230" y2="49" stroke="#27ae60" stroke-width="0.3"/>
+  <line x1="235" y1="19" x2="235" y2="49" stroke="#27ae60" stroke-width="0.3"/>
+  <line x1="240" y1="19" x2="240" y2="49" stroke="#27ae60" stroke-width="0.3"/>
+  <line x1="245" y1="19" x2="245" y2="49" stroke="#27ae60" stroke-width="0.3"/>
+  <line x1="220" y1="24" x2="250" y2="24" stroke="#27ae60" stroke-width="0.3"/>
+  <line x1="220" y1="29" x2="250" y2="29" stroke="#27ae60" stroke-width="0.3"/>
+  <line x1="220" y1="34" x2="250" y2="34" stroke="#27ae60" stroke-width="0.3"/>
+  <line x1="220" y1="39" x2="250" y2="39" stroke="#27ae60" stroke-width="0.3"/>
+  <line x1="220" y1="44" x2="250" y2="44" stroke="#27ae60" stroke-width="0.3"/>
+  <text x="235" y="45" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#333">o=4+2=6</text>
+</svg>
+<p>MaxPool no-pad: $o=\lfloor(i-k)/s\rfloor+1$; &nbsp; MaxPool 2×2 s=2: $o=i/2$</p>
+
+<h3>Bài 1 — Tính o (7 cấu hình quan trọng)</h3>
+<table>
+<tr><th>i</th><th>k</th><th>p</th><th>s</th><th>Tính</th><th>o</th></tr>
+<tr><td>7</td><td>3</td><td>0</td><td>1</td><td>(7−3)/1+1</td><td class="c"><b>5</b></td></tr>
+<tr><td>7</td><td>3</td><td>1</td><td>1</td><td>Same→giữ nguyên</td><td class="c"><b>7</b></td></tr>
+<tr><td>7</td><td>3</td><td>0</td><td>2</td><td>⌊(7−3)/2⌋+1=3</td><td class="c"><b>3</b></td></tr>
+<tr><td>32</td><td>5</td><td>2</td><td>1</td><td>(32+4−5)/1+1=32</td><td class="c"><b>32</b></td></tr>
+<tr><td>28</td><td>3</td><td>1</td><td>2</td><td>⌊(28+2−3)/2⌋+1=14</td><td class="c"><b>14</b></td></tr>
+<tr><td>64</td><td>3</td><td>0</td><td>2</td><td>⌊(64−3)/2⌋+1=31</td><td class="c"><b>31</b></td></tr>
+<tr><td>4</td><td>3</td><td>2</td><td>2</td><td>⌊(4+4−3)/2⌋+1=3</td><td class="c"><b>3</b></td></tr>
+</table>
+<p><b>Bảng tham chiếu i=4, k=3:</b> p=0s=1→2 | p=1s=1→4 | p=2s=1→6 | p=1s=2→2 | p=2s=2→3</p>
+
+<h2>4. Số Tham Số</h2>
+<div class="fb">
+$\text{Params}=K\times(k_1k_2\times D_\text{in}+1)$ &nbsp; (1 bias mỗi filter)
+</div>
+<table>
+<tr><th>Cấu hình (K, k, D_in)</th><th>Params/filter</th><th>Tổng</th></tr>
+<tr><td>Conv(3→16, k=3)</td><td>9×3+1=28</td><td class="c"><b>448</b></td></tr>
+<tr><td>Conv(3→64, k=3)</td><td>9×3+1=28</td><td class="c"><b>1 792</b></td></tr>
+<tr><td>Conv(16→32, k=3)</td><td>9×16+1=145</td><td class="c"><b>4 640</b></td></tr>
+<tr><td>Conv(32→64, k=3)</td><td>9×32+1=289</td><td class="c"><b>18 496</b></td></tr>
+<tr><td>Conv(64→128, k=3)</td><td>9×64+1=577</td><td class="c"><b>73 856</b></td></tr>
+<tr><td>Conv(64→128, k=5)</td><td>25×64+1=1601</td><td class="c"><b>204 928</b></td></tr>
+<tr><td>1×1 Conv(D→K)</td><td>D+1</td><td class="c">K×(D+1)</td></tr>
+</table>
+
+<h3>Bài 3 — Conv vs FC: Tại sao CNN hiệu quả?</h3>
+<div class="ex">Conv(28×28×32→64, k=3, p=1, s=1):
+  Params = 64×(9×32+1) = 64×289 = 18,496
+  Output = ⌊(28+2-3)/1⌋+1=28 → shape 28×28×64
+  FC tương đương (25088→50176): 25088×50176 ≈ 1.26 tỷ
+  → Conv dùng ít hơn 68,100× nhờ weight sharing!</div>
+
+<h2>5. Bài 2 — Cross-Corr vs True Conv (tính tay)</h2>
+<div class="ex">X=[[1,2,3],[0,1,2],[1,0,1]], W=[[1,0],[-1,2]], p=0,s=1
+Output size: o=(3-2)/1+1=2 → 2×2
+─── Cross-Correlation (PyTorch, KHÔNG flip W) ───
+(0,0): 1×1+2×0+0×(-1)+1×2 = 1+0+0+2 = 3
+(0,1): 2×1+3×0+1×(-1)+2×2 = 2+0-1+4 = 5
+(1,0): 0×1+1×0+1×(-1)+0×2 = 0+0-1+0 = -1
+(1,1): 1×1+2×0+0×(-1)+1×2 = 1+0+0+2 = 3
+→ Y_xcorr = [[3,5],[-1,3]]
+─── True Convolution (flip W 180° → [[2,-1],[0,1]]) ───
+(0,0): 1×2+2×(-1)+0×0+1×1 = 2-2+0+1 = 1
+(0,1): 2×2+3×(-1)+1×0+2×1 = 4-3+0+2 = 3
+(1,0): 0×2+1×(-1)+1×0+0×1 = -1
+(1,1): 1×2+2×(-1)+0×0+1×1 = 1
+→ Y_conv = [[1,3],[-1,1]] ≠ Y_xcorr!</div>
+
+<h3>Slide Example: X=4×4, W=3×3 (True Conv, p=0,s=1)</h3>
+<div class="ex">W=[[1,0,2],[1,2,0],[0,1,1]] → Rot180°=[[1,1,0],[0,2,1],[2,0,1]]
+X=[[3,1,0,1],[1,1,2,0],[1,2,2,1],[0,1,0,2]]
+o=(4-3)/1+1=2 → output 2×2:
+(0,0): [3,1,0,1,1,2,1,2,2]·[1,1,0,0,2,1,2,0,1]
+     = 3+1+0+0+2+2+2+0+2 = 12
+(0,1): [1,0,1,1,2,0,2,2,1]·[1,1,0,0,2,1,2,0,1]
+     = 1+0+0+0+4+0+4+0+1 = 10
+(1,0): [1,1,2,1,2,2,0,1,0]·[1,1,0,0,2,1,2,0,1]
+     = 1+1+0+0+4+2+0+0+0 = 8
+(1,1): [1,2,0,2,2,1,1,0,2]·... = 12
+→ Y = [[12,10],[8,12]]</div>
+
+<h2>6. Bài 4 — Multi-channel Conv (Sobel RGB)</h2>
+<div class="ex">Input RGB 5×5×3; Sobel dọc chỉ trên R: W_R=[[1,0,-1]×3rows]
+W_G=W_B=zeros → đóng góp G,B = 0
+X_R(top 3×3)=col=[255,200,100] lặp 3 hàng
+Y(0,0) = Σ_c dot(X_c,W_c) = dot(X_R,W_R)+0+0
+  = (255×1+200×0+100×(-1))×3 rows
+  = (255-100)×3 = 155×3 = 465
+Đồng nhất(R=const): dot=0 → không detect cạnh
+→ Sobel phát hiện cạnh DỌC trong channel R</div>
+
+<h2>7. Bài 5 — Pipeline 3 Conv Layers</h2>
+<div class="ex">Input: 64×64×3
+Conv1(k=3,p=1,s=1,K=32): o=(64+2-3)/1+1=64→64×64×32
+  Params=32×(9×3+1)=32×28=896
+Conv2(k=3,p=0,s=2,K=64): o=⌊(64-3)/2⌋+1=31→31×31×64
+  Params=64×(9×32+1)=64×289=18,496
+Conv3(k=5,p=2,s=1,K=128): o=(31+4-5)/1+1=31→31×31×128
+  Params=128×(25×64+1)=128×1601=204,928
+TOTAL = 896+18,496+204,928 = 224,320
+Conv3 chiếm 204,928/224,320 ≈ 91%!</div>
+
+<h2>8. Pooling Formulas</h2>
+<div class="fb">
+MaxPool: $o=\lfloor(i-k)/s\rfloor+1$; &nbsp; 2×2 s=2: $o=i/2$ (−½ mỗi chiều)<br>
+AvgPool: $Y(u,v)=\frac{1}{k^2}\sum_{i=0}^{k-1}\sum_{j=0}^{k-1}X(us+i,\;vs+j)$<br>
+GAP: $(H,W,C)\to C$ — 0 params, thay thế FC ở cuối (ResNet,EfficientNet)<br>
+Pooling KHÔNG có params; Max chỉ pass grad về vị trí max (gradient routing)
+</div>
+<h3>Bài 6 — MaxPool + AvgPool</h3>
+<div class="ex">Feature map 4×4: [[2,8,3,1],[6,4,7,5],[1,9,0,3],[4,2,8,6]]
+MaxPool 2×2 s=2: o=⌊(4-2)/2⌋+1=2 → 2×2:
+  TL=max(2,8,6,4)=8  TR=max(3,1,7,5)=7
+  BL=max(1,9,4,2)=9  BR=max(0,3,8,6)=8 → [[8,7],[9,8]]
+AvgPool 2×2 s=2:
+  TL=(2+8+6+4)/4=5.0 TR=(3+1+7+5)/4=4.0
+  BL=(1+9+4+2)/4=4.0 BR=(0+3+8+6)/4=4.25 → [[5,4],[4,4.25]]</div>
+
+<!-- SVG 4: MaxPool visualization -->
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 272 46">
+  <text x="0" y="7" font-size="5" font-family="Arial" fill="#1a3a5f" font-weight="bold">MaxPool 2×2, stride=2: lấy max mỗi vùng 2×2 màu</text>
+  <rect x="0"  y="10" width="11" height="11" fill="#aed6f1" stroke="#2980b9" stroke-width="0.7"/>
+  <rect x="11" y="10" width="11" height="11" fill="#aed6f1" stroke="#2980b9" stroke-width="0.7"/>
+  <rect x="0"  y="21" width="11" height="11" fill="#aed6f1" stroke="#2980b9" stroke-width="0.7"/>
+  <rect x="11" y="21" width="11" height="11" fill="#aed6f1" stroke="#2980b9" stroke-width="0.7"/>
+  <text x="5.5"  y="18" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#003">2</text>
+  <text x="16.5" y="18" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#003" font-weight="bold">8</text>
+  <text x="5.5"  y="29" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#003">6</text>
+  <text x="16.5" y="29" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#003">4</text>
+  <rect x="22" y="10" width="11" height="11" fill="#fad7a0" stroke="#e08020" stroke-width="0.7"/>
+  <rect x="33" y="10" width="11" height="11" fill="#fad7a0" stroke="#e08020" stroke-width="0.7"/>
+  <rect x="22" y="21" width="11" height="11" fill="#fad7a0" stroke="#e08020" stroke-width="0.7"/>
+  <rect x="33" y="21" width="11" height="11" fill="#fad7a0" stroke="#e08020" stroke-width="0.7"/>
+  <text x="27.5" y="18" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#7a3800">3</text>
+  <text x="38.5" y="18" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#7a3800">1</text>
+  <text x="27.5" y="29" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#7a3800" font-weight="bold">7</text>
+  <text x="38.5" y="29" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#7a3800">5</text>
+  <rect x="0"  y="32" width="11" height="11" fill="#a9dfbf" stroke="#27ae60" stroke-width="0.7"/>
+  <rect x="11" y="32" width="11" height="11" fill="#a9dfbf" stroke="#27ae60" stroke-width="0.7"/>
+  <rect x="0"  y="43" width="11" height="11" fill="#a9dfbf" stroke="#27ae60" stroke-width="0.7"/>
+  <rect x="11" y="43" width="11" height="11" fill="#a9dfbf" stroke="#27ae60" stroke-width="0.7"/>
+  <text x="5.5"  y="39" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#1a6e2e">1</text>
+  <text x="16.5" y="39" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#1a6e2e" font-weight="bold">9</text>
+  <text x="5.5"  y="50" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#1a6e2e">4</text>
+  <text x="16.5" y="50" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#1a6e2e">2</text>
+  <rect x="22" y="32" width="11" height="11" fill="#d7bde2" stroke="#8e44ad" stroke-width="0.7"/>
+  <rect x="33" y="32" width="11" height="11" fill="#d7bde2" stroke="#8e44ad" stroke-width="0.7"/>
+  <rect x="22" y="43" width="11" height="11" fill="#d7bde2" stroke="#8e44ad" stroke-width="0.7"/>
+  <rect x="33" y="43" width="11" height="11" fill="#d7bde2" stroke="#8e44ad" stroke-width="0.7"/>
+  <text x="27.5" y="39" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#5b0e91">0</text>
+  <text x="38.5" y="39" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#5b0e91">3</text>
+  <text x="27.5" y="50" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#5b0e91" font-weight="bold">8</text>
+  <text x="38.5" y="50" text-anchor="middle" font-size="5.5" font-family="Courier New" fill="#5b0e91">6</text>
+  <text x="52" y="28" font-size="5" font-family="Arial" fill="#555">max→</text>
+  <rect x="68" y="14" width="16" height="16" fill="#aed6f1" stroke="#2980b9" stroke-width="1.5"/>
+  <rect x="84" y="14" width="16" height="16" fill="#fad7a0" stroke="#e08020" stroke-width="1.5"/>
+  <rect x="68" y="30" width="16" height="16" fill="#a9dfbf" stroke="#27ae60" stroke-width="1.5"/>
+  <rect x="84" y="30" width="16" height="16" fill="#d7bde2" stroke="#8e44ad" stroke-width="1.5"/>
+  <text x="76" y="25" text-anchor="middle" font-size="7" font-family="Courier New" fill="#003" font-weight="bold">8</text>
+  <text x="92" y="25" text-anchor="middle" font-size="7" font-family="Courier New" fill="#7a3800" font-weight="bold">7</text>
+  <text x="76" y="41" text-anchor="middle" font-size="7" font-family="Courier New" fill="#1a6e2e" font-weight="bold">9</text>
+  <text x="92" y="41" text-anchor="middle" font-size="7" font-family="Courier New" fill="#5b0e91" font-weight="bold">8</text>
+  <text x="112" y="12" font-size="4.5" font-family="Arial" fill="#555">AvgPool 2×2:</text>
+  <rect x="112" y="14" width="16" height="16" fill="#eaf4fb" stroke="#2980b9" stroke-width="0.8"/>
+  <rect x="128" y="14" width="16" height="16" fill="#fef5e8" stroke="#e08020" stroke-width="0.8"/>
+  <rect x="112" y="30" width="16" height="16" fill="#eafaf1" stroke="#27ae60" stroke-width="0.8"/>
+  <rect x="128" y="30" width="16" height="16" fill="#f5eef8" stroke="#8e44ad" stroke-width="0.8"/>
+  <text x="120" y="25" text-anchor="middle" font-size="6" font-family="Courier New" fill="#333">5.0</text>
+  <text x="136" y="25" text-anchor="middle" font-size="6" font-family="Courier New" fill="#333">4.0</text>
+  <text x="120" y="41" text-anchor="middle" font-size="6" font-family="Courier New" fill="#333">4.0</text>
+  <text x="136" y="41" text-anchor="middle" font-size="6" font-family="Courier New" fill="#333">4.25</text>
+</svg>
+
+<h2>9. Receptive Field / Dilated / Transposed</h2>
+<div class="fb">
+RF: $RF_1=k_1;\quad RF_n=RF_{n-1}+(k_n-1)\cdot\prod_{i=1}^{n-1}s_i$<br>
+2×Conv(k=3,s=1): $RF=3+(3-1)=5$ &nbsp;(= 1 Conv 5×5)<br>
+3 layers(k=3,s=2): $RF=3+(3-1)+(3-1)\cdot2\cdot2=3+2+8=13$<br>
+Dilated: $k_\text{eff}=d(k-1)+1$; k=3,d=2: $k_\text{eff}=5$<br>
+ASPP (DeepLab): $d\in\{1,6,12,18\}$ → multi-scale không ↓res<br>
+Transposed Conv: $o=(i-1)s-2p+k$ &nbsp;(decoder UNet, ×2 res với s=2,k=2)<br>
+Bilinear+Conv thay TransConv → tránh checkerboard artifact
+</div>
+
+<h2>10. Depthwise Separable / 2×(3×3) vs (5×5)</h2>
+<div class="fb">
+Standard Conv: $Kk^2D$ params<br>
+DW (per channel): $Dk^2$ + PW (1×1): $KD$ = $D(k^2+K)$<br>
+Ratio $=\frac{1}{K}+\frac{1}{k^2}$; k=3,K=64: $\frac{1}{64}+\frac{1}{9}\approx0.127$ (~8×, MobileNet)<br>
+2×Conv(3×3): $18D^2$ params; 1×Conv(5×5): $25D^2$ → tiết kiệm 28%<br>
+RF giống nhau (=5×5); 2×(3×3) có thêm 2 ReLU → phi tuyến mạnh hơn
+</div>
+<p>YOLO 640px: $80^2+40^2+20^2=\mathbf{8\,400}$ anchors; FPN(top-down)+PAN(bottom-up)</p>
+<div class="fb">
+ResNet skip: $y=\mathcal{F}(x,W)+x$; &nbsp; $\frac{\partial L}{\partial x}=\frac{\partial L}{\partial y}\left(1+\frac{\partial\mathcal{F}}{\partial x}\right)\geq1$ → no vanish
+</div>
+</div><!-- end col CNN -->
+
+<!-- ── COL 2: MLP + Regularization ── -->
+<div class="col">
+<h1>MLP — Fully Connected</h1>
+
+<h2>Tham Số &amp; Forward</h2>
+<div class="fb">
+$\text{Params}=M(N+1)$; &nbsp; $z^{(l)}=W^{(l)}a^{(l-1)}+b^{(l)};\;a^{(l)}=\sigma(z^{(l)})$
+</div>
+<h3>MNIST 784→256→128→10</h3>
+<table>
+<tr><th>Layer</th><th>Tính</th><th>Params</th></tr>
+<tr><td>FC1 784→256</td><td>256×785</td><td class="c"><b>200 960</b></td></tr>
+<tr><td>FC2 256→128</td><td>128×257</td><td class="c">32 896</td></tr>
+<tr><td>FC3 128→10</td><td>10×129</td><td class="c">1 290</td></tr>
+<tr><td colspan="2"><b>Total</b></td><td class="c"><b>235 146</b></td></tr>
+</table>
+
+<h2>Activation Functions</h2>
+<table>
+<tr><th>Func</th><th>$f(x)$</th><th>$f'(x)$</th><th>Issue</th></tr>
+<tr><td>Sigmoid</td><td>$1/(1+e^{-x})$</td><td>$\sigma(1{-}\sigma)\leq0.25$</td><td>Vanish</td></tr>
+<tr><td>Tanh</td><td>$(e^x{-}e^{-x})/(e^x{+}e^{-x})$</td><td>$1{-}\tanh^2\leq1$</td><td>Vanish</td></tr>
+<tr><td>ReLU</td><td>$\max(0,x)$</td><td>0 or 1</td><td>Dead</td></tr>
+<tr><td>Leaky</td><td>$\max(\alpha x,x)$</td><td>$\alpha$ or 1</td><td>Fix Dead</td></tr>
+<tr><td>GELU</td><td>$x\Phi(x)$</td><td>$\Phi+x\phi$</td><td>Transformer</td></tr>
+</table>
+<div class="w">Vanishing: $\sigma'_{\max}=0.25$; L=5: $0.25^5\approx10^{-3}$; Dead ReLU: $x{<}0\to g=0$</div>
+
+<h2>Backprop</h2>
+<div class="fb">
+Out: $\delta^{(L)}=\partial L/\partial z^{(L)}$; CE+Softmax: $\delta^{(L)}=\hat{y}-y$ ✓<br>
+Hidden: $\delta^{(l)}=(W^{(l+1)})^\top\delta^{(l+1)}\odot\sigma'(z^{(l)})$<br>
+$\nabla W^{(l)}=\delta^{(l)}(a^{(l-1)})^\top;\quad\nabla b^{(l)}=\delta^{(l)}$
+</div>
+
+<h2>BatchNorm / L1/L2 / Dropout</h2>
+<div class="fb">
+BN: $\hat{x}=\frac{x-\mu_B}{\sqrt{\sigma_B^2+\varepsilon}},\;y=\gamma\hat{x}+\beta$; Inf: EMA<br>
+L2: $g_\text{eff}=g+\lambda w$; &nbsp; L1: $g_\text{eff}=g+\lambda\text{sign}(w)$<br>
+Dropout: $\tilde{x}=mx/(1-p)$ train; no-op test
+</div>
+
+<h2>Weight Init</h2>
+<table>
+<tr><th>Init</th><th>Formula</th><th>Dùng</th></tr>
+<tr><td>Xavier</td><td>$\mathcal{U}(\pm\sqrt{6/(n_i+n_o)})$</td><td>Sigmoid,Tanh</td></tr>
+<tr><td>He</td><td>$\mathcal{N}(0,2/n_\text{in})$</td><td>ReLU,Leaky</td></tr>
+</table>
+
+<h2>Debug &amp; Capacity</h2>
+<table>
+<tr><th>Triệu chứng</th><th>Fix</th></tr>
+<tr><td>Init loss ≠ logK</td><td>Sai init/label lệch</td></tr>
+<tr><td>Loss=NaN</td><td>↓LR, log(0), overflow</td></tr>
+<tr><td>Grad≈0</td><td>Dead/vanishing</td></tr>
+<tr><td>Val≫Train</td><td>Dropout,L2,Aug</td></tr>
+<tr><td>BN test≠train</td><td>running_stats lỗi</td></tr>
+</table>
+<div class="fb">
+$n$ FC không activation = 1 FC (tuyến tính hoàn toàn)<br>
+Universal Approx: MLP 1 hidden đủ rộng ≈ bất kỳ hàm liên tục
+</div>
+
+<h2>Data Augmentation</h2>
+<table>
+<tr><th>Kỹ thuật</th><th>Tác dụng</th></tr>
+<tr><td>Flip/Rotate/Crop</td><td>Spatial invariance</td></tr>
+<tr><td>ColorJitter</td><td>Color invariance</td></tr>
+<tr><td>Mixup $\lambda x_i+(1-\lambda)x_j$</td><td>Label regularize</td></tr>
+<tr><td>CutMix / Mosaic</td><td>Multi-scale YOLO</td></tr>
+</table>
+
+<h2>Transfer Learning</h2>
+<div class="fb">
+Pretrain→Freeze backbone→Fine-tune head→Unfreeze+↑LR<br>
+Shallow layers: texture/edges; Deep layers: semantic features
+</div>
+</div>
+
+<!-- ── COL 3: Training / Optimizers ── -->
+<div class="col">
+<h1>Training — Optimizers</h1>
+
+<h2>SGD + Momentum + Nesterov</h2>
+<div class="fb">
+SGD: $v_t=\beta v_{t-1}+g_t;\;\theta_t=\theta-\eta v_t\;(\beta{=}0.9)$<br>
+Nesterov: $v_t=\beta v_{t-1}+\nabla L(\theta-\beta v_{t-1})$ — lookahead
+</div>
+<table>
+<tr><th>t</th><th>$g_t$</th><th>$v_t$</th><th>$|\Delta\theta|$</th></tr>
+<tr><td>1</td><td>+1</td><td>1.000</td><td>0.100</td></tr>
+<tr><td>2</td><td>−1</td><td>−0.100</td><td>0.010</td></tr>
+<tr><td>3</td><td>+1</td><td>0.910</td><td>0.091</td></tr>
+</table>
+<p>Momentum 0.201 vs Vanilla 0.300 → <span class="r">−33% oscillation</span></p>
+
+<h2>RMSProp</h2>
+<div class="fb">
+$v_t=\beta v_{t-1}+(1-\beta)g_t^2;\quad\theta-=\frac{\eta g_t}{\sqrt{v_t}+\varepsilon}$
+</div>
+
+<h2>Adam (Bias-Corrected)</h2>
+<div class="fb">
+$m_t=\beta_1m_{t-1}+(1-\beta_1)g_t;\quad v_t=\beta_2v_{t-1}+(1-\beta_2)g_t^2$<br>
+$\hat{m}=m_t/(1-\beta_1^t);\quad\hat{v}=v_t/(1-\beta_2^t);\quad\theta-=\frac{\eta\hat{m}}{\sqrt{\hat{v}}+\varepsilon}$<br>
+$\beta_1=0.9,\;\beta_2=0.999,\;\varepsilon=10^{-8}$
+</div>
+<div class="ex">η=0.01, g₁=0.3, θ₀=0.5:
+t=1: m₁=0.030, v₁=9×10⁻⁵
+     m̂₁=0.300, v̂₁=0.090
+     Δθ=-0.01×0.300/√0.090=-0.010→θ₁=0.490
+     [No bias corr: 0.030/√9e-5=0.032 ←3.2× lớn!]
+t=2: g₂=0.5→m₂=0.077,v₂=3.4×10⁻⁴
+     m̂₂=0.405,v̂₂=0.170
+     Δθ=-0.01×0.405/√0.170≈-0.0098→θ₂≈0.480</div>
+
+<h2>AdamW / LR Scheduling</h2>
+<div class="fb">
+AdamW: $\theta\leftarrow\theta-\frac{\eta\hat{m}}{\sqrt{\hat{v}}+\varepsilon}-\eta\lambda\theta$ (decoupled WD ✓)<br>
+Cosine: $\eta_t=\eta_{\min}+\tfrac{1}{2}(\eta_0-\eta_{\min})(1+\cos\tfrac{\pi t}{T})$<br>
+$t{=}0:\eta_0\;|\;t{=}T/2:\frac{\eta_0+\eta_{\min}}{2}\;|\;t{=}T:\eta_{\min}$<br>
+Warmup: $\eta=\eta_0\cdot t/T_w$ rồi cosine; LinearScale: Batch×k→LR×k
+</div>
+
+<h2>Gradient Clipping</h2>
+<div class="fb">
+By norm: $\tilde{g}=g\cdot c/\|g\|$ if $\|g\|>c$ → giữ hướng ✓<br>
+By value: clip$(g,-\delta,\delta)$ → distort hướng ✗
+</div>
+
+<h2>Normalization</h2>
+<table>
+<tr><th>Loại</th><th>Norm theo</th><th>Dùng</th></tr>
+<tr><td>BatchNorm</td><td>(N,H,W) per C</td><td>CNN, large batch</td></tr>
+<tr><td>LayerNorm</td><td>(C,H,W) per sample</td><td>Transformer</td></tr>
+<tr><td>GroupNorm</td><td>G groups of C</td><td>Small batch</td></tr>
+<tr><td>InstanceNorm</td><td>(H,W) per C/sample</td><td>Style transfer</td></tr>
+</table>
+
+<h2>Attention Preview</h2>
+<div class="fb">
+$\text{Attn}(Q,K,V)=\text{Softmax}(\frac{QK^\top}{\sqrt{F_K}})V$<br>
+ViT P=16,224px: $S=196$ tokens, dim$=768$; params/block=$12d^2$
+</div>
+</div>
+
+</div><!-- END PAGE 1 -->
+
+<!-- ══════════════ TRANG 2 ══════════════ -->
+<div class="page page2">
+
+<!-- ── COL 1: Loss Functions ── -->
+<div class="col">
+<h1>Loss Functions</h1>
+
+<h2>Regression</h2>
+<div class="fb">
+$\text{MSE}=\frac{1}{n}\sum(y-\hat{y})^2$; $\text{MAE}=\frac{1}{n}\sum|y-\hat{y}|$<br>
+Huber($\delta$): $|e|\leq\delta\Rightarrow e^2/2$; $|e|>\delta\Rightarrow\delta(|e|-\delta/2)$
+</div>
+<div class="ex">δ=1.0: e=0.5→L=0.125(quad) | e=2.0→L=1.5(lin)</div>
+
+<h2>BCE — Binary Cross Entropy</h2>
+<div class="fb">
+$L=-[y\log\hat{p}+(1-y)\log(1-\hat{p})]$
+</div>
+<table>
+<tr><th>$y$</th><th>$\hat{p}$</th><th>$L$</th><th>Mức</th></tr>
+<tr><td>1</td><td>0.9</td><td>−log(0.9)=<b>0.105</b></td><td>Easy</td></tr>
+<tr><td>1</td><td>0.5</td><td>−log(0.5)=<b>0.693</b></td><td>Med</td></tr>
+<tr><td>1</td><td>0.1</td><td>−log(0.1)=<b>2.303</b></td><td>Hard</td></tr>
+<tr><td>0</td><td>0.3</td><td>−log(0.7)=<b>0.357</b></td><td>OK</td></tr>
+</table>
+<div class="w">Dùng BCEWithLogitsLoss → tích hợp sigmoid, ổn định số học</div>
+
+<h2>Cross Entropy Multi-class</h2>
+<div class="fb">
+$p_i=e^{z_i}/\sum_j e^{z_j};\quad L=-\log p_c=-z_c+\log\sum_j e^{z_j}$<br>
+Stable: $z_i\leftarrow z_i-\max z$ trước exp (không đổi giá trị)
+</div>
+<div class="ex">z=[2,1,0], GT=class 0 → z'=[0,-1,-2]
+Σexp=1+0.368+0.135=1.503
+p₀=1/1.503=0.665 → L=-log(0.665)=0.408
+CE+Softmax grad đơn giản: δ=ŷ-y=[-0.335,0.245,0.090]
+Init: K=10→log10=2.303 | K=100→4.605 | K=1000→6.908</div>
+
+<h2>Label Smoothing &amp; Focal</h2>
+<div class="fb">
+LS: $\tilde{y}=(1-\varepsilon)y+\varepsilon/K$; $[\varepsilon{=}0.1,K{=}10]$: $y_t:1\to0.91$<br>
+FL: $-\alpha(1-\hat{p})^\gamma\log\hat{p}$; $\gamma{=}2$; easy($\hat{p}{=}0.9$)→$(0.1)^2=0.01\times$↓
+</div>
+
+<h2>KL &amp; Triplet</h2>
+<div class="fb">
+$D_{KL}(P\|Q)=\sum P\log(P/Q)\geq0$; asymmetric<br>
+CE$=H(P)+D_{KL}(P\|Q)$<br>
+Triplet: $L=\max(0,d_{ap}-d_{an}+\alpha);\;\alpha{=}0.2$
+</div>
+
+<h2>Dice Loss &amp; CE+Dice</h2>
+<div class="fb">
+$L_\text{Dice}=1-\frac{2\sum p\cdot g+\varepsilon}{\sum p+\sum g+\varepsilon}$<br>
+$\mathcal{L}=L_{CE}+\lambda L_\text{Dice}$ — robust class imbalance
+</div>
+<div class="ex">TP=2,FP=1,FN=1:
+Dice=4/6≈0.667  IoU=2/4=0.500</div>
+
+<h2>CIoU / DFL / YOLO</h2>
+<div class="fb">
+IoU$=|B\cap\hat{B}|/|B\cup\hat{B}|$<br>
+$L_{CIoU}=1-\text{IoU}+d^2/c^2+\alpha_v v$ ($d$=dist centers, $v$=ratio diff)<br>
+DFL: $y^-=\lfloor y\rfloor,w^-=y^+-y;\;w^+=y-y^-$<br>
+$L_{DFL}=-(w^-\log p_{y^-}+w^+\log p_{y^+});\;\hat{d}=\sum_k kp_k$<br>
+$\mathcal{L}_{YOLO}=w_{cls}L_{BCE}+w_{box}L_{CIoU}+w_{dfl}L_{DFL}$<br>
+TaskAligned: $t_{ik}=\sigma(z_c)^\alpha\cdot\text{IoU}(\hat{b},b^{gt})^\beta$
+</div>
+<div class="ex">DFL: y=2.45→y⁻=2,y⁺=3; w⁻=0.55,w⁺=0.45
+L=-(0.55×logp₂+0.45×logp₃)</div>
+</div>
+
+<!-- ── COL 2: Metrics + Transformer ── -->
+<div class="col">
+<h1>Evaluation Metrics</h1>
+
+<h2>Confusion Matrix &amp; Formulas</h2>
+<table>
+<tr><th></th><th>Pred POS</th><th>Pred NEG</th></tr>
+<tr><th>Real POS</th><td>TP ✓</td><td>FN (bỏ sót)</td></tr>
+<tr><th>Real NEG</th><td>FP (nhầm)</td><td>TN ✓</td></tr>
+</table>
+<div class="fb">
+$P=\frac{TP}{TP+FP};\;R=\frac{TP}{TP+FN};\;F_1=\frac{2TP}{2TP+FP+FN}$<br>
+$\text{Acc}=\frac{TP+TN}{N};\;\text{Spec}=\frac{TN}{TN+FP};\;\text{BalAcc}=\frac{R+\text{Spec}}{2}$
+</div>
+<div class="ex">TP=80,FP=20,FN=10,TN=90 (N=200):
+P=0.800 R=0.889 F1=0.842 Acc=0.850 BalAcc=0.854</div>
+<div class="ok">↓τ→↑R↓P &nbsp;|&nbsp; ↑τ→↓R↑P</div>
+
+<h2>ROC/AUC &amp; Multi-class</h2>
+<div class="fb">
+FPR$=FP/(FP+TN)$; AUC$=\int$TPR d(FPR); 1=perfect, 0.5=random<br>
+Macro:avg/class; Micro:pool all TP/FP/FN; Weighted:macro×support
+</div>
+
+<h2>Regression &amp; Seg Metrics</h2>
+<div class="fb">
+$R^2=1-\sum(y-\hat{y})^2/\sum(y-\bar{y})^2$; 1=perfect, &lt;0=tệ hơn mean<br>
+$\text{IoU}=|P\cap G|/(|P|+|G|-|P\cap G|)$; $\text{Dice}=\frac{2\text{IoU}}{1+\text{IoU}}$<br>
+$\text{mIoU}=\frac{1}{C}\sum_c\text{IoU}_c$; HD95=95th Hausdorff dist
+</div>
+<div class="ex">3×3 mask: Pred=[[1,0,0],[1,1,0],[0,0,0]]
+           GT=  [[1,0,0],[0,1,0],[0,1,0]]
+TP=2,FP=1,FN=1 → IoU=0.500, Dice=0.667</div>
+
+<h2>mAP &amp; PQ</h2>
+<div class="fb">
+$\text{mAP}=\frac{1}{N_c}\sum_c\int_0^1 P(R)\,dR$; @50:IoU≥0.5; @50:95:avg<br>
+$PQ=SQ\times RQ$; $SQ=\overline{\text{IoU}}_\text{TP}$; $RQ=|TP|/(|TP|+\tfrac{1}{2}|FP|+\tfrac{1}{2}|FN|)$
+</div>
+<div class="ex">P1↔A(0.8✓),P2↔B(0.6✓),P3=FP → SQ=0.70,RQ=0.80,PQ=0.56</div>
+
+<h2>Chọn Metric</h2>
+<table>
+<tr><th>Tình huống</th><th>Metric</th></tr>
+<tr><td>Imbalanced, miss=costly</td><td>Recall, BalAcc</td></tr>
+<tr><td>FP costly</td><td>Precision</td></tr>
+<tr><td>Detection multi-class</td><td>mAP@50:95</td></tr>
+<tr><td>Semantic seg pixel</td><td>mIoU, Dice</td></tr>
+<tr><td>Panoptic seg</td><td>PQ=SQ×RQ</td></tr>
+<tr><td>Regression safe</td><td>RMSE, $R^2$</td></tr>
+<tr><td>Regression outlier</td><td>MAE, Huber</td></tr>
+</table>
+
+<h1>Transformer &amp; ViT</h1>
+
+<h2>Scaled Dot-Product Attention</h2>
+<div class="fb">
+$\text{Attn}(Q,K,V)=\text{Softmax}\!\left(\frac{QK^\top}{\sqrt{F_K}}\right)V$<br>
+Q$(N,S,F_Q)$, K$(N,S,F_K)$, V$(N,S,F_V)$; Score $C=QK^\top\in\mathbb{R}^{N\times S\times S}$<br>
+$\div\sqrt{F_K}$: $QK^\top\sim\mathcal{N}(0,F_K)$ → var≈1, tránh Softmax bão hòa
+</div>
+<div class="ex">S=3,F_K=2: Score=[[1,0,1],[0,1,1],[1,1,2]]÷√2
+Token 3 attend mạnh nhất chính nó(1.41); mask -inf→Softmax=0</div>
+
+<!-- SVG 5: Attention QKV flow -->
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 244 60">
+  <text x="0" y="7" font-size="5" font-family="Arial" fill="#1a3a5f" font-weight="bold">Attention: Q×Kᵀ → ÷√F_K → softmax → ×V → output</text>
+  <rect x="0" y="11" width="20" height="26" fill="#c6dcf0" stroke="#2980b9" stroke-width="1"/>
+  <text x="10" y="22" text-anchor="middle" font-size="5" font-family="Arial" fill="#003" font-weight="bold">X</text>
+  <text x="10" y="30" text-anchor="middle" font-size="4" font-family="Arial" fill="#2980b9">(N,S,F)</text>
+  <line x1="20" y1="24" x2="30" y2="16" stroke="#555" stroke-width="0.7"/>
+  <line x1="20" y1="24" x2="30" y2="24" stroke="#555" stroke-width="0.7"/>
+  <line x1="20" y1="24" x2="30" y2="32" stroke="#555" stroke-width="0.7"/>
+  <text x="25" y="13" font-size="4" font-family="Arial" fill="#555">W_Q</text>
+  <text x="25" y="22" font-size="4" font-family="Arial" fill="#555">W_K</text>
+  <text x="25" y="30" font-size="4" font-family="Arial" fill="#555">W_V</text>
+  <rect x="30" y="10" width="16" height="12" fill="#fff0d0" stroke="#e08020" stroke-width="0.8"/>
+  <text x="38" y="19" text-anchor="middle" font-size="6" font-family="Arial" fill="#7a3800" font-weight="bold">Q</text>
+  <rect x="30" y="18" width="16" height="12" fill="#d0f0d8" stroke="#27ae60" stroke-width="0.8"/>
+  <text x="38" y="27" text-anchor="middle" font-size="6" font-family="Arial" fill="#1a6e2e" font-weight="bold">K</text>
+  <rect x="30" y="26" width="16" height="12" fill="#d7bde2" stroke="#8e44ad" stroke-width="0.8"/>
+  <text x="38" y="35" text-anchor="middle" font-size="6" font-family="Arial" fill="#5b0e91" font-weight="bold">V</text>
+  <line x1="46" y1="16" x2="54" y2="22" stroke="#555" stroke-width="0.7"/>
+  <line x1="46" y1="24" x2="54" y2="22" stroke="#555" stroke-width="0.7"/>
+  <text x="50" y="16" font-size="4" font-family="Arial" fill="#333">QKᵀ</text>
+  <rect x="54" y="14" width="22" height="16" fill="#eef4fb" stroke="#2980b9" stroke-width="0.8"/>
+  <line x1="65" y1="14" x2="65" y2="30" stroke="#2980b9" stroke-width="0.3"/>
+  <line x1="54" y1="22" x2="76" y2="22" stroke="#2980b9" stroke-width="0.3"/>
+  <text x="59" y="20" text-anchor="middle" font-size="5" font-family="Courier New" fill="#2980b9">0.7</text>
+  <text x="70" y="20" text-anchor="middle" font-size="5" font-family="Courier New" fill="#2980b9">0.1</text>
+  <text x="59" y="27" text-anchor="middle" font-size="5" font-family="Courier New" fill="#2980b9">0.2</text>
+  <text x="70" y="27" text-anchor="middle" font-size="5" font-family="Courier New" fill="#2980b9">0.8</text>
+  <text x="65" y="36" text-anchor="middle" font-size="4" font-family="Arial" fill="#2980b9">÷√F_K</text>
+  <text x="65" y="42" text-anchor="middle" font-size="4" font-family="Arial" fill="#2980b9">→softmax</text>
+  <text x="65" y="48" text-anchor="middle" font-size="4" font-family="Arial" fill="#2980b9">(N,S,S)</text>
+  <line x1="76" y1="22" x2="82" y2="26" stroke="#555" stroke-width="0.7"/>
+  <line x1="46" y1="32" x2="82" y2="30" stroke="#555" stroke-width="0.7"/>
+  <text x="84" y="24" font-size="4" font-family="Arial" fill="#555">×V</text>
+  <rect x="88" y="14" width="16" height="22" fill="#b8e0c0" stroke="#27ae60" stroke-width="1"/>
+  <text x="96" y="25" text-anchor="middle" font-size="5" font-family="Arial" fill="#1a6e2e" font-weight="bold">Out</text>
+  <text x="96" y="33" text-anchor="middle" font-size="4" font-family="Arial" fill="#27ae60">(N,S,F)</text>
+  <text x="112" y="12" font-size="4.5" font-family="Arial" fill="#1a3a5f" font-weight="bold">Multi-Head:</text>
+  <text x="112" y="18" font-size="4" font-family="Arial" fill="#333">(N,S,F)→Lin</text>
+  <text x="112" y="24" font-size="4" font-family="Arial" fill="#333">→(N,H,S,F/H)</text>
+  <text x="112" y="30" font-size="4" font-family="Arial" fill="#333">→Attn per head</text>
+  <text x="112" y="36" font-size="4" font-family="Arial" fill="#333">→concat→(N,S,F)</text>
+  <text x="112" y="44" font-size="4" font-family="Arial" fill="#555">Mask: pad/causal→-∞</text>
+  <text x="112" y="50" font-size="4.5" font-family="Arial" fill="#e08020">÷√F_K: var→1, no sat.</text>
+</svg>
+
+<h2>Multi-Head &amp; Block</h2>
+<div class="fb">
+MH: $\text{Concat}(\text{head}_1,...,H)W^O$; $d_k=d_m/H$; params$=4d_m^2$<br>
+Shape: $(N,S,F)\!\to\!\text{Lin}\!\to\!(N,H,S,F/H)\!\to\!\text{Attn}\!\to\!\text{concat}\!\to\!(N,S,F)$<br>
+Enc: MH-SelfAttn→Add&amp;LN→FFN($F$→$4F$→$F$)→Add&amp;LN<br>
+Dec: +Masked-SelfAttn; CrossAttn(Q←dec,K,V←enc); Params$=12d_m^2$/block<br>
+PE: $\sin/\cos(pos/10000^{2i/d})$; ViT P=16,224px→196 tokens,dim=768
+</div>
+</div>
+
+<!-- ── COL 3: Detection + Seg + Quick Ref ── -->
+<div class="col">
+<h1>Object Detection</h1>
+
+<h2>BB Encoding &amp; NMS</h2>
+<div class="fb">
+xyxy:$(x_1,y_1,x_2,y_2)$; cxcywh:$(c_x,c_y,w,h)\in[0,1]$<br>
+Anchor: $(c_x,c_y)=((j+0.5)s,(i+0.5)s)$ stride $s$<br>
+NMS: sort conf↓→take→remove IoU$>\tau$→repeat
+</div>
+<div class="ex">A1(0.95)→out;A2(IoU=0.68>0.5)→del;B1(0.90)→out → {A1,B1}</div>
+
+<h2>YOLO vs DETR</h2>
+<table>
+<tr><th></th><th>YOLO</th><th>DETR</th></tr>
+<tr><td>Pred</td><td>8400 dense</td><td>$N_q$ queries</td></tr>
+<tr><td>Assign</td><td>One-to-many</td><td>Hungarian 1-to-1</td></tr>
+<tr><td>NMS</td><td>Cần</td><td>Không cần</td></tr>
+</table>
+<div class="fb">
+$C_{ij}=-\log\hat{p}_j(c_i)+\lambda\|b_i-\hat{b}_j\|+\lambda_g L_{GIoU}$; $O(N^3)$
+</div>
+
+<h1>Image Segmentation</h1>
+
+<h2>Các Loại &amp; UNet</h2>
+<table>
+<tr><th>Type</th><th>Output</th><th>Metric</th></tr>
+<tr><td>Semantic</td><td>Class/pixel</td><td>mIoU,Dice</td></tr>
+<tr><td>Instance</td><td>Mask/object</td><td>mAP</td></tr>
+<tr><td>Panoptic</td><td>Sem+Inst</td><td>PQ=SQ×RQ</td></tr>
+</table>
+<div class="fb">
+UNet: Enc(Conv+Pool↓)→Skip→Dec(Up+Concat↑)→Head(1×1 Conv→K)<br>
+Skip concat giữ biên sắc nét; Up GT mask: nearest; feat: bilinear<br>
+ASPP($d\in\{1,6,12,18\}$)+GAP→concat→1×1: multi-scale no ↓res
+</div>
+
+<!-- SVG 6: UNet U-shape architecture -->
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 244 78">
+  <text x="0" y="7" font-size="5" font-family="Arial" fill="#1a3a5f" font-weight="bold">UNet: Encoder(↓) + Skip Connection (→) + Decoder(↑)</text>
+  <rect x="0" y="10" width="30" height="10" fill="#c6dcf0" stroke="#2980b9" stroke-width="0.8" rx="1"/>
+  <text x="15" y="17" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#003">Conv×2 64ch</text>
+  <line x1="15" y1="20" x2="15" y2="25" stroke="#2980b9" stroke-width="0.8"/>
+  <polygon points="15,25 12,23 18,23" fill="#2980b9"/>
+  <text x="3" y="24" font-size="3.5" font-family="Arial" fill="#888">Pool</text>
+  <rect x="0" y="25" width="30" height="10" fill="#a8c8e8" stroke="#2980b9" stroke-width="0.8" rx="1"/>
+  <text x="15" y="32" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#003">Conv×2 128ch</text>
+  <line x1="15" y1="35" x2="15" y2="40" stroke="#2980b9" stroke-width="0.8"/>
+  <polygon points="15,40 12,38 18,38" fill="#2980b9"/>
+  <rect x="0" y="40" width="30" height="10" fill="#8ab0d8" stroke="#2980b9" stroke-width="0.8" rx="1"/>
+  <text x="15" y="47" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#fff">Conv×2 256ch</text>
+  <line x1="15" y1="50" x2="15" y2="55" stroke="#2980b9" stroke-width="0.8"/>
+  <polygon points="15,55 12,53 18,53" fill="#2980b9"/>
+  <rect x="0" y="55" width="30" height="10" fill="#1a3a5f" stroke="#1a3a5f" stroke-width="0.8" rx="1"/>
+  <text x="15" y="62" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#fff">Bottleneck 512</text>
+  <line x1="30" y1="15" x2="78" y2="15" stroke="#e08020" stroke-width="1" stroke-dasharray="2,1"/>
+  <polygon points="78,15 75,13.5 75,16.5" fill="#e08020"/>
+  <text x="54" y="13" text-anchor="middle" font-size="4" font-family="Arial" fill="#e08020">skip</text>
+  <line x1="30" y1="30" x2="78" y2="30" stroke="#e08020" stroke-width="1" stroke-dasharray="2,1"/>
+  <polygon points="78,30 75,28.5 75,31.5" fill="#e08020"/>
+  <line x1="30" y1="45" x2="78" y2="45" stroke="#e08020" stroke-width="1" stroke-dasharray="2,1"/>
+  <polygon points="78,45 75,43.5 75,46.5" fill="#e08020"/>
+  <line x1="108" y1="55" x2="108" y2="50" stroke="#27ae60" stroke-width="0.8"/>
+  <polygon points="108,50 105,52 111,52" fill="#27ae60"/>
+  <text x="120" y="52" font-size="3.5" font-family="Arial" fill="#888">Up×2</text>
+  <rect x="78" y="40" width="30" height="10" fill="#8ab0d8" stroke="#27ae60" stroke-width="0.8" rx="1"/>
+  <text x="93" y="47" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#fff">Cat+Conv 256</text>
+  <line x1="93" y1="40" x2="93" y2="35" stroke="#27ae60" stroke-width="0.8"/>
+  <polygon points="93,35 90,37 96,37" fill="#27ae60"/>
+  <rect x="78" y="25" width="30" height="10" fill="#a8c8e8" stroke="#27ae60" stroke-width="0.8" rx="1"/>
+  <text x="93" y="32" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#003">Cat+Conv 128</text>
+  <line x1="93" y1="25" x2="93" y2="20" stroke="#27ae60" stroke-width="0.8"/>
+  <polygon points="93,20 90,22 96,22" fill="#27ae60"/>
+  <rect x="78" y="10" width="30" height="10" fill="#c6dcf0" stroke="#27ae60" stroke-width="0.8" rx="1"/>
+  <text x="93" y="17" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#003">Cat+Conv 64</text>
+  <line x1="30" y1="60" x2="78" y2="60" stroke="#1a3a5f" stroke-width="0.8"/>
+  <line x1="78" y1="60" x2="78" y2="50" stroke="#27ae60" stroke-width="0.8"/>
+  <polygon points="78,50 75,52 81,52" fill="#27ae60"/>
+  <line x1="93" y1="10" x2="93" y2="6" stroke="#27ae60" stroke-width="0.8"/>
+  <polygon points="93,6 90,8 96,8" fill="#27ae60"/>
+  <rect x="78" y="1" width="30" height="8" fill="#27ae60" stroke="#1a6e2e" stroke-width="1" rx="1"/>
+  <text x="93" y="7" text-anchor="middle" font-size="4.5" font-family="Arial" fill="#fff">Head 1×1→K</text>
+  <text x="0" y="72" font-size="4" font-family="Arial" fill="#2980b9">Encoder↓</text>
+  <text x="78" y="72" font-size="4" font-family="Arial" fill="#27ae60">Decoder↑</text>
+  <text x="38" y="72" font-size="4" font-family="Arial" fill="#e08020">Skip (concat)</text>
+  <text x="140" y="72" font-size="4" font-family="Arial" fill="#555">Up:nearest/bilinear</text>
+</svg>
+
+<div class="ex">UNet 512×512: Enc1→(B,64,512,512)→Pool→(B,64,256,256)
+→Enc2→(B,128,256,256)→Pool→(B,128,128,128)→Bot(B,512,64,64)
+→Dec Up+skip→(B,256,128)→(B,128,256)→(B,64,512)→Head(B,K,512,512)</div>
+
+<h1>Bảng Công Thức Tổng Hợp</h1>
+<table>
+<tr><th>Công thức</th><th>Giá trị</th></tr>
+<tr><td>CNN output</td><td>$\lfloor(i+2p-k)/s\rfloor+1$</td></tr>
+<tr><td>Same: p=⌊k/2⌋,o=i</td><td>No:o=i-k+1; Full:o=i+k-1</td></tr>
+<tr><td>Conv params</td><td>$K(k^2D+1)$</td></tr>
+<tr><td>Conv vs FC</td><td>18,496 vs 1.26B=68,100×!</td></tr>
+<tr><td>DW ratio k=3,K=64</td><td>$1/K+1/k^2≈0.127$ (~8×)</td></tr>
+<tr><td>2×(3×3) vs (5×5)</td><td>$18D^2$ vs $25D^2$ (−28%)</td></tr>
+<tr><td>RF 2×Conv(k=3,s=1)</td><td>$3+(3-1)=5$</td></tr>
+<tr><td>Transposed conv</td><td>$o=(i-1)s-2p+k$</td></tr>
+<tr><td>Dilated $k_\text{eff}$</td><td>$d(k-1)+1$; d=2,k=3→5</td></tr>
+<tr><td>XCorr(PyTorch)</td><td>$\sum X(u+i,v+j)W(i,j)$ no flip</td></tr>
+<tr><td>True Conv</td><td>$\sum X(u-i,v-j)W(i,j)$ flip W</td></tr>
+<tr><td>Multi-ch formula</td><td>$\sum_c\sum_{i,j}X_c W_c$→scalar</td></tr>
+<tr><td>MaxPool 2×2,s=2</td><td>$o=i/2$; AvgPool: $\bar{X}$ window</td></tr>
+<tr><td>YOLO 640px</td><td>$80^2+40^2+20^2=8400$</td></tr>
+<tr><td>Init CE K=10</td><td>log10=2.303; K=100→4.605</td></tr>
+<tr><td>Adam t=1,g=0.3</td><td>$\hat{m}=0.3,\hat{v}=0.09,\Delta=-0.01$</td></tr>
+<tr><td>No bias corr</td><td>$-0.032$ (3.2× quá lớn!)</td></tr>
+<tr><td>$F_1$</td><td>$2TP/(2TP+FP+FN)$</td></tr>
+<tr><td>IoU</td><td>$|P\cap G|/(|P|+|G|-|P\cap G|)$</td></tr>
+<tr><td>Dice↔IoU</td><td>$2\text{IoU}/(1+\text{IoU})$</td></tr>
+<tr><td>PQ example</td><td>SQ=0.70×RQ=0.80=PQ=0.56</td></tr>
+<tr><td>Attn $\div\sqrt{F_K}$</td><td>normalize var, no Softmax sat.</td></tr>
+<tr><td>ViT P=16,224px</td><td>196 tokens, dim=768, [CLS]token</td></tr>
+<tr><td>Transf params/block</td><td>$4d^2$(Attn)+$8d^2$(FFN)=$12d^2$</td></tr>
+<tr><td>DFL y=2.45</td><td>$w^-=0.55,w^+=0.45$</td></tr>
+<tr><td>L2 grad</td><td>$g+\lambda w$; L1: $g+\lambda\text{sign}(w)$</td></tr>
+</table>
+</div>
+
+</div><!-- END PAGE 2 -->
+</body>
+</html>

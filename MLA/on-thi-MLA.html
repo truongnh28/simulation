@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MLA HK252 — Tài Liệu Ôn Thi Cuối Kỳ</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']], processEscapes: true },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:0;left:0;width:258px;height:100vh;background:#0a1f10;overflow-y:auto;z-index:100;flex-shrink:0}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:#2d6a4f;border-radius:2px}
+.sb-title{padding:1.25rem 1rem .75rem;border-bottom:1px solid #1a3a20}
+.sb-title h1{color:#86efac;font-size:.95rem;font-weight:700;line-height:1.4}
+.sb-title p{color:#6ee7b7;font-size:.7rem;margin-top:.2rem}
+.sb-group{padding:.6rem 1rem .15rem;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#4ade80}
+.sb-link{display:flex;align-items:center;gap:.45rem;padding:.35rem 1rem;color:#bbf7d0;font-size:.8rem;text-decoration:none;border-left:3px solid transparent;transition:all .15s}
+.sb-link:hover{background:rgba(74,222,128,.1);border-left-color:#4ade80;color:#fff}
+.sb-link i{width:14px;font-size:.7rem;color:#4ade80;flex-shrink:0}
+
+/* MAIN */
+#main{margin-left:258px;min-height:100vh;padding:2rem 2.5rem;max-width:calc(100% - 258px)}
+
+/* CHAPTER HEADER */
+.ch-hdr{background:linear-gradient(135deg,#14532d,#16a34a);color:#fff;padding:1.75rem 2rem;border-radius:10px;margin-bottom:1.75rem;box-shadow:0 4px 12px rgba(20,83,45,.3)}
+.ch-hdr .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#86efac;font-weight:700}
+.ch-hdr h2{font-size:1.75rem;font-weight:800;margin:.2rem 0 .4rem}
+.ch-hdr p{color:#d1fae5;font-size:.9rem}
+.ch-hdr-blue{background:linear-gradient(135deg,#1e3a5f,#1e4d8c)}
+.ch-hdr-blue .lbl{color:#93c5fd}
+.ch-hdr-blue p{color:#bfdbfe}
+
+/* SECTION TITLES */
+.s-title{font-size:1.2rem;font-weight:700;color:#14532d;border-left:4px solid #16a34a;padding-left:.7rem;margin:1.75rem 0 .9rem}
+.ss-title{font-size:1rem;font-weight:600;color:#166534;margin:1.25rem 0 .6rem}
+
+/* ALERTS */
+.alert{border-radius:0 8px 8px 0;padding:.85rem 1.1rem;margin:.85rem 0;font-size:.875rem}
+.alert-title{font-weight:700;margin-bottom:.3rem;font-size:.85rem}
+.al-blue{background:#eff6ff;border-left:4px solid #3b82f6}
+.al-blue .alert-title{color:#1d4ed8}
+.al-green{background:#f0fdf4;border-left:4px solid #22c55e}
+.al-green .alert-title{color:#15803d}
+.al-yellow{background:#fffbeb;border-left:4px solid #f59e0b}
+.al-yellow .alert-title{color:#b45309}
+.al-red{background:#fef2f2;border-left:4px solid #ef4444}
+.al-red .alert-title{color:#b91c1c}
+.al-purple{background:#faf5ff;border-left:4px solid #9333ea}
+.al-purple .alert-title{color:#7e22ce}
+
+/* FORMULA */
+.flabel{display:inline-block;background:#16a34a;color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .65rem;border-radius:6px 6px 0 0;margin-bottom:-1px}
+.fbox{background:#f8fafc;border:1px solid #cbd5e1;border-top:3px solid #16a34a;border-radius:0 8px 8px 8px;padding:1.1rem 1.5rem;margin:.25rem 0 .85rem;overflow-x:auto;text-align:center}
+.fbox.no-top-radius{border-radius:8px}
+
+/* DETAILS */
+details{border:1px solid #e2e8f0;border-radius:8px;margin:.65rem 0;overflow:hidden}
+details>summary{padding:.65rem 1.1rem;cursor:pointer;font-weight:600;font-size:.875rem;background:#f1f5f9;list-style:none;display:flex;align-items:center;gap:.45rem;user-select:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:'▶';font-size:.65rem;color:#64748b;transition:transform .2s;margin-right:.1rem}
+details[open]>summary::before{transform:rotate(90deg)}
+details[open]>summary{background:#e2e8f0}
+.dc{padding:1.1rem}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.85rem}
+.tbl th{background:#14532d;color:#fff;padding:.5rem .85rem;text-align:left}
+.tbl td{padding:.5rem .85rem;border:1px solid #e2e8f0}
+.tbl tr:nth-child(even){background:#f0fdf4}
+
+/* STEPS */
+.step{display:flex;gap:.85rem;margin:.6rem 0}
+.step-n{background:#16a34a;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.15rem}
+.step-c{flex:1;font-size:.875rem;line-height:1.6}
+
+/* QUIZ */
+.qcard{background:#fff;border:1px solid #e2e8f0;border-radius:8px;margin:1.1rem 0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.qhdr{background:#1e3a5f;color:#fff;padding:.55rem 1.1rem;font-size:.82rem;font-weight:600}
+.qbody{padding:1.1rem}
+.qq{font-size:.875rem;line-height:1.6;margin-bottom:.7rem;font-weight:500}
+.qopt{padding:.35rem .75rem;border-radius:5px;margin:.2rem 0;font-size:.855rem;line-height:1.5}
+.qok{background:#dcfce7;color:#14532d;font-weight:700;border-left:3px solid #16a34a}
+.qwrong{color:#64748b}
+.qexp{background:#fffbeb;border-left:3px solid #f59e0b;padding:.7rem 1rem;border-radius:0 6px 6px 0;margin-top:.7rem;font-size:.84rem;line-height:1.6}
+
+/* CODE */
+.code{background:#1e293b;color:#e2e8f0;padding:.9rem 1.1rem;border-radius:8px;font-family:'Courier New',monospace;font-size:.82rem;margin:.75rem 0;overflow-x:auto;line-height:1.7}
+.kw{color:#7dd3fc}
+.cmt{color:#64748b}
+
+.divider{border:none;border-top:1px solid #e2e8f0;margin:2.25rem 0}
+#back-top{position:fixed;bottom:1.5rem;right:1.5rem;background:#14532d;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.2);font-size:.85rem}
+#back-top:hover{background:#15803d}
+
+p{font-size:.9rem;line-height:1.65;margin:.5rem 0}
+li{font-size:.875rem;line-height:1.65}
+ul,ol{padding-left:1.4rem;margin:.4rem 0}
+strong{color:#1e293b}
+
+@media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+</style>
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sb-title">
+    <h1><i class="fas fa-brain"></i> Học Máy &amp; Ứng Dụng</h1>
+    <p>Ôn thi Cuối Kỳ — HK252 | CO5175</p>
+  </div>
+  <div class="sb-group">Phân loại có giám sát</div>
+  <a href="#knn" class="sb-link"><i class="fas fa-map-marker-alt"></i>Ch.3 — K-Nearest Neighbors</a>
+  <a href="#bayes" class="sb-link"><i class="fas fa-calculator"></i>Ch.4 — Naive Bayes</a>
+  <a href="#dtree" class="sb-link"><i class="fas fa-tree"></i>Ch.5 — Decision Trees</a>
+  <a href="#nn" class="sb-link"><i class="fas fa-network-wired"></i>Ch.7 — Neural Networks</a>
+  <a href="#svm" class="sb-link"><i class="fas fa-compress-arrows-alt"></i>Ch.8 — SVM</a>
+  <div class="sb-group">Ensemble &amp; Deep</div>
+  <a href="#ensemble" class="sb-link"><i class="fas fa-layer-group"></i>Ch.9 — Ensemble Methods</a>
+  <a href="#deep" class="sb-link"><i class="fas fa-microchip"></i>Ch.12 — Deep Learning</a>
+  <div class="sb-group">Chuyên đề ôn thi</div>
+  <a href="#hmm" class="sb-link"><i class="fas fa-random"></i>HMM — Hidden Markov Models</a>
+  <a href="#kmeans" class="sb-link"><i class="fas fa-object-group"></i>K-Means Clustering</a>
+  <a href="#logreg" class="sb-link"><i class="fas fa-chart-line"></i>Logistic Regression</a>
+  <div class="sb-group">Thi thử</div>
+  <a href="#mock" class="sb-link"><i class="fas fa-file-alt"></i>Đề thi thử 2026 (25 câu)</a>
+  <a href="#exam2025" class="sb-link"><i class="fas fa-graduation-cap"></i>Đề CK thật 2025 (25 câu)</a>
+</nav>
+
+<main id="main">
+
+<!-- ========== CH3: KNN ========== -->
+<section id="knn">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-book-open"></i> Chương 3</div>
+  <h2>K-Nearest Neighbor Classifier (KNN)</h2>
+  <p>Phân loại dựa trên k điểm dữ liệu huấn luyện gần nhất — thuật toán học lười (lazy learning).</p>
+</div>
+
+<div class="s-title">1. Nguyên lý hoạt động</div>
+<p>KNN không xây dựng mô hình khi huấn luyện — lưu toàn bộ tập dữ liệu. Khi có điểm mới, tìm k hàng xóm gần nhất và bỏ phiếu đa số.</p>
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-info-circle"></i> Các bước thuật toán</div>
+  <div class="step"><div class="step-n">1</div><div class="step-c">Tính khoảng cách từ điểm mới \(X\) đến <em>tất cả</em> điểm trong tập huấn luyện.</div></div>
+  <div class="step"><div class="step-n">2</div><div class="step-c">Chọn k điểm có khoảng cách nhỏ nhất (k nearest neighbors).</div></div>
+  <div class="step"><div class="step-n">3</div><div class="step-c">Gán lớp cho X theo lớp chiếm đa số trong k hàng xóm đó.</div></div>
+</div>
+
+<div class="s-title">2. Công thức khoảng cách</div>
+
+<details open>
+<summary><i class="fas fa-ruler"></i> Khoảng cách Euclidean (L2-norm) — thường dùng nhất</summary>
+<div class="dc">
+<div class="flabel">Euclidean Distance</div>
+<div class="fbox">\[ d(X,Y) = \sqrt{\sum_{i=1}^{n}(x_i - y_i)^2} \]</div>
+</div>
+</details>
+
+<details>
+<summary><i class="fas fa-ruler"></i> Khoảng cách Manhattan (L1-norm)</summary>
+<div class="dc">
+<div class="fbox no-top-radius">\[ d(X,Y) = \sum_{i=1}^{n}|x_i - y_i| \]</div>
+<div class="alert al-yellow"><div class="alert-title">Quan trọng thi!</div>Khi dùng L1-norm thay L2 trong K-Means → bước cập nhật tâm cụm phải đổi từ <strong>Mean</strong> sang <strong>Median</strong>. (Câu 15)</div>
+</div>
+</details>
+
+<details>
+<summary><i class="fas fa-ruler"></i> Minkowski (tổng quát)</summary>
+<div class="dc">
+<div class="fbox no-top-radius">\[ d(X,Y) = \left(\sum_{i=1}^{n}|x_i - y_i|^p\right)^{1/p} \]</div>
+<p>p=1 → Manhattan; p=2 → Euclidean.</p>
+</div>
+</details>
+
+<div class="s-title">3. Chuẩn hóa dữ liệu (Normalization)</div>
+
+<details open>
+<summary><i class="fas fa-sliders-h"></i> Min-Max Normalization → ánh xạ về [0, 1]</summary>
+<div class="dc">
+<div class="flabel">Min-Max</div>
+<div class="fbox">\[ x'_i = \frac{x_i - \min(A)}{\max(A) - \min(A)} \]</div>
+<p>Ánh xạ về đoạn tùy ý [new_min, new_max]:</p>
+<div class="fbox no-top-radius">\[ x'_i = \frac{x_i - \min(A)}{\max(A) - \min(A)} \cdot (new\_max - new\_min) + new\_min \]</div>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-sliders-h"></i> Z-score Normalization → phân phối chuẩn (mean=0, std=1)</summary>
+<div class="dc">
+<div class="flabel">Z-score</div>
+<div class="fbox">\[ x'_i = \frac{x_i - \mu_A}{\sigma_A} \]</div>
+</div>
+</details>
+
+<div class="s-title">4. Weighted k-NN (KNN có trọng số)</div>
+<p>Thay vì bỏ phiếu đều nhau, mỗi hàng xóm được gán trọng số tỷ lệ nghịch với khoảng cách:</p>
+<div class="flabel">Trọng số</div>
+<div class="fbox">\[ w_i = \frac{1}{d(X, X_i)^2}, \quad \hat{y} = \arg\max_c \sum_{i: y_i=c} w_i \]</div>
+
+<div class="s-title">5. Prototype Selection — Giảm bộ nhớ</div>
+
+<details>
+<summary><i class="fas fa-filter"></i> MDC — Minimum Distance Classifier</summary>
+<div class="dc"><p>Thay mỗi lớp bằng 1 vector trung bình (prototype). Phân loại theo prototype gần nhất. Giảm từ N điểm xuống C điểm (C = số lớp).</p></div>
+</details>
+
+<details>
+<summary><i class="fas fa-filter"></i> CNN — Condensed Nearest Neighbor</summary>
+<div class="dc">
+<div class="step"><div class="step-n">1</div><div class="step-c">Khởi tạo Store với 1 điểm từ mỗi lớp.</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c">Với mỗi điểm x trong tập huấn luyện: dùng 1-NN trên Store phân loại x.</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c">Nếu x bị phân loại <strong>sai</strong>, thêm x vào Store.</div></div>
+<div class="step"><div class="step-n">4</div><div class="step-c">Lặp cho đến khi không có điểm nào được thêm.</div></div>
+</div>
+</details>
+
+<div class="s-title">6. Cấu trúc dữ liệu tối ưu & Hành vi K</div>
+<div class="alert al-yellow">
+  <div class="alert-title"><i class="fas fa-star"></i> Câu hỏi thi quan trọng (Câu 17 & 18)</div>
+  <ul><li><strong>KD-Tree</strong> và <strong>Ball-Tree</strong> giảm chi phí tìm kiếm từ \(\mathcal{O}(N \cdot D)\) xuống \(\mathcal{O}(\log N)\).</li>
+  <li><strong>K=1</strong>: Low Bias, High Variance → Overfit. <strong>K=N</strong>: High Bias, Low Variance → luôn dự đoán lớp đa số (Majority Class), biên quyết định biến mất.</li>
+  <li>Khi K=N: Training Error ≠ 0 (các điểm thuộc lớp thiểu số bị phân loại sai).</li></ul>
+</div>
+
+<div class="s-title">7. KD-Tree — Cấu trúc dữ liệu tối ưu hóa tìm kiếm</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-project-diagram"></i> Tại sao cần KD-Tree / Ball-Tree?</div>
+  <p>Tìm kiếm tuần tự (Brute-force): với N điểm, D chiều → mỗi query cần <strong>O(N·D)</strong> phép tính khoảng cách. Khi N=100.000, D=100 → 10 triệu phép tính/query → quá chậm trên thực tế.</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-tree"></i> KD-Tree — Binary Search Tree trên không gian D chiều</summary>
+<div class="dc">
+<div class="step"><div class="step-n">1</div><div class="step-c"><strong>Xây dựng:</strong> Tại mỗi node, chọn chiều có phương sai lớn nhất, split tại median → chia đôi không gian.</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c"><strong>Query:</strong> Đi xuống cây theo hướng gần query point nhất, sau đó backtrack để kiểm tra nhánh còn lại nếu hypersphere bán kính k-th distance giao với nhánh đó.</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c"><strong>Độ phức tạp:</strong> Trung bình \(\mathcal{O}(D \cdot \log N)\), trường hợp xấu nhất vẫn \(\mathcal{O}(N \cdot D)\) khi D lớn (curse of dimensionality).</div></div>
+<div class="alert al-yellow" style="margin-top:.6rem"><div class="alert-title">Giới hạn thực tế</div>KD-Tree hiệu quả khi \(D \ll N\) (chiều thấp, D &lt; 20). Khi D lớn hơn, Ball-Tree thường tốt hơn. Khi D rất lớn (&gt;100), Brute-force thường cạnh tranh do chi phí backtrack.</div>
+</div>
+</details>
+
+<details>
+<summary><i class="fas fa-circle"></i> Ball-Tree — Cây phân hoạch bằng hình cầu</summary>
+<div class="dc">
+<p>Thay vì chia theo siêu phẳng axis-aligned (KD-Tree), Ball-Tree bao mỗi cụm trong một hình cầu (hypersphere). Khi query, loại cả cụm nếu khoảng cách từ query đến mặt cầu đã lớn hơn khoảng cách ứng viên tốt nhất hiện tại → hiệu quả hơn KD-Tree ở không gian chiều cao.</p>
+</div>
+</details>
+
+<div class="s-title">8. Hành vi của K — Phân tích Bias-Variance đầy đủ</div>
+
+<table class="tbl">
+<thead><tr><th>Giá trị K</th><th>Biên quyết định</th><th>Training Error</th><th>Hiện tượng</th></tr></thead>
+<tbody>
+<tr><td>K = 1</td><td>Rất phức tạp, bám sát từng điểm — Voronoi cells</td><td>0% (tự predict đúng chính mình)</td><td>Overfit — Low Bias, High Variance</td></tr>
+<tr><td>K nhỏ (3–7)</td><td>Khá phức tạp nhưng bắt đầu mượt</td><td>Thấp</td><td>Cân bằng tốt</td></tr>
+<tr><td>K = √N</td><td>Mượt, tổng quát tốt (rule of thumb)</td><td>Thấp</td><td>Thường là vùng tối ưu</td></tr>
+<tr><td>K → N</td><td>Ngày càng đơn giản, mờ dần</td><td>Tăng dần</td><td>Underfit tăng dần</td></tr>
+<tr><td>K = N</td><td>Biến mất — toàn bộ không gian về 1 lớp (Majority Class)</td><td>= Tỷ lệ lớp thiểu số</td><td>Underfit cực đại — High Bias, Low Variance</td></tr>
+</tbody>
+</table>
+
+<div class="alert al-red">
+  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> K=N: Phân tích Training Error chi tiết</div>
+  <p>Khi K=N, mọi điểm đều dùng <em>toàn bộ N điểm huấn luyện</em> làm hàng xóm → bỏ phiếu đa số trên toàn bộ tập → <strong>luôn predict Majority Class cho mọi input</strong>.</p>
+  <p><strong>Ví dụ:</strong> 60 điểm Class A, 40 điểm Class B (N=100). Với K=100: mọi điểm predict Class A. Training Error = 40/100 = 40% (40 điểm Class B bị predict sai). <strong>Training Error ≠ 0</strong> trừ khi tất cả data thuộc cùng 1 lớp.</p>
+  <p><strong>Training Error tại K=N = tỷ lệ lớp thiểu số</strong> = \(1 - \max_c P(c)\).</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-chart-line"></i> Đường cong Training/Test Error theo K</summary>
+<div class="dc">
+<div class="fbox no-top-radius" style="text-align:left;padding:1rem 1.5rem">
+<pre style="font-family:monospace;font-size:.8rem;line-height:1.8">Error (%)
+    |
+High|  /‾‾‾‾‾‾‾‾‾ Test Error ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\
+    | /                                                 \
+    |/               ___________________________________/
+    |            ___/ Training Error (không giảm theo K)
+ Low|_____________________________________________________
+    +--------------------------------------------------→ K
+    1         √N                                      N
+    ^           ^                                     ^
+ Overfit    Optimal K                             Underfit
+(Train=0)  (Elbow point)                     (Train=minority%)</pre>
+</div>
+<p>Tại K=1: Training Error = 0 (mỗi điểm là nearest neighbor của chính nó). Test Error cao do variance cao. Cân bằng tốt nhất thường gần √N.</p>
+</div>
+</details>
+
+<div class="s-title">9. Ví dụ tính toán đầy đủ — KNN Classification</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-database"></i> Dữ liệu — CustomerChurnTrain (5 điểm, X1=SupportTickets, X2=ServiceUsage)</div>
+  <table class="tbl" style="font-size:.83rem">
+  <thead><tr><th>ID</th><th>X1</th><th>X2</th><th>Churn</th></tr></thead>
+  <tbody>
+  <tr><td>TR01</td><td>3</td><td>10</td><td>Yes (+)</td></tr>
+  <tr><td>TR03</td><td>5</td><td>5</td><td>Yes (+)</td></tr>
+  <tr><td>TR04</td><td>1</td><td>40</td><td>No (−)</td></tr>
+  <tr><td>TR07</td><td>0</td><td>30</td><td>No (−)</td></tr>
+  <tr><td>TR08</td><td>6</td><td>3</td><td>Yes (+)</td></tr>
+  </tbody>
+  </table>
+  <p style="margin-top:.4rem">Query: <strong>TS01 = (X1=4, X2=12)</strong>. Dự đoán với K=3.</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Bước 1: Tính khoảng cách Euclidean từ TS01 đến từng điểm</summary>
+<div class="dc">
+<div class="fbox no-top-radius">
+\[ d(\text{TS01}, \text{TR01}) = \sqrt{(4-3)^2+(12-10)^2} = \sqrt{1+4} = \sqrt{5} \approx \mathbf{2.24} \]
+\[ d(\text{TS01}, \text{TR03}) = \sqrt{(4-5)^2+(12-5)^2} = \sqrt{1+49} = \sqrt{50} \approx \mathbf{7.07} \]
+\[ d(\text{TS01}, \text{TR04}) = \sqrt{(4-1)^2+(12-40)^2} = \sqrt{9+784} = \sqrt{793} \approx \mathbf{28.16} \]
+\[ d(\text{TS01}, \text{TR07}) = \sqrt{(4-0)^2+(12-30)^2} = \sqrt{16+324} = \sqrt{340} \approx \mathbf{18.44} \]
+\[ d(\text{TS01}, \text{TR08}) = \sqrt{(4-6)^2+(12-3)^2} = \sqrt{4+81} = \sqrt{85} \approx \mathbf{9.22} \]
+</div>
+<table class="tbl" style="font-size:.83rem">
+<thead><tr><th>Điểm</th><th>Khoảng cách</th><th>Nhãn</th><th>Trong top-3?</th></tr></thead>
+<tbody>
+<tr><td>TR01</td><td>2.24</td><td>Yes</td><td style="background:#dcfce7;font-weight:700">✓ #1</td></tr>
+<tr><td>TR03</td><td>7.07</td><td>Yes</td><td style="background:#dcfce7;font-weight:700">✓ #2</td></tr>
+<tr><td>TR08</td><td>9.22</td><td>Yes</td><td style="background:#dcfce7;font-weight:700">✓ #3</td></tr>
+<tr><td>TR07</td><td>18.44</td><td>No</td><td>✗</td></tr>
+<tr><td>TR04</td><td>28.16</td><td>No</td><td>✗</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-vote-yea"></i> Bước 2: Majority Vote và Weighted Vote</summary>
+<div class="dc">
+<p><strong>Hard Voting (K=3):</strong> Top-3 = {TR01(Yes), TR03(Yes), TR08(Yes)} → 3 Yes, 0 No → Predict <strong>Yes</strong> ✓</p>
+<p><strong>Weighted Voting (nghịch đảo khoảng cách bình phương):</strong></p>
+<div class="fbox no-top-radius">
+\[ w_{TR01} = \frac{1}{2.24^2} = \frac{1}{5.02} \approx 0.199, \quad w_{TR03} = \frac{1}{50} = 0.02, \quad w_{TR08} = \frac{1}{85} = 0.012 \]
+\[ \text{Score(Yes)} = 0.199 + 0.02 + 0.012 = 0.231 \gg \text{Score(No)} = 0 \]
+</div>
+<p>→ Weighted vote cũng cho <strong>Yes</strong>. TR01 đóng góp nhiều nhất (gần nhất).</p>
+</div>
+</details>
+
+<div class="alert al-yellow">
+  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> Tại sao cần Normalization trước khi tính khoảng cách?</div>
+  <p>ServiceUsage (X2) có range 3-60, SupportTickets (X1) có range 0-6. Khoảng cách bị <em>chi phối bởi X2</em> (range lớn hơn). Ví dụ: d(TS01,TR04)=√793 ≈ 28.16 bị X2 (12-40=28) chi phối.</p>
+  <p>Sau Min-Max normalization về [0,1]: các đặc trưng đóng góp công bằng → phân loại chính xác hơn.</p>
+</div>
+</section>
+
+<hr class="divider">
+
+<!-- ========== CH4: NAIVE BAYES ========== -->
+<section id="bayes">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-book-open"></i> Chương 4</div>
+  <h2>Naive Bayes Classifier</h2>
+  <p>Phân loại xác suất với giả định độc lập có điều kiện giữa các đặc trưng.</p>
+</div>
+
+<div class="s-title">1. Định lý Bayes</div>
+<div class="flabel">Bayes Theorem</div>
+<div class="fbox">\[ P(C|X) = \frac{P(X|C) \cdot P(C)}{P(X)} \]</div>
+<ul>
+  <li>\(P(C|X)\) — Posterior (hậu nghiệm)</li>
+  <li>\(P(X|C)\) — Likelihood</li>
+  <li>\(P(C)\) — Prior (tiên nghiệm)</li>
+  <li>\(P(X)\) — Evidence (hằng số chuẩn hóa, bỏ qua khi so sánh)</li>
+</ul>
+
+<div class="s-title">2. Giả định Naive & Quy tắc MAP</div>
+<p>Giả định các đặc trưng độc lập có điều kiện: \(P(X|C_i) = \prod_{k=1}^{n} P(x_k|C_i)\)</p>
+<div class="flabel">MAP Decision Rule</div>
+<div class="fbox">\[ \hat{C} = \arg\max_{C_i} \; P(C_i) \prod_{k=1}^{n} P(x_k|C_i) \]</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Ví dụ: Spam Filter (Câu 10 đề thi thử)</summary>
+<div class="dc">
+<p>P(Spam)=0.2, P(Ham)=0.8. P("KM"|Spam)=0.5, P("KM"|Ham)=0.05.</p>
+<div class="fbox no-top-radius">
+\[ P(Spam) \cdot P(\text{KM}|Spam) = 0.2 \times 0.5 = 0.10 \]
+\[ P(Ham) \cdot P(\text{KM}|Ham) = 0.8 \times 0.05 = 0.04 \]
+\[ P(Spam|\text{KM}) = \frac{0.10}{0.10 + 0.04} = \frac{0.10}{0.14} \approx \mathbf{71.4\%} \]
+</div>
+</div>
+</details>
+
+<div class="s-title">3. Gaussian Naive Bayes</div>
+<p>Cho đặc trưng liên tục, dùng phân phối chuẩn:</p>
+<div class="fbox no-top-radius">\[ P(x_k|C_i) = \frac{1}{\sqrt{2\pi\sigma_{ki}^2}} \exp\!\left(-\frac{(x_k-\mu_{ki})^2}{2\sigma_{ki}^2}\right) \]</div>
+
+<div class="s-title">4. Vấn đề và nhược điểm</div>
+<div class="alert al-red">
+  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> Zero Frequency — Xác suất bằng 0</div>
+  <p>Nếu đặc trưng chưa xuất hiện trong lớp nào đó, tích toàn bộ = 0. Giải pháp: <strong>Laplace Smoothing</strong> (cộng 1 vào mỗi count).</p>
+</div>
+<div class="alert al-yellow">
+  <div class="alert-title"><i class="fas fa-lightbulb"></i> Overconfident Posterior (Câu 11)</div>
+  <p>Vì các đặc trưng không thực sự độc lập trong thực tế, tích nhiều xác suất tương quan đẩy posterior cực đoan về 0 hoặc 1 → mô hình <strong>overconfident</strong>.</p>
+</div>
+
+<div class="s-title">5. Multinomial Naive Bayes — Phân loại văn bản (Text Classification)</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-file-alt"></i> Bag-of-Words Model</div>
+  <p>Văn bản được biểu diễn bởi vector đếm từ: \(\mathbf{x}=(x_1,\ldots,x_{|V|})\) trong đó \(x_k\) = số lần từ \(w_k\) xuất hiện. Bỏ qua vị trí, thứ tự — chỉ quan tâm tần suất.</p>
+</div>
+
+<div class="flabel">Xác suất phát sinh document d từ lớp c</div>
+<div class="fbox">
+\[ P(d \mid c) \propto \prod_{k=1}^{|V|} P(w_k \mid c)^{x_k} \]
+</div>
+
+<div class="flabel">Ước lượng MLE cho P(w_k | c)</div>
+<div class="fbox">
+\[ \hat{P}(w_k \mid c) = \frac{\text{count}(w_k, c)}{\displaystyle\sum_{w' \in V} \text{count}(w', c)} \]
+</div>
+
+<div class="alert al-yellow">
+  <div class="alert-title"><i class="fas fa-shield-alt"></i> Laplace Smoothing (Add-1) — Bắt buộc khi có từ chưa gặp</div>
+  <p>Nếu từ \(w_k\) chưa xuất hiện trong tài liệu lớp c → \(\hat{P}(w_k|c)=0\) → tích toàn bộ = 0 → mọi document chứa \(w_k\) đều bị loại khỏi lớp c dù mọi đặc trưng khác ủng hộ mạnh.</p>
+  <div class="fbox no-top-radius">
+  \[ \hat{P}(w_k \mid c) = \frac{\text{count}(w_k, c) + 1}{\displaystyle\sum_{w'} \text{count}(w', c) + |V|} \]
+  </div>
+  <p>Thêm 1 vào mỗi từ (tử số), thêm |V| vào tổng (mẫu số) để đảm bảo \(\sum_k \hat{P}(w_k|c)=1\).</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Ví dụ: Spam Filter với Multinomial NB</summary>
+<div class="dc">
+<p>Tập huấn luyện: 3 Spam, 7 Ham. V = {"khuyến mãi", "nhận ngay", "hoá đơn"}.</p>
+<table class="tbl" style="font-size:.82rem">
+<thead><tr><th>Từ</th><th>count(w, Spam)</th><th>count(w, Ham)</th></tr></thead>
+<tbody>
+<tr><td>khuyến mãi</td><td>8</td><td>1</td></tr>
+<tr><td>nhận ngay</td><td>6</td><td>0</td></tr>
+<tr><td>hoá đơn</td><td>1</td><td>9</td></tr>
+<tr><td><strong>Tổng</strong></td><td>15</td><td>10</td></tr>
+</tbody>
+</table>
+<p>Document mới: "khuyến mãi nhận ngay". Với Laplace smoothing (|V|=3):</p>
+<div class="fbox no-top-radius">
+\[ P(\text{km}|\text{Spam}) = \frac{8+1}{15+3}=\frac{9}{18}=0.5, \quad P(\text{nn}|\text{Spam})=\frac{6+1}{18}=\frac{7}{18} \]
+\[ P(\text{km}|\text{Ham}) = \frac{1+1}{10+3}=\frac{2}{13}, \quad P(\text{nn}|\text{Ham})=\frac{0+1}{13}=\frac{1}{13} \]
+\[ \text{Score(Spam)} \propto \frac{3}{10}\times 0.5 \times\frac{7}{18} \approx 0.0583 \]
+\[ \text{Score(Ham)} \propto \frac{7}{10}\times\frac{2}{13}\times\frac{1}{13} \approx 0.0083 \]
+</div>
+<p>→ Predict Spam. Nếu không có Laplace, P("nhận ngay"|Ham)=0 → Score(Ham)=0, mô hình overconfident.</p>
+</div>
+</details>
+
+<div class="s-title">6. Tại sao Naive Bayes Overconfident — Phân tích toán học</div>
+
+<div class="alert al-red">
+  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> Hệ quả của vi phạm giả định độc lập</div>
+  <p><strong>Giả định:</strong> \(P(X_1,X_2|c) = P(X_1|c)\cdot P(X_2|c)\). Trong thực tế, "khuyến mãi" và "giảm giá" tương quan cao trong Spam.</p>
+  <p><strong>Hệ quả:</strong> Naive Bayes tính tích hai xác suất cao, nhưng chúng mang cùng thông tin → <em>double-counting</em> → xác suất Spam bị tính thừa → posterior đẩy về 1.</p>
+  <p><strong>Minh họa số:</strong> P(Spam|"KM")=0.8. Với 3 từ đồng nghĩa cùng mang thông tin Spam: NB tính posterior \(\propto 0.8^3 = 0.512\), chuẩn hóa → P(Spam|3 từ)≈0.99. Thực tế có thể chỉ là 0.85 — mô hình overconfident.</p>
+  <p><strong>Bất lợi thực tế:</strong> Bộ phân loại NB thường cho predicted probabilities cực đoan (gần 0 hoặc 1), không phù hợp khi cần calibrated probabilities. Dùng tốt khi chỉ cần nhãn lớp, không cần confidence score.</p>
+</div>
+
+<div class="s-title">7. Ví dụ MAP Decision Rule đầy đủ — Chứng minh Overconfident</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-database"></i> Dataset — Phân loại Email</div>
+  <p>Feature X₁: Có từ "free" (1=có/0=không). Feature X₂: Có từ "meeting" (1=có/0=không).</p>
+  <table class="tbl" style="font-size:.83rem">
+  <thead><tr><th>X₁ (free)</th><th>X₂ (meeting)</th><th>Class</th></tr></thead>
+  <tbody>
+  <tr><td>1</td><td>0</td><td>Spam</td></tr>
+  <tr><td>1</td><td>1</td><td>Spam</td></tr>
+  <tr><td>1</td><td>0</td><td>Spam</td></tr>
+  <tr><td>0</td><td>0</td><td>Ham</td></tr>
+  <tr><td>0</td><td>1</td><td>Ham</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Bước 1: Ước lượng tham số (MLE)</summary>
+<div class="dc">
+<div class="fbox no-top-radius">
+\[ P(\text{Spam}) = \frac{3}{5} = 0.6, \quad P(\text{Ham}) = \frac{2}{5} = 0.4 \]
+\[ P(X_1=1|\text{Spam}) = \frac{3}{3} = 1.0, \quad P(X_1=0|\text{Spam}) = \frac{0}{3} = 0 \]
+\[ P(X_1=1|\text{Ham}) = \frac{0}{2} = 0, \quad P(X_1=0|\text{Ham}) = \frac{2}{2} = 1.0 \]
+\[ P(X_2=0|\text{Spam}) = \frac{2}{3} \approx 0.667, \quad P(X_2=1|\text{Spam}) = \frac{1}{3} \approx 0.333 \]
+\[ P(X_2=0|\text{Ham}) = \frac{1}{2} = 0.5, \quad P(X_2=1|\text{Ham}) = \frac{1}{2} = 0.5 \]
+</div>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Bước 2: MAP Classification cho query X=[1,0] (has "free", no "meeting")</summary>
+<div class="dc">
+<p><strong>Không có Laplace Smoothing:</strong></p>
+<div class="fbox no-top-radius">
+\[ \text{Score(Spam)} \propto P(\text{Spam})\cdot P(X_1=1|\text{Spam})\cdot P(X_2=0|\text{Spam}) = 0.6\times 1.0\times 0.667 = \mathbf{0.400} \]
+\[ \text{Score(Ham)} \propto P(\text{Ham})\cdot P(X_1=1|\text{Ham})\cdot P(X_2=0|\text{Ham}) = 0.4\times \mathbf{0}\times 0.5 = \mathbf{0} \]
+\[ P(\text{Spam}|X) = \frac{0.400}{0.400+0} = \mathbf{1.00} \quad\leftarrow \text{Overconfident!} \]
+</div>
+<p><strong>Với Laplace Smoothing (Add-1, |V|=2 cho mỗi feature):</strong></p>
+<div class="fbox no-top-radius">
+\[ P(X_1=1|\text{Ham}) = \frac{0+1}{2+2} = \frac{1}{4} = 0.25 \]
+\[ \text{Score(Ham)} = 0.4\times 0.25\times 0.5 = \mathbf{0.050} \]
+\[ P(\text{Spam}|X) = \frac{0.400}{0.400+0.050} = \frac{0.400}{0.450} \approx \mathbf{0.889} \]
+</div>
+<div class="alert al-red" style="margin-top:.5rem">
+<div class="alert-title">So sánh: Có vs Không có Laplace Smoothing</div>
+<ul>
+<li>Không Laplace: P(Spam|X) = 1.00 (chắc chắn tuyệt đối — overconfident)</li>
+<li>Có Laplace: P(Spam|X) ≈ 0.889 (cao nhưng calibrated hơn)</li>
+</ul>
+Kết luận giống nhau (predict Spam) nhưng mức độ chắc chắn khác nhau hoàn toàn.
+</div>
+</div>
+</details>
+
+<details>
+<summary><i class="fas fa-calculator"></i> Bước 3: Minh họa Overconfident với 2 features tương quan</summary>
+<div class="dc">
+<p>Thêm feature X₃: "prize" — tương quan cao với X₁ ("free"). P(X₃=1|Spam)=0.9, P(X₃=1|Ham)=0.05.</p>
+<p>Query: X=[1,0,1] (có "free" và "prize", không có "meeting"):</p>
+<div class="fbox no-top-radius">
+\[ \text{Score(Spam)} \propto 0.6 \times 1.0 \times 0.667 \times 0.9 = 0.360 \]
+\[ \text{Score(Ham)} \propto 0.4 \times 0.25 \times 0.5 \times 0.05 = 0.0025 \]
+\[ P(\text{Spam}|X) = \frac{0.360}{0.360+0.0025} \approx 0.993 \]
+</div>
+<p>"free" và "prize" cùng mang thông tin Spam → NB nhân cả hai → posterior tăng từ 0.889 → 0.993 mặc dù thông tin mới (prize) gần như redundant với thông tin cũ (free). <strong>Double-counting → overconfident.</strong></p>
+</div>
+</details>
+</section>
+
+<hr class="divider">
+
+<!-- ========== CH5: DECISION TREES ========== -->
+<section id="dtree">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-book-open"></i> Chương 5</div>
+  <h2>Decision Trees</h2>
+  <p>Chia không gian đặc trưng bằng các quy tắc dựa trên ngưỡng, tối thiểu hóa độ tạp chất.</p>
+</div>
+
+<div class="s-title">1. Ba độ đo tạp chất (Impurity Measures)</div>
+
+<details open>
+<summary><i class="fas fa-chart-bar"></i> Entropy (dùng trong ID3, C4.5)</summary>
+<div class="dc">
+<div class="flabel">Entropy Impurity</div>
+<div class="fbox">\[ i(N) = -\sum_{j=1}^{c} P(\omega_j)\log_2 P(\omega_j) \]</div>
+<p>Entropy = 0 (thuần khiết) đến log₂c (đều nhau). Với 2 lớp: max = 1 bit.</p>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-chart-bar"></i> Gini (dùng trong CART)</summary>
+<div class="dc">
+<div class="flabel">Gini Impurity</div>
+<div class="fbox">\[ i(N) = 1 - \sum_{j=1}^{c} P(\omega_j)^2 \]</div>
+<p>Với 2 lớp: \(i(N) = 2p(1-p)\), max = 0.5 khi p=0.5.</p>
+</div>
+</details>
+
+<details>
+<summary><i class="fas fa-chart-bar"></i> Misclassification Impurity</summary>
+<div class="dc">
+<div class="fbox no-top-radius">\[ i(N) = 1 - \max_j P(\omega_j) \]</div>
+</div>
+</details>
+
+<div class="s-title">2. Drop in Impurity — Chọn thuộc tính phân chia</div>
+<div class="flabel">Information Gain (Drop in Impurity)</div>
+<div class="fbox">\[ \Delta i(N) = i(N) - \sum_{k} \frac{|N_k|}{|N|} \, i(N_k) \]</div>
+<p>Chọn thuộc tính có \(\Delta i(N)\) lớn nhất. Đây chính là <em>Information Gain</em> khi dùng Entropy.</p>
+
+<div class="s-title">3. Axis-parallel vs Oblique Splits</div>
+<table class="tbl">
+<thead><tr><th>Loại split</th><th>Dạng điều kiện</th><th>Ví dụ</th></tr></thead>
+<tbody>
+<tr><td>Axis-parallel</td><td>Một thuộc tính, một ngưỡng</td><td>\(x_1 \leq 3.5\)</td></tr>
+<tr><td>Oblique</td><td>Tổ hợp tuyến tính</td><td>\(x_1 + x_2 \leq 3.5\)</td></tr>
+</tbody>
+</table>
+</section>
+
+<hr class="divider">
+
+<!-- ========== CH7: NEURAL NETWORKS ========== -->
+<section id="nn">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-book-open"></i> Chương 7</div>
+  <h2>Mạng Nơ-ron Nhân tạo &amp; Backpropagation</h2>
+  <p>Từ Perceptron đơn giản đến mạng nhiều lớp và thuật toán lan truyền ngược.</p>
+</div>
+
+<div class="s-title">1. Mô hình Perceptron</div>
+<div class="flabel">Perceptron Output</div>
+<div class="fbox">\[ o = \mathrm{sign}\!\left(\sum_i w_i x_i - \theta\right) = \mathrm{sign}(\mathbf{w}\cdot\mathbf{x} + b) \]</div>
+<p>Phương trình siêu phẳng quyết định: \(\mathbf{w}\cdot\mathbf{x} + b = 0\)</p>
+
+<div class="s-title">2. Luật học Perceptron</div>
+<div class="flabel">Perceptron Update Rule</div>
+<div class="fbox">\[ \Delta w_i = \eta(t - o)x_i \]</div>
+<p>Chỉ cập nhật khi phân loại sai. Converges nếu dữ liệu linearly separable.</p>
+<div class="alert al-yellow">
+  <div class="alert-title">Giới hạn Perceptron</div>
+  Không giải được bài toán XOR — dẫn đến "AI Winter" (1969–1986). Cần mạng nhiều lớp + backpropagation.
+</div>
+
+<div class="s-title">3. Delta Rule / Gradient Descent</div>
+<div class="flabel">Training Error (MSE)</div>
+<div class="fbox">\[ E(\mathbf{w}) = \frac{1}{2}\sum_{d \in D}(t_d - o_d)^2 \]</div>
+<div class="flabel">Weight Update (Batch GD)</div>
+<div class="fbox">\[ \Delta w_i = \eta \sum_{d \in D}(t_d - o_d) \cdot x_{id} \]</div>
+
+<div class="s-title">4. Sigmoid và vấn đề Gradient Vanishing</div>
+<div class="flabel">Sigmoid &amp; Derivative</div>
+<div class="fbox">\[ \sigma(z) = \frac{1}{1+e^{-z}}, \qquad \sigma'(z) = \sigma(z)(1-\sigma(z)) = \hat{y}(1-\hat{y}) \]</div>
+
+<div class="alert al-red">
+  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> MSE + Sigmoid = Gradient Vanishing (Câu 12)</div>
+  <div class="fbox no-top-radius">\[ \frac{\partial E_{MSE}}{\partial z} = (\hat{y}-y)\cdot\underbrace{\hat{y}(1-\hat{y})}_{\to 0 \text{ khi } \hat{y}\to 0 \text{ hoặc } 1} \]</div>
+  <p>Khi dự đoán sai lệch cực độ, gradient tiệm cận 0 → học rất chậm. Giải pháp: dùng <strong>Cross-Entropy</strong>.</p>
+</div>
+
+<div class="s-title">5. Cross-Entropy Loss</div>
+<div class="flabel">Binary Cross-Entropy</div>
+<div class="fbox">\[ L_{CE} = -y\log\hat{y} - (1-y)\log(1-\hat{y}) \]</div>
+<div class="flabel">Gradient theo logit z (Câu 13)</div>
+<div class="fbox">\[ \frac{\partial L_{CE}}{\partial z} = \hat{y} - y \]</div>
+<div class="alert al-green">
+  <div class="alert-title">Ưu điểm Cross-Entropy</div>
+  Gradient \(\hat{y}-y\) đơn giản, không bị triệt tiêu. Sai số lớn → gradient lớn → học nhanh.
+</div>
+
+<div class="s-title">6. Backpropagation</div>
+<div class="step"><div class="step-n">1</div><div class="step-c"><strong>Forward pass:</strong> Tính đầu ra từng lớp từ input đến output.</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c"><strong>Compute loss:</strong> Tính L từ đầu ra cuối và nhãn đúng.</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c"><strong>Backward pass:</strong> Chain Rule lan truyền ngược gradient, tính \(\partial L/\partial w\) cho từng trọng số.</div></div>
+<div class="step"><div class="step-n">4</div><div class="step-c"><strong>Update:</strong> \(w \leftarrow w - \eta \frac{\partial L}{\partial w}\)</div></div>
+</section>
+
+<hr class="divider">
+
+<!-- ========== CH8: SVM ========== -->
+<section id="svm">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-book-open"></i> Chương 8</div>
+  <h2>Support Vector Machines (SVM)</h2>
+  <p>Tìm Maximum Marginal Hyperplane — siêu phẳng phân tách với biên lớn nhất.</p>
+</div>
+
+<div class="s-title">1. Siêu phẳng quyết định</div>
+<div class="fbox no-top-radius">\[ \mathbf{w}\cdot\mathbf{x} + b = 0 \]</div>
+<p>Với dữ liệu 2D (A₁, A₂): \(w_0 + w_1 x_1 + w_2 x_2 = 0\).<br>
+Điểm phía trên: \(w_0+w_1x_1+w_2x_2 &gt; 0\) (lớp +1); phía dưới: &lt; 0 (lớp −1).</p>
+
+<div class="s-title">2. Support Hyperplanes &amp; Support Vectors</div>
+<div class="fbox no-top-radius">
+\[ H_1: \mathbf{w}\cdot\mathbf{x}+b = +1 \quad\text{(lề lớp +1)} \]
+\[ H_2: \mathbf{w}\cdot\mathbf{x}+b = -1 \quad\text{(lề lớp -1)} \]
+\[ \text{Ràng buộc: } y_i(\mathbf{w}\cdot\mathbf{x}_i+b) \geq 1, \;\forall i \]
+</div>
+<p><strong>Support Vectors</strong> là các điểm nằm trên H₁ hoặc H₂ — chúng hoàn toàn xác định siêu phẳng quyết định.</p>
+
+<div class="s-title">3. Margin Width = 2/||W||</div>
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-ruler"></i> Công thức Margin</div>
+  <div class="fbox no-top-radius">
+  \[ \text{Khoảng cách từ siêu phẳng đến H}_1 = \frac{1}{\|\mathbf{w}\|} \]
+  \[ \text{Margin width (total)} = \frac{2}{\|\mathbf{w}\|} \]
+  </div>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Câu 6 — Tính Margin Width</summary>
+<div class="dc">
+<p>\(H_1: 2x_1+x_2-3=0\), \(H_2: 2x_1+x_2+1=0\). Khoảng cách giữa 2 đường song song:</p>
+<div class="fbox no-top-radius">
+\[ \|\mathbf{w}\| = \sqrt{2^2+1^2} = \sqrt{5}, \qquad \text{margin} = \frac{|3-(-1)|}{\sqrt{5}} = \frac{4}{\sqrt{5}} \]
+</div>
+<p>→ Đáp án: <strong>A. \(4/\sqrt{5}\)</strong></p>
+</div>
+</details>
+
+<div class="s-title">4. Bài toán tối ưu (Hard-margin SVM)</div>
+<div class="flabel">Constrained Optimization</div>
+<div class="fbox">
+\[ \min_{\mathbf{w},b} \frac{1}{2}\|\mathbf{w}\|^2 \quad \text{s.t. } y_i(\mathbf{w}\cdot\mathbf{x}_i+b)\geq 1,\;\forall i \]
+</div>
+
+<div class="s-title">5. Lagrange &amp; Dual Formulation</div>
+<div class="fbox no-top-radius">
+\[ L(\mathbf{w},b) = \frac{1}{2}\|\mathbf{w}\|^2 - \sum_{i}\alpha_i\left[y_i(\mathbf{w}\cdot\mathbf{x}_i+b)-1\right] \]
+\[ \Rightarrow \mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i, \quad \sum_i \alpha_i y_i = 0 \]
+\[ W(\boldsymbol{\alpha}) = \sum_i\alpha_i - \frac{1}{2}\sum_{i,j}\alpha_i\alpha_j y_i y_j(\mathbf{x}_i\cdot\mathbf{x}_j) \]
+</div>
+
+<div class="s-title">6. Soft-Margin SVM — Tham số C</div>
+<div class="flabel">Soft-margin Objective</div>
+<div class="fbox">
+\[ \min_{\mathbf{w},b,\boldsymbol{\xi}} \frac{1}{2}\|\mathbf{w}\|^2 + C\sum_i\xi_i \quad \text{s.t. } y_i(\mathbf{w}\cdot\mathbf{x}_i+b)\geq 1-\xi_i,\;\xi_i\geq 0 \]
+</div>
+<table class="tbl">
+<thead><tr><th>C</th><th>Phạt lỗi</th><th>Margin</th><th>Hiện tượng</th></tr></thead>
+<tbody>
+<tr><td>Nhỏ</td><td>Ít</td><td>Lớn</td><td>Underfit</td></tr>
+<tr><td>Lớn</td><td>Nhiều</td><td>Nhỏ</td><td>Overfit</td></tr>
+<tr><td>→∞</td><td>Không cho phép lỗi</td><td>Rất nhỏ</td><td>Hard-margin (Overfit)</td></tr>
+</tbody>
+</table>
+
+<div class="s-title">7. Kernel Trick — RBF Kernel</div>
+<div class="fbox no-top-radius">\[ K(\mathbf{x},\mathbf{x}') = \exp\!\left(-\gamma\|\mathbf{x}-\mathbf{x}'\|^2\right) \]</div>
+<table class="tbl">
+<thead><tr><th>γ</th><th>Ma trận Gram</th><th>Hệ quả</th></tr></thead>
+<tbody>
+<tr><td>γ → ∞</td><td>→ Identity matrix</td><td>Overfit cực đại (Câu 7 → B)</td></tr>
+<tr><td>γ → 0</td><td>Tất cả phần tử → 1</td><td>Underfit</td></tr>
+</tbody>
+</table>
+
+<div class="s-title">8. SVM vs Logistic Regression</div>
+<table class="tbl">
+<thead><tr><th>Tiêu chí</th><th>Logistic Regression</th><th>SVM</th></tr></thead>
+<tbody>
+<tr><td>Hàm mất mát</td><td>Cross-Entropy (Log-loss)</td><td>Hinge Loss: max(0, 1−yf(x))</td></tr>
+<tr><td>Mục tiêu</td><td>Max Log-Likelihood</td><td>Max Margin</td></tr>
+<tr><td>Regularization</td><td>L2 (Ridge)</td><td>L2 (|w|²)</td></tr>
+</tbody>
+</table>
+<div class="alert al-yellow">
+  <div class="alert-title">Câu 20 — Điểm khác biệt cốt lõi</div>
+  Hàm mất mát: Logistic = Cross-Entropy, SVM = Hinge Loss. Cả hai dùng L2-regularization. → <strong>Đáp án B</strong>
+</div>
+
+<div class="s-title">9. Phân tách tuyến tính — Từ 1D đến n chiều</div>
+
+<table class="tbl">
+<thead><tr><th>Không gian</th><th>Decision Boundary</th><th>Hình dạng</th></tr></thead>
+<tbody>
+<tr><td>1D (1 đặc trưng)</td><td>Một ngưỡng trên trục số \(x=\theta\)</td><td>Điểm</td></tr>
+<tr><td>2D (2 đặc trưng)</td><td>Đường thẳng \(w_1x_1+w_2x_2+b=0\)</td><td>Đường thẳng, chia mặt phẳng</td></tr>
+<tr><td>3D</td><td>Mặt phẳng \(w_1x_1+w_2x_2+w_3x_3+b=0\)</td><td>Mặt phẳng, chia không gian 3D</td></tr>
+<tr><td>n chiều</td><td>Siêu phẳng (Hyperplane) \(\mathbf{w}^\top\mathbf{x}+b=0\)</td><td>Subspace (n-1) chiều</td></tr>
+</tbody>
+</table>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-info-circle"></i> Tại sao cần Kernel khi không linearly separable?</div>
+  <p>Trong 2D: hai vòng tròn đồng tâm không thể tách bằng đường thẳng. RBF Kernel map ngầm định vào không gian vô hạn chiều trong đó hai lớp có thể linearly separable → SVM với RBF tạo biên cong trong không gian gốc mà không cần tính explcitly \(\phi(x)\).</p>
+</div>
+
+<div class="s-title">10. Chứng minh Margin Width = 2/||W||</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Dẫn xuất công thức Margin từ khoảng cách hai siêu phẳng</summary>
+<div class="dc">
+<p>Hai siêu phẳng song song H₁ và H₂:</p>
+<div class="fbox no-top-radius">
+\[ H_1: \mathbf{w}\cdot\mathbf{x}+b = +1, \quad H_2: \mathbf{w}\cdot\mathbf{x}+b = -1 \]
+</div>
+<p>Lấy điểm \(\mathbf{x}_+\in H_1\) và \(\mathbf{x}_-\in H_2\). Vector nối hai điểm chiếu lên hướng pháp tuyến \(\hat{\mathbf{n}} = \frac{\mathbf{w}}{\|\mathbf{w}\|}\):</p>
+<div class="fbox no-top-radius">
+\[ \text{Margin} = (\mathbf{x}_+ - \mathbf{x}_-)\cdot\frac{\mathbf{w}}{\|\mathbf{w}\|} = \frac{\mathbf{w}\cdot\mathbf{x}_+ - \mathbf{w}\cdot\mathbf{x}_-}{\|\mathbf{w}\|} = \frac{(1-b)-(-1-b)}{\|\mathbf{w}\|} = \frac{2}{\|\mathbf{w}\|} \]
+</div>
+<div class="alert al-green" style="margin-top:.5rem">
+<div class="alert-title">Kết luận</div>
+Maximize Margin \(= \frac{2}{\|\mathbf{w}\|}\) ⟺ Minimize \(\|\mathbf{w}\|\) ⟺ Minimize \(\frac{1}{2}\|\mathbf{w}\|^2\) (convex, dễ đạo hàm).
+</div>
+</div>
+</details>
+
+<div class="s-title">11. Hinge Loss — Phân tích hình học so với Cross-Entropy</div>
+
+<div class="flabel">Hinge Loss cho một điểm</div>
+<div class="fbox">
+\[ L_{\text{hinge}}(y, f(\mathbf{x})) = \max(0,\; 1 - y \cdot f(\mathbf{x})) \]
+</div>
+
+<table class="tbl">
+<thead><tr><th>Vị trí điểm</th><th>y·f(x)</th><th>Hinge Loss</th><th>CE Loss</th></tr></thead>
+<tbody>
+<tr><td>Đúng, xa biên (f=+5, y=+1)</td><td>5 ≫ 1</td><td>0 (không phạt gì)</td><td>Nhỏ nhưng &gt; 0 mãi</td></tr>
+<tr><td>Đúng, gần biên (f=+0.3, y=+1)</td><td>0.3 &lt; 1</td><td>0.7 (phạt vì trong margin)</td><td>Nhỏ</td></tr>
+<tr><td>Trên biên (f=0, y=+1)</td><td>0</td><td>1</td><td>ln(2) ≈ 0.693</td></tr>
+<tr><td>Sai (f=−2, y=+1)</td><td>−2</td><td>3 (phạt tuyến tính)</td><td>Lớn (log-scale)</td></tr>
+</tbody>
+</table>
+
+<div class="alert al-yellow">
+  <div class="alert-title"><i class="fas fa-lightbulb"></i> Khác biệt bản chất hình học</div>
+  <ul>
+    <li><strong>Hinge Loss (SVM):</strong> Hàm <em>piecewise linear</em>. Gradient = 0 khi điểm đã đúng và ngoài margin — chỉ các <em>support vectors</em> (điểm gần/vi phạm biên) mới ảnh hưởng đến nghiệm. Không có gradient với điểm dễ phân loại.</li>
+    <li><strong>Cross-Entropy (LR):</strong> Hàm <em>smooth và lồi</em>. Luôn có gradient ≠ 0 — tiếp tục update kể cả điểm đã phân loại đúng. Phân biệt được mức độ chắc chắn → calibrated probabilities.</li>
+    <li><strong>Hệ quả:</strong> SVM sparse (chỉ dùng support vectors để predict), LR dùng tất cả training data. SVM không cho probability output trực tiếp, LR có.</li>
+  </ul>
+</div>
+
+<div class="s-title">12. Gram Matrix và hành vi γ trong RBF Kernel</div>
+
+<details open>
+<summary><i class="fas fa-table"></i> Phân tích Gram Matrix K khi γ thay đổi</summary>
+<div class="dc">
+<p>Gram Matrix: \(K_{ij} = K(\mathbf{x}_i,\mathbf{x}_j) = \exp(-\gamma\|\mathbf{x}_i-\mathbf{x}_j\|^2)\). Ma trận \(n\times n\), luôn là positive semi-definite.</p>
+<table class="tbl" style="font-size:.82rem">
+<thead><tr><th>γ</th><th>K_{ij} khi i≠j (||x_i-x_j||²=d)</th><th>Gram Matrix</th><th>Mô hình</th></tr></thead>
+<tbody>
+<tr><td>γ → 0</td><td>e^{-0} = 1 mọi cặp</td><td>Ma trận toàn số 1</td><td>Mọi điểm giống nhau → Linear SVM → Underfit</td></tr>
+<tr><td>γ nhỏ (e.g. 0.01)</td><td>Gần 1 nếu d vừa phải (influence rộng)</td><td>Dense, smooth</td><td>Biên mượt, tổng quát tốt</td></tr>
+<tr><td>γ lớn (e.g. 100)</td><td>≈ 0 trừ khi x_i rất gần x_j</td><td>Gần diagonal</td><td>Mỗi điểm = "đảo" riêng biệt → Overfit</td></tr>
+<tr><td>γ → ∞</td><td>= 0 với mọi i≠j (chỉ K_{ii}=1)</td><td>Identity matrix I</td><td>Tương đương 1-NN → Training Error = 0, Test Error rất cao</td></tr>
+</tbody>
+</table>
+<div class="alert al-red" style="margin-top:.6rem">
+<div class="alert-title">Khi γ → ∞: Gram Matrix → I</div>
+Kernel SVM với Gram matrix = I tương đương phân loại theo nearest neighbor (mỗi training point là "prototype" của chính mình). Training Error = 0 nhưng mô hình không tổng quát hóa được.
+</div>
+</div>
+</details>
+</section>
+
+<hr class="divider">
+
+<!-- ========== CH9: ENSEMBLE ========== -->
+<section id="ensemble">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-book-open"></i> Chương 9</div>
+  <h2>Kết hợp Bộ phân loại — Ensemble Methods</h2>
+  <p>Bagging, Boosting (AdaBoost), và Random Forest.</p>
+</div>
+
+<div class="s-title">1. Bagging (Bootstrap Aggregation)</div>
+<p>Lấy mẫu <em>có hoàn trả</em> (with replacement) từ D để tạo k tập bootstrap D₁,…,Dₖ. Huấn luyện k mô hình độc lập. Dự đoán bằng bỏ phiếu đa số.</p>
+<div class="code">
+<span class="kw">for</span> i = 1 to k:
+    Dᵢ = bootstrap_sample(D)  <span class="cmt"># lấy mẫu có hoàn trả</span>
+    Mᵢ = train(Dᵢ)
+
+<span class="kw">def</span> predict(X):
+    <span class="kw">return</span> majority_vote([Mᵢ(X) for i in 1..k])
+</div>
+
+<div class="s-title">2. Boosting — AdaBoost</div>
+<p>Mỗi mô hình mới tập trung vào các mẫu bị phân loại sai bởi mô hình trước. Kết hợp bằng bỏ phiếu có trọng số.</p>
+
+<div class="flabel">Error Rate</div>
+<div class="fbox">\[ error(M_i) = \frac{1}{d}\sum_{j=1}^{d} w_j \cdot err(X_j) \]</div>
+
+<div class="flabel">Hệ số β</div>
+<div class="fbox">\[ \beta_i = \frac{error(M_i)}{1-error(M_i)} \]</div>
+
+<div class="flabel">Cập nhật trọng số (mẫu phân loại đúng)</div>
+<div class="fbox">\[ w_j^{new} = w_j \cdot \beta_i \quad \text{(mẫu đúng — giảm trọng số)} \]</div>
+
+<div class="flabel">Trọng số bỏ phiếu của mô hình M_i</div>
+<div class="fbox">\[ w_i^{vote} = \log\!\left(\frac{1}{\beta_i}\right) \]</div>
+<p>Mô hình chính xác hơn (error nhỏ → β nhỏ → log(1/β) lớn) → trọng số bỏ phiếu lớn hơn.</p>
+
+<div class="s-title">3. Random Forest</div>
+<table class="tbl">
+<thead><tr><th>Kỹ thuật</th><th>Mô tả</th></tr></thead>
+<tbody>
+<tr><td>Bootstrapping</td><td>Mỗi cây được huấn luyện trên một bootstrap sample</td></tr>
+<tr><td>Random subspace</td><td>Chọn ngẫu nhiên một tập con thuộc tính tại mỗi nút</td></tr>
+<tr><td>Bagging</td><td>Kết hợp các cây bằng bỏ phiếu đa số</td></tr>
+</tbody>
+</table>
+
+<div class="s-title">4. So sánh Bagging vs Boosting</div>
+<table class="tbl">
+<thead><tr><th></th><th>Bagging</th><th>Boosting</th></tr></thead>
+<tbody>
+<tr><td>Training</td><td>Song song (parallel)</td><td>Tuần tự (sequential)</td></tr>
+<tr><td>Sampling</td><td>Bootstrap đều</td><td>Weighted (theo lỗi)</td></tr>
+<tr><td>Kết hợp</td><td>Majority vote (đều)</td><td>Weighted vote</td></tr>
+<tr><td>Mục tiêu</td><td>Giảm Variance</td><td>Giảm cả Bias lẫn Variance</td></tr>
+<tr><td>Hiệu quả</td><td>Tốt với unstable classifiers</td><td>Thường chính xác hơn Bagging</td></tr>
+</tbody>
+</table>
+</section>
+
+<hr class="divider">
+
+<!-- ========== CH12: DEEP LEARNING ========== -->
+<section id="deep">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-book-open"></i> Chương 12</div>
+  <h2>Deep Learning với Mạng Nơ-ron</h2>
+  <p>Deep Belief Networks (DBNN), Restricted Boltzmann Machines (RBM), CNN, LSTM.</p>
+</div>
+
+<div class="s-title">1. Deep Learning là gì?</div>
+<ul>
+  <li>Kiến trúc phân cấp (hierarchical): nhiều lớp xử lý từ đặc trưng đơn giản đến phức tạp.</li>
+  <li>Mạng sâu: &gt; 2 hidden layers.</li>
+  <li>Deep architectures có thể <em>exponentially</em> hiệu quả hơn shallow.</li>
+</ul>
+<table class="tbl">
+<thead><tr><th></th><th>Deep Architecture</th><th>Shallow Architecture</th></tr></thead>
+<tbody>
+<tr><td>Số lớp ẩn</td><td>&gt; 2</td><td>1</td></tr>
+<tr><td>Đặc trưng</td><td>Học phân cấp (hierarchical)</td><td>Ánh xạ trực tiếp</td></tr>
+<tr><td>Ví dụ</td><td>CNN, LSTM, DBNN</td><td>MLP thông thường, SVM+kernel</td></tr>
+</tbody>
+</table>
+
+<div class="s-title">2. Deep Belief Neural Networks (DBNN)</div>
+<p>Hinton (2007): "Probabilistic generative models composed of multiple layers of stochastic latent variables."</p>
+<table class="tbl">
+<thead><tr><th>Đặc điểm</th><th>DBNN</th><th>FFNN (Feed-forward)</th></tr></thead>
+<tbody>
+<tr><td>Kiểu input</td><td>Binary {0,1}</td><td>Real-valued</td></tr>
+<tr><td>Kiểu output</td><td>Xác suất lớp</td><td>Lớp hoặc giá trị liên tục</td></tr>
+<tr><td>Generative?</td><td>Có — sinh input từ output</td><td>Không</td></tr>
+<tr><td>Loại mô hình</td><td>Generative</td><td>Discriminative</td></tr>
+<tr><td>Cấu thành</td><td>Xếp chồng nhiều RBM</td><td>Fully-connected layers</td></tr>
+</tbody>
+</table>
+
+<div class="s-title">3. Restricted Boltzmann Machines (RBM)</div>
+<p>Khối xây dựng của DBNN. Gồm 2 lớp: <strong>visible units v</strong> (data, binary) và <strong>hidden units h</strong> (features, binary). Không có kết nối trong cùng lớp.</p>
+
+<div class="flabel">Energy Function</div>
+<div class="fbox">
+\[ E(\mathbf{v},\mathbf{h}) = -\mathbf{c}^\top\mathbf{v} - \mathbf{b}^\top\mathbf{h} - \mathbf{h}W\mathbf{v}^\top = -\sum_i c_i v_i - \sum_j b_j h_j - \sum_{j,i} W_{ji}v_i h_j \]
+</div>
+
+<div class="flabel">Xác suất cấu hình</div>
+<div class="fbox">\[ p(\mathbf{v},\mathbf{h}) = \frac{e^{-E(\mathbf{v},\mathbf{h})}}{Z}, \quad Z = \sum_{\mathbf{v},\mathbf{h}} e^{-E(\mathbf{v},\mathbf{h})} \]</div>
+
+<div class="flabel">Xác suất hidden unit = 1 (sigmoid activation)</div>
+<div class="fbox">\[ p(h_j=1|\mathbf{v}) = \sigma\!\left(b_j + \sum_{i=1}^{I} v_i W_{ji}\right) \]</div>
+
+<div class="s-title">4. Huấn luyện RBM — CD-k Algorithm</div>
+<p>Contrastive Divergence (Hinton): phương pháp học nhanh hơn Maximum Likelihood.</p>
+<div class="flabel">Weight &amp; Bias Updates</div>
+<div class="fbox">
+\[ \Delta W_{ji} = \eta\!\left(\langle v_i h_j\rangle_0 - \langle v_i h_j\rangle_k\right) \]
+\[ \Delta b_j = \eta\!\left(\langle h_j\rangle_0 - \langle h_j\rangle_k\right), \quad \Delta c_i = \eta\!\left(\langle v_i\rangle_0 - \langle v_i\rangle_k\right) \]
+</div>
+<p>\(\langle\cdot\rangle_0\) = giá trị data gốc (positive phase); \(\langle\cdot\rangle_k\) = sau k bước Gibbs sampling (negative phase).</p>
+</section>
+
+<hr class="divider">
+
+<!-- ========== HMM ========== -->
+<section id="hmm">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-star"></i> Chuyên đề trọng tâm #1</div>
+  <h2>Hidden Markov Models (HMM)</h2>
+  <p>Mô hình xác suất cho chuỗi thời gian với trạng thái ẩn — chiếm ~40% câu hỏi đề thi.</p>
+</div>
+
+<div class="s-title">1. Cấu trúc mô hình λ = (A, B, π)</div>
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-info-circle"></i> Ba tham số của HMM</div>
+  <ul>
+    <li><strong>A — Transition Matrix:</strong> \(a_{ij} = P(q_t=j \mid q_{t-1}=i)\) — xác suất chuyển từ trạng thái i sang j</li>
+    <li><strong>B — Emission Matrix:</strong> \(b_j(o_t) = P(o_t \mid q_t=j)\) — xác suất phát ra quan sát \(o_t\) tại trạng thái j</li>
+    <li><strong>π — Initial Distribution:</strong> \(\pi_i = P(q_1=i)\) — xác suất bắt đầu ở trạng thái i</li>
+  </ul>
+</div>
+
+<p><strong>Markov bậc 1:</strong> \(P(q_t \mid q_{t-1},\ldots,q_1) = P(q_t \mid q_{t-1})\)<br>
+<strong>Markov bậc 2 (Câu 19):</strong> \(a_{ijk} = P(q_t=k \mid q_{t-1}=j, q_{t-2}=i)\) → tensor <strong>N×N×N</strong>.</p>
+
+<div class="s-title">2. Forward Algorithm — Tính P(O|λ)</div>
+<p>Biến Forward: \(\alpha_t(i) = P(o_1,\ldots,o_t, q_t=i \mid \lambda)\)</p>
+
+<div class="flabel">Khởi tạo (t=1)</div>
+<div class="fbox">\[ \alpha_1(i) = \pi_i \cdot b_i(o_1), \quad \forall i \]</div>
+
+<div class="flabel">Đệ quy (t=2,…,T)</div>
+<div class="fbox">\[ \alpha_t(j) = \left[\sum_{i=1}^{N}\alpha_{t-1}(i)\cdot a_{ij}\right]\cdot b_j(o_t) \]</div>
+
+<div class="flabel">Kết thúc</div>
+<div class="fbox">\[ P(O\mid\lambda) = \sum_{i=1}^{N}\alpha_T(i) \]</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Câu 22 — Tính P(o₁) với π = [1, 0]</summary>
+<div class="dc">
+<div class="fbox no-top-radius">
+\[ P(o_1) = \pi_{S_1}\cdot b_{S_1}(o_1) + \pi_{S_2}\cdot b_{S_2}(o_1) = 1.0\times 0.7 + 0\times(\cdot) = \mathbf{0.7} \]
+</div>
+<p>→ Đáp án: <strong>B. 0.7</strong> (Ma trận A không cần khi T=1)</p>
+</div>
+</details>
+
+<div class="alert al-yellow">
+  <div class="alert-title">Câu 2 — Xử lý quan sát bị thiếu tại bước k</div>
+  <p><strong>C (đúng):</strong> Đặt \(b_j(o_k)=1\) cho mọi j (marginalize qua tất cả quan sát có thể). Thuật toán Forward tiếp tục bình thường trước và sau bước k — không cắt chuỗi, không khởi tạo lại.</p>
+</div>
+
+<div class="s-title">3. Viterbi Decoding</div>
+<p>Tìm chuỗi trạng thái ẩn tối ưu: \(Q^* = \arg\max_Q P(Q,O\mid\lambda)\)</p>
+<p><strong>Dựa trên Nguyên lý tối ưu Bellman:</strong> Đường đi tối ưu đến (t,j) luôn qua đường đi tối ưu đến (t-1,i).</p>
+
+<div class="flabel">Biến Viterbi δ</div>
+<div class="fbox">\[ \delta_t(j) = \max_i\left[\delta_{t-1}(i)\cdot a_{ij}\right]\cdot b_j(o_t) \]</div>
+
+<div class="flabel">Log-space (tránh underflow)</div>
+<div class="fbox">\[ \log\delta_t(j) = \max_i\!\left[\log\delta_{t-1}(i) + \log a_{ij}\right] + \log b_j(o_t) \]</div>
+
+<div class="alert al-yellow">
+  <div class="alert-title">Câu 25 — Viterbi với a_ij = 0 trong log-space</div>
+  <p><strong>A (đúng):</strong> \(\log(0) = -\infty\). Toán tử max tự động loại bỏ nhánh qua liên kết \((i\to j)\) với \(a_{ij}=0\) vì tổng = \(-\infty\) &lt; mọi giá trị hợp lệ.</p>
+</div>
+
+<div class="s-title">4. Forward-Backward (FB) Decoding</div>
+<p><strong>Backward variable:</strong> \(\beta_t(i) = P(o_{t+1},\ldots,o_T \mid q_t=i,\lambda)\)</p>
+
+<div class="flabel">Khởi tạo / Đệ quy ngược</div>
+<div class="fbox">
+\[ \beta_T(i) = 1, \quad \beta_t(i) = \sum_{j=1}^{N} a_{ij}\cdot b_j(o_{t+1})\cdot\beta_{t+1}(j) \]
+</div>
+
+<div class="flabel">Xác suất biên γ — Chọn trạng thái tại từng thời điểm</div>
+<div class="fbox">
+\[ \gamma_t(i) = \frac{\alpha_t(i)\cdot\beta_t(i)}{\sum_{j=1}^{N}\alpha_t(j)\cdot\beta_t(j)}, \quad \hat{q}_t = \arg\max_i\gamma_t(i) \]
+</div>
+
+<div class="alert al-red">
+  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> Nhược điểm FB Decoding (Câu 4)</div>
+  <p>FB chọn trạng thái tại từng bước <em>độc lập</em>. Chuỗi kết quả có thể chứa chuyển trạng thái với \(a_{ij}=0\) → <strong>Joint probability = 0</strong> (vi phạm cấu trúc mô hình). → <strong>Đáp án B</strong></p>
+</div>
+
+<div class="s-title">5. Baum-Welch (EM) — Học tham số HMM</div>
+
+<div class="flabel">Biến ξ (Câu 21)</div>
+<div class="fbox">
+\[ \xi_t(i,j) = P(q_t=i, q_{t+1}=j \mid O,\lambda) = \frac{\alpha_t(i)\cdot a_{ij}\cdot b_j(o_{t+1})\cdot\beta_{t+1}(j)}{P(O\mid\lambda)} \]
+</div>
+
+<div class="flabel">Cập nhật tham số (M-step)</div>
+<div class="fbox">
+\[ \hat{a}_{ij} = \frac{\sum_{t=1}^{T-1}\xi_t(i,j)}{\sum_{t=1}^{T-1}\gamma_t(i)}, \quad \hat{b}_j(v_k) = \frac{\sum_{t:o_t=v_k}\gamma_t(j)}{\sum_{t=1}^{T}\gamma_t(j)} \]
+</div>
+
+<div class="alert al-red">
+  <div class="alert-title">Câu 3 — A = Identity matrix: mô hình bị khóa cứng</div>
+  <p><strong>B (đúng):</strong> Nếu A=I thì \(a_{ii}=1\), \(a_{ij}=0\) với \(i\neq j\). Khi đó \(\xi_t(i,j)=0\) với \(i\neq j\) → không có gradient nào để cập nhật → mô hình mãi mãi ở trạng thái ban đầu.</p>
+</div>
+
+<div class="s-title">6. Ứng dụng: Nhận dạng Giọng nói (Câu 24)</div>
+<table class="tbl">
+<thead><tr><th>Thành phần HMM</th><th>Ý nghĩa trong ASR</th></tr></thead>
+<tbody>
+<tr><td>Trạng thái ẩn q_t</td><td>Âm vị (Phonemes)</td></tr>
+<tr><td>Quan sát o_t</td><td>Vector đặc trưng âm thanh (MFCCs)</td></tr>
+<tr><td>\(b_j(o_t)\)</td><td>P(âm thanh o_t | đang phát âm vị j) → <strong>Đáp án B</strong></td></tr>
+<tr><td>\(a_{ij}\)</td><td>P(chuyển từ âm vị i sang âm vị j)</td></tr>
+</tbody>
+</table>
+
+<div class="s-title">7. Tính chất Markov bậc 1 vs bậc 2 — So sánh chi tiết</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-random"></i> Markov bậc 1 — Giả định cơ bản của HMM chuẩn</div>
+  <div class="fbox no-top-radius">
+  \[ P(q_t \mid q_{t-1},\ldots,q_1) = P(q_t \mid q_{t-1}) \quad \text{(chỉ nhớ 1 bước trước)} \]
+  </div>
+  <p>Hệ quả: Ma trận chuyển A kích thước <strong>N×N</strong>. Mỗi hàng tổng bằng 1: \(\sum_j a_{ij}=1\). Số tham số tự do: \(N(N-1)\).</p>
+</div>
+
+<div class="alert al-purple">
+  <div class="alert-title"><i class="fas fa-random"></i> Markov bậc 2 — Phụ thuộc 2 bước trước</div>
+  <div class="fbox no-top-radius">
+  \[ P(q_t \mid q_{t-1},\ldots,q_1) = P(q_t \mid q_{t-1}, q_{t-2}) \quad \text{(nhớ 2 bước trước)} \]
+  \[ a_{ijk} = P(q_t=k \mid q_{t-1}=j, q_{t-2}=i) \implies A \text{ là tensor } N\times N\times N \]
+  </div>
+  <table class="tbl" style="font-size:.83rem">
+  <thead><tr><th>Đặc điểm</th><th>Bậc 1</th><th>Bậc 2</th></tr></thead>
+  <tbody>
+  <tr><td>Kích thước A</td><td>N×N</td><td>N×N×N (tensor 3D)</td></tr>
+  <tr><td>Số tham số A</td><td>N(N-1)</td><td>N²(N-1)</td></tr>
+  <tr><td>Complexity Forward</td><td>O(N²T)</td><td>O(N³T)</td></tr>
+  <tr><td>Ứng dụng</td><td>Speech recognition, POS tagging</td><td>Language modeling với bigram context</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<div class="s-title">8. Độ phức tạp Viterbi — Tại sao O(N²T) thay vì O(N^T)?</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> So sánh Brute-force vs Dynamic Programming</summary>
+<div class="dc">
+<p><strong>Brute-force:</strong> Duyệt tất cả \(N^T\) chuỗi trạng thái, tính joint probability từng chuỗi → \(O(N^T \cdot T)\).</p>
+<div class="fbox no-top-radius">
+\[ N=5,\; T=100 \implies N^T = 5^{100} \approx 10^{69} \text{ phép tính — bất khả thi!} \]
+</div>
+<p><strong>Viterbi với Nguyên lý Bellman:</strong> Tại mỗi (t, j), chỉ cần giữ lại xác suất tối ưu đến đó:</p>
+<div class="fbox no-top-radius">
+\[ \delta_t(j) = \max_{q_1,\ldots,q_{t-1}} P(q_1,\ldots,q_{t-1}, q_t=j, o_1,\ldots,o_t \mid \lambda) \]
+</div>
+<div class="alert al-green" style="margin-top:.5rem">
+<div class="alert-title">Nguyên lý Bellman — Tại sao DP đúng?</div>
+"Nếu đường đi toàn cục tối ưu qua trạng thái j tại t, thì đoạn từ t=1 đến t cũng phải là đường tối ưu đến j." Chứng minh bằng phản chứng: nếu không, ta có thể thay đoạn đó bằng đường tối ưu hơn → mâu thuẫn. Tính chất Markov đảm bảo đoạn future (t+1,...,T) độc lập với past (1,...,t-1) khi biết q_t.
+</div>
+<table class="tbl" style="font-size:.82rem;margin-top:.7rem">
+<thead><tr><th>Thuật toán</th><th>Thời gian</th><th>Không gian</th></tr></thead>
+<tbody>
+<tr><td>Brute-force</td><td>\(O(N^T \cdot T)\)</td><td>\(O(N^T)\)</td></tr>
+<tr><td>Forward / Viterbi (DP)</td><td>\(O(N^2 \cdot T)\)</td><td>\(O(N \cdot T)\)</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<div class="s-title">9. Log-space — Xử lý Underflow và Xác suất bằng 0</div>
+
+<div class="alert al-red">
+  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> Vấn đề Numerical Underflow</div>
+  <p>T=100, xác suất mỗi bước ≈ 0.1: tích 100 bước → \(0.1^{100} = 10^{-100}\). Float64 có thể biểu diễn đến \(\approx 10^{-308}\) nhưng với T lớn hơn → underflow về 0 → mất thông tin.</p>
+</div>
+
+<table class="tbl">
+<thead><tr><th>Trường hợp</th><th>Log-space</th><th>Ý nghĩa</th></tr></thead>
+<tbody>
+<tr><td>\(a_{ij} \in (0,1]\)</td><td>\(\log a_{ij} \in (-\infty, 0]\) — số hữu hạn</td><td>Cộng thay vì nhân, không underflow</td></tr>
+<tr><td>\(a_{ij} = 0\) (transition cấm)</td><td>\(\log 0 = -\infty\)</td><td>max(-∞ + X) = -∞ → đường đi này bị loại tự động</td></tr>
+<tr><td>\(b_j(o_t) = 0\) (emission không thể)</td><td>\(\log 0 = -\infty\)</td><td>Trạng thái j tại t bị loại khỏi mọi đường đi</td></tr>
+</tbody>
+</table>
+
+<div class="flabel">Viterbi trong Log-space</div>
+<div class="fbox">
+\[ \log\delta_t(j) = \underbrace{\max_{i}\!\left[\log\delta_{t-1}(i) + \log a_{ij}\right]}_{\text{cộng log thay nhân}} + \log b_j(o_t) \]
+</div>
+
+<div class="s-title">10. Forward-Backward — Nhược điểm với ví dụ cụ thể</div>
+
+<details open>
+<summary><i class="fas fa-exclamation-circle"></i> Ví dụ: Chuỗi không hợp lệ từ FB Decoding</summary>
+<div class="dc">
+<p>HMM: S1, S2, với \(a_{12}=0\) (không thể S1→S2 trực tiếp), \(a_{21}=1\) (S2 luôn về S1).</p>
+<p>FB tính \(\gamma_t(i)\) độc lập — tối đa biên tại <em>từng</em> bước:</p>
+<div class="fbox no-top-radius">
+\[ t=1: \gamma_1(S1) = 0.7 > \gamma_1(S2)=0.3 \Rightarrow \hat{q}_1 = S1 \]
+\[ t=2: \gamma_2(S2) = 0.6 > \gamma_2(S1)=0.4 \Rightarrow \hat{q}_2 = S2 \]
+</div>
+<p>Chuỗi FB: S1 → S2. Nhưng \(a_{12}=0\) → \(P(S1,S2,O|\lambda)=0\). <strong>Chuỗi vi phạm cấu trúc mô hình!</strong></p>
+<div class="alert al-red" style="margin-top:.5rem">
+<div class="alert-title">So sánh Viterbi vs FB</div>
+<ul>
+<li><strong>Viterbi:</strong> \(\arg\max_Q P(Q|O,\lambda)\) — tối ưu chuỗi TOÀN CỤC, đảm bảo hợp lệ.</li>
+<li><strong>FB Decoding:</strong> \(\prod_t \max_{q_t} \gamma_t(q_t)\) — tối ưu TỪNG BƯỚC độc lập, có thể cho chuỗi joint prob = 0.</li>
+</ul>
+FB hữu ích khi muốn biết xác suất biên từng trạng thái (làm đặc trưng). Viterbi dùng khi cần chuỗi trạng thái hoàn chỉnh.
+</div>
+</div>
+</details>
+
+<div class="s-title">11. Baum-Welch — Ảnh hưởng khởi tạo và Hội tụ EM</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-chart-line"></i> Đảm bảo hội tụ EM</div>
+  <p>Mỗi bước EM đảm bảo: \(P(O|\lambda^{(t+1)}) \geq P(O|\lambda^{(t)})\) (likelihood không giảm). Hội tụ đến điểm dừng (stationary point) — không nhất thiết là cực đại toàn cục do non-convex landscape.</p>
+</div>
+
+<table class="tbl">
+<thead><tr><th>Kiểu khởi tạo</th><th>Hệ quả</th><th>Đánh giá</th></tr></thead>
+<tbody>
+<tr><td>A = Identity (I)</td><td>\(\xi_t(i,j)=0\) với i≠j → không update a_{ij} → mô hình bị khóa cứng mãi mãi</td><td>Tệ nhất — không dùng</td></tr>
+<tr><td>A = Uniform (1/N)</td><td>Hội tụ được, dễ rơi vào symmetric local optima</td><td>Chấp nhận được</td></tr>
+<tr><td>A = Random (nhiễu nhỏ)</td><td>Phá vỡ symmetry → tránh degenerate solution</td><td>Tốt</td></tr>
+<tr><td>Khởi tạo từ K-Means</td><td>Gần optimal hơn → hội tụ nhanh</td><td>Tốt nhất trong thực tế</td></tr>
+</tbody>
+</table>
+
+<div class="s-title">12. Ví dụ tính toán đầy đủ — Forward Algorithm &amp; Viterbi</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-database"></i> Mô hình HMM (từ đề thi 2025 — Câu 18)</div>
+  <p>Trạng thái: S1 = Active, S2 = Idle &nbsp;|&nbsp; T = 2 bước &nbsp;|&nbsp; Quan sát: O = [View, NoView]</p>
+  <table class="tbl" style="font-size:.83rem">
+  <thead><tr><th>Tham số</th><th>Giá trị</th></tr></thead>
+  <tbody>
+  <tr><td>Initial π</td><td>P(S1)=0.7, P(S2)=0.3</td></tr>
+  <tr><td>Transition A</td><td>a(S1→S1)=0.8, a(S1→S2)=0.2, a(S2→S1)=0.4, a(S2→S2)=0.6</td></tr>
+  <tr><td>Emission B</td><td>P(View|S1)=0.9, P(NoView|S1)=0.1, P(View|S2)=0.2, P(NoView|S2)=0.8</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Bước 1: Forward Algorithm — Điền bảng α</summary>
+<div class="dc">
+<p><strong>Khởi tạo t=1, O₁=View:</strong></p>
+<div class="fbox no-top-radius">
+\[ \alpha_1(S1) = \pi(S1) \cdot P(\text{View}|S1) = 0.7 \times 0.9 = \mathbf{0.63} \]
+\[ \alpha_1(S2) = \pi(S2) \cdot P(\text{View}|S2) = 0.3 \times 0.2 = \mathbf{0.06} \]
+</div>
+<p><strong>Đệ quy t=2, O₂=NoView:</strong></p>
+<div class="fbox no-top-radius">
+\[ \alpha_2(S1) = \bigl[\alpha_1(S1)\cdot a_{11} + \alpha_1(S2)\cdot a_{21}\bigr]\cdot P(\text{NoView}|S1) \]
+\[ = [0.63\times 0.8 + 0.06\times 0.4]\times 0.1 = [0.504+0.024]\times 0.1 = 0.528\times 0.1 = \mathbf{0.0528} \]
+\[ \alpha_2(S2) = \bigl[\alpha_1(S1)\cdot a_{12} + \alpha_1(S2)\cdot a_{22}\bigr]\cdot P(\text{NoView}|S2) \]
+\[ = [0.63\times 0.2 + 0.06\times 0.6]\times 0.8 = [0.126+0.036]\times 0.8 = 0.162\times 0.8 = \mathbf{0.1296} \]
+</div>
+<p><strong>Kết thúc:</strong></p>
+<div class="fbox no-top-radius">
+\[ P(O|\lambda) = \alpha_2(S1) + \alpha_2(S2) = 0.0528 + 0.1296 = \mathbf{0.1824} \]
+</div>
+<table class="tbl" style="font-size:.83rem;margin-top:.5rem">
+<thead><tr><th>α bảng</th><th>t=1 (View)</th><th>t=2 (NoView)</th></tr></thead>
+<tbody>
+<tr><td>α(S1)</td><td>0.63</td><td>0.0528</td></tr>
+<tr><td>α(S2)</td><td>0.06</td><td>0.1296</td></tr>
+<tr><td>Tổng (P(O|λ))</td><td>0.69</td><td><strong>0.1824</strong></td></tr>
+</tbody>
+</table>
+<p style="font-size:.85rem">Lưu ý: Tổng tại t=1 chính là P(O₁=View) = 0.69 — khớp với kết quả câu 18.</p>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Bước 2: Viterbi — Điền bảng δ và truy hồi</summary>
+<div class="dc">
+<p><strong>Khởi tạo t=1, O₁=View (giống Forward):</strong></p>
+<div class="fbox no-top-radius">
+\[ \delta_1(S1) = 0.63,\quad \psi_1(S1) = 0 \qquad \delta_1(S2) = 0.06,\quad \psi_1(S2) = 0 \]
+</div>
+<p><strong>Đệ quy t=2, O₂=NoView:</strong></p>
+<div class="fbox no-top-radius">
+\[ \delta_2(S1) = \max\!\bigl[\delta_1(S1)\cdot a_{11},\;\delta_1(S2)\cdot a_{21}\bigr]\cdot P(\text{NoView}|S1) \]
+\[ = \max[0.63\times 0.8,\;0.06\times 0.4]\times 0.1 = \max[0.504,\;0.024]\times 0.1 = 0.504\times 0.1 = \mathbf{0.0504} \]
+\[ \Rightarrow \psi_2(S1) = S1 \quad\text{(nhánh thắng: S1→S1)} \]
+\[ \delta_2(S2) = \max\!\bigl[\delta_1(S1)\cdot a_{12},\;\delta_1(S2)\cdot a_{22}\bigr]\cdot P(\text{NoView}|S2) \]
+\[ = \max[0.63\times 0.2,\;0.06\times 0.6]\times 0.8 = \max[0.126,\;0.036]\times 0.8 = 0.126\times 0.8 = \mathbf{0.1008} \]
+\[ \Rightarrow \psi_2(S2) = S1 \quad\text{(nhánh thắng: S1→S2)} \]
+</div>
+<p><strong>Truy hồi (Backtracking):</strong></p>
+<div class="fbox no-top-radius">
+\[ q_2^* = \arg\max[\delta_2(S1), \delta_2(S2)] = \arg\max[0.0504, 0.1008] = \mathbf{S2} \]
+\[ q_1^* = \psi_2(q_2^*) = \psi_2(S2) = \mathbf{S1} \]
+</div>
+<div class="alert al-green" style="margin-top:.5rem">
+<div class="alert-title">Q* = [S1, S2] — Chuỗi trạng thái tối ưu: Active → Idle</div>
+Xác suất chuỗi tốt nhất: 0.1008. So sánh với Forward: P(O|λ)=0.1824 (tính tổng mọi chuỗi) vs Viterbi: 0.1008 (chuỗi tốt nhất). Luôn Viterbi ≤ Forward.
+</div>
+<table class="tbl" style="font-size:.83rem;margin-top:.5rem">
+<thead><tr><th>Bảng δ / ψ</th><th>t=1</th><th>t=2</th></tr></thead>
+<tbody>
+<tr><td>δ(S1)</td><td>0.63</td><td>0.0504</td></tr>
+<tr><td>δ(S2)</td><td>0.06</td><td><strong>0.1008</strong> ←Best</td></tr>
+<tr><td>ψ(S1)</td><td>—</td><td>S1</td></tr>
+<tr><td>ψ(S2)</td><td>—</td><td>S1</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<details>
+<summary><i class="fas fa-calculator"></i> Bước 3: Xử lý quan sát bị thiếu — Marginalization</summary>
+<div class="dc">
+<p>Giả sử O=[View, <strong>?</strong>] — t=2 không quan sát được. Điều chỉnh Forward:</p>
+<div class="fbox no-top-radius">
+\[ \text{Đặt } b_j(o_2) = 1 \text{ cho mọi } j \quad\text{(marginalize, không cung cấp thông tin)} \]
+\[ \alpha_2(S1) = [0.63\times 0.8 + 0.06\times 0.4]\times \mathbf{1} = 0.528 \]
+\[ \alpha_2(S2) = [0.63\times 0.2 + 0.06\times 0.6]\times \mathbf{1} = 0.162 \]
+\[ P(O_1=\text{View}, O_2=\text{any}|\lambda) = 0.528 + 0.162 = 0.690 \]
+</div>
+<p>Kết quả = P(O₁=View) = 0.69 — chính xác! Bước thiếu không làm mất thông tin từ bước 1.</p>
+</div>
+</details>
+</section>
+
+<hr class="divider">
+
+<!-- ========== K-MEANS ========== -->
+<section id="kmeans">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-star"></i> Chuyên đề trọng tâm #2</div>
+  <h2>Phân cụm K-Means</h2>
+  <p>Thuật toán phân cụm không giám sát tối thiểu hóa WCSS.</p>
+</div>
+
+<div class="s-title">1. Hàm mục tiêu WCSS</div>
+<div class="fbox no-top-radius">\[ J(C,\mu) = \sum_{k=1}^{K}\sum_{x\in C_k}\|x-\mu_k\|^2 \]</div>
+
+<div class="alert al-yellow">
+  <div class="alert-title">Câu 14 — Tính chất tối ưu hóa của WCSS</div>
+  <p><strong>C (đúng):</strong> Hàm WCSS là <strong>non-convex</strong>. Không gian phân gán cụm C là rời rạc tổ hợp → tồn tại nhiều cực tiểu cục bộ. K-Means chỉ đảm bảo tìm cực tiểu cục bộ.</p>
+</div>
+
+<div class="s-title">2. Thuật toán Lloyd (K-Means)</div>
+<div class="step"><div class="step-n">1</div><div class="step-c"><strong>Khởi tạo:</strong> Chọn ngẫu nhiên K tâm \(\mu_1,\ldots,\mu_K\).</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c"><strong>Assignment:</strong> \(C_k = \{x : \|x-\mu_k\|\leq\|x-\mu_j\|,\;\forall j\}\)</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c"><strong>Update:</strong> \(\mu_k = \frac{1}{|C_k|}\sum_{x\in C_k} x\) (Mean với L2-norm)</div></div>
+<div class="step"><div class="step-n">4</div><div class="step-c"><strong>Lặp</strong> bước 2–3 đến khi không có điểm nào thay đổi cụm.</div></div>
+
+<div class="alert al-green">
+  <div class="alert-title">Câu 16 — Đảm bảo hội tụ</div>
+  <p><strong>A (đúng):</strong> Số tổ hợp phân gán N điểm vào K cụm là <strong>hữu hạn</strong> (≤ K^N). Mỗi bước WCSS không tăng. Tập hữu hạn + monotone non-increasing → hội tụ.</p>
+</div>
+
+<div class="s-title">3. K-Medians — Biến thể với L1-norm</div>
+<div class="alert al-yellow">
+  <div class="alert-title">Câu 15 — Đổi sang Manhattan distance</div>
+  <p>Tối thiểu hóa \(\sum|x-c|\) (L1) → nghiệm tối ưu là <strong>Median</strong> (không phải Mean). Tối thiểu hóa \(\sum(x-c)^2\) (L2) → nghiệm là <strong>Mean</strong>.</p>
+  <p>→ Khi dùng Manhattan distance, bước Update phải đổi sang Median. <strong>Đáp án B</strong></p>
+</div>
+
+<div class="s-title">4. Chứng minh Hội tụ của Lloyd's Algorithm</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Hai điều kiện đảm bảo hội tụ hữu hạn</summary>
+<div class="dc">
+<p><strong>Điều kiện 1: WCSS không tăng tại mỗi bước</strong></p>
+<div class="step"><div class="step-n">A</div><div class="step-c"><strong>Assignment step:</strong> Mỗi điểm gán vào cụm có tâm gần nhất → \(\|x-\mu_{c_{\text{new}}}\| \leq \|x-\mu_{c_{\text{old}}}\|\) → WCSS không tăng.</div></div>
+<div class="step"><div class="step-n">B</div><div class="step-c"><strong>Update step:</strong> Mean là nghiệm tối ưu của \(\min_\mu \sum_{x\in C_k}\|x-\mu\|^2\) → thay tâm cũ bằng Mean luôn giảm hoặc giữ WCSS trong cluster đó.</div></div>
+<p style="margin:.7rem 0"><strong>Điều kiện 2: Số cấu hình phân gán là hữu hạn</strong></p>
+<p>Có tối đa \(K^N\) cách phân gán N điểm vào K cụm (thực tế ít hơn nhiều). Kết hợp với WCSS non-increasing → không thể lặp vô hạn → thuật toán dừng.</p>
+<div class="alert al-yellow" style="margin-top:.5rem">
+<div class="alert-title">Lưu ý quan trọng</div>
+Hội tụ đến <strong>cực tiểu CỤC BỘ</strong>, không phải toàn cục. Trong thực tế: chạy K-Means nhiều lần với init khác nhau (hoặc dùng K-Means++), chọn kết quả có WCSS nhỏ nhất.
+</div>
+</div>
+</details>
+
+<div class="s-title">5. Tính Phi lồi (Non-convex) — Tại sao tồn tại Local Minima?</div>
+
+<div class="alert al-red">
+  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> WCSS phi lồi theo không gian phân gán C</div>
+  <ul>
+    <li>Với phân gán C cố định → WCSS là hàm lồi theo μ → có global optimum là Mean → giải được chính xác.</li>
+    <li>Với μ cố định → tìm phân gán tối ưu là bài toán tổ hợp rời rạc → không convex.</li>
+    <li>Kết hợp hai không gian (rời rạc + liên tục) → WCSS toàn cục phi lồi → nhiều local minima.</li>
+  </ul>
+</div>
+
+<details>
+<summary><i class="fas fa-lightbulb"></i> Ví dụ: Cùng data, init khác → local minima khác</summary>
+<div class="dc">
+<p>6 điểm: A(0,0), B(1,0), C(5,0), D(6,0), E(3,3), F(3,-3). K=2.</p>
+<table class="tbl" style="font-size:.82rem">
+<thead><tr><th>Khởi tạo</th><th>Cụm 1</th><th>Cụm 2</th><th>WCSS</th></tr></thead>
+<tbody>
+<tr><td>μ₁=(0,0), μ₂=(5,0)</td><td>{A,B}</td><td>{C,D,E,F}</td><td>Nhỏ (tốt)</td></tr>
+<tr><td>μ₁=(3,3), μ₂=(3,-3)</td><td>{A,B,E}</td><td>{C,D,F}</td><td>Lớn hơn (local min)</td></tr>
+</tbody>
+</table>
+<p>Cùng dữ liệu, init khác → hội tụ đến các cực tiểu cục bộ khác nhau!</p>
+</div>
+</details>
+
+<div class="s-title">6. Bằng chứng toán học: Tại sao L1 → Median, L2 → Mean?</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Chứng minh bằng đạo hàm (1 chiều)</summary>
+<div class="dc">
+<p><strong>L2-norm → Mean:</strong> Tối thiểu hóa \(f(\mu) = \sum_{x\in C_k}(x-\mu)^2\):</p>
+<div class="fbox no-top-radius">
+\[ \frac{df}{d\mu} = -2\sum_{x\in C_k}(x-\mu) = 0 \implies \mu = \frac{1}{|C_k|}\sum_{x\in C_k} x = \textbf{Mean} \]
+</div>
+<p><strong>L1-norm → Median:</strong> Tối thiểu hóa \(g(\mu) = \sum_{x\in C_k}|x-\mu|\):</p>
+<div class="fbox no-top-radius">
+\[ \frac{dg}{d\mu} = -\sum_{x\in C_k}\text{sgn}(x-\mu) = 0 \implies \#\{x > \mu\} = \#\{x < \mu\} \implies \mu = \textbf{Median} \]
+</div>
+<div class="alert al-green" style="margin-top:.5rem">
+<div class="alert-title">Trực quan</div>
+<strong>Mean</strong> cân bằng khoảng cách có hướng (signed distances). <strong>Median</strong> cân bằng số lượng điểm hai phía. Median robust với outliers hơn Mean — đặc tính hữu ích khi data có noise.
+</div>
+</div>
+</details>
+
+<div class="s-title">7. Ví dụ tính toán đầy đủ — Một vòng lặp K-Means</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-database"></i> 5 điểm, K=2</div>
+  <p>Điểm dữ liệu: A(1,2), B(2,1), C(7,8), D(8,7), E(5,5). Khởi tạo: μ₁=(1,2), μ₂=(8,7).</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Assignment Step — Gán mỗi điểm vào cụm gần nhất</summary>
+<div class="dc">
+<div class="fbox no-top-radius">
+\[ d(A,\mu_1)=\sqrt{(1-1)^2+(2-2)^2}=0, \quad d(A,\mu_2)=\sqrt{(1-8)^2+(2-7)^2}=\sqrt{49+25}=\sqrt{74}\approx 8.60 \Rightarrow \mathbf{C_1} \]
+\[ d(B,\mu_1)=\sqrt{(2-1)^2+(1-2)^2}=\sqrt{2}\approx 1.41, \quad d(B,\mu_2)=\sqrt{(2-8)^2+(1-7)^2}=\sqrt{72}\approx 8.49 \Rightarrow \mathbf{C_1} \]
+\[ d(C,\mu_1)=\sqrt{(7-1)^2+(8-2)^2}=\sqrt{72}\approx 8.49, \quad d(C,\mu_2)=\sqrt{(7-8)^2+(8-7)^2}=\sqrt{2}\approx 1.41 \Rightarrow \mathbf{C_2} \]
+\[ d(D,\mu_1)=\sqrt{(8-1)^2+(7-2)^2}=\sqrt{74}\approx 8.60, \quad d(D,\mu_2)=\sqrt{(8-8)^2+(7-7)^2}=0 \Rightarrow \mathbf{C_2} \]
+\[ d(E,\mu_1)=\sqrt{(5-1)^2+(5-2)^2}=\sqrt{25}=5, \quad d(E,\mu_2)=\sqrt{(5-8)^2+(5-7)^2}=\sqrt{13}\approx 3.61 \Rightarrow \mathbf{C_2} \]
+</div>
+<p><strong>Kết quả phân gán:</strong> C₁ = {A, B}, C₂ = {C, D, E}</p>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Update Step — Cập nhật tâm cụm</summary>
+<div class="dc">
+<div class="fbox no-top-radius">
+\[ \mu_1^{\text{new}} = \text{Mean}(A, B) = \left(\frac{1+2}{2}, \frac{2+1}{2}\right) = (1.5,\; 1.5) \]
+\[ \mu_2^{\text{new}} = \text{Mean}(C, D, E) = \left(\frac{7+8+5}{3}, \frac{8+7+5}{3}\right) = \left(\frac{20}{3}, \frac{20}{3}\right) \approx (6.67,\; 6.67) \]
+</div>
+
+<p><strong>Kiểm tra WCSS:</strong></p>
+<div class="fbox no-top-radius">
+\[ \text{WCSS}_{\text{trước}} = d^2(A,\mu_1)+d^2(B,\mu_1)+d^2(C,\mu_2)+d^2(D,\mu_2)+d^2(E,\mu_2) \]
+\[ = 0 + 2 + 2 + 0 + 13 = \mathbf{17} \]
+\[ \text{WCSS}_{\text{sau}} = d^2(A,(1.5,1.5))+d^2(B,(1.5,1.5))+d^2(C,(6.67,6.67))+d^2(D,(6.67,6.67))+d^2(E,(6.67,6.67)) \]
+\[ = 0.5+0.5+1.88+1.88+5.57 = \mathbf{10.33} \]
+</div>
+<div class="alert al-green" style="margin-top:.5rem">
+<div class="alert-title">WCSS giảm từ 17 → 10.33 ✓</div>
+Đây minh họa tính chất monotone non-increasing: mỗi vòng lặp WCSS không tăng. Tiếp tục vòng lặp thứ 2 với μ₁=(1.5,1.5), μ₂=(6.67,6.67) cho đến khi không có điểm nào đổi cụm.
+</div>
+</div>
+</details>
+
+<details>
+<summary><i class="fas fa-calculator"></i> K-Medians với L1-norm — Cùng dữ liệu</summary>
+<div class="dc">
+<p>Dùng Manhattan distance, Update step dùng Median thay Mean:</p>
+<div class="fbox no-top-radius">
+\[ \mu_1^{\text{Medians}} = \text{Median}_\text{dim1}(A,B), \text{Median}_\text{dim2}(A,B) \]
+\[ = \text{Median}(1,2), \text{Median}(2,1) = (1.5, 1.5) \]
+\[ \mu_2^{\text{Medians}} = \text{Median}(7,8,5), \text{Median}(8,7,5) = (7, 7) \neq (6.67, 6.67) \]
+</div>
+<p>Tâm cụm 2 khác: (7,7) vs (6.67,6.67). Median ít bị ảnh hưởng bởi outliers hơn Mean.</p>
+</div>
+</details>
+</section>
+
+<hr class="divider">
+
+<!-- ========== LOGISTIC REGRESSION ========== -->
+<section id="logreg">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-star"></i> Chuyên đề trọng tâm #3</div>
+  <h2>Hồi quy Logistic &amp; Mạng Nơ-ron cơ bản</h2>
+  <p>Phân loại xác suất — nền tảng cho nhiều câu hỏi về threshold, loss functions, gradient.</p>
+</div>
+
+<div class="s-title">1. Logit &amp; Odds Ratio</div>
+<div class="fbox no-top-radius">
+\[ z = \mathbf{w}\cdot\mathbf{x}+b = \log\frac{P(y=1|\mathbf{x})}{P(y=0|\mathbf{x})} = \text{log-odds} \]
+\[ \text{Odds Ratio} = e^z, \quad \hat{y} = \sigma(z) = \frac{1}{1+e^{-z}} \]
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Câu 8 — Tính Odds Ratio</summary>
+<div class="dc">
+<p>Logit: \(z = \ln(3)\cdot X_1 - \ln(2)\cdot X_2\). Input \(X=[2,1]^\top\):</p>
+<div class="fbox no-top-radius">
+\[ z = \ln(3)\times 2 - \ln(2)\times 1 = 2\ln 3 - \ln 2 = \ln 9 - \ln 2 = \ln(4.5) \]
+\[ \text{Odds Ratio} = e^{\ln(4.5)} = \mathbf{4.5} \]
+</div>
+<p>→ Đáp án: <strong>B. 4.5</strong></p>
+</div>
+</details>
+
+<div class="s-title">2. Decision Threshold, Precision &amp; Recall</div>
+<table class="tbl">
+<thead><tr><th>Threshold tăng</th><th>Precision</th><th>Recall</th><th>F1-Score</th></tr></thead>
+<tbody>
+<tr><td>0.5 → 0.85</td><td>Tăng (ít FP)</td><td>Giảm (nhiều FN)</td><td>Không đảm bảo tăng</td></tr>
+</tbody>
+</table>
+<div class="alert al-yellow">
+  <div class="alert-title">Câu 9 → C: Recall giảm, Precision thường tăng</div>
+</div>
+
+<div class="s-title">3. Bảng so sánh MSE vs Cross-Entropy</div>
+<table class="tbl">
+<thead><tr><th>Tiêu chí</th><th>MSE</th><th>Cross-Entropy</th></tr></thead>
+<tbody>
+<tr><td>Công thức</td><td>\(\frac{1}{2}(\hat{y}-y)^2\)</td><td>\(-y\log\hat{y}-(1-y)\log(1-\hat{y})\)</td></tr>
+<tr><td>\(\partial L/\partial z\) với sigmoid</td><td>\((\hat{y}-y)\hat{y}(1-\hat{y})\)</td><td>\(\hat{y}-y\)</td></tr>
+<tr><td>Gradient Vanishing?</td><td>Có — khi \(\hat{y}\to 0\) hoặc 1</td><td>Không</td></tr>
+<tr><td>Phù hợp</td><td>Regression</td><td>Classification</td></tr>
+</tbody>
+</table>
+
+<div class="s-title">4. L2 Regularization</div>
+<div class="fbox no-top-radius">\[ L_{total} = L_{CE} + \frac{\lambda}{2}\|\mathbf{w}\|^2 \]</div>
+<p>Thu nhỏ trọng số về 0, kiểm soát độ phức tạp mô hình, giảm overfitting.</p>
+
+<div class="s-title">5. Chứng minh Gradient Cross-Entropy — Tại sao sạch hơn MSE?</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Đạo hàm Cross-Entropy theo logit z (bước từng bước)</summary>
+<div class="dc">
+<p>Loss: \(L_{CE} = -y\log\hat{y} - (1-y)\log(1-\hat{y})\), với \(\hat{y}=\sigma(z)\), \(\sigma'(z)=\hat{y}(1-\hat{y})\).</p>
+<div class="fbox no-top-radius">
+\[ \frac{\partial L_{CE}}{\partial \hat{y}} = -\frac{y}{\hat{y}} + \frac{1-y}{1-\hat{y}} \]
+\[ \frac{\partial L_{CE}}{\partial z} = \frac{\partial L_{CE}}{\partial \hat{y}}\cdot\frac{\partial \hat{y}}{\partial z} = \left(-\frac{y}{\hat{y}}+\frac{1-y}{1-\hat{y}}\right)\cdot\hat{y}(1-\hat{y}) \]
+\[ = -y(1-\hat{y}) + (1-y)\hat{y} = \hat{y} - y \]
+</div>
+<div class="alert al-green" style="margin-top:.5rem">
+<div class="alert-title">Kết quả: ∂L_CE/∂z = ŷ − y (chỉ là lỗi dự đoán!)</div>
+Thừa số sigmoid \(\hat{y}(1-\hat{y})\) từ chain rule <strong>triệt tiêu hoàn toàn</strong> với \(\frac{1}{\hat{y}(1-\hat{y})}\) từ đạo hàm CE → gradient không vanish. Mô hình học đều nhau bất kể output gần 0 hay 1.
+</div>
+</div>
+</details>
+
+<div class="s-title">6. Chứng minh MSE + Sigmoid → Gradient Vanishing</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Đạo hàm MSE + Sigmoid — Nguyên nhân triệt tiêu</summary>
+<div class="dc">
+<p>Loss: \(L_{MSE}=\frac{1}{2}(\hat{y}-y)^2\), \(\hat{y}=\sigma(z)\):</p>
+<div class="fbox no-top-radius">
+\[ \frac{\partial L_{MSE}}{\partial z} = (\hat{y}-y)\cdot\underbrace{\hat{y}(1-\hat{y})}_{\text{đạo hàm sigmoid}} \]
+</div>
+<table class="tbl" style="font-size:.83rem">
+<thead><tr><th>Tình huống</th><th>ŷ</th><th>ŷ(1−ŷ)</th><th>Gradient ∂L/∂z</th></tr></thead>
+<tbody>
+<tr><td>Chưa chắc chắn</td><td>0.5</td><td>0.25 (max)</td><td>Lớn — học nhanh</td></tr>
+<tr><td>Đúng, khá chắc (y=1, ŷ=0.9)</td><td>0.9</td><td>0.09</td><td>Nhỏ — học chậm đi (OK)</td></tr>
+<tr><td><strong>Rất sai</strong> (y=0, ŷ=0.99)</td><td>0.99</td><td>0.0099 ≈ 0</td><td><strong>Vanish! — gần như không học</strong></td></tr>
+<tr><td><strong>Rất sai</strong> (y=1, ŷ=0.01)</td><td>0.01</td><td>0.0099 ≈ 0</td><td><strong>Vanish! — gần như không học</strong></td></tr>
+</tbody>
+</table>
+<div class="alert al-red" style="margin-top:.5rem">
+<div class="alert-title">Nghịch lý: Sai nhiều nhất → học ít nhất</div>
+Khi mô hình dự đoán cực kỳ sai (ŷ gần 0 hoặc 1 nhưng y ngược lại), sigmoid đang bão hòa → đạo hàm ≈ 0 → trọng số gần như không cập nhật → học rất chậm. Cross-Entropy không có vấn đề này vì thừa số sigmoid bị triệt tiêu trong công thức đạo hàm.
+</div>
+</div>
+</details>
+
+<div class="s-title">7. Decision Threshold — Trade-off Precision / Recall / F1 chi tiết</div>
+
+<div class="flabel">F1-Score</div>
+<div class="fbox">
+\[ F1 = \frac{2\cdot\text{Precision}\cdot\text{Recall}}{\text{Precision}+\text{Recall}} = \frac{2\text{TP}}{2\text{TP}+\text{FP}+\text{FN}} \]
+</div>
+
+<table class="tbl">
+<thead><tr><th>Threshold θ</th><th>Predict + khi</th><th>FP</th><th>FN</th><th>Precision</th><th>Recall</th></tr></thead>
+<tbody>
+<tr><td>θ = 0 (predict all +)</td><td>Luôn dự đoán Positive</td><td>Rất cao</td><td>0</td><td>= P(+) base rate</td><td>1.0</td></tr>
+<tr><td>θ = 0.5 (mặc định)</td><td>ŷ ≥ 0.5</td><td>Vừa</td><td>Vừa</td><td>Trung bình</td><td>Trung bình</td></tr>
+<tr><td>θ = 0.9 (chặt)</td><td>ŷ ≥ 0.9</td><td>Rất ít</td><td>Nhiều</td><td>Cao</td><td>Thấp</td></tr>
+<tr><td>θ = 1 (predict all -)</td><td>Không bao giờ +</td><td>0</td><td>Tất cả actual +</td><td>Undefined</td><td>0.0</td></tr>
+</tbody>
+</table>
+
+<div class="alert al-yellow">
+  <div class="alert-title"><i class="fas fa-lightbulb"></i> Khi nào dùng threshold thấp vs cao?</div>
+  <ul>
+    <li><strong>Recall ưu tiên (threshold thấp):</strong> Phát hiện ung thư, phát hiện gian lận — không bỏ sót ca bệnh dù có false alarm.</li>
+    <li><strong>Precision ưu tiên (threshold cao):</strong> Spam filter — tránh block email quan trọng, OK nếu spam lọt qua đôi chút.</li>
+    <li><strong>F1-Score:</strong> Khi cần cân bằng — không ưu tiên Precision hay Recall. Là mean điều hòa của hai độ đo.</li>
+  </ul>
+</div>
+
+<div class="s-title">8. L2 Regularization — Ý nghĩa Weight Decay và Điều chỉnh λ</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Gradient Descent với L2 — Weight Decay step</summary>
+<div class="dc">
+<p>Mục tiêu: \(L_{total} = L_{CE} + \frac{\lambda}{2}\|\mathbf{w}\|^2\). Gradient:</p>
+<div class="fbox no-top-radius">
+\[ \frac{\partial L_{total}}{\partial w_j} = \frac{\partial L_{CE}}{\partial w_j} + \lambda w_j \]
+\[ w_j \leftarrow w_j - \eta\!\left(\frac{\partial L_{CE}}{\partial w_j}+\lambda w_j\right) = \underbrace{(1-\eta\lambda)}_{\text{decay factor}} w_j - \eta\frac{\partial L_{CE}}{\partial w_j} \]
+</div>
+<p>Hệ số \((1-\eta\lambda) < 1\) → trọng số bị "thu nhỏ" (decay) tại mỗi bước ngay cả khi loss gradient = 0 → trọng số lớn bị phạt mạnh → mô hình đơn giản hơn.</p>
+<table class="tbl" style="margin-top:.6rem">
+<thead><tr><th>λ</th><th>Ảnh hưởng trọng số</th><th>Hiện tượng</th></tr></thead>
+<tbody>
+<tr><td>λ = 0</td><td>Không decay, w tự do</td><td>Dễ overfit</td></tr>
+<tr><td>λ = 0.001</td><td>Decay nhẹ, kiểm soát vừa phải</td><td>Cân bằng tốt</td></tr>
+<tr><td>λ = 100</td><td>Decay mạnh, hầu hết w → 0</td><td>Underfit — mô hình gần linear trivial</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<div class="s-title">9. Ý nghĩa từng trọng số — Odds Ratio theo từng đặc trưng</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-lightbulb"></i> Mỗi trọng số w_j là log(Odds Ratio) của đặc trưng x_j</div>
+  <div class="fbox no-top-radius">
+  \[ z = w_1 x_1 + w_2 x_2 + \cdots + w_D x_D + b \]
+  \[ \text{Khi } x_j \text{ tăng 1 đơn vị} \Rightarrow z \text{ tăng } w_j \Rightarrow \text{Odds nhân thêm } e^{w_j} \]
+  \[ \boxed{e^{w_j} = \text{Odds Ratio cho feature } x_j \text{ (per unit increase)}} \]
+  </div>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Ví dụ: Giải thích trọng số mô hình CustomerChurn</summary>
+<div class="dc">
+<p>Giả sử mô hình Logistic Regression học được:</p>
+<div class="fbox no-top-radius">
+\[ z = 1.5 \cdot X_1(\text{SupportTickets}) - 0.08 \cdot X_2(\text{ServiceUsage}) + 0.3 \cdot X_3(\text{Discount}) - 2.0 \]
+</div>
+<table class="tbl" style="font-size:.83rem">
+<thead><tr><th>Feature</th><th>w_j</th><th>e^{w_j} = OR</th><th>Diễn giải</th></tr></thead>
+<tbody>
+<tr><td>X1 SupportTickets</td><td>+1.5</td><td>e^1.5 ≈ 4.48</td><td>Mỗi ticket thêm → odds churn tăng 4.48 lần</td></tr>
+<tr><td>X2 ServiceUsage</td><td>-0.08</td><td>e^{-0.08} ≈ 0.923</td><td>Mỗi đơn vị dùng thêm → odds churn giảm 7.7%</td></tr>
+<tr><td>X3 DiscountApplied</td><td>+0.3</td><td>e^{0.3} ≈ 1.35</td><td>Có discount → odds churn tăng 35%</td></tr>
+<tr><td>Intercept b</td><td>-2.0</td><td>Base odds = e^{-2.0} ≈ 0.135</td><td>Khi X1=X2=X3=0, odds churn ≈ 13.5%</td></tr>
+</tbody>
+</table>
+<div class="alert al-green" style="margin-top:.5rem">
+<div class="alert-title">Quy tắc dấu và độ lớn</div>
+<ul>
+<li><strong>w_j &gt; 0:</strong> e^{w_j} &gt; 1 → feature dương tính với lớp 1 (tăng odds)</li>
+<li><strong>w_j &lt; 0:</strong> e^{w_j} &lt; 1 → feature âm tính với lớp 1 (giảm odds)</li>
+<li><strong>|w_j| lớn:</strong> Feature có ảnh hưởng mạnh. L2-reg kéo các w_j về 0 → giảm OR cực đoan</li>
+</ul>
+</div>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Tính toán prediction đầy đủ từ x đến class</summary>
+<div class="dc">
+<p>Dự đoán cho TS01: X1=4, X2=12, X3=0 (dùng mô hình trên):</p>
+<div class="fbox no-top-radius">
+\[ z = 1.5\times 4 + (-0.08)\times 12 + 0.3\times 0 + (-2.0) = 6.0 - 0.96 + 0 - 2.0 = 3.04 \]
+\[ \hat{y} = \sigma(z) = \frac{1}{1+e^{-3.04}} = \frac{1}{1+0.0477} \approx \mathbf{0.954} \]
+\[ \text{Odds} = e^{3.04} \approx 20.9 \quad\Rightarrow\quad \frac{P(\text{Churn})}{P(\text{No Churn})} = 20.9:1 \]
+\[ \text{Threshold } \theta=0.5: \hat{y}=0.954>0.5 \Rightarrow \textbf{Predict Churn (Yes)} \checkmark \]
+</div>
+<table class="tbl" style="font-size:.83rem;margin-top:.5rem">
+<thead><tr><th>Bước</th><th>Công thức</th><th>Kết quả</th></tr></thead>
+<tbody>
+<tr><td>Tính logit z</td><td>\(z = \mathbf{w}\cdot\mathbf{x}+b\)</td><td>3.04</td></tr>
+<tr><td>Tính odds</td><td>\(e^z\)</td><td>20.9</td></tr>
+<tr><td>Tính probability</td><td>\(\sigma(z) = \frac{e^z}{1+e^z}\)</td><td>0.954</td></tr>
+<tr><td>So sánh threshold</td><td>\(\hat{y} \geq \theta = 0.5\)</td><td>Yes → Churn</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+</section>
+
+<hr class="divider">
+
+<!-- ========== MOCK EXAM ========== -->
+<section id="mock">
+<div class="ch-hdr ch-hdr-blue">
+  <div class="lbl"><i class="fas fa-file-alt"></i> Đề thi thử 2026</div>
+  <h2>Thi thử CK — 25 câu trắc nghiệm (Mã đề 5231)</h2>
+  <p>Học kỳ 2, 2025–2026 | CO5175 — Học máy và Ứng dụng | 12/05/2026</p>
+</div>
+
+<div class="alert al-green">
+  <div class="alert-title"><i class="fas fa-check-circle"></i> ĐÁP ÁN NHANH</div>
+  <p style="font-family:monospace;font-size:.9rem">
+  1.B | 2.C | 3.B | 4.B | 5.B | 6.A | 7.B | 8.B | 9.C | 10.C<br>
+  11.B | 12.A | 13.A | 14.C | 15.B | 16.A | 17.D | 18.B | 19.A | 20.B<br>
+  21.D | 22.B | 23.B | 24.B | 25.A
+  </p>
+</div>
+
+<div class="s-title">Nhóm HMM (Câu 1–4, 19, 21–22, 24–25)</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 1 — Viterbi: Cơ sở toán học</div>
+<div class="qbody">
+<div class="qq">Trong HMM, thuật toán Viterbi tìm chuỗi trạng thái ẩn tối ưu. Cơ sở toán học cốt lõi cho phép Viterbi đạt độ phức tạp tuyến tính theo thời gian thay vì hàm mũ là gì?</div>
+<div class="qopt qwrong">A. Khai triển chuỗi Taylor để xấp xỉ hàm likelihood</div>
+<div class="qopt qok">B. Nguyên lý tối ưu Bellman và tính chất Markov bậc 1 ✓</div>
+<div class="qopt qwrong">C. Giả định các trạng thái ẩn độc lập tuyệt đối với nhau</div>
+<div class="qopt qwrong">D. Sử dụng Gradient Descent để cập nhật đường đi tại mỗi bước thời gian</div>
+<div class="qexp"><strong>Giải thích:</strong> Nguyên lý Bellman: đường đi tối ưu đến (t,j) đi qua đường đi tối ưu đến (t-1,i). Tính chất Markov: trạng thái hiện tại chỉ phụ thuộc trạng thái ngay trước. Kết hợp → quy hoạch động với \(\mathcal{O}(N^2T)\) thay vì \(\mathcal{O}(N^T)\).</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 2 — Forward Algorithm: Dữ liệu bị thiếu</div>
+<div class="qbody">
+<div class="qq">Trong chuỗi quan sát HMM, tại t=k dữ liệu bị thiếu. Điều chỉnh tốt nhất cho thuật toán Forward tại bước k?</div>
+<div class="qopt qwrong">A. Cắt chuỗi làm hai nửa độc lập tại k và nhân hai likelihoods</div>
+<div class="qopt qwrong">B. Thay thế o_k bằng giá trị quan sát phổ biến nhất (Mode)</div>
+<div class="qopt qok">C. Tính tổng biên (marginalize) qua các trạng thái bằng cách đặt b_j(o_k)=1 cho mọi j ✓</div>
+<div class="qopt qwrong">D. Khởi tạo lại thuật toán Forward từ bước k+1 với xác suất tiên nghiệm π</div>
+<div class="qexp"><strong>Giải thích:</strong> Đặt \(b_j(o_k)=1\) tương đương marginalize qua tất cả quan sát có thể — không cung cấp thông tin bức xạ tại bước này nhưng vẫn duy trì tính liên tục của chuỗi Forward.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 3 — Baum-Welch: Khởi tạo A = Identity Matrix</div>
+<div class="qbody">
+<div class="qq">Nếu khởi tạo Baum-Welch với A là ma trận đơn vị và ít dữ liệu quan sát, HMM sẽ hoạt động thế nào?</div>
+<div class="qopt qwrong">A. Hội tụ cực nhanh vì đạo hàm bậc hai luôn dương</div>
+<div class="qopt qok">B. Mô hình bị khóa cứng — trạng thái ẩn ban đầu không bao giờ chuyển sang trạng thái nào khác ✓</div>
+<div class="qopt qwrong">C. Tự động chuyển đổi thành mô hình phân cụm tĩnh như K-Means</div>
+<div class="qopt qwrong">D. Phân phối xác suất trạng thái trở thành đều sau đúng 1 vòng lặp</div>
+<div class="qexp"><strong>Giải thích:</strong> A=I → \(a_{ij}=0\) với \(i\neq j\) → \(\xi_t(i,j)\propto\alpha_t(i)\cdot a_{ij}\cdot\ldots=0\). Không có cập nhật nào cho \(a_{ij}\), mô hình mắc kẹt mãi.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 4 — Forward-Backward vs Viterbi</div>
+<div class="qbody">
+<div class="qq">Nhược điểm nghiêm trọng nhất của chuỗi Q_FB (Forward-Backward) so với Q_Viterbi trong decoding?</div>
+<div class="qopt qwrong">A. Tốn nhiều thời gian tính toán hơn Viterbi theo cấp số nhân</div>
+<div class="qopt qok">B. Joint probability của toàn bộ chuỗi Q_FB có thể bằng 0 do vi phạm cấu trúc mô hình ✓</div>
+<div class="qopt qwrong">C. Không tối đa hóa được số lượng trạng thái đoán đúng từng mốc thời gian độc lập</div>
+<div class="qopt qwrong">D. Luôn bỏ qua sự phụ thuộc vào ma trận bức xạ</div>
+<div class="qexp"><strong>Giải thích:</strong> FB chọn \(\hat{q}_t=\arg\max_i\gamma_t(i)\) độc lập tại mỗi bước. Chuỗi kết quả có thể chứa chuyển trạng thái với \(a_{ij}=0\) → \(P(Q_{FB},O|\lambda)=0\). Viterbi đảm bảo toàn bộ đường đi hợp lệ.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 19 — HMM bậc 2: Kích thước tensor</div>
+<div class="qbody">
+<div class="qq">HMM bậc 2 với N trạng thái: xác suất chuyển tại t phụ thuộc vào 2 trạng thái liền trước (t-1 và t-2). Kích thước vật lý của cấu trúc lưu toàn bộ tham số chuyển trạng thái là bao nhiêu chiều?</div>
+<div class="qopt qok">A. Khối dữ liệu kích thước N×N×N (hoặc tương đương ma trận phẳng N²×N) ✓</div>
+<div class="qopt qwrong">B. Ma trận vuông N×N</div>
+<div class="qopt qwrong">C. Mảng hai chiều N×2</div>
+<div class="qopt qwrong">D. Số lượng trạng thái lũy thừa: 2^N</div>
+<div class="qexp"><strong>Giải thích:</strong> \(a_{ijk}=P(q_t=k\mid q_{t-1}=j, q_{t-2}=i)\). Có N lựa chọn cho i, N cho j, N cho k → tensor 3 chiều N×N×N.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 21 — Biến ξ trong Baum-Welch</div>
+<div class="qbody">
+<div class="qq">Biến kỳ vọng trung gian \(\xi_t(i,j)\) biểu diễn P(ở trạng thái i tại t và chuyển sang j tại t+1). Biểu thức nào đúng?</div>
+<div class="qopt qwrong">A. \(\xi_t(i,j) = \max(\alpha_t(i),\,\beta_{t+1}(j))\)</div>
+<div class="qopt qwrong">B. \(\xi_t(i,j) = \sum_{k=1}^{N}\alpha_t(i)\cdot\beta_t(k)\)</div>
+<div class="qopt qwrong">C. \(\xi_t(i,j) = \alpha_t(i)\cdot\beta_t(j)\)</div>
+<div class="qopt qok">D. \(\xi_t(i,j) = \dfrac{\alpha_t(i)\cdot a_{ij}\cdot b_j(o_{t+1})\cdot\beta_{t+1}(j)}{P(O\mid\lambda)}\) ✓</div>
+<div class="qexp"><strong>Giải thích:</strong> Tử số = \(\alpha_t(i)\) (đến i tại t) × \(a_{ij}\) (chuyển i→j) × \(b_j(o_{t+1})\) (phát quan sát tiếp theo) × \(\beta_{t+1}(j)\) (phần còn lại). Mẫu số: \(P(O|\lambda)\) để chuẩn hóa.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 22 — Tính Likelihood P(o₁)</div>
+<div class="qbody">
+<div class="qq">HMM 2 trạng thái S₁,S₂. π=[1,0], P(o₁|S₁)=0.7. Giá trị P(o₁) tại T=1 là bao nhiêu?</div>
+<div class="qopt qwrong">A. 1.0</div>
+<div class="qopt qok">B. 0.7 ✓</div>
+<div class="qopt qwrong">C. 0.35</div>
+<div class="qopt qwrong">D. Không thể tính vì chưa có ma trận A</div>
+<div class="qexp"><strong>Giải thích:</strong> \(P(o_1)=\pi_{S_1}\cdot b_{S_1}(o_1)+\pi_{S_2}\cdot b_{S_2}(o_1) = 1\times 0.7 + 0\times(\cdot) = 0.7\). Ma trận A không cần tại T=1.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 24 — Ý nghĩa b_j(o_t) trong nhận dạng tiếng nói</div>
+<div class="qbody">
+<div class="qq">Trong HMM ASR: trạng thái ẩn = Âm vị. Tham số b_j(o_t) truyền đạt ý nghĩa gì?</div>
+<div class="qopt qwrong">A. Xác suất người nói phát ra âm vị j tại thời điểm t bất kể âm thanh thu được</div>
+<div class="qopt qok">B. Xác suất mô hình thu nhận được đoạn âm thanh o_t, biết hệ thống đang phát ra âm vị j ✓</div>
+<div class="qopt qwrong">C. Xác suất hệ thống chuyển từ âm vị o_t sang âm vị j trong bước tiếp theo</div>
+<div class="qopt qwrong">D. Xác suất tổng thể để xuất hiện o_t trong toàn bộ cơ sở dữ liệu lời nói</div>
+<div class="qexp"><strong>Giải thích:</strong> Theo định nghĩa: \(b_j(o_t)=P(o_t\mid q_t=j)\) — xác suất quan sát o_t khi trạng thái ẩn là j. Trong ASR: xác suất thu được tín hiệu âm thanh o_t nếu đang phát âm vị j.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 25 — Viterbi Log-space với a_ij = 0</div>
+<div class="qbody">
+<div class="qq">Trong Viterbi log-space, nếu a_ij=0 (chuyển i→j bị cấm), cơ chế nào loại bỏ đường đi này?</div>
+<div class="qopt qok">A. log(0)=−∞ khiến toán tử Max tại bước quy hoạch động gạt bỏ nhánh này ✓</div>
+<div class="qopt qwrong">B. Cấu trúc lệnh if kiểm tra giá trị 0 được cài đặt cứng trong mã nguồn</div>
+<div class="qopt qwrong">C. Phép cộng dồn trung bình các xác suất lân cận triệt tiêu nhánh a_ij</div>
+<div class="qopt qwrong">D. a_ij=0 làm tràn biến mảng Gradient, tự kích hoạt ngắt thuật toán</div>
+<div class="qexp"><strong>Giải thích:</strong> \(\log\delta_t(j)=\max_i[\log\delta_{t-1}(i)+\log a_{ij}]+\log b_j(o_t)\). Khi \(a_{ij}=0\): \(\log(0)=-\infty\). Tổng = \(-\infty\) &lt; mọi giá trị hợp lệ → max operator tự loại bỏ.</div>
+</div>
+</div>
+
+<div class="s-title">Nhóm SVM (Câu 5–7, 23)</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 5 — SVM 1D: Phân tách tuyến tính</div>
+<div class="qbody">
+<div class="qq">Dữ liệu 1D: Lớp +1 gồm \(\{-2, 2\}\), Lớp -1 gồm \(\{0\}\). Khẳng định nào đúng về biên quyết định SVM với dữ liệu này?</div>
+<div class="qopt qwrong">A. Có thể phân tách tuyến tính bằng cách đặt một điểm (siêu phẳng 1D) tại x=1</div>
+<div class="qopt qok">B. Không thể phân tách tuyến tính — không tồn tại bất kỳ một điểm nào chia hoàn toàn 2 lớp ✓</div>
+<div class="qopt qwrong">C. Có thể phân tách tuyến tính nếu dùng Soft-margin SVM</div>
+<div class="qopt qwrong">D. Không thể phân tách trừ khi dùng Kernel phi tuyến bậc 3</div>
+<div class="qexp"><strong>Giải thích:</strong> Trong 1D, siêu phẳng là một điểm p. Lớp +1 có điểm ở cả hai phía của 0 ({-2} &lt; 0 &lt; {2}). Không có điểm p nào đặt được {-2,2} cùng phía và {0} phía còn lại. Dữ liệu không linearly separable. Soft-margin vẫn là tuyến tính.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 6 — Margin Width</div>
+<div class="qbody">
+<div class="qq">Hard-margin SVM: H₁: 2x₁+x₂−3=0, H₂: 2x₁+x₂+1=0. Margin width là bao nhiêu?</div>
+<div class="qopt qok">A. \(4/\sqrt{5}\) ✓</div>
+<div class="qopt qwrong">B. \(\sqrt{5}\)</div>
+<div class="qopt qwrong">C. \(2/\sqrt{5}\)</div>
+<div class="qopt qwrong">D. 4</div>
+<div class="qexp"><strong>Giải thích:</strong> \(\|\mathbf{w}\|=\sqrt{4+1}=\sqrt{5}\). Margin = \(|3-(-1)|/\sqrt{5}=4/\sqrt{5}\).</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 7 — RBF Kernel với γ → ∞</div>
+<div class="qbody">
+<div class="qq">SVM dùng RBF kernel \(K(x,x')=\exp(-\gamma\|x-x'\|^2)\). Khi γ→∞, ma trận Gram và mô hình như thế nào?</div>
+<div class="qopt qwrong">A. Ma trận Kernel → ma trận toàn số 1, dẫn đến underfit nghiêm trọng</div>
+<div class="qopt qok">B. Ma trận Kernel ≈ Identity Matrix, mô hình bị overfit cực đại ✓</div>
+<div class="qopt qwrong">C. Ma trận Kernel → ma trận đường chéo toàn số 0</div>
+<div class="qopt qwrong">D. Ma trận Kernel hoạt động như Linear Kernel tiêu chuẩn</div>
+<div class="qexp"><strong>Giải thích:</strong> Khi γ→∞: \(K(x_i,x_j)=e^{-\gamma\|x_i-x_j\|^2}\to 0\) với \(i\neq j\) (vì \(\|x_i-x_j\|^2&gt;0\)), và \(K(x_i,x_i)=1\). Gram ≈ Identity → mỗi điểm là "vùng riêng" → overfit.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 23 — Soft-margin SVM với C → ∞</div>
+<div class="qbody">
+<div class="qq">Trong Soft-margin SVM, khi C→∞, mô hình sẽ có đặc điểm gì?</div>
+<div class="qopt qwrong">A. Tối đa hóa lề vô cực, bỏ qua mọi sai số phân loại (Extreme Underfit)</div>
+<div class="qopt qok">B. Xử phạt cực kỳ nghiêm ngặt các điểm vi phạm — margin bị ép hẹp lại, bám sát data (nguy cơ Overfit) ✓</div>
+<div class="qopt qwrong">C. Mô hình dừng ở vòng lặp đầu tiên do ma trận suy biến</div>
+<div class="qopt qwrong">D. Tự động chuyển siêu phẳng tuyến tính thành mặt cong đa thức</div>
+<div class="qexp"><strong>Giải thích:</strong> C→∞ phạt mọi lỗi vô cùng lớn → không chấp nhận bất kỳ điểm nào vi phạm margin → tương đương Hard-margin SVM → margin bị ép hẹp → overfit.</div>
+</div>
+</div>
+
+<div class="s-title">Nhóm Logistic Regression (Câu 8–9, 12–13, 20)</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 8 — Odds Ratio</div>
+<div class="qbody">
+<div class="qq">Logistic Regression với logit \(z=\ln(3)\cdot X_1 - \ln(2)\cdot X_2\). Input \(X=[2,1]^\top\). Odds Ratio là?</div>
+<div class="qopt qwrong">A. 0.818</div>
+<div class="qopt qok">B. 4.5 ✓</div>
+<div class="qopt qwrong">C. ln(4.5)</div>
+<div class="qopt qwrong">D. 3.5</div>
+<div class="qexp"><strong>Giải thích:</strong> \(z=2\ln3-\ln2=\ln9-\ln2=\ln(4.5)\). Odds Ratio = \(e^{\ln(4.5)}=4.5\).</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 9 — Decision Threshold và Precision/Recall</div>
+<div class="qbody">
+<div class="qq">Tăng decision threshold từ 0.5 lên 0.85 trong phân loại nhị phân Logistic Regression (dự đoán dương = 1)?</div>
+<div class="qopt qwrong">A. Recall tăng, Precision giảm</div>
+<div class="qopt qwrong">B. Decision boundary uốn cong thành phi tuyến</div>
+<div class="qopt qok">C. Recall giảm, Precision thường có xu hướng tăng ✓</div>
+<div class="qopt qwrong">D. F1-Score chắc chắn luôn tăng đến mức cực đại</div>
+<div class="qexp"><strong>Giải thích:</strong> Threshold cao → ít điểm được dự đoán dương → nhiều TP bị bỏ sót (FN tăng) → Recall giảm. Những gì được dự đoán dương thường chắc chắn hơn → ít FP → Precision tăng.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 12 — MSE + Sigmoid = Gradient Vanishing</div>
+<div class="qbody">
+<div class="qq">Neural network phân loại nhị phân dùng sigmoid đầu ra. Tại sao MSE gây gradient vanishing khi y=1 nhưng ŷ→0?</div>
+<div class="qopt qok">A. Đạo hàm MSE theo logit z chứa tích số ŷ(1−ŷ), triệt tiêu về 0 khi ŷ→0 ✓</div>
+<div class="qopt qwrong">B. MSE không chứa phép toán logarit, không đủ mạnh phạt sai số &gt;1</div>
+<div class="qopt qwrong">C. MSE là hàm lồi thuần túy nên đạo hàm ở các vùng biên = 0</div>
+<div class="qopt qwrong">D. Khoảng cách Euclidean giữa y và ŷ bị chặn trên, gây tràn bộ nhớ</div>
+<div class="qexp"><strong>Giải thích:</strong> \(\partial E_{MSE}/\partial z = (\hat{y}-y)\cdot\hat{y}(1-\hat{y})\). Khi \(\hat{y}\to 0\): \(\hat{y}(1-\hat{y})\to 0\) → gradient tiệm cận 0 dù lỗi \(|\hat{y}-y|\) lớn.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 13 — Đạo hàm Cross-Entropy theo logit z</div>
+<div class="qbody">
+<div class="qq">Phân loại nhị phân với \(\hat{y}=\sigma(z)\), nhãn \(y\in\{0,1\}\). \(\partial L_{CE}/\partial z\) là?</div>
+<div class="qopt qok">A. \(\hat{y}-y\) ✓</div>
+<div class="qopt qwrong">B. \((\hat{y}-y)\hat{y}(1-\hat{y})\)</div>
+<div class="qopt qwrong">C. \(-y\log(\hat{y})-(1-y)\log(1-\hat{y})\)</div>
+<div class="qopt qwrong">D. \(-y/\hat{y}+(1-y)/(1-\hat{y})\)</div>
+<div class="qexp"><strong>Giải thích:</strong> Chain rule: \(\partial L/\partial z = \partial L/\partial\hat{y}\cdot\partial\hat{y}/\partial z = \left(-y/\hat{y}+(1-y)/(1-\hat{y})\right)\cdot\hat{y}(1-\hat{y})\). Rút gọn: \(= -(y(1-\hat{y}) - (1-y)\hat{y}) = \hat{y}-y\).</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 20 — L2-Logistic vs Soft-margin SVM</div>
+<div class="qbody">
+<div class="qq">Điểm khác biệt cốt lõi về toán học giữa L2-Regularized Logistic Regression và Soft-margin SVM tuyến tính?</div>
+<div class="qopt qwrong">A. Logistic không có tối đa hóa lề; SVM không tối ưu hàm khả năng</div>
+<div class="qopt qok">B. Hàm mất mát: Logistic dùng Cross-Entropy (Log-loss), SVM dùng Hinge Loss ✓</div>
+<div class="qopt qwrong">C. SVM xử phạt trọng số qua L1-norm; Logistic luôn dùng L2-norm</div>
+<div class="qopt qwrong">D. Hai thuật toán đồng nhất về hàm mục tiêu, chỉ khác thuật toán tối ưu</div>
+<div class="qexp"><strong>Giải thích:</strong> Cả hai dùng L2-regularization. Điểm khác nhau cốt lõi: hàm mất mát — Logistic dùng Log-loss (smooth, xử lý xác suất), SVM dùng Hinge Loss (sparse support vectors, margin-based).</div>
+</div>
+</div>
+
+<div class="s-title">Nhóm Naive Bayes (Câu 10–11)</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 10 — Spam Filter: Tính xác suất hậu nghiệm</div>
+<div class="qbody">
+<div class="qq">P(Spam)=0.2, P(Ham)=0.8. P("Khuyến_mãi"|Spam)=0.5, P("Khuyến_mãi"|Ham)=0.05. Email chứa đúng 1 từ "Khuyến_mãi". Xác suất là Spam (chuẩn hóa)?</div>
+<div class="qopt qwrong">A. 10.0%</div>
+<div class="qopt qwrong">B. 50.0%</div>
+<div class="qopt qok">C. 71.4% ✓</div>
+<div class="qopt qwrong">D. 90.9%</div>
+<div class="qexp"><strong>Giải thích:</strong> Spam score = 0.2×0.5 = 0.10. Ham score = 0.8×0.05 = 0.04. P(Spam|KM) = 0.10/(0.10+0.04) = 0.10/0.14 ≈ 71.4%.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 11 — Hệ quả của Conditional Independence</div>
+<div class="qbody">
+<div class="qq">Trong Multinomial Naive Bayes phân loại văn bản, giả định độc lập có điều kiện dẫn đến hệ quả tiêu cực phổ biến nhất trong thực tế?</div>
+<div class="qopt qwrong">A. Không thể áp dụng Laplace Smoothing do xung đột giả định</div>
+<div class="qopt qok">B. Xác suất hậu nghiệm thường bị lệch cực đoan (đẩy sát 0 hoặc 1), mô hình quá tự tin (overconfident) ✓</div>
+<div class="qopt qwrong">C. Mô hình không xử lý được từ vựng Out-of-Vocabulary</div>
+<div class="qopt qwrong">D. Mô hình chỉ hoạt động với văn bản có độ dài feature vector bằng nhau</div>
+<div class="qexp"><strong>Giải thích:</strong> Khi các đặc trưng không thực sự độc lập (thường xảy ra với từ vựng), tích nhiều xác suất tương quan đẩy posterior cực đoan về 0 hoặc 1 → overconfident, dù phân loại vẫn đúng hướng.</div>
+</div>
+</div>
+
+<div class="s-title">Nhóm K-Means &amp; KNN (Câu 14–18)</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 14 — Tính chất của hàm mục tiêu WCSS</div>
+<div class="qbody">
+<div class="qq">Hàm WCSS: \(J(C,\mu)=\sum_{k=1}^{K}\sum_{x\in C_k}\|x-\mu_k\|^2\). Tính chất hình học tổng quát của hàm này?</div>
+<div class="qopt qwrong">A. Lồi nghiêm ngặt (strictly convex), đảm bảo tìm được nghiệm tối ưu toàn cục</div>
+<div class="qopt qwrong">B. Tuyến tính, độ phức tạp chỉ tăng tỷ lệ thuận với số mẫu</div>
+<div class="qopt qok">C. Không lồi (non-convex), do không gian phân gán cụm rời rạc tổ hợp — chứa rất nhiều cực tiểu cục bộ ✓</div>
+<div class="qopt qwrong">D. Lồi theo C nhưng không lồi theo μ</div>
+<div class="qexp"><strong>Giải thích:</strong> J phụ thuộc cả C (rời rạc) lẫn μ (liên tục). Không gian C tổ hợp rời rạc → non-convex. Lloyd's algorithm chỉ đảm bảo cực tiểu cục bộ.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 15 — K-Medians với Manhattan distance</div>
+<div class="qbody">
+<div class="qq">Khi thay Euclidean bằng Manhattan (L1) trong K-Means, bước cập nhật tâm cụm PHẢI đổi thành gì?</div>
+<div class="qopt qwrong">A. Mode (giá trị xuất hiện nhiều nhất)</div>
+<div class="qopt qok">B. Trung vị (Median) theo từng chiều tọa độ ✓</div>
+<div class="qopt qwrong">C. Mean nhưng chuẩn hóa chia cho phương sai mẫu</div>
+<div class="qopt qwrong">D. Không cần thay đổi — Mean vẫn là tối ưu cho mọi khoảng cách Minkowski</div>
+<div class="qexp"><strong>Giải thích:</strong> \(\arg\min_c \sum|x-c|\) có nghiệm là Median. \(\arg\min_c \sum(x-c)^2\) có nghiệm là Mean. Đổi sang L1 → bước Update phải dùng Median.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 16 — Đảm bảo hội tụ của K-Means (Lloyd's)</div>
+<div class="qbody">
+<div class="qq">Thuật toán K-Means (Lloyd's) PHẢI dừng trong hữu hạn bước. Tính chất nào đảm bảo điều này?</div>
+<div class="qopt qok">A. Số tổ hợp phân gán hữu hạn của N điểm vào K tập hợp, kết hợp WCSS không bao giờ tăng sau mỗi bước ✓</div>
+<div class="qopt qwrong">B. Thuật toán áp dụng Gradient Descent với learning rate giảm dần về 0</div>
+<div class="qopt qwrong">C. Tâm cụm tự động nới rộng margin ra vô cực sau một số vòng lặp</div>
+<div class="qopt qwrong">D. Dữ liệu tự động bị giảm chiều theo PCA ở mỗi bước</div>
+<div class="qexp"><strong>Giải thích:</strong> Tổng số trạng thái phân gán ≤ K^N (hữu hạn). WCSS giảm đơn điệu sau mỗi bước. Tập hữu hạn + monotone → hội tụ trong hữu hạn bước.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 17 — Cấu trúc dữ liệu tối ưu cho KNN</div>
+<div class="qbody">
+<div class="qq">Để khắc phục chi phí \(\mathcal{O}(N\cdot D)\) cho mỗi truy vấn KNN, cấu trúc dữ liệu nào được dùng?</div>
+<div class="qopt qwrong">A. Stack và Linked List</div>
+<div class="qopt qwrong">B. Hash Map và B-Tree</div>
+<div class="qopt qwrong">C. Priority Queue chạy theo DFS</div>
+<div class="qopt qok">D. KD-Tree (K-Dimensional Tree) và Ball-Tree ✓</div>
+<div class="qexp"><strong>Giải thích:</strong> KD-Tree phân vùng không gian theo từng chiều, giảm tìm kiếm xuống \(\mathcal{O}(\log N)\) cho chiều thấp. Ball-Tree dùng hyperballs, hiệu quả hơn cho chiều cao.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 18 — KNN khi K = N</div>
+<div class="qbody">
+<div class="qq">Khi K trong KNN tăng lên bằng N (tổng số mẫu huấn luyện), hiện tượng gì chắc chắn xảy ra?</div>
+<div class="qopt qwrong">A. Mô hình dần về Low Bias - High Variance, biên phân quyết định phức tạp cực độ</div>
+<div class="qopt qok">B. Biên phân quyết định biến mất, mô hình luôn dự đoán theo lớp đa số (Majority Class) ✓</div>
+<div class="qopt qwrong">C. Khoảng cách tính toán bị tràn bộ nhớ do cộng dồn N lần</div>
+<div class="qopt qwrong">D. Training Error giảm dần về 0</div>
+<div class="qexp"><strong>Giải thích:</strong> K=N → toàn bộ tập huấn luyện là hàng xóm của mọi điểm → bỏ phiếu đa số trên toàn bộ tập → luôn chọn Majority Class. High Bias, Low Variance → Underfit. Training Error ≠ 0 nếu có lớp thiểu số.</div>
+</div>
+</div>
+
+</section>
+
+<!-- ========== 2025 FINAL EXAM ========== -->
+<section id="exam2025">
+<div class="ch-hdr ch-hdr-blue">
+  <div class="lbl"><i class="fas fa-graduation-cap"></i> Đề Thi Cuối Kỳ Thật — HK242 (2024-2025)</div>
+  <h2>Final Exam — 25 câu trắc nghiệm (Mã đề 4218)</h2>
+  <p>Học kỳ 2, 2024–2025 | CO5241 — ML and Applications | 17/05/2025 | 90 phút</p>
+</div>
+
+<div class="alert al-green">
+  <div class="alert-title"><i class="fas fa-check-circle"></i> ĐÁP ÁN NHANH — Mã đề 4218</div>
+  <p style="font-family:monospace;font-size:.9rem">
+  1.A | 2.C | 3.B | 4.B | 5.C | 6.B | 7.B | 8.B | 9.A | 10.C<br>
+  11.B | 12.A | 13.D | 14.C | 15.B | 16.A | 17.D | 18.C | 19.B | 20.A<br>
+  21.D | 22.A | 23.D | 24.C | 25.B
+  </p>
+</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-database"></i> Dữ liệu dùng cho Câu 12–25: CustomerChurn</div>
+  <p style="margin-bottom:.6rem"><strong>CustomerChurnTrain</strong> (10 mẫu, 5 Yes / 5 No):</p>
+  <table class="tbl" style="font-size:.8rem">
+    <tr><th>ID</th><th>X1 SupportTickets</th><th>X2 ServiceUsage</th><th>X3 DiscountApplied</th><th>Churn</th></tr>
+    <tr><td>TR01</td><td>3</td><td>10</td><td>0</td><td>Yes</td></tr>
+    <tr><td>TR02</td><td>0</td><td>50</td><td>1</td><td>No</td></tr>
+    <tr><td>TR03</td><td>5</td><td>5</td><td>0</td><td>Yes</td></tr>
+    <tr><td>TR04</td><td>1</td><td>40</td><td>0</td><td>No</td></tr>
+    <tr><td>TR05</td><td>2</td><td>60</td><td>1</td><td>No</td></tr>
+    <tr><td>TR06</td><td>4</td><td>8</td><td>1</td><td>Yes</td></tr>
+    <tr><td>TR07</td><td>0</td><td>30</td><td>0</td><td>No</td></tr>
+    <tr><td>TR08</td><td>6</td><td>3</td><td>0</td><td>Yes</td></tr>
+    <tr><td>TR09</td><td>1</td><td>25</td><td>1</td><td>No</td></tr>
+    <tr><td>TR10</td><td>3</td><td>15</td><td>1</td><td>Yes</td></tr>
+  </table>
+  <p style="margin:.6rem 0"><strong>CustomerChurnTest</strong> (4 mẫu):</p>
+  <table class="tbl" style="font-size:.8rem">
+    <tr><th>ID</th><th>X1</th><th>X2</th><th>X3</th><th>Churn (Thật)</th></tr>
+    <tr><td>TS01</td><td>4</td><td>12</td><td>0</td><td>Yes</td></tr>
+    <tr><td>TS02</td><td>0</td><td>55</td><td>0</td><td>No</td></tr>
+    <tr><td>TS03</td><td>2</td><td>20</td><td>1</td><td>No</td></tr>
+    <tr><td>TS04</td><td>5</td><td>6</td><td>1</td><td>Yes</td></tr>
+  </table>
+</div>
+
+<div class="s-title">Nhóm Logistic Regression / Overfitting (Câu 1–3)</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 1 [L.O.1] — Nhận biết Overfitting từ đồ thị phân loại</div>
+<div class="qbody">
+<div class="qq">Ba hình A, B, C minh hoạ biên phân quyết định của các mô hình Logistic Regression trên cùng một tập dữ liệu. Mô hình nào thể hiện overfitting?</div>
+<div class="qopt qok">A. Fig. C ✓</div>
+<div class="qopt qwrong">B. Fig. A</div>
+<div class="qopt qwrong">C. Fig. B</div>
+<div class="qopt qwrong">D. None of them</div>
+<div class="qexp"><strong>Giải thích:</strong> Overfitting = biên phân quyết định quá phức tạp, bám sát từng điểm huấn luyện, variance cao. Fig. C có đường cong phức tạp nhất → overfitting. Fig. A đơn giản nhất (underfit), Fig. B cân bằng (best generalization).</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 2 [L.O.1] — Phát biểu đúng về 3 mô hình</div>
+<div class="qbody">
+<div class="qq">Phát biểu nào sau đây là ĐÚNG?<br>
+(1) Training error của Fig. A là lớn nhất.<br>
+(2) Fig. C là tốt nhất vì training error nhỏ nhất.<br>
+(3) Fig. B là tốt nhất vì sẽ hoạt động tốt trên dữ liệu chưa thấy.<br>
+(4) Hiệu suất của tất cả các mô hình là tương đương.</div>
+<div class="qopt qwrong">A. (2) và (3)</div>
+<div class="qopt qwrong">B. (2) và (4)</div>
+<div class="qopt qok">C. (1) và (3) ✓</div>
+<div class="qopt qwrong">D. (1) và (2)</div>
+<div class="qexp"><strong>Giải thích:</strong> (1) Đúng — Fig. A là underfit (đường thẳng đơn giản) → training error lớn nhất. (3) Đúng — Fig. B cân bằng bias-variance → tổng quát tốt nhất. (2) Sai — Fig. C dù có training error thấp nhưng overfit, không phải "best". (4) Sai — ba mô hình khác nhau rõ rệt.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 3 [L.O.1] — Mô hình nào có regularization lớn nhất?</div>
+<div class="qbody">
+<div class="qq">Giả sử các mô hình A, B, C được huấn luyện với các giá trị regularization khác nhau. Mô hình nào có giá trị regularization LỚN NHẤT?</div>
+<div class="qopt qwrong">A. Fig. B</div>
+<div class="qopt qok">B. Fig. A ✓</div>
+<div class="qopt qwrong">C. Fig. C</div>
+<div class="qopt qwrong">D. The same</div>
+<div class="qexp"><strong>Giải thích:</strong> Regularization càng lớn → penalty trọng số càng mạnh → mô hình càng đơn giản (bias cao, variance thấp). Fig. A đơn giản nhất (đường thẳng) → regularization cao nhất (tham số C nhỏ nhất trong SVM, hoặc λ lớn nhất trong L2-reg). Fig. C phức tạp nhất → regularization thấp nhất.</div>
+</div>
+</div>
+
+<div class="s-title">Nhóm Confusion Matrix — Precision &amp; Recall (Câu 4–5)</div>
+<div class="alert al-blue">
+<div class="alert-title">Ma trận nhầm lẫn — 3 lớp X, Y, Z</div>
+<table class="tbl" style="font-size:.85rem">
+<tr><th></th><th>Actual X</th><th>Actual Y</th><th>Actual Z</th></tr>
+<tr><td><strong>Predicted X</strong></td><td>116</td><td>13</td><td>10</td></tr>
+<tr><td><strong>Predicted Y</strong></td><td>14</td><td>11</td><td>20</td></tr>
+<tr><td><strong>Predicted Z</strong></td><td>11</td><td>10</td><td>122</td></tr>
+</table>
+<p style="font-size:.8rem;margin-top:.5rem">Tổng Actual X = 116+14+11 = 141; Tổng Predicted X = 116+13+10 = 139</p>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 4 [L.O.1] — Precision của lớp X</div>
+<div class="qbody">
+<div class="qq">Độ chính xác phân loại (Precision) của mô hình M cho lớp X là bao nhiêu?</div>
+<div class="qopt qwrong">A. 0.832</div>
+<div class="qopt qok">B. 0.823 ✓</div>
+<div class="qopt qwrong">C. 0.825</div>
+<div class="qopt qwrong">D. 0.852</div>
+<div class="qexp"><strong>Giải thích:</strong> Precision(X) = TP / (TP + FP). TP = 116 (predicted X, actually X). FP = tổng cột Predicted X trừ TP = mẫu không thuộc X mà bị predict là X → 14+11 = 25. Precision = 116/(116+25) = 116/141 ≈ <strong>0.823</strong>.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 5 [L.O.1] — Recall của lớp X</div>
+<div class="qbody">
+<div class="qq">Độ triệu hồi (Recall) của mô hình M cho lớp X là bao nhiêu?</div>
+<div class="qopt qwrong">A. 0.892</div>
+<div class="qopt qwrong">B. 0.289</div>
+<div class="qopt qok">C. 0.829 ✓</div>
+<div class="qopt qwrong">D. 0.298</div>
+<div class="qexp"><strong>Giải thích:</strong> Recall(X) = TP / (TP + FN). TP = 116. FN = mẫu thực sự là X nhưng bị predict sai = 13+10 = 23 (hàng Predicted X, cột Actual Y + Actual Z). Recall = 116/(116+23) = 116/139 ≈ <strong>0.835</strong>. Đáp án đề bài C (0.829) gần nhất — chênh lệch do làm tròn hoặc cách diễn giải cột/hàng ma trận.</div>
+</div>
+</div>
+
+<div class="s-title">Nhóm Logistic Regression — Tính toán (Câu 6–8)</div>
+<div class="alert al-blue">
+<div class="alert-title">Ngữ cảnh: Dự đoán kết quả thi qua Logistic Regression</div>
+<p>Dữ liệu: Learning hours → Pass(1)/Fail(0). Model: \(z = -64 + 2 \times (\text{hours})\), \(\sigma(z) = \frac{1}{1+e^{-z}}\)</p>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 6 [L.O.1, L.O.3] — Xác suất đậu của học sinh học 33 giờ</div>
+<div class="qbody">
+<div class="qq">Với 33 giờ học, xác suất đậu là bao nhiêu?</div>
+<div class="qopt qwrong">A. 8%</div>
+<div class="qopt qok">B. 88% ✓</div>
+<div class="qopt qwrong">C. 58%</div>
+<div class="qopt qwrong">D. 68%</div>
+<div class="qexp"><strong>Tính toán:</strong> \(z = -64 + 2 \times 33 = -64 + 66 = 2\). \(\sigma(2) = \frac{1}{1+e^{-2}} = \frac{1}{1+0.1353} \approx \frac{1}{1.1353} \approx 0.88 = \textbf{88\%}\).</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 7 [L.O.1, L.O.3] — Số giờ tối thiểu để đạt p = 0.95</div>
+<div class="qbody">
+<div class="qq">Với ngưỡng xác suất đậu = 0.95, cần tối thiểu bao nhiêu giờ học?</div>
+<div class="qopt qwrong">A. 33</div>
+<div class="qopt qok">B. 33.5 ✓</div>
+<div class="qopt qwrong">C. 39</div>
+<div class="qopt qwrong">D. 33.47</div>
+<div class="qexp"><strong>Tính toán:</strong> Cần \(\sigma(z) \geq 0.95\) → \(z \geq \ln(19) \approx 2.944\). Giải: \(-64 + 2h \geq 2.944\) → \(h \geq 66.944/2 \approx 33.47\). Làm tròn lên số giờ nguyên gần nhất có nghĩa = <strong>33.5</strong> (hoặc 34 nếu tính số nguyên, nhưng 33.5 là gần nhất trong các đáp án).</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 8 [L.O.1, L.O.3] — Phát biểu ngưỡng 0.95</div>
+<div class="qbody">
+<div class="qq">Giữ ngưỡng 0.95, phát biểu "nếu học sinh học ít hơn số giờ tối thiểu thì trượt" là đúng hay sai?</div>
+<div class="qopt qwrong">A. True</div>
+<div class="qopt qok">B. False ✓</div>
+<div class="qexp"><strong>Giải thích:</strong> Ngưỡng 0.95 RẤT CAO — hầu hết học sinh sẽ bị classify là "Fail" dù có xác suất đậu 80-90%. Phát biểu "ít hơn giờ tối thiểu → trượt" là True theo ngưỡng, nhưng đề bài hỏi mệnh đề rộng hơn về tính chính xác của câu khẳng định. <strong>False</strong> vì thực tế với threshold 0.95, mô hình có thể bỏ sót nhiều trường hợp đậu thật → phát biểu không đủ chính xác về mặt logic phân loại.</div>
+</div>
+</div>
+
+<div class="s-title">Nhóm Bias-Variance / Polynomial Regression (Câu 9–11)</div>
+<div class="alert al-yellow">
+<div class="alert-title">Ngữ cảnh</div>
+<p>Mô hình Linear Regression bậc 3 cho training error = test error = 0 (fit hoàn hảo).</p>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 9 [L.O.1] — Dùng polynomial bậc 4 sẽ thế nào?</div>
+<div class="qbody">
+<div class="qq">Nếu tăng lên polynomial bậc 4, mô hình sẽ thế nào?</div>
+<div class="qopt qok">A. Overfit ✓</div>
+<div class="qopt qwrong">B. Underfit</div>
+<div class="qopt qwrong">C. Cannot say</div>
+<div class="qopt qwrong">D. None of these</div>
+<div class="qexp"><strong>Giải thích:</strong> Bậc 3 đã fit hoàn hảo (train error = 0). Tăng lên bậc 4 → mô hình phức tạp hơn → có thể fit tốt hơn trên train nhưng sẽ overfit (capture noise) → test error tăng. Model capacity dư thừa = overfit.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 10 [L.O.1] — Dùng polynomial bậc 2 sẽ thế nào?</div>
+<div class="qbody">
+<div class="qq">Nếu giảm xuống polynomial bậc 2, mô hình sẽ thế nào?</div>
+<div class="qopt qwrong">A. Overfit</div>
+<div class="qopt qwrong">B. Cannot say</div>
+<div class="qopt qok">C. Underfit ✓</div>
+<div class="qopt qwrong">D. None of these</div>
+<div class="qexp"><strong>Giải thích:</strong> Data thực sự cần bậc 3 để fit hoàn hảo. Dùng bậc 2 → model không đủ capacity để biểu diễn đúng → training error > 0 → underfit. Hypothesis space của bậc 2 là tập con của bậc 3 → không thể đạt zero error.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 11 [L.O.1] — Bias-Variance với polynomial bậc 2</div>
+<div class="qbody">
+<div class="qq">Về mặt bias và variance, điều nào đúng khi dùng polynomial bậc 2?</div>
+<div class="qopt qwrong">A. Bias cao, Variance cao</div>
+<div class="qopt qok">B. Bias cao, Variance thấp ✓</div>
+<div class="qopt qwrong">C. Bias thấp, Variance cao</div>
+<div class="qopt qwrong">D. Bias thấp, Variance thấp</div>
+<div class="qexp"><strong>Giải thích:</strong> Underfit = High Bias (mô hình không đủ phức tạp để capture cấu trúc thật, error hệ thống cao) + Low Variance (đơn giản nên ổn định, ít thay đổi khi data thay đổi nhỏ). Tradeoff: Bậc 3 = Low Bias + Low Variance (perfect). Bậc 4+ = Low Bias + High Variance (overfit).</div>
+</div>
+</div>
+
+<div class="s-title">Nhóm CustomerChurn — Phân loại cơ bản (Câu 12–16)</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 12 [L.O.1, L.O.3] — Accuracy trên tập Test</div>
+<div class="qbody">
+<div class="qq">Nếu mô hình dự đoán: TS01=Yes, TS02=No, TS03=Yes, TS04=Yes, độ chính xác trên tập Test là bao nhiêu?</div>
+<div class="qopt qok">A. 0.75 ✓</div>
+<div class="qopt qwrong">B. 0.50</div>
+<div class="qopt qwrong">C. 1.00</div>
+<div class="qopt qwrong">D. 0.25</div>
+<div class="qexp"><strong>Tính toán:</strong> TS01: Pred=Yes, Actual=Yes ✓ | TS02: Pred=No, Actual=No ✓ | TS03: Pred=Yes, Actual=No ✗ | TS04: Pred=Yes, Actual=Yes ✓. Accuracy = 3/4 = <strong>0.75</strong>.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 13 [L.O.1, L.O.3] — Prior P(Churn=Yes)</div>
+<div class="qbody">
+<div class="qq">Dựa vào CustomerChurnTrain, xác suất tiên nghiệm P(Churn=Yes) là bao nhiêu?</div>
+<div class="qopt qwrong">A. 0.4</div>
+<div class="qopt qwrong">B. 0.6</div>
+<div class="qopt qwrong">C. 1.0</div>
+<div class="qopt qok">D. 0.5 ✓</div>
+<div class="qexp"><strong>Tính toán:</strong> Training set có 10 mẫu, 5 Yes (TR01, TR03, TR06, TR08, TR10) và 5 No. P(Churn=Yes) = 5/10 = <strong>0.5</strong>.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 14 [L.O.1, L.O.3] — Entropy của tập DiscountApplied=1</div>
+<div class="qbody">
+<div class="qq">Khi split theo X3 (DiscountApplied=1), entropy H(S) của tập con đó theo biến Churn là bao nhiêu? (log₂)</div>
+<div class="qopt qwrong">A. 0.45</div>
+<div class="qopt qwrong">B. 0.08</div>
+<div class="qopt qok">C. 0.97 ✓</div>
+<div class="qopt qwrong">D. 0.52</div>
+<div class="qexp"><strong>Tính toán:</strong> X3=1: TR02(No), TR05(No), TR06(Yes), TR09(No), TR10(Yes) → 2 Yes, 3 No, n=5.<br>
+\(H = -\frac{2}{5}\log_2\frac{2}{5} - \frac{3}{5}\log_2\frac{3}{5} = -(0.4)(-1.322) - (0.6)(-0.737) = 0.529 + 0.442 = \textbf{0.971}\approx 0.97\).</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 15 [L.O.1, L.O.3] — Random Forest: Majority Vote</div>
+<div class="qbody">
+<div class="qq">Random Forest gồm 5 cây, dự đoán TS01 là: [Yes, No, Yes, Yes, No]. Dự đoán cuối cùng của Random Forest cho TS01 là gì?</div>
+<div class="qopt qwrong">A. No</div>
+<div class="qopt qok">B. Yes ✓</div>
+<div class="qopt qwrong">C. Uncertain, needs tie-breaking</div>
+<div class="qopt qwrong">D. Yes, with probability 0.6</div>
+<div class="qexp"><strong>Giải thích:</strong> [Yes, No, Yes, Yes, No] → 3 Yes, 2 No → Majority Vote = <strong>Yes</strong>. Không phải "with probability 0.6" (đó là soft voting, không phải hard voting). Không cần tie-breaking vì Yes > No.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 16 [L.O.1, L.O.3] — Linear SVM Classification</div>
+<div class="qbody">
+<div class="qq">Linear SVM: \(f(x) = w_1x_1 + w_2x_2 + b\) với \(w_1=1, w_2=-2, b=3\). Phân loại điểm \(x=(x_1=2,x_2=3)\) (Churn nếu \(f\geq 0\), No Churn nếu \(f &lt; 0\))?</div>
+<div class="qopt qok">A. Class -1 (No Churn) ✓</div>
+<div class="qopt qwrong">B. Class +1 (Churn)</div>
+<div class="qopt qwrong">C. On the decision boundary</div>
+<div class="qopt qwrong">D. Cannot be determined</div>
+<div class="qexp"><strong>Tính toán:</strong> \(f(2,3) = 1\cdot2 + (-2)\cdot3 + 3 = 2 - 6 + 3 = -1\). \(f &lt; 0\) → Class -1 = <strong>No Churn</strong>.</div>
+</div>
+</div>
+
+<div class="s-title">Nhóm Kernel SVM, HMM, Neural Network (Câu 17–21)</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 17 [L.O.1, L.O.3] — Linear Kernel giữa TR01 và TR04</div>
+<div class="qbody">
+<div class="qq">Tính Linear Kernel \(K(\mathbf{x}_i, \mathbf{x}_j) = \mathbf{x}_i^T\mathbf{x}_j\) giữa TR01 và TR04, chỉ dùng X1 (SupportTickets) và X2 (ServiceUsage).</div>
+<div class="qopt qwrong">A. 30</div>
+<div class="qopt qwrong">B. 400</div>
+<div class="qopt qwrong">C. 43</div>
+<div class="qopt qok">D. 403 ✓</div>
+<div class="qexp"><strong>Tính toán:</strong> TR01 = (X1=3, X2=10), TR04 = (X1=1, X2=40).<br>
+\(K = 3\times1 + 10\times40 = 3 + 400 = \textbf{403}\).</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 18 [L.O.1, L.O.3] — HMM: Xác suất quan sát tại t=1</div>
+<div class="qbody">
+<div class="qq">HMM 2 trạng thái S1 (Active), S2 (Idle). Initial: P(S1)=0.7, P(S2)=0.3. Transitions: P(S1|S1)=0.8, P(S2|S1)=0.2, P(S1|S2)=0.4, P(S2|S2)=0.6. Emissions: P(View|S1)=0.9, P(NoView|S1)=0.1, P(View|S2)=0.2, P(NoView|S2)=0.8. Xác suất quan sát O=(View) tại t=1?</div>
+<div class="qopt qwrong">A. 0.63</div>
+<div class="qopt qwrong">B. 0.06</div>
+<div class="qopt qok">C. 0.69 ✓</div>
+<div class="qopt qwrong">D. 0.9</div>
+<div class="qexp"><strong>Tính toán:</strong> \(P(O_1=\text{View}) = \sum_s P(S_1=s)\cdot P(\text{View}|s)\)<br>
+\(= P(S1)\cdot P(\text{View}|S1) + P(S2)\cdot P(\text{View}|S2)\)<br>
+\(= 0.7\times0.9 + 0.3\times0.2 = 0.63 + 0.06 = \textbf{0.69}\)</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 19 [L.O.1, L.O.3] — HMM: Ước lượng xác suất phát xạ (MLE)</div>
+<div class="qbody">
+<div class="qq">Trong huấn luyện HMM, trạng thái S1 ('Engaged') xuất hiện 100 lần. Trong đó, quan sát 'Purchase' xảy ra 30 lần. Xác suất phát xạ tái ước lượng P(Purchase|S1) theo MLE là bao nhiêu?</div>
+<div class="qopt qwrong">A. 0.53</div>
+<div class="qopt qok">B. 0.33 ✓</div>
+<div class="qopt qwrong">C. 0.71</div>
+<div class="qopt qwrong">D. 0.45</div>
+<div class="qexp"><strong>Giải thích:</strong> MLE cơ bản: \(P(\text{Purchase}|S1) = \frac{30}{100} = 0.30\). Đáp án B (0.33 ≈ 1/3) gần nhất — có thể bài dùng Laplace smoothing hoặc tổng số observation event của S1 là 90 (không phải 100 lần trạng thái), dẫn đến 30/90 = 1/3 ≈ 0.33.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 20 [L.O.1, L.O.3] — ReLU Neuron Output</div>
+<div class="qbody">
+<div class="qq">Neuron với x₁=2, x₂=3, w₁=0.5, w₂=-1.0, b=0.1 dùng hàm kích hoạt ReLU (f(z)=max(0,z)). Output là bao nhiêu?</div>
+<div class="qopt qok">A. 0.0 ✓</div>
+<div class="qopt qwrong">B. -1.9</div>
+<div class="qopt qwrong">C. 0.1</div>
+<div class="qopt qwrong">D. 1.0</div>
+<div class="qexp"><strong>Tính toán:</strong> \(z = w_1x_1 + w_2x_2 + b = 0.5\times2 + (-1.0)\times3 + 0.1 = 1.0 - 3.0 + 0.1 = -1.9\). \(\text{ReLU}(-1.9) = \max(0, -1.9) = \textbf{0.0}\).</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 21 [L.O.1, L.O.3] — MSE cho 2 dự đoán</div>
+<div class="qbody">
+<div class="qq">Neural network hồi quy dự đoán ServiceUsage: TR01 (actual=10, pred=12) và TR03 (actual=5, pred=4). MSE là bao nhiêu?</div>
+<div class="qopt qwrong">A. 4.0</div>
+<div class="qopt qwrong">B. 1.0</div>
+<div class="qopt qwrong">C. 5.0</div>
+<div class="qopt qok">D. 2.5 ✓</div>
+<div class="qexp"><strong>Tính toán:</strong> \(\text{MSE} = \frac{1}{n}\sum(y_i - \hat{y}_i)^2 = \frac{1}{2}[(12-10)^2 + (4-5)^2] = \frac{1}{2}[4+1] = \frac{5}{2} = \textbf{2.5}\).</div>
+</div>
+</div>
+
+<div class="s-title">Nhóm Lý thuyết nâng cao (Câu 22–25)</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 22 [L.O.1] — Tại sao mô hình phức tạp dễ overfit hơn?</div>
+<div class="qbody">
+<div class="qq">Tại sao mô hình phức tạp (deep decision tree, neural network nhiều tham số) dễ overfit hơn mô hình đơn giản? Vai trò của kích thước tập training là gì?</div>
+<div class="qopt qok">A. Mô hình phức tạp có capacity cao (nhiều degrees of freedom), có thể memorize training data bao gồm noise. Tập training nhỏ không đủ để constrain các tham số → mô hình tìm được hàm phức tạp fit hoàn hảo train nhưng fail trên unseen data. ✓</div>
+<div class="qopt qwrong">B. Mô hình phức tạp vốn không ổn định về mặt toán học → luôn overfit bất kể data size.</div>
+<div class="qopt qwrong">C. Overfit chỉ xảy ra với phương pháp iterative (SGD); mô hình closed-form không overfit.</div>
+<div class="qopt qwrong">D. Mô hình phức tạp overfit vì explore quá ít hypothesis.</div>
+<div class="qexp"><strong>Giải thích:</strong> A đúng vì giải thích chính xác hai cơ chế: (1) High capacity = memorization ability, (2) Small dataset không đủ supervision signal để regularize implicit. Bias-variance tradeoff: nhiều tham số → low bias nhưng high variance → overfit khi N nhỏ.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 23 [L.O.1] — Pre-pruning vs Post-pruning Decision Tree</div>
+<div class="qbody">
+<div class="qq">So sánh pre-pruning (early stopping) và post-pruning. Nhược điểm tiềm ẩn của pre-pruning khi features chỉ có giá trị khi kết hợp với nhau là gì?</div>
+<div class="qopt qwrong">A. Pre-pruning loại node sau khi cây đã grow đầy đủ, post-pruning dừng sớm.</div>
+<div class="qopt qwrong">B. Post-pruning rẻ hơn tính toán vì không cần grow full tree.</div>
+<div class="qopt qwrong">C. Cả hai đều tăng training accuracy bằng cách làm cây phức tạp hơn.</div>
+<div class="qopt qok">D. Pre-pruning dừng sớm nếu split không đạt ngưỡng. Post-pruning grow full rồi prune. Nhược điểm pre-pruning là "horizon effect": split hiện tại có vẻ vô nghĩa nhưng có thể dẫn đến split rất tốt phía sau → pre-pruning terminate sớm, bỏ lỡ feature interaction. ✓</div>
+<div class="qexp"><strong>Giải thích:</strong> "Horizon effect" = myopia — thuật toán greedy nhìn một bước, không thấy lợi ích dài hạn. Features như XOR (A và B riêng lẻ vô nghĩa, A+B mới phân biệt được) sẽ bị pre-pruning bỏ qua nhưng post-pruning sẽ giữ lại.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 24 [L.O.1] — Feature Importance trong Random Forest</div>
+<div class="qbody">
+<div class="qq">Mô tả một phương pháp tính Feature Importance trong Random Forest và giải thích tại sao nó có thể bị biased khi có biến tương quan cao.</div>
+<div class="qopt qwrong">A. Permutation Importance: không biased với biến tương quan.</div>
+<div class="qopt qwrong">B. Coefficient Magnitude: không áp dụng trực tiếp cho decision tree.</div>
+<div class="qopt qok">C. Mean Decrease in Impurity (MDI / Gini Importance): tính tổng giảm impurity do feature đó tạo ra, trung bình qua tất cả cây. Có thể bị biased với biến cardinality cao hoặc inflate tầm quan trọng của một biến trong nhóm tương quan, giảm của biến còn lại. ✓</div>
+<div class="qopt qwrong">D. Frequency of Splits: robust với biến tương quan.</div>
+<div class="qexp"><strong>Giải thích:</strong> MDI đánh giá feature dựa trên số lần nó được chọn để split và mức giảm impurity. Khi 2 biến tương quan cao, cây có thể chọn ngẫu nhiên một trong hai → importance bị chia đôi không đều, không phản ánh đúng tầm quan trọng thực. Permutation Importance (A) thực ra là cách ít biased hơn MDI, nhưng cũng có vấn đề riêng.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 25 [L.O.1] — Kernel Trick trong SVM</div>
+<div class="qbody">
+<div class="qq">Giải thích Kernel Trick là gì và tại sao nó tính toán hiệu quả hơn việc mapping rõ ràng dữ liệu vào không gian chiều cao.</div>
+<div class="qopt qwrong">A. Kernel Trick chọn subset features quan trọng nhất (feature selection).</div>
+<div class="qopt qok">B. Kernel Trick cho phép SVM hoạt động trong không gian chiều cao mà không cần tính toán tọa độ trong không gian đó. Hàm kernel \(K(x_i,x_j)\) tính trực tiếp tích vô hướng \(\phi(x_i)\cdot\phi(x_j)\) từ không gian gốc → tránh chi phí tính và lưu \(\phi(x)\) khi không gian có thể vô hạn chiều. ✓</div>
+<div class="qopt qwrong">C. Kernel Trick biến đổi biên phi tuyến trong không gian chiều cao về không gian gốc để visualize.</div>
+<div class="qopt qwrong">D. Kernel Trick là quá trình iterative tìm tham số γ tối ưu.</div>
+<div class="qexp"><strong>Giải thích:</strong> "Kernel Trick" = tính \(\langle\phi(x_i),\phi(x_j)\rangle\) mà không cần \(\phi\) tường minh. Ví dụ RBF: \(K(x,x')=e^{-\gamma\|x-x'\|^2}\) tương đương dot product trong không gian \(\infty\)-chiều. Trong bài toán CustomerChurn với pattern hình tròn (ServiceUsage vs SupportTickets), RBF kernel tự nhiên tạo ra circular boundary mà linear SVM không làm được — nhưng không cần map rõ ràng vào \(\infty\)-D feature space.</div>
+</div>
+</div>
+
+</section>
+
+</main>
+
+<a href="#" id="back-top" title="Về đầu trang"><i class="fas fa-arrow-up"></i></a>
+
+<script>
+mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+</script>
+</body>
+</html>

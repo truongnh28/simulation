@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>DL4CV Cheat Sheet — All 14 Lectures</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{
+    delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+    ignoredTags:['script','noscript','style','textarea']
+  })">
+</script>
+<style>
+@page { size: A4 portrait; margin: 4mm; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Arial Narrow', Arial, sans-serif;
+  font-size: 5.5pt;
+  line-height: 1.14;
+  color: #111;
+}
+.page {
+  width: 202mm; height: 289mm;
+  display: grid; gap: 1mm;
+  page-break-after: always; overflow: hidden;
+}
+.page1 { grid-template-columns: 70mm 66mm 66mm; }
+.page2 { grid-template-columns: 67mm 68mm 67mm; }
+.page:last-child { page-break-after: auto; }
+.col { overflow: hidden; }
+
+h1 { font-size: 6.2pt; font-weight: bold; background: #1a3a5f; color: #fff;
+     padding: 1px 3px; margin-bottom: 1px; text-transform: uppercase; letter-spacing:.3px; }
+h2 { font-size: 5.8pt; font-weight: bold; color: #1a3a5f;
+     border-bottom: .5px solid #1a3a5f; margin: 1.2px 0 .2px; }
+h3 { font-size: 5.3pt; font-weight: bold; color: #a02020; margin: .6px 0 .1px; }
+p  { margin: .15px 0; }
+
+.fb { background:#eef4fb; border-left:1.8px solid #2980b9; padding:.7px 2px;
+      margin:.4px 0; line-height:1.38; }
+.ex { font-family:'Courier New',monospace; font-size:4.6pt; background:#fff8e6;
+      border-left:1.8px solid #e08020; padding:.5px 2px; margin:.4px 0;
+      white-space:pre; line-height:1.18; }
+.w  { font-size:5.1pt; background:#fdecea; border:.5px solid #c0392b;
+      padding:.3px 2px; margin:.3px 0; line-height:1.24; }
+.ok { font-size:5.1pt; background:#eafaf1; border:.5px solid #27ae60;
+      padding:.3px 2px; margin:.3px 0; }
+.r  { color:#a02020; font-weight:bold; }
+.b  { font-weight:bold; }
+
+table { border-collapse:collapse; width:100%; font-size:4.8pt;
+        margin:.3px 0; line-height:1.18; }
+th { background:#cdd6e4; border:.4px solid #999; padding:.25px 1.2px;
+     font-weight:bold; text-align:left; }
+td { border:.4px solid #bbb; padding:.25px 1.2px; }
+td.c { text-align:center; }
+
+.katex { font-size:.98em !important; }
+.katex-display { margin:0 !important; }
+@media print { body { -webkit-print-color-adjust:exact; print-color-adjust:exact; } }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ TRANG 1 ══════════════ -->
+<div class="page page1">
+
+<!-- ══ COL 1 ══ -->
+<div class="col">
+<h1>Formulation · Datasets · Regression</h1>
+
+<h2>1. Problem Formulation</h2>
+<div class="fb">
+Ký hiệu: vector $\mathbf{x}$ (thường), ma trận $\mathbf{X}$ (in hoa). Bài toán ML: $\theta^*=\arg\min_\theta \mathcal{L}(f_\theta(\mathbf{X}),\mathbf{Y})$
+</div>
+<table>
+<tr><th>Task</th><th>Output</th><th>Activation</th><th>Loss</th></tr>
+<tr><td>Binary clf</td><td>1 logit</td><td>Sigmoid</td><td>BCE</td></tr>
+<tr><td>Multi-class</td><td>K logits</td><td>Softmax</td><td>CE</td></tr>
+<tr><td>Regression</td><td>1 scalar</td><td>None</td><td>MSE/MAE</td></tr>
+<tr><td>Multi-label</td><td>K logits</td><td>Sigmoid×K</td><td>BCE×K</td></tr>
+</table>
+
+<h2>2. Datasets</h2>
+<div class="fb">
+Image tensor: $(B,C,H,W)$; Sequence: $(B,T,D)$. Tỷ lệ split: 70/15/15 hoặc 80/10/10. Stratified split giữ tỷ lệ class. Augmentation <b>chỉ</b> trên train set. Normalize: $\hat{x}=\frac{x-\mu_\text{train}}{\sigma_\text{train}}$ (dùng train stats cho val/test).
+</div>
+<div class="w">⚠ Data leakage: normalize trước split → dùng test info → kết quả ảo. Shuffle time-series → future leak.</div>
+
+<h2>3. Linear Regression</h2>
+<div class="fb">
+$\hat{\mathbf{Y}}=\mathbf{X}\mathbf{W}+\mathbf{b}$. Augment: $\tilde{\mathbf{X}}=[\mathbf{X}|\mathbf{1}]$, $\tilde{\mathbf{W}}=[\mathbf{W};\mathbf{b}]$.<br>
+<b>OLS (closed-form):</b> $\tilde{\mathbf{W}}^*=(\tilde{\mathbf{X}}^\top\tilde{\mathbf{X}})^{-1}\tilde{\mathbf{X}}^\top\mathbf{Y}$, độ phức tạp $O(D^3)$.<br>
+<b>Ridge:</b> $\tilde{\mathbf{W}}^*=(\tilde{\mathbf{X}}^\top\tilde{\mathbf{X}}+\lambda\mathbf{I})^{-1}\tilde{\mathbf{X}}^\top\mathbf{Y}$ (luôn khả nghịch).
+</div>
+
+<h2>4. Logistic Regression</h2>
+<div class="fb">
+Binary: $\sigma(z)=\frac{1}{1+e^{-z}}$. Multi-class: $\hat{p}_k=\frac{e^{z_k}}{\sum_j e^{z_j}}$.<br>
+Gradient $\partial\mathcal{L}/\partial z = \hat{p}-y$ (đẹp, nên dùng logits).
+</div>
+<div class="w">⚠ PyTorch: <b>KHÔNG</b> dùng Sigmoid trước BCEWithLogitsLoss; <b>KHÔNG</b> dùng Softmax trước CrossEntropyLoss. Các hàm này nhận <b>raw logits</b>.</div>
+
+<h2>5. Loss Functions</h2>
+<div class="fb">
+$\text{MSE}=\frac{1}{n}\sum(y-\hat{y})^2$; $\text{MAE}=\frac{1}{n}\sum|y-\hat{y}|$; <b>Huber</b>=MAE nếu $|e|>\delta$ else $\frac{e^2}{2\delta}$.<br>
+$\text{BCE}=-[y\log\hat{p}+(1-y)\log(1-\hat{p})]$<br>
+$\text{CE}=-\log\hat{p}_\text{correct}$. Init loss $\approx\log K$ (K classes).<br>
+<b>Focal:</b> $-(1-\hat{p}_t)^\gamma\log\hat{p}_t$ (down-weight easy negatives, $\gamma=2$).<br>
+<b>Dice Loss:</b> $1-\frac{2\sum p_i g_i}{\sum p_i+\sum g_i}$ (class imbalance).
+</div>
+<table>
+<tr><th>Loss</th><th>Outliers</th><th>Imbalance</th><th>Use</th></tr>
+<tr><td>MSE</td><td>sensitive</td><td>—</td><td>regression</td></tr>
+<tr><td>MAE</td><td>robust</td><td>—</td><td>regression</td></tr>
+<tr><td>BCE</td><td>—</td><td>bad</td><td>binary</td></tr>
+<tr><td>Focal</td><td>—</td><td>good</td><td>detection</td></tr>
+<tr><td>Dice</td><td>—</td><td>good</td><td>segmentation</td></tr>
+</table>
+
+<h2>6. Metrics</h2>
+<div class="fb">
+$\text{Precision}=\frac{TP}{TP+FP}$; $\text{Recall}=\frac{TP}{TP+FN}$; $F_1=\frac{2PR}{P+R}$<br>
+$\text{Balanced Acc}=\frac{\text{Recall}+\text{Specificity}}{2}$; Specificity$=\frac{TN}{TN+FP}$<br>
+$\text{Macro-}F_1=\frac{1}{K}\sum F_{1,k}$ (treat classes equally);<br>
+$\text{Micro-}F_1=\frac{2\sum TP_k}{2\sum TP_k+\sum FP_k+\sum FN_k}$ (weighted by freq).<br>
+Regression: $R^2=1-\frac{\sum(y-\hat{y})^2}{\sum(y-\bar{y})^2}$; $\text{RMSE}=\sqrt{\text{MSE}}$.
+</div>
+<div class="ok">✓ Dùng Macro-F1 khi class imbalanced. Micro-F1 ≈ Accuracy nếu balanced.</div>
+
+<h2>7. Model Capacity</h2>
+<div class="fb">
+$\mathbb{E}[(\hat{y}-y)^2]=\text{Bias}^2+\text{Variance}+\sigma^2_\epsilon$<br>
+Underfitting: high bias (model quá đơn giản). Overfitting: high variance (model quá phức tạp).<br>
+Tăng capacity: thêm neuron/layer, feature transform $\Phi(\mathbf{x})=[1,x,x^2,\ldots]$.
+</div>
+<div class="w">⚠ Regularization: L2 $+\lambda\|\mathbf{W}\|_2^2$, L1 $+\lambda\|\mathbf{W}\|_1$ (sparse), Dropout, Early stopping.</div>
+</div>
+
+<!-- ══ COL 2 ══ -->
+<div class="col">
+<h1>MLP · Training · Optimizers</h1>
+
+<h2>8. MLP</h2>
+<div class="fb">
+Forward: $\mathbf{h}^{(l)}=\varphi(\mathbf{W}^{(l)}\mathbf{h}^{(l-1)}+\mathbf{b}^{(l)})$<br>
+<b>Params FC layer</b> $M\to N$: $M\cdot N+N=N(M+1)$<br>
+MLP stack $[D_0,D_1,D_2,D_3]$: params$=D_1(D_0+1)+D_2(D_1+1)+D_3(D_2+1)$
+</div>
+<table>
+<tr><th>Activation</th><th>Formula</th><th>Range</th><th>Problem</th></tr>
+<tr><td>ReLU</td><td>$\max(0,z)$</td><td>[0,∞)</td><td>dead neurons z&lt;0</td></tr>
+<tr><td>Sigmoid</td><td>$\frac{1}{1+e^{-z}}$</td><td>(0,1)</td><td>vanishing grad</td></tr>
+<tr><td>Tanh</td><td>$\frac{e^z-e^{-z}}{e^z+e^{-z}}$</td><td>(-1,1)</td><td>vanishing grad</td></tr>
+<tr><td>SiLU/Swish</td><td>$z\cdot\sigma(z)$</td><td>(-0.28,∞)</td><td>—</td></tr>
+<tr><td>GELU</td><td>$z\Phi(z)$</td><td>smooth</td><td>—</td></tr>
+</table>
+<div class="w">⚠ Dead ReLU: nếu $z\le0$ mãi → gradient=0 → neuron chết. Fix: LeakyReLU $\max(0.01z,z)$.</div>
+
+<h3>BatchNorm vs LayerNorm</h3>
+<div class="fb">
+<b>BN:</b> $\hat{x}=\frac{x-\mu_B}{\sqrt{\sigma_B^2+\epsilon}}$; $y=\gamma\hat{x}+\beta$. Norm qua batch dim (B). Học $\gamma,\beta$. Train/eval khác nhau (running stats).<br>
+<b>LN:</b> Norm qua feature dim. Dùng cho Transformer, sequence. Không phụ thuộc batch size.
+</div>
+
+<h2>9. Training ANNs</h2>
+<h3>SGD + Momentum</h3>
+<div class="fb">
+$\mathbf{v}_t=\mu\mathbf{v}_{t-1}+\mathbf{g}_t$; $\theta_t=\theta_{t-1}-\eta\mathbf{v}_t$ ($\mu=0.9$)<br>
+Momentum giúp vượt local minima nông, giảm oscillation.
+</div>
+
+<h3>Adam</h3>
+<div class="fb">
+$\mathbf{m}_t=\beta_1\mathbf{m}_{t-1}+(1-\beta_1)\mathbf{g}_t$ (1st moment)<br>
+$\mathbf{v}_t=\beta_2\mathbf{v}_{t-1}+(1-\beta_2)\mathbf{g}_t^2$ (2nd moment)<br>
+Bias correction: $\hat{\mathbf{m}}_t=\frac{\mathbf{m}_t}{1-\beta_1^t}$; $\hat{\mathbf{v}}_t=\frac{\mathbf{v}_t}{1-\beta_2^t}$<br>
+Update: $\theta_t=\theta_{t-1}-\eta\frac{\hat{\mathbf{m}}_t}{\sqrt{\hat{\mathbf{v}}_t}+\epsilon}$<br>
+Defaults: $\beta_1=0.9$, $\beta_2=0.999$, $\epsilon=10^{-8}$
+</div>
+
+<h3>AdamW</h3>
+<div class="fb">
+Decoupled weight decay: $\theta_t=(1-\eta\lambda)\theta_{t-1}-\eta\frac{\hat{\mathbf{m}}_t}{\sqrt{\hat{\mathbf{v}}_t}+\epsilon}$<br>
+Adam: WD qua L2 penalty (vào gradient) → bị adaptive scaling làm yếu.<br>
+AdamW: WD tách riêng → đúng nghĩa regularization.
+</div>
+
+<h3>LR Schedulers</h3>
+<div class="fb">
+<b>Cosine annealing:</b> $\eta_t=\frac{\eta_0}{2}\left(1+\cos\frac{t\pi}{T}\right)$<br>
+<b>Warmup:</b> tăng tuyến tính $\eta$ trong $T_w$ bước đầu → ổn định early training.<br>
+<b>Step decay:</b> $\eta\leftarrow\eta\cdot\gamma$ mỗi $k$ epoch.
+</div>
+
+<h3>Regularization Tricks</h3>
+<div class="fb">
+<b>Dropout:</b> zero out mỗi neuron với xác suất $p$ khi train; scale $\times\frac{1}{1-p}$ (inverted). <b>Tắt khi inference.</b><br>
+<b>Grad clipping:</b> $\mathbf{g}\leftarrow\mathbf{g}\cdot\frac{\tau}{\max(\|\mathbf{g}\|,\tau)}$ (tránh exploding grad).<br>
+<b>Early stopping:</b> dừng khi val loss không giảm sau patience epochs.
+</div>
+<div class="ok">✓ Học tốt: train loss↓ val loss↓. Overfit: train↓ val↑. Underfit: cả 2 cao.</div>
+
+<h2>Backprop Chain Rule</h2>
+<div class="fb">
+$\frac{\partial\mathcal{L}}{\partial\mathbf{W}^{(l)}}=\frac{\partial\mathcal{L}}{\partial\mathbf{h}^{(l)}}\cdot\frac{\partial\mathbf{h}^{(l)}}{\partial\mathbf{z}^{(l)}}\cdot\frac{\partial\mathbf{z}^{(l)}}{\partial\mathbf{W}^{(l)}}$<br>
+Vanishing: sigmoid/tanh sâu → dùng ReLU + skip connections. Exploding: grad clipping.
+</div>
+
+<h3>Sample Problem: Tính Params</h3>
+<div class="ex">MLP: Input=784, [256, 128, 10]
+Layer1: 256×(784+1)=201,216
+Layer2: 128×(256+1)=32,896
+Layer3: 10×(128+1)=1,290
+Total: 235,402 params</div>
+</div>
+
+<!-- ══ COL 3 ══ -->
+<div class="col">
+<h1>CNN — Công Thức &amp; Bài Tập</h1>
+
+<h2>10. CNN Core</h2>
+<div class="fb">
+<b>Output size:</b> $o=\left\lfloor\frac{i+2p-k}{s}\right\rfloor+1$<br>
+$i$=input, $p$=padding, $k$=kernel, $s$=stride<br>
+<b>Conv params:</b> $K\times(k^2\times D_{in}+1)$ ($K$=filters, bias per filter)<br>
+<b>No-bias:</b> $K\times k^2\times D_{in}$<br>
+<b>Depthwise Sep Conv params:</b> $k^2\times D_{in}+D_{in}\times D_{out}$ (vs $k^2 D_{in} D_{out}$)<br>
+<b>MaxPool 2×2 s=2:</b> $H,W\to H/2,W/2$ (no learnable params)
+</div>
+
+<h3>Cross-Corr vs Convolution</h3>
+<div class="fb">
+XCorr (PyTorch Conv2d, <b>không flip W</b>):<br>
+$Y(u,v)=\sum_{i,j}X(u+i,v+j)\cdot W(i,j)$<br>
+Conv (toán học, flip W 180°):<br>
+$Y(u,v)=\sum_{i,j}X(u-i,v-j)\cdot W(i,j)$<br>
+Conv$(W)=$XCorr$(\text{Rot}_{180}(W))$
+</div>
+
+<h3>Sample Problem: Tính Output Size</h3>
+<div class="ex">Input: (1,3,32,32), Conv(16,3,p=1,s=1):
+o = ⌊(32+2×1-3)/1⌋+1 = 32  → (1,16,32,32)
+Params = 16×(3²×3+1) = 16×28 = 448
+
+MaxPool(2,s=2): 32→16  → (1,16,16,16)
+
+Conv(32,3,p=1,s=1): o=16  → (1,32,16,16)
+Params = 32×(3²×16+1) = 32×145 = 4,640</div>
+
+<h3>Receptive Field</h3>
+<div class="fb">
+Stack 2 conv 3×3 (s=1) = RF 5×5 (như conv 5×5 nhưng ít params hơn: $2×9=18$ vs $25$).<br>
+RF tăng theo: $r_l=r_{l-1}+(k_l-1)\prod_{i&lt;l}s_i$
+</div>
+
+<h2>CNN Architectures</h2>
+<table>
+<tr><th>Model</th><th>Key Innovation</th><th>Depth</th></tr>
+<tr><td>LeNet-5</td><td>Conv+Pool pioneer</td><td>5</td></tr>
+<tr><td>AlexNet</td><td>ReLU, Dropout, GPU</td><td>8</td></tr>
+<tr><td>VGG-16</td><td>3×3 stacks only</td><td>16</td></tr>
+<tr><td>ResNet</td><td>Skip: $y=F(x)+x$</td><td>50-152</td></tr>
+<tr><td>MobileNet</td><td>Depthwise Sep Conv</td><td>28</td></tr>
+<tr><td>EfficientNet</td><td>Compound scaling</td><td>B0-B7</td></tr>
+</table>
+
+<h3>ResNet Skip Connection</h3>
+<div class="fb">
+$\mathbf{y}=\mathcal{F}(\mathbf{x},\{W_i\})+\mathbf{x}$<br>
+Khi $\dim$ khác: $\mathbf{y}=\mathcal{F}(\mathbf{x})+W_s\mathbf{x}$ (1×1 conv). Giải quyết vanishing gradient.
+</div>
+
+<h2>Transformer vs CNN</h2>
+<table>
+<tr><th></th><th>CNN</th><th>Transformer</th></tr>
+<tr><td>Inductive bias</td><td>locality, translation inv.</td><td>none</td></tr>
+<tr><td>Global context</td><td>deep layers only</td><td>all layers</td></tr>
+<tr><td>Data</td><td>small OK</td><td>needs large</td></tr>
+<tr><td>Params</td><td>fewer</td><td>more</td></tr>
+<tr><td>Speed</td><td>fast (local)</td><td>O(n²) attn</td></tr>
+</table>
+
+<h2>Sample: Conv Receptive Field</h2>
+<div class="ex">3 layers Conv 3×3 s=1: RF = 7×7
+4 layers Conv 3×3 s=1: RF = 9×9
+
+With stride 2 in layer 2:
+RF_3 = 5 + (3-1)×(1×2) = 9</div>
+
+<div class="w">⚠ Với dilation $d$: kernel size hiệu dụng $k'=d(k-1)+1$.<br>
+Output: $o=\lfloor(i+2p-d(k-1)-1)/s\rfloor+1$</div>
+</div>
+
+</div><!-- end page1 -->
+
+<!-- ══════════════ TRANG 2 ══════════════ -->
+<div class="page page2">
+
+<!-- ══ COL 1 ══ -->
+<div class="col">
+<h1>Generative Models</h1>
+
+<h2>11. VAE — Variational Autoencoder</h2>
+<div class="fb">
+Latent variable model: $p_\theta(x)=\int p_\theta(x|z)p(z)dz$, prior $p(z)=\mathcal{N}(0,I)$.<br>
+Encoder: $q_\phi(z|x)=\mathcal{N}(\mu_\phi(x),\sigma^2_\phi(x)I)$<br>
+<b>ELBO:</b> $\mathcal{L}=\underbrace{\mathbb{E}_{q_\phi}[\log p_\theta(x|z)]}_{\text{Reconstruction}}-\underbrace{D_{KL}(q_\phi(z|x)\|p(z))}_{\text{Regularization}}$<br>
+<b>KL (Gaussian):</b> $D_{KL}=\frac{1}{2}\sum_j(\mu_j^2+\sigma_j^2-\log\sigma_j^2-1)$<br>
+<b>Reparameterize:</b> $\mathbf{z}=\mu+\sigma\odot\epsilon$, $\epsilon\sim\mathcal{N}(0,I)$ → differentiable sampling
+</div>
+<div class="w">⚠ Posterion collapse: decoder bỏ qua z → KL→0, recon tệ. Fix: KL annealing (tăng dần weight KL).</div>
+<div class="ex">VAE forward (PyTorch):
+mu, logvar = encoder(x)
+std = torch.exp(0.5*logvar)
+z = mu + std * torch.randn_like(std)
+x_hat = decoder(z)
+recon = F.mse_loss(x_hat, x)
+kl = -0.5*(1+logvar-mu**2-logvar.exp()).sum()
+loss = recon + beta*kl</div>
+
+<h2>12. GAN — Generative Adversarial Network</h2>
+<div class="fb">
+Minimax game: $\min_G\max_D\,\mathbb{E}_x[\log D(x)]+\mathbb{E}_z[\log(1-D(G(z)))]$<br>
+D muốn phân biệt real ($D(x)\to1$) vs fake ($D(G(z))\to0$).<br>
+G muốn fool D: thực tế train G với $\max\mathbb{E}_z[\log D(G(z))]$ (non-saturating).
+</div>
+<table>
+<tr><th>Problem</th><th>Symptom</th><th>Fix</th></tr>
+<tr><td>Mode collapse</td><td>G tạo 1 kiểu</td><td>Wasserstein GAN</td></tr>
+<tr><td>D quá mạnh</td><td>G gradient→0</td><td>label smoothing</td></tr>
+<tr><td>Instability</td><td>loss oscillate</td><td>WGAN-GP</td></tr>
+</table>
+<div class="fb">
+<b>WGAN:</b> $\min_G\max_{D\in\text{1-Lip}}\mathbb{E}[D(x)]-\mathbb{E}[D(G(z))]$; gradient penalty thay clip weights.
+</div>
+
+<h2>13. DDPM — Diffusion Models</h2>
+<div class="fb">
+<b>Forward (noising):</b> $q(x_t|x_{t-1})=\mathcal{N}(x_t;\sqrt{1-\beta_t}x_{t-1},\beta_t I)$<br>
+<b>Rút gọn:</b> $x_t=\sqrt{\bar\alpha_t}\,x_0+\sqrt{1-\bar\alpha_t}\,\epsilon$, $\epsilon\sim\mathcal{N}(0,I)$<br>
+$\bar\alpha_t=\prod_{s=1}^t(1-\beta_s)$, $\bar\alpha_t\to0$ khi $t\to T$<br>
+<b>Training loss:</b> $\mathcal{L}=\mathbb{E}_{t,x_0,\epsilon}\big[\|\epsilon-\epsilon_\theta(x_t,t)\|^2\big]$<br>
+<b>Reverse (sampling):</b> $x_{t-1}=\frac{1}{\sqrt{\alpha_t}}\left(x_t-\frac{1-\alpha_t}{\sqrt{1-\bar\alpha_t}}\epsilon_\theta\right)+\sigma_t z$
+</div>
+<div class="ok">✓ DDPM tốt hơn GAN về diversity; chậm hơn (nhiều denoising steps). DDIM: deterministic, ít steps.</div>
+
+<h2>So Sánh Generative Models</h2>
+<table>
+<tr><th></th><th>VAE</th><th>GAN</th><th>DDPM</th></tr>
+<tr><td>Training</td><td>stable</td><td>unstable</td><td>stable</td></tr>
+<tr><td>Quality</td><td>blurry</td><td>sharp</td><td>best</td></tr>
+<tr><td>Diversity</td><td>good</td><td>mode collapse</td><td>best</td></tr>
+<tr><td>Latent</td><td>structured</td><td>unstructured</td><td>xt chain</td></tr>
+<tr><td>Inference</td><td>fast</td><td>fast</td><td>slow</td></tr>
+</table>
+</div>
+
+<!-- ══ COL 2 ══ -->
+<div class="col">
+<h1>Transformer · Object Detection</h1>
+
+<h2>14. Transformer / Attention</h2>
+<div class="fb">
+<b>Scaled Dot-Product Attention:</b><br>
+$\text{Attention}(Q,K,V)=\text{Softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V$<br>
+$Q=XW^Q,\;K=XW^K,\;V=XW^V$ — $W^Q,W^K,W^V\in\mathbb{R}^{d_{model}\times d_k}$<br>
+Scale $\sqrt{d_k}$: tránh dot-product quá lớn → Softmax saturate → gradient nhỏ.<br>
+<b>Multi-Head:</b> $\text{MH}(Q,K,V)=\text{Concat}(h_1,\ldots,h_H)W^O$<br>
+mỗi head $h_i=\text{Attention}(QW_i^Q,KW_i^K,VW_i^V)$
+</div>
+
+<h3>Transformer Block</h3>
+<div class="fb">
+Encoder: MSA → Add&Norm → FFN → Add&Norm (FFN=2 FC, $d_{ff}=4d_{model}$)<br>
+Decoder: Masked MSA → Cross-Attention (K,V từ encoder) → FFN.<br>
+<b>Causal mask:</b> upper-tri mask $-\infty$ → Softmax→0 → không attend future tokens.
+</div>
+
+<h3>ViT — Vision Transformer</h3>
+<div class="fb">
+Image $H\times W$ → patches $P\times P$ → $N=\frac{HW}{P^2}$ tokens, mỗi token $=P^2C$ dim → project to $d_{model}$.<br>
+Thêm [CLS] token + positional embedding (learned hoặc sinusoidal).<br>
+Classify từ [CLS] output hoặc GAP tất cả patch tokens.
+</div>
+<div class="ex">ViT-B/16: H=W=224, P=16 → N=196+1=197 tokens
+d_model=768, 12 heads, 12 blocks
+Params ≈ 86M</div>
+
+<h2>15. Object Detection</h2>
+<h3>YOLO (v8/v11)</h3>
+<div class="fb">
+<b>Anchor-free:</b> predict offset từ grid cell center.<br>
+<b>Số anchors:</b> $80^2+40^2+20^2=6400+1600+400=8400$ (input 640×640)<br>
+<b>DFL — Distribution Focal Loss:</b> $\hat{d}=\sum_k k\cdot\text{Softmax}(s_k)$ (integral regression box)<br>
+<b>Neck:</b> FPN (top-down) + PAN (bottom-up) → multi-scale features<br>
+<b>Head:</b> Decoupled: cls branch + reg branch (không share)<br>
+<b>Assignment:</b> TaskAlignedAssigner — score = $p^\alpha\cdot\text{IoU}^\beta$
+</div>
+
+<h3>IoU &amp; Variants</h3>
+<div class="fb">
+$\text{IoU}=\frac{|A\cap B|}{|A\cup B|}$; $\text{GIoU}=\text{IoU}-\frac{|C\setminus(A\cup B)|}{|C|}$<br>
+$\text{DIoU}=\text{IoU}-\frac{d^2}{c^2}$ ($d$=center dist); $\text{CIoU}=\text{DIoU}-\alpha v$ (aspect ratio)
+</div>
+
+<h3>mAP Calculation</h3>
+<div class="fb">
+1. Sort dets by confidence ↓. 2. TP nếu IoU≥thresh với GT, else FP.<br>
+$\text{AP}_c=\int_0^1 p(r)\,dr$ (AUC of PR curve, 11-point interp hoặc all-point).<br>
+$\text{mAP}=\frac{1}{N_c}\sum_c\text{AP}_c$; mAP@[.5:.95] = avg mAP qua IoU 0.5→0.95.
+</div>
+
+<h3>NMS — Non-Maximum Suppression</h3>
+<div class="ex">1. Sort boxes by confidence ↓
+2. Keep box with highest conf → remove boxes
+   IoU > τ (e.g. 0.45) with kept box
+3. Repeat until empty
+Soft-NMS: giảm score thay vì xóa hẳn</div>
+
+<h3>DETR — Detection Transformer</h3>
+<div class="fb">
+$N_q$ object queries → Transformer decoder → $N_q$ predictions.<br>
+<b>Hungarian matching:</b> bipartite matching loss để assign pred↔GT (1-to-1).<br>
+$\mathcal{L}_\text{match}=\lambda_{cls}\mathcal{L}_{cls}+\lambda_{box}\mathcal{L}_1+\lambda_{iou}\mathcal{L}_{iou}$<br>
+Không cần NMS! Nhưng cần nhiều GPU, training lâu hơn YOLO.
+</div>
+
+<table>
+<tr><th></th><th>YOLO</th><th>DETR</th></tr>
+<tr><td>Anchors</td><td>anchor-free</td><td>queries</td></tr>
+<tr><td>NMS</td><td>required</td><td>none</td></tr>
+<tr><td>Speed</td><td>fast</td><td>slow</td></tr>
+<tr><td>Small obj</td><td>FPN helps</td><td>weaker</td></tr>
+<tr><td>Training</td><td>fast</td><td>long</td></tr>
+</table>
+</div>
+
+<!-- ══ COL 3 ══ -->
+<div class="col">
+<h1>Segmentation · Quick Reference</h1>
+
+<h2>16. Image Segmentation</h2>
+<h3>Types</h3>
+<table>
+<tr><th>Type</th><th>Output</th><th>Distinguish inst?</th></tr>
+<tr><td>Semantic</td><td>class per pixel</td><td>No</td></tr>
+<tr><td>Instance</td><td>mask per object</td><td>Yes</td></tr>
+<tr><td>Panoptic</td><td>sem + inst unified</td><td>Yes</td></tr>
+</table>
+
+<h3>UNet Architecture</h3>
+<div class="fb">
+Encoder (contract): Conv→MaxPool×4, depth↑ channels↑<br>
+Bottleneck: deepest feature map<br>
+Decoder (expand): UpConv + <b>skip connection concat</b> → Conv×2<br>
+Output: 1×1 Conv → K-channel segmentation map<br>
+Skip connections: encoder features concat với decoder (preserve spatial detail)
+</div>
+<div class="ex">UNet channel flow (example):
+3→64→128→256→512→1024 (bottleneck)
+→512→256→128→64→K (num classes)</div>
+
+<h3>Segmentation Metrics</h3>
+<div class="fb">
+$\text{Dice}=\frac{2TP}{2TP+FP+FN}=\frac{2|A\cap B|}{|A|+|B|}$<br>
+$\text{IoU}=\frac{TP}{TP+FP+FN}=\frac{|A\cap B|}{|A\cup B|}$<br>
+Quan hệ: $\text{Dice}=\frac{2\text{IoU}}{1+\text{IoU}}$; $\text{IoU}=\frac{\text{Dice}}{2-\text{Dice}}$<br>
+$\text{mIoU}=\frac{1}{K}\sum_{k=0}^{K-1}\text{IoU}_k$<br>
+$\text{HD95}$: 95th percentile of Hausdorff distances (surface error, medical imaging)<br>
+<b>Panoptic Quality:</b> $PQ=\underbrace{SQ}_{\text{seg quality}}\times\underbrace{RQ}_{\text{recog quality}}$<br>
+$SQ=\frac{\sum_{(p,g)\in TP}\text{IoU}(p,g)}{|TP|}$; $RQ=\frac{|TP|}{|TP|+\frac{1}{2}|FP|+\frac{1}{2}|FN|}$
+</div>
+
+<h3>Loss Functions for Segmentation</h3>
+<div class="fb">
+<b>Dice Loss:</b> $1-\frac{2\sum p_i g_i+\epsilon}{\sum p_i+\sum g_i+\epsilon}$ (smooth ε prevent div/0)<br>
+<b>Focal Loss:</b> $(1-p_t)^\gamma(-\log p_t)$ (class imbalance)<br>
+<b>Combined:</b> Dice + CE (best practice)
+</div>
+<div class="w">⚠ Resize mask → dùng <b>nearest neighbor</b>, KHÔNG dùng bilinear (tạo class values không hợp lệ). Trong PyTorch: <code>mode='nearest'</code>.</div>
+
+<h2>Critical Warnings / Exam Traps</h2>
+<div class="w">⚠ <b>BCEWithLogitsLoss / CrossEntropyLoss</b>: nhận raw logits, KHÔNG thêm Sigmoid/Softmax trước.</div>
+<div class="w">⚠ <b>BatchNorm train vs eval</b>: model.eval() → dùng running mean/var, không phải batch stats. Quên eval() → kết quả không ổn định.</div>
+<div class="w">⚠ <b>Augmentation chỉ train set</b>: val/test chỉ normalize. Normalize dùng train stats.</div>
+<div class="w">⚠ <b>OLS closed-form</b>: O(D³) → không dùng nếu D lớn (features nhiều), dùng gradient descent.</div>
+<div class="w">⚠ <b>mAP@.5 vs mAP@[.5:.95]</b>: sau là strict hơn, COCO dùng mAP@[.5:.95].</div>
+<div class="w">⚠ <b>YOLO 8400</b> = $80^2+40^2+20^2$ (với input 640×640, 3 scales).</div>
+
+<h2>Quick Formula Index</h2>
+<div class="fb">
+<b>Conv output:</b> $o=\lfloor(i+2p-k)/s\rfloor+1$<br>
+<b>Conv params:</b> $K(k^2 D_{in}+1)$<br>
+<b>FC params:</b> $N(M+1)$ ($M$→$N$)<br>
+<b>Attention:</b> $\text{Softmax}(QK^\top/\sqrt{d_k})V$<br>
+<b>Adam update:</b> $\theta-\eta\hat m/(\sqrt{\hat v}+\epsilon)$<br>
+<b>Cosine LR:</b> $\frac{\eta_0}{2}(1+\cos\frac{t\pi}{T})$<br>
+<b>ELBO:</b> $\mathbb{E}[\log p_\theta(x|z)]-D_{KL}(q_\phi\|p)$<br>
+<b>DDPM fwd:</b> $x_t=\sqrt{\bar\alpha_t}x_0+\sqrt{1-\bar\alpha_t}\epsilon$<br>
+<b>IoU:</b> $|A\cap B|/|A\cup B|$; <b>Dice:</b> $2|A\cap B|/(|A|+|B|)$<br>
+<b>F1:</b> $2PR/(P+R)$; <b>Bias²+Var+σ²</b>=total error<br>
+<b>mAP:</b> $\frac{1}{N_c}\sum AP_c$; AP=AUC(PR)
+</div>
+
+<h3>Sample: Segmentation Problem</h3>
+<div class="ex">GT mask: class 1 → 50px, class 0 → 950px
+Pred: TP=40, FP=20, FN=10 (class 1)
+IoU_1 = 40/(40+20+10) = 40/70 = 0.571
+Dice_1 = 2×40/(2×40+20+10) = 80/110 = 0.727
+mIoU = (IoU_0 + IoU_1)/2</div>
+
+<h3>Sample: YOLO Box Regression</h3>
+<div class="ex">DFL bins: [0,1,...,15], logits → Softmax
+d̂ = Σ k·softmax(sk) ∈ [0,15]
+→ continuous bbox offset (no anchor needed)
+
+IoU-based loss: CIoU = 1 - CIoU_coeff
+TaskAligned score = p^α × IoU^β (α=0.5,β=6)</div>
+</div>
+
+</div><!-- end page2 -->
+
+</body>
+</html>

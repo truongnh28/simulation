@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GK5009 – Chương 3: Tiếp cận Kỹ năng (Skills Approach)</title>
+  <style>
+    :root {
+      --primary: #1a3c6e;
+      --secondary: #2e6da4;
+      --accent: #e8a020;
+      --light: #f4f7fb;
+      --text: #1c1c1c;
+      --muted: #5a6a7a;
+      --border: #d0daea;
+      --green: #1a6e3c;
+      --red: #8b1a1a;
+      --purple: #5a1a8b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text);
+      background: #fff;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 30px;
+    }
+    h1 { font-size: 2.2rem; color: var(--primary); border-bottom: 4px solid var(--accent); padding-bottom: 12px; margin-bottom: 8px; }
+    h2 { font-size: 1.6rem; color: var(--primary); margin-top: 48px; margin-bottom: 16px; border-left: 6px solid var(--accent); padding-left: 14px; }
+    h3 { font-size: 1.25rem; color: var(--secondary); margin-top: 32px; margin-bottom: 12px; }
+    h4 { font-size: 1.05rem; color: var(--primary); margin-top: 20px; margin-bottom: 8px; font-style: italic; }
+    p { margin-bottom: 14px; }
+    ul, ol { margin: 10px 0 14px 28px; }
+    li { margin-bottom: 7px; }
+    .term { font-weight: bold; color: var(--primary); }
+    .definition { background: var(--light); border-left: 4px solid var(--secondary); padding: 12px 16px; margin: 14px 0; border-radius: 4px; }
+    .callout { background: #eaf4ff; border: 1px solid var(--secondary); padding: 14px 18px; margin: 18px 0; border-radius: 6px; }
+    .callout.warning { background: #fff4e0; border-color: var(--accent); }
+    .callout.important { background: #fdecea; border-color: var(--red); }
+    .callout.success { background: #e8f5ee; border-color: var(--green); }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95rem; }
+    th { background: var(--primary); color: #fff; padding: 10px 14px; text-align: left; }
+    td { border: 1px solid var(--border); padding: 9px 14px; vertical-align: top; }
+    tr:nth-child(even) td { background: var(--light); }
+    .section-label {
+      display: inline-block; background: var(--primary); color: #fff;
+      font-size: 0.78rem; font-weight: bold; letter-spacing: 1px;
+      padding: 3px 10px; border-radius: 3px; margin-bottom: 6px; text-transform: uppercase;
+    }
+    .toc { background: var(--light); border: 1px solid var(--border); padding: 18px 24px; margin: 24px 0 40px; border-radius: 6px; }
+    .toc h3 { color: var(--primary); margin-top: 0; margin-bottom: 10px; }
+    .toc a { color: var(--secondary); text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+    .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 30px; }
+    .highlight { background: #fffbcc; padding: 2px 4px; border-radius: 2px; }
+    hr { border: none; border-top: 2px solid var(--border); margin: 36px 0; }
+    /* Pyramid diagram */
+    .pyramid { text-align: center; margin: 24px 0; }
+    .pyramid-level {
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 4px; color: #fff; font-weight: bold;
+      border-radius: 4px; padding: 10px;
+    }
+    /* Skills model box */
+    .model-box {
+      border: 2px solid var(--primary); border-radius: 8px;
+      padding: 16px 20px; margin: 14px 0;
+    }
+    .model-box h4 { color: var(--primary); font-style: normal; margin-top: 0; border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-bottom: 10px; }
+    .skill-card {
+      background: var(--light); border-left: 5px solid var(--secondary);
+      padding: 14px 18px; margin: 14px 0; border-radius: 4px;
+    }
+    .skill-card.technical { border-left-color: #c0392b; }
+    .skill-card.human { border-left-color: #27ae60; }
+    .skill-card.conceptual { border-left-color: #2980b9; }
+    .skill-card h4 { font-style: normal; margin-top: 0; margin-bottom: 8px; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.82rem; font-weight: bold; }
+    .badge-red { background: #fde4e4; color: var(--red); }
+    .badge-green { background: #d4f0e0; color: var(--green); }
+    .badge-blue { background: #daeeff; color: var(--primary); }
+  </style>
+</head>
+<body>
+
+<div class="section-label">GK5009 – Quản lý và Lãnh đạo | HK252</div>
+<h1>Chương 3: Tiếp cận Kỹ năng<br><small style="font-size:1rem;color:var(--muted);">The Skills Approach to Leadership</small></h1>
+<p class="meta">Nguồn: Northouse, P. G. (2021). <em>Leadership: Theory and Practice</em> (7th ed.). SAGE Publications. — Chapter 3 | Katz (1955); Mumford, Zaccaro, Harding, Jacobs & Fleishman (2000)</p>
+
+<div class="toc">
+  <h3>Mục lục</h3>
+  <ol>
+    <li><a href="#s1">Tổng quan chương & Chuyển dịch từ Traits sang Skills</a></li>
+    <li><a href="#s2">Phân tích chuyên sâu: Hai mô hình chính</a></li>
+    <li><a href="#s3">Mô hình & Khung lý thuyết</a></li>
+    <li><a href="#s4">Ví dụ thực tiễn</a></li>
+    <li><a href="#s5">Lưu ý học tập & Bẫy nhận thức phổ biến</a></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s1">1. Tổng quan chương & Chuyển dịch từ Traits sang Skills</h2>
+<!-- ============================================================ -->
+
+<div class="section-label">Section 1 – Overview</div>
+
+<p>Skills Approach (Tiếp cận Kỹ năng) đánh dấu một bước chuyển quan trọng trong tư duy về lãnh đạo. Nếu Trait Approach (Ch2) hỏi "Nhà lãnh đạo có đặc điểm gì?" và ngầm ý rằng các đặc điểm đó phần lớn là bẩm sinh, thì Skills Approach hỏi: <strong>"Nhà lãnh đạo cần KỸ NĂNG gì?" — và kỹ năng, không giống đặc điểm bẩm sinh, có thể học và phát triển được.</strong></p>
+
+<div class="callout">
+  <strong>Sự khác biệt cốt lõi:</strong><br>
+  <ul>
+    <li><strong>Trait Approach:</strong> Tập trung vào "người lãnh đạo LÀ gì" (tính cách, phẩm chất — khó thay đổi)</li>
+    <li><strong>Skills Approach:</strong> Tập trung vào "người lãnh đạo CÓ THỂ LÀM gì" (năng lực, kỹ năng — có thể học được)</li>
+  </ul>
+  Hàm ý: Skills Approach dân chủ hóa lãnh đạo — bất kỳ ai chịu khó học tập và rèn luyện cũng có thể trở thành lãnh đạo hiệu quả.
+</div>
+
+<p>Chương 3 trình bày <strong>hai mô hình</strong> trong Skills Approach:</p>
+<ol>
+  <li><strong>Three-Skill Approach (Katz, 1955):</strong> Mô hình đơn giản, thực hành cao — ba kỹ năng cơ bản và cách chúng thay đổi theo cấp bậc quản lý.</li>
+  <li><strong>Skills Model (Mumford et al., 2000):</strong> Mô hình phức tạp và toàn diện hơn — mô tả các năng lực, thuộc tính cá nhân, kinh nghiệm nghề nghiệp, và ảnh hưởng môi trường tác động đến hiệu quả lãnh đạo.</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="s2">2. Phân tích chuyên sâu: Hai mô hình chính</h2>
+<!-- ============================================================ -->
+
+<div class="section-label">Section 2 – In-depth Analysis</div>
+
+<h3>2.1 Three-Skill Approach (Katz, 1955)</h3>
+
+<p>Robert Katz (1955) công bố bài báo mang tính bước ngoặt <em>"Skills of an Effective Administrator"</em> trên Harvard Business Review — một trong những bài báo được trích dẫn nhiều nhất trong văn liệu quản lý. Katz đề xuất rằng lãnh đạo hiệu quả phụ thuộc vào ba kỹ năng có thể học được, không phải vào đặc điểm bẩm sinh.</p>
+
+<div class="skill-card technical">
+  <h4>Kỹ năng 1: Technical Skill (Kỹ năng Kỹ thuật/Chuyên môn)</h4>
+  <p><strong>Định nghĩa:</strong> Kiến thức về và sự thành thạo trong một loại công việc hay hoạt động cụ thể. Bao gồm: năng lực trong một lĩnh vực chuyên biệt, khả năng phân tích, và sử dụng thành thạo các công cụ và kỹ thuật của một ngành nghề cụ thể.</p>
+  <p><strong>Ví dụ:</strong> Kỹ sư phần mềm thành thạo ngôn ngữ lập trình; bác sĩ hiểu sâu về bệnh học; kế toán hiểu rõ IFRS và các chuẩn mực kế toán; đầu bếp nắm vững kỹ thuật nấu ăn Pháp.</p>
+  <p><strong>Vai trò trong Lãnh đạo:</strong> Technical skill đặc biệt quan trọng ở cấp bậc <em>giám sát/quản lý cấp thấp</em> (supervisory/lower management). Ở cấp này, lãnh đạo phải có đủ kỹ năng kỹ thuật để hướng dẫn, đào tạo nhân viên, và đánh giá chất lượng công việc. Thiếu technical skill, người lãnh đạo cấp thấp mất tín nhiệm với nhân viên và không thể hỗ trợ họ hiệu quả.</p>
+  <p><strong>Thay đổi theo cấp bậc:</strong> Tầm quan trọng tương đối của technical skill <em>giảm dần</em> khi lên cấp bậc cao hơn. Một CEO không cần phải là kỹ sư giỏi nhất hay kế toán giỏi nhất — họ cần hiểu đủ để đưa ra quyết định chiến lược, không cần thực thi trực tiếp.</p>
+</div>
+
+<div class="skill-card human">
+  <h4>Kỹ năng 2: Human Skill (Kỹ năng Con người/Nhân sự)</h4>
+  <p><strong>Định nghĩa:</strong> Kiến thức và khả năng làm việc với người khác — cả cá nhân lẫn nhóm. Bao gồm: khả năng nhận thức quan điểm của người khác, tạo ra bầu không khí tin tưởng, tạo điều kiện để người khác tham gia, và làm cho mọi người cảm thấy được lắng nghe và tôn trọng.</p>
+  <p><strong>Human skill vs. Trait (Sociability):</strong> Đây không giống sociability (đặc điểm) trong Trait Approach. Human skill là <em>năng lực thực hành</em> — khả năng thực sự làm việc hiệu quả với người khác, không chỉ là xu hướng thích giao tiếp. Human skill bao gồm: kỹ năng lắng nghe, giao tiếp, giải quyết xung đột, xây dựng nhóm, và tạo động lực.</p>
+  <p><strong>Vai trò trong Lãnh đạo:</strong> Human skill quan trọng <em>ở tất cả các cấp bậc</em>. Dù là giám sát viên hay CEO, lãnh đạo đều phải làm việc với người. Tuy nhiên, <em>cách</em> biểu hiện human skill thay đổi theo cấp bậc: ở cấp thấp, cần quan hệ trực tiếp với từng nhân viên; ở cấp cao, cần xây dựng liên minh, tạo văn hóa tổ chức, và quản lý nhiều bên liên quan.</p>
+  <p><strong>Human skill và EI:</strong> Human skill có nhiều điểm tương đồng với Emotional Intelligence (Ch2). Người có EI cao thường cũng có human skill tốt. Nhưng human skill rộng hơn EI — nó bao gồm cả các kỹ thuật quản lý nhóm, giải quyết xung đột có cấu trúc, và thiết kế quy trình làm việc.</p>
+</div>
+
+<div class="skill-card conceptual">
+  <h4>Kỹ năng 3: Conceptual Skill (Kỹ năng Tư duy/Khái niệm)</h4>
+  <p><strong>Định nghĩa:</strong> Khả năng làm việc với các ý tưởng và khái niệm — tư duy chiến lược, nhìn thấy bức tranh lớn (big picture), hiểu cách các bộ phận khác nhau của tổ chức khớp với nhau và tác động lẫn nhau, và hình thành tầm nhìn (vision) cho tương lai.</p>
+  <p><strong>Ví dụ cụ thể:</strong> Khả năng nhìn thấy cách một sự thay đổi chính sách nhân sự sẽ ảnh hưởng đến văn hóa tổ chức, năng suất, và cuối cùng là kết quả kinh doanh. Hay khả năng nhìn thấy cơ hội thị trường mà người khác chưa nhận ra và xây dựng chiến lược tận dụng cơ hội đó.</p>
+  <p><strong>Vai trò trong Lãnh đạo:</strong> Conceptual skill đặc biệt quan trọng ở cấp bậc <em>lãnh đạo cấp cao/top management</em>. CEO và các lãnh đạo cấp cao cần liên tục đưa ra các quyết định chiến lược ảnh hưởng đến toàn bộ tổ chức trong dài hạn. Thiếu conceptual skill, lãnh đạo cấp cao sẽ bị "chìm" vào các chi tiết vận hành và mất khả năng lãnh đạo chiến lược.</p>
+  <p><strong>Thay đổi theo cấp bậc:</strong> Tầm quan trọng tương đối của conceptual skill <em>tăng dần</em> khi lên cấp bậc cao hơn. Ở cấp giám sát, cần tư duy ngắn hạn và cụ thể. Ở cấp CEO, cần tư duy dài hạn và trừu tượng.</p>
+</div>
+
+<h4>Mối quan hệ giữa 3 Kỹ năng và Cấp bậc Quản lý</h4>
+
+<p>Đây là một trong những đóng góp quan trọng nhất của Katz (1955) — ông không chỉ xác định 3 kỹ năng mà còn chỉ ra cách <em>tầm quan trọng tương đối</em> của chúng thay đổi theo cấp bậc:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Cấp bậc Quản lý</th>
+      <th>Technical Skill</th>
+      <th>Human Skill</th>
+      <th>Conceptual Skill</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Top Management</strong><br>(CEO, Giám đốc cấp cao)</td>
+      <td><span class="badge badge-red">Thấp</span></td>
+      <td><span class="badge badge-green">Cao</span></td>
+      <td><span class="badge badge-green">Cao nhất</span></td>
+    </tr>
+    <tr>
+      <td><strong>Middle Management</strong><br>(Trưởng phòng, Giám đốc bộ phận)</td>
+      <td><span class="badge badge-blue">Trung bình</span></td>
+      <td><span class="badge badge-green">Cao</span></td>
+      <td><span class="badge badge-blue">Trung bình</span></td>
+    </tr>
+    <tr>
+      <td><strong>Supervisory/Lower Management</strong><br>(Tổ trưởng, Trưởng nhóm)</td>
+      <td><span class="badge badge-green">Cao nhất</span></td>
+      <td><span class="badge badge-green">Cao</span></td>
+      <td><span class="badge badge-red">Thấp</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>Hàm ý quan trọng của mô hình Katz:</strong><br>
+  Human skill là kỹ năng quan trọng ở TẤT CẢ các cấp bậc. Đây là lý do tại sao phát triển kỹ năng làm việc với người (EI, giao tiếp, quản lý xung đột) luôn được ưu tiên trong các chương trình phát triển lãnh đạo bất kể cấp độ.
+</div>
+
+<div class="callout warning">
+  <strong>"Peter Principle" — Hệ quả thực tiễn của mô hình Katz:</strong><br>
+  Khi một kỹ sư giỏi (technical skill cao) được thăng chức lên quản lý, họ thường thất bại vì ở cấp quản lý, technical skill ít quan trọng hơn nhưng human skill và conceptual skill lại cần nhiều hơn — và đây là những kỹ năng họ chưa phát triển. Đây là "Peter Principle": người được thăng chức đến mức độ không năng lực (promoted to their level of incompetence). Mô hình Katz giải thích TẠI SAO điều này xảy ra và CÁCH phòng ngừa (phát triển đúng kỹ năng cho từng cấp bậc).
+</div>
+
+<hr/>
+
+<h3>2.2 Skills Model (Mumford et al., 2000)</h3>
+
+<p>Năm 2000, Mumford, Zaccaro, Harding, Jacobs, và Fleishman công bố mô hình kỹ năng lãnh đạo toàn diện hơn trong tạp chí <em>The Leadership Quarterly</em>. Mô hình này phức tạp hơn Katz (1955) và cố gắng giải thích đầy đủ hơn <em>những gì tạo nên lãnh đạo hiệu quả</em>, bao gồm cả các yếu tố năng lực lẫn các yếu tố thuộc tính cá nhân, kinh nghiệm, và môi trường.</p>
+
+<p>Mô hình Mumford et al. có 5 thành phần chính, được tổ chức thành một cấu trúc nhân-quả:</p>
+
+<div class="model-box">
+  <h4>Thành phần 1: Competencies (Năng lực) — Trung tâm của Mô hình</h4>
+  <p>Đây là trung tâm của mô hình — 3 loại năng lực quan trọng nhất mà Mumford et al. xác định:</p>
+
+  <h4 style="color:var(--secondary); margin-top:14px;">1a. Problem-Solving Skills (Kỹ năng Giải quyết Vấn đề)</h4>
+  <p><strong>Định nghĩa:</strong> Khả năng sáng tạo và độc đáo trong việc giải quyết những vấn đề khó, mơ hồ, và quan trọng của tổ chức. Bao gồm: thu thập thông tin để hiểu vấn đề, xây dựng kế hoạch và chiến lược giải quyết, sáng tạo giải pháp độc đáo, và đánh giá kết quả.</p>
+  <p><strong>Vấn đề lãnh đạo thường xuyên phải giải quyết:</strong> Không có cấu trúc rõ ràng (ill-defined); không có giải pháp duy nhất đúng; liên quan đến nhiều bên với lợi ích khác nhau; kết quả không chắc chắn; đòi hỏi cả tư duy phân tích lẫn sáng tạo.</p>
+  <p><strong>Điểm đặc biệt:</strong> Mumford et al. nhấn mạnh rằng lãnh đạo hiệu quả đặc biệt phụ thuộc vào <em>khả năng giải quyết vấn đề xã hội phức tạp</em> (complex social problems) — không phải chỉ vấn đề kỹ thuật đơn thuần.</p>
+
+  <h4 style="color:var(--secondary); margin-top:14px;">1b. Social Judgment Skills (Kỹ năng Phán đoán Xã hội)</h4>
+  <p><strong>Định nghĩa:</strong> Khả năng hiểu người, hệ thống xã hội, và những gì cần thiết để tổ chức/nhóm thay đổi — sau đó thực hiện những thay đổi đó một cách hiệu quả. Bao gồm bốn yếu tố con:</p>
+  <ul>
+    <li><strong>Perspective Taking (Nhận thức Quan điểm):</strong> Khả năng đặt mình vào vị trí của người khác và hiểu quan điểm của họ — không chỉ là đồng cảm cảm xúc, mà còn là hiểu cách họ tư duy và những gì họ coi trọng.</li>
+    <li><strong>Social Perceptiveness (Nhận thức Xã hội):</strong> Khả năng nhận biết và hiểu những gì quan trọng với người khác và tổ chức — đọc được "bầu không khí phòng," hiểu động lực nhóm không nói ra.</li>
+    <li><strong>Behavioral Flexibility (Linh hoạt Hành vi):</strong> Khả năng thay đổi cách tiếp cận khi nhận ra rằng cách hiện tại không hiệu quả — không cứng nhắc với một phong cách duy nhất.</li>
+    <li><strong>Social Performance (Thực thi Xã hội):</strong> Khả năng thực sự thuyết phục, giảng dạy, tư vấn, và hỗ trợ người khác — biến hiểu biết về con người thành hành động hiệu quả.</li>
+  </ul>
+
+  <h4 style="color:var(--secondary); margin-top:14px;">1c. Knowledge (Kiến thức)</h4>
+  <p><strong>Định nghĩa:</strong> Tập hợp thông tin có tổ chức tích lũy được qua nghiên cứu và kinh nghiệm — kiến thức về sự kiện, khái niệm, nguyên tắc, và cấu trúc liên quan đến lĩnh vực làm việc.</p>
+  <p><strong>Tầm quan trọng đặc biệt:</strong> Mumford et al. nhấn mạnh rằng kiến thức <em>trực tiếp tác động đến khả năng giải quyết vấn đề</em>. Lãnh đạo có kiến thức sâu rộng về lĩnh vực của mình có thể nhận ra các mẫu hình (patterns), đưa ra giải pháp sáng tạo hơn, và tránh các lỗi đã được ghi nhận trong lịch sử. Kiến thức không chỉ là thông tin — nó là khung tư duy (mental framework) để xử lý thông tin mới.</p>
+  <p><strong>Kiến thức vs. Trí thông minh:</strong> Trong mô hình Mumford et al., Kiến thức và Trí thông minh (General cognitive ability) là hai yếu tố khác nhau. Người thông minh học và tích lũy kiến thức nhanh hơn — nhưng kiến thức là kết quả của quá trình học tập có chủ ý, không chỉ phụ thuộc vào trí thông minh.</p>
+</div>
+
+<div class="model-box">
+  <h4>Thành phần 2: Individual Attributes (Thuộc tính Cá nhân)</h4>
+  <p>Bốn thuộc tính cá nhân ảnh hưởng đến sự phát triển năng lực lãnh đạo:</p>
+  <ul>
+    <li><strong>General Cognitive Ability (Trí tuệ Tổng quát):</strong> Trí thông minh tổng thể — khả năng xử lý thông tin, tư duy lý luận, và học hỏi nhanh. Tương tự "Intelligence" trong Trait Approach, nhưng trong mô hình Skills, nó là điều kiện cần thiết để phát triển năng lực, không phải là năng lực trực tiếp. Northouse lưu ý: Mô hình Mumford et al. ủng hộ quan điểm rằng khả năng nhận thức tổng thể là nền tảng cho tất cả các kỹ năng khác.</li>
+    <li><strong>Crystallized Cognitive Ability (Trí tuệ Kết tinh):</strong> Trí thông minh đã được "kết tinh" qua kinh nghiệm và học hỏi — khả năng sử dụng kiến thức, kỹ năng và kinh nghiệm đã tích lũy. Khác với "fluid intelligence" (khả năng lý luận trừu tượng thuần túy), crystallized intelligence tăng theo tuổi và kinh nghiệm. Đây là lý do tại sao lãnh đạo có kinh nghiệm phong phú thường đưa ra quyết định tốt hơn ngay cả khi không còn "nhanh nhạy" như trẻ tuổi.</li>
+    <li><strong>Motivation (Động lực):</strong> Trong mô hình này, motivation được định nghĩa là: (a) ý chí và quyết tâm để giải quyết các vấn đề phức tạp, (b) sẵn sàng thực hiện quyền lực xã hội (influence) cần thiết để lãnh đạo, và (c) đầu tư thời gian và năng lượng để phát triển kỹ năng. Không có motivation, ngay cả người thông minh nhất cũng sẽ không phát triển đủ năng lực lãnh đạo.</li>
+    <li><strong>Personality (Nhân cách):</strong> Các đặc điểm nhân cách (tương tự Big Five trong Ch2) ảnh hưởng đến khả năng phát triển năng lực lãnh đạo. Ví dụ: người có Openness cao dễ phát triển conceptual skill; người có Conscientiousness cao dễ tích lũy kiến thức chuyên sâu.</li>
+  </ul>
+</div>
+
+<div class="model-box">
+  <h4>Thành phần 3: Leadership Outcomes (Kết quả Lãnh đạo)</h4>
+  <p>Mô hình xác định hai kết quả chính của lãnh đạo hiệu quả:</p>
+  <ul>
+    <li><strong>Effective Problem Solving (Giải quyết Vấn đề Hiệu quả):</strong> Khả năng đưa ra những giải pháp mới, sáng tạo, và hiệu quả cho các vấn đề tổ chức phức tạp và quan trọng.</li>
+    <li><strong>Performance (Hiệu suất Tổ chức):</strong> Mức độ đạt được các mục tiêu đề ra — được đánh giá bởi cấp trên, đồng nghiệp, và những người liên quan.</li>
+  </ul>
+  <p><strong>Lưu ý quan trọng:</strong> Trong mô hình Mumford et al., <em>Problem-Solving</em> và <em>Performance</em> là hai kết quả riêng biệt. Một lãnh đạo có thể giải quyết vấn đề sáng tạo nhưng tổ chức vẫn không đạt hiệu suất cao (do thiếu nguồn lực, hay vấn đề thực thi). Và ngược lại — đây là sự tinh tế quan trọng so với các mô hình đơn giản hơn.</p>
+</div>
+
+<div class="model-box">
+  <h4>Thành phần 4: Career Experiences (Kinh nghiệm Nghề nghiệp)</h4>
+  <p>Kinh nghiệm tích lũy qua sự nghiệp có tác động trực tiếp và quan trọng lên sự phát triển năng lực lãnh đạo. Mumford et al. đề xuất rằng:</p>
+  <ul>
+    <li>Kinh nghiệm lãnh đạo sớm (early leadership experiences) tạo nền tảng cho việc phát triển cả ba loại năng lực.</li>
+    <li>Các thách thức có độ khó tăng dần (progressively challenging assignments) buộc lãnh đạo phải phát triển problem-solving skills và social judgment skills mới.</li>
+    <li>Mentoring và coaching từ lãnh đạo có kinh nghiệm thúc đẩy quá trình học hỏi.</li>
+    <li>Kinh nghiệm trong các bối cảnh đa dạng (khác ngành, khác văn hóa, khác chức năng) phát triển crystallized cognitive ability và kiến thức phong phú hơn.</li>
+  </ul>
+  <p><strong>Hàm ý thực tiễn:</strong> Đây là lý do tại sao nhiều tổ chức lớn cố tình luân chuyển lãnh đạo tiềm năng (high-potential rotation program) qua nhiều phòng ban và chức năng khác nhau — để xây dựng kinh nghiệm đa dạng.</p>
+</div>
+
+<div class="model-box">
+  <h4>Thành phần 5: Environmental Influences (Ảnh hưởng Môi trường)</h4>
+  <p>Môi trường — cả bên trong lẫn bên ngoài tổ chức — đặt ra các giới hạn và tạo ra các điều kiện ảnh hưởng đến hiệu quả lãnh đạo. Bao gồm:</p>
+  <ul>
+    <li><strong>Môi trường bên trong:</strong> Văn hóa tổ chức, cơ cấu tổ chức, nguồn lực sẵn có, công nghệ, quy trình.</li>
+    <li><strong>Môi trường bên ngoài:</strong> Tình hình kinh tế, cạnh tranh thị trường, thay đổi công nghệ, quy định pháp lý, yếu tố văn hóa xã hội.</li>
+    <li><strong>Đặc điểm công việc:</strong> Mức độ phức tạp, sự mơ hồ, và tầm quan trọng của các vấn đề mà lãnh đạo phải đối mặt.</li>
+  </ul>
+  <p><strong>Lý do quan trọng:</strong> Môi trường giải thích tại sao cùng một người lãnh đạo có thể rất thành công trong bối cảnh này nhưng thất bại trong bối cảnh khác. Đây là điểm mà mô hình Mumford et al. tiếp thu từ phê bình của Stogdill (1948) về Trait Approach — bối cảnh (context) quan trọng.</p>
+</div>
+
+<hr/>
+
+<h3>2.3 So sánh Katz (1955) và Mumford et al. (2000)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tiêu chí</th>
+      <th>Katz (1955) — Three-Skill</th>
+      <th>Mumford et al. (2000) — Skills Model</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Độ phức tạp</strong></td>
+      <td>Đơn giản — 3 kỹ năng cơ bản</td>
+      <td>Phức tạp — 5 thành phần, nhiều biến số</td>
+    </tr>
+    <tr>
+      <td><strong>Trọng tâm</strong></td>
+      <td>Kỹ năng cần có ở từng cấp bậc quản lý</td>
+      <td>Cách các năng lực, thuộc tính, kinh nghiệm và môi trường tương tác</td>
+    </tr>
+    <tr>
+      <td><strong>Ứng dụng</strong></td>
+      <td>Thực tiễn cao — dễ áp dụng trong tuyển dụng và phát triển</td>
+      <td>Lý thuyết sâu hơn — hữu ích cho nghiên cứu và thiết kế chương trình phát triển toàn diện</td>
+    </tr>
+    <tr>
+      <td><strong>Nhân tố cá nhân</strong></td>
+      <td>Không đề cập đến thuộc tính cá nhân</td>
+      <td>Tường minh về vai trò của thuộc tính cá nhân (General cognitive ability, Crystallized cognitive ability, Motivation, Personality)</td>
+    </tr>
+    <tr>
+      <td><strong>Bối cảnh/Môi trường</strong></td>
+      <td>Đề cập gián tiếp (cấp bậc quản lý)</td>
+      <td>Tường minh về Environmental Influences</td>
+    </tr>
+    <tr>
+      <td><strong>Giống nhau</strong></td>
+      <td colspan="2">Cả hai đều khẳng định: kỹ năng lãnh đạo có thể học được, không phải bẩm sinh; cả hai đều tập trung vào năng lực cần có để lãnh đạo hiệu quả</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr/>
+
+<h3>2.4 Điểm mạnh và Phê bình của Skills Approach</h3>
+
+<h4>Điểm mạnh:</h4>
+<ol>
+  <li><strong>Dân chủ hóa lãnh đạo:</strong> Bất kỳ ai cũng có thể phát triển kỹ năng lãnh đạo thông qua học tập và kinh nghiệm — không bị giới hạn bởi nguồn gốc hay đặc điểm bẩm sinh. Đây là đóng góp mang tính cách mạng so với Trait Approach.</li>
+  <li><strong>Cơ sở cho phát triển lãnh đạo:</strong> Skills Approach cung cấp bản đồ rõ ràng về những gì cần phát triển — rất hữu ích cho thiết kế chương trình đào tạo lãnh đạo.</li>
+  <li><strong>Mô hình Katz đơn giản và thực tiễn:</strong> Ba kỹ năng dễ nhớ, dễ áp dụng trong thực tế quản lý hàng ngày.</li>
+  <li><strong>Mô hình Mumford et al. toàn diện:</strong> Là một trong những mô hình lãnh đạo toàn diện nhất — giải thích nhiều yếu tố phức tạp ảnh hưởng đến hiệu quả lãnh đạo.</li>
+  <li><strong>Phù hợp với hiểu biết hiện đại về học tập:</strong> Phù hợp với nghiên cứu về deliberate practice (Anders Ericsson) — chuyên gia trong bất kỳ lĩnh vực nào đều được tạo ra qua luyện tập có chủ ý, không phải bẩm sinh.</li>
+</ol>
+
+<h4>Phê bình/Hạn chế:</h4>
+<ol>
+  <li><strong>Mô hình Mumford et al. quá phức tạp:</strong> Với 5 thành phần và nhiều biến số, mô hình khó ứng dụng trực tiếp trong thực tế. Northouse nhận xét đây là hạn chế chính.</li>
+  <li><strong>Ranh giới mờ với Trait Approach:</strong> Khi Mumford et al. đưa vào "General cognitive ability" và "Personality" như thuộc tính cá nhân, ranh giới giữa Skills Approach và Trait Approach trở nên mờ nhạt. Nếu personality là một thuộc tính quan trọng, thì Skills Approach có thực sự khác biệt với Trait Approach?</li>
+  <li><strong>Phạm vi ứng dụng hạn chế:</strong> Mô hình ban đầu được phát triển dựa trên nghiên cứu với quân đội Mỹ (Army), nên tính phổ quát có thể bị hạn chế trong các bối cảnh tổ chức khác.</li>
+  <li><strong>Thiếu bằng chứng nhân-quả rõ ràng:</strong> Mô hình Mumford et al. được xây dựng từ dữ liệu tương quan, không phải thực nghiệm — khó xác định chắc chắn rằng phát triển kỹ năng dẫn đến lãnh đạo hiệu quả hơn, hay lãnh đạo hiệu quả tự nhiên phát triển kỹ năng nhiều hơn.</li>
+  <li><strong>Ít chú ý đến người theo:</strong> Giống Trait Approach, Skills Approach cũng tập trung chủ yếu vào người lãnh đạo, không đủ chú ý đến mối quan hệ lãnh đạo-người theo.</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="s3">3. Mô hình & Khung lý thuyết</h2>
+<!-- ============================================================ -->
+
+<div class="section-label">Section 3 – Models & Frameworks</div>
+
+<h3>3.1 Mô hình Three-Skill và Cấp bậc Quản lý</h3>
+
+<div class="pyramid">
+  <div class="pyramid-level" style="width:100%; background:#1a3c6e;">
+    TOP MANAGEMENT — Conceptual ↑↑ | Human ↑ | Technical ↓
+  </div>
+  <div class="pyramid-level" style="width:100%; background:#2e6da4; margin-top:4px;">
+    MIDDLE MANAGEMENT — Conceptual ↑ | Human ↑↑ | Technical ↔
+  </div>
+  <div class="pyramid-level" style="width:100%; background:#5a8abf; margin-top:4px;">
+    SUPERVISORY MANAGEMENT — Conceptual ↓ | Human ↑ | Technical ↑↑
+  </div>
+</div>
+
+<div class="callout">
+  <strong>Giải thích ký hiệu:</strong> ↑↑ = quan trọng nhất ở cấp này | ↑ = quan trọng | ↔ = trung bình | ↓ = ít quan trọng nhất ở cấp này. Human Skill là hằng số quan trọng ở tất cả các cấp.
+</div>
+
+<h3>3.2 Cấu trúc mô hình Mumford et al. (2000)</h3>
+
+<div class="callout">
+  <pre style="font-family: monospace; font-size: 0.88rem; line-height: 1.6;">
+┌─────────────────────────────────────────────────────────────┐
+│              LEADERSHIP OUTCOMES (Kết quả Lãnh đạo)         │
+│     ┌─────────────────────┐  ┌──────────────────────┐       │
+│     │ Effective Problem   │  │     Performance      │       │
+│     │     Solving         │  │  (Hiệu suất)         │       │
+│     └─────────────────────┘  └──────────────────────┘       │
+└─────────────────────────────────────────────────────────────┘
+            ▲ được tạo ra bởi
+┌─────────────────────────────────────────────────────────────┐
+│                COMPETENCIES (Năng lực)                       │
+│  ┌──────────────────┐ ┌──────────────┐ ┌─────────────┐      │
+│  │ Problem-Solving  │ │Social Judg-  │ │  Knowledge  │      │
+│  │    Skills        │ │ment Skills   │ │             │      │
+│  └──────────────────┘ └──────────────┘ └─────────────┘      │
+└─────────────────────────────────────────────────────────────┘
+            ▲ được phát triển bởi
+┌─────────────────────────────────────────────────────────────┐
+│           INDIVIDUAL ATTRIBUTES (Thuộc tính Cá nhân)        │
+│  General Cognitive Ability | Crystallized Cognitive Ability  │
+│  Motivation | Personality                                    │
+└─────────────────────────────────────────────────────────────┘
+            ◄── ảnh hưởng bởi
+┌─────────────────────────────────────────────────────────────┐
+│         CAREER EXPERIENCES (Kinh nghiệm Nghề nghiệp)        │
+│       Kinh nghiệm → Năng lực & Thuộc tính ↔                 │
+└─────────────────────────────────────────────────────────────┘
+            ◄── bị giới hạn/tác động bởi
+┌─────────────────────────────────────────────────────────────┐
+│        ENVIRONMENTAL INFLUENCES (Ảnh hưởng Môi trường)      │
+│     Môi trường bên trong + bên ngoài tổ chức                │
+└─────────────────────────────────────────────────────────────┘
+  </pre>
+</div>
+
+<h3>3.3 Đặc điểm 4 Thành phần Social Judgment Skills</h3>
+
+<table>
+  <thead>
+    <tr><th>Thành phần</th><th>Định nghĩa</th><th>Thiếu → Hệ quả</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Perspective Taking</strong></td><td>Đặt mình vào vị trí người khác; hiểu cách họ tư duy</td><td>Đưa ra quyết định không tính đến phản ứng của người khác</td></tr>
+    <tr><td><strong>Social Perceptiveness</strong></td><td>Đọc được bầu không khí và động lực nhóm không nói ra</td><td>Bỏ lỡ tín hiệu quan trọng từ nhóm; đề xuất thay đổi không phù hợp</td></tr>
+    <tr><td><strong>Behavioral Flexibility</strong></td><td>Thay đổi cách tiếp cận khi cách hiện tại không hiệu quả</td><td>Cứng nhắc; tiếp tục chiến lược thất bại vì không nhận ra cần thay đổi</td></tr>
+    <tr><td><strong>Social Performance</strong></td><td>Biến hiểu biết về con người thành hành động thuyết phục, hỗ trợ, giảng dạy hiệu quả</td><td>Biết lý thuyết nhưng không thực hành được với người thật</td></tr>
+  </tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="s4">4. Ví dụ thực tiễn</h2>
+<!-- ============================================================ -->
+
+<div class="section-label">Section 4 – Practical Examples</div>
+
+<h3>4.1 Case: "Peter Principle" và Mô hình Katz</h3>
+
+<p><strong>Tình huống:</strong> Nguyễn Văn A là kỹ sư phần mềm xuất sắc nhất trong nhóm 10 người, liên tục vượt deadline, code chất lượng cao. Công ty quyết định thăng chức anh làm Trưởng nhóm. Sáu tháng sau, nhóm dưới quyền anh bắt đầu có vấn đề: tỷ lệ lỗi tăng, 2 người giỏi xin nghỉ, và có xung đột thường xuyên giữa các thành viên.</p>
+
+<p><strong>Phân tích theo mô hình Katz:</strong></p>
+<ul>
+  <li><strong>Technical Skill:</strong> Rất cao — đây là lý do anh được thăng chức. Nhưng ở vị trí Trưởng nhóm, technical skill ít cần thiết hơn trước.</li>
+  <li><strong>Human Skill:</strong> Chưa phát triển đủ — anh giỏi code nhưng chưa học cách hướng dẫn người khác, giải quyết xung đột, hay tạo động lực cho nhóm.</li>
+  <li><strong>Conceptual Skill:</strong> Chưa cần ở mức cao ở cấp này, nhưng anh cũng chưa có thói quen tư duy về mục tiêu lớn hơn của nhóm.</li>
+</ul>
+<p><strong>Giải pháp theo Skills Approach:</strong> Đầu tư phát triển Human Skill cho A thông qua: (1) coaching từ manager giàu kinh nghiệm, (2) khóa học quản lý xung đột và giao tiếp, (3) thực hành có phản hồi thường xuyên. Skills Approach cho rằng đây là những kỹ năng <em>có thể học được</em>, không phải năng khiếu bẩm sinh.</p>
+
+<h3>4.2 Case: Phát triển Conceptual Skill qua Luân chuyển</h3>
+
+<p><strong>Chương trình Phát triển Lãnh đạo tại Vingroup (ví dụ minh họa):</strong> Các quản lý tiềm năng (high-potentials) được luân chuyển qua ít nhất 3 mảng kinh doanh khác nhau trong vòng 5 năm — bất động sản, bán lẻ, và y tế. Sau mỗi luân chuyển, họ phải trình bày phân tích chiến lược về những điểm tương đồng và khác biệt giữa các mảng.</p>
+
+<p><strong>Hàm ý theo mô hình Mumford et al.:</strong></p>
+<ul>
+  <li>Mỗi luân chuyển tạo thêm <em>Career Experience</em> đa dạng</li>
+  <li>Kinh nghiệm đa dạng phát triển <em>Crystallized Cognitive Ability</em> và <em>Knowledge</em></li>
+  <li>Phân tích chiến lược so sánh phát triển <em>Conceptual Skill</em> (Problem-Solving) và <em>Perspective Taking</em> (Social Judgment)</li>
+  <li>Kết quả: lãnh đạo cấp cao sau này có tư duy tích hợp — hiểu cách nhiều mảng kinh doanh tương tác, có nền tảng cho quyết định chiến lược tập đoàn</li>
+</ul>
+
+<h3>4.3 Ứng dụng Self-Assessment theo Skills Approach</h3>
+
+<p>Northouse đề xuất rằng Skills Approach hữu ích nhất khi dùng để tự đánh giá và lập kế hoạch phát triển cá nhân:</p>
+
+<table>
+  <thead>
+    <tr><th>Kỹ năng (Katz)</th><th>Câu hỏi tự đánh giá</th><th>Kế hoạch phát triển nếu thiếu</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Technical</td>
+      <td>Tôi có đủ kiến thức chuyên môn để hướng dẫn người khác trong lĩnh vực của mình không?</td>
+      <td>Học thêm chứng chỉ chuyên ngành; thực hành dưới sự hướng dẫn của expert</td>
+    </tr>
+    <tr>
+      <td>Human</td>
+      <td>Nhóm của tôi có cảm thấy thoải mái chia sẻ vấn đề với tôi không? Tôi có giải quyết xung đột nhóm hiệu quả không?</td>
+      <td>Coaching; khóa học EI và communication; thực hành có phản hồi 360</td>
+    </tr>
+    <tr>
+      <td>Conceptual</td>
+      <td>Tôi có hiểu rõ cách công việc của nhóm tôi liên quan đến mục tiêu tổng thể của tổ chức không?</td>
+      <td>Tham gia các buổi họp chiến lược cấp cao hơn; đọc báo cáo kinh doanh toàn công ty; MBA hoặc các khóa chiến lược</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="s5">5. Lưu ý học tập & Bẫy nhận thức phổ biến</h2>
+<!-- ============================================================ -->
+
+<div class="section-label">Section 5 – Study Notes & Common Pitfalls</div>
+
+<h3>5.1 Những điểm HAY bị nhầm lẫn</h3>
+
+<div class="callout warning">
+  <strong>Bẫy 1: Nhầm "Skills" với "Traits"</strong><br>
+  Đây là bẫy cơ bản nhất. Trait Approach nói về những gì lãnh đạo "LÀ" (đặc điểm, tính cách) — phần lớn khó thay đổi. Skills Approach nói về những gì lãnh đạo "CÓ THỂ LÀM" (năng lực, kỹ năng) — có thể học và phát triển. Trong bài thi, nếu bị hỏi sự khác biệt, hãy nhấn mạnh điểm này.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 2: Cho rằng Technical Skill giảm → không cần</strong><br>
+  Katz nói rằng Technical Skill <em>ít quan trọng hơn tương đối</em> ở cấp cao, không phải "không cần thiết." CEO không cần biết code, nhưng vẫn cần hiểu đủ về công nghệ để đưa ra quyết định chiến lược về digital transformation. Đừng cực đoan hóa điểm này.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 3: Nhầm Social Judgment Skills (Mumford) với Human Skill (Katz)</strong><br>
+  Social Judgment Skills trong mô hình Mumford et al. là một trong ba loại <em>Competencies</em> — nó bao gồm Perspective Taking, Social Perceptiveness, Behavioral Flexibility, và Social Performance. Human Skill trong mô hình Katz là một trong ba kỹ năng tổng quát. Hai khái niệm này liên quan nhưng không giống nhau — Social Judgment Skills của Mumford chi tiết và phân tích hơn.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 4: Nhầm "General cognitive ability" và "Crystallized cognitive ability"</strong><br>
+  General cognitive ability = fluid intelligence = khả năng lý luận trừu tượng, xử lý thông tin mới (phần lớn bẩm sinh, có thể giảm theo tuổi). Crystallized cognitive ability = kiến thức và kỹ năng đã tích lũy qua kinh nghiệm (tăng theo tuổi và kinh nghiệm). Trong mô hình Mumford et al., cả hai đều là Individual Attributes nhưng có nguồn gốc và quỹ đạo phát triển khác nhau.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 5: Quên Environmental Influences trong mô hình Mumford et al.</strong><br>
+  Nhiều sinh viên chỉ nhớ 3 Competencies và 4 Individual Attributes mà quên mất Career Experiences và Environmental Influences. Đây là điểm quan trọng vì nó giải thích TẠI SAO cùng một người lãnh đạo có thể thành công ở bối cảnh này nhưng thất bại ở bối cảnh khác.
+</div>
+
+<h3>5.2 Các câu hỏi ôn tập quan trọng</h3>
+
+<ol>
+  <li>Tại sao Katz (1955) được coi là bước tiến quan trọng so với Trait Approach? Sự khác biệt cốt lõi là gì và hàm ý thực tiễn là gì?</li>
+  <li>Mô tả ba kỹ năng trong Three-Skill Approach của Katz. Tại sao tầm quan trọng tương đối của mỗi kỹ năng thay đổi theo cấp bậc quản lý? Cho ví dụ cụ thể.</li>
+  <li>Mô hình Mumford et al. (2000) có những thành phần nào? Giải thích cách các thành phần này tương tác với nhau để dẫn đến lãnh đạo hiệu quả.</li>
+  <li>Social Judgment Skills bao gồm những gì? Tại sao đây là kỹ năng quan trọng trong bối cảnh lãnh đạo tổ chức hiện đại?</li>
+  <li>Phân tích điểm mạnh và hạn chế của Skills Approach. Làm thế nào một tổ chức có thể ứng dụng Skills Approach để thiết kế chương trình phát triển lãnh đạo hiệu quả?</li>
+</ol>
+
+<h3>5.3 Từ khóa & Thuật ngữ quan trọng</h3>
+
+<table>
+  <thead>
+    <tr><th>Thuật ngữ</th><th>Định nghĩa ngắn gọn</th><th>Nguồn</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Technical Skill</strong></td><td>Thành thạo trong lĩnh vực chuyên môn cụ thể</td><td>Katz (1955)</td></tr>
+    <tr><td><strong>Human Skill</strong></td><td>Khả năng làm việc hiệu quả với người khác và nhóm</td><td>Katz (1955)</td></tr>
+    <tr><td><strong>Conceptual Skill</strong></td><td>Khả năng tư duy chiến lược, nhìn bức tranh lớn</td><td>Katz (1955)</td></tr>
+    <tr><td><strong>Problem-Solving Skills</strong></td><td>Khả năng giải quyết vấn đề phức tạp, mơ hồ, quan trọng một cách sáng tạo</td><td>Mumford et al. (2000)</td></tr>
+    <tr><td><strong>Social Judgment Skills</strong></td><td>Khả năng hiểu người và hệ thống xã hội; thực thi thay đổi</td><td>Mumford et al. (2000)</td></tr>
+    <tr><td><strong>Knowledge</strong></td><td>Tập hợp thông tin có tổ chức tích lũy qua học tập và kinh nghiệm</td><td>Mumford et al. (2000)</td></tr>
+    <tr><td><strong>General Cognitive Ability</strong></td><td>Trí tuệ tổng quát/fluid intelligence</td><td>Mumford et al. (2000)</td></tr>
+    <tr><td><strong>Crystallized Cognitive Ability</strong></td><td>Kiến thức và kỹ năng tích lũy qua kinh nghiệm</td><td>Mumford et al. (2000)</td></tr>
+    <tr><td><strong>Perspective Taking</strong></td><td>Khả năng đặt mình vào vị trí và quan điểm của người khác</td><td>Mumford et al. (2000)</td></tr>
+    <tr><td><strong>Behavioral Flexibility</strong></td><td>Khả năng thay đổi cách tiếp cận khi cần thiết</td><td>Mumford et al. (2000)</td></tr>
+    <tr><td><strong>Career Experiences</strong></td><td>Kinh nghiệm nghề nghiệp tích lũy — tác động đến năng lực lãnh đạo</td><td>Mumford et al. (2000)</td></tr>
+    <tr><td><strong>Peter Principle</strong></td><td>Người được thăng chức đến mức độ không năng lực — hệ quả của việc không phát triển kỹ năng phù hợp</td><td>Laurence Peter (1969); liên hệ với Katz</td></tr>
+  </tbody>
+</table>
+
+<hr/>
+<p style="text-align:center; color:var(--muted); font-size:0.85rem;">GK5009 – Quản lý và Lãnh đạo | HK252 | Tài liệu học tập tổng hợp | Nguồn: Northouse (2021), 7th ed., Chapter 3; Katz (1955); Mumford et al. (2000)</p>
+
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-Means Clustering | MLA HK252</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']], processEscapes: true },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:0;left:0;width:258px;height:100vh;background:#0a1f10;overflow-y:auto;z-index:100;flex-shrink:0}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:#2d6a4f;border-radius:2px}
+.sb-title{padding:1.25rem 1rem .75rem;border-bottom:1px solid #1a3a20}
+.sb-title h1{color:#86efac;font-size:.95rem;font-weight:700;line-height:1.4}
+.sb-title p{color:#6ee7b7;font-size:.7rem;margin-top:.2rem}
+.sb-group{padding:.6rem 1rem .15rem;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#4ade80}
+.sb-link{display:flex;align-items:center;gap:.45rem;padding:.35rem 1rem;color:#bbf7d0;font-size:.8rem;text-decoration:none;border-left:3px solid transparent;transition:all .15s}
+.sb-link:hover{background:rgba(74,222,128,.1);border-left-color:#4ade80;color:#fff}
+.sb-link i{width:14px;font-size:.7rem;color:#4ade80;flex-shrink:0}
+
+/* MAIN */
+#main{margin-left:258px;min-height:100vh;padding:2rem 2.5rem;max-width:calc(100% - 258px)}
+
+/* CHAPTER HEADER */
+.ch-hdr{background:linear-gradient(135deg,#14532d,#16a34a);color:#fff;padding:1.75rem 2rem;border-radius:10px;margin-bottom:1.75rem;box-shadow:0 4px 12px rgba(20,83,45,.3)}
+.ch-hdr .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#86efac;font-weight:700}
+.ch-hdr h2{font-size:1.75rem;font-weight:800;margin:.2rem 0 .4rem}
+.ch-hdr p{color:#d1fae5;font-size:.9rem}
+.ch-hdr-blue{background:linear-gradient(135deg,#1e3a5f,#1e4d8c)}
+.ch-hdr-blue .lbl{color:#93c5fd}
+.ch-hdr-blue p{color:#bfdbfe}
+
+/* SECTION TITLES */
+.s-title{font-size:1.2rem;font-weight:700;color:#14532d;border-left:4px solid #16a34a;padding-left:.7rem;margin:1.75rem 0 .9rem}
+.ss-title{font-size:1rem;font-weight:600;color:#166534;margin:1.25rem 0 .6rem}
+
+/* ALERTS */
+.alert{border-radius:0 8px 8px 0;padding:.85rem 1.1rem;margin:.85rem 0;font-size:.875rem}
+.alert-title{font-weight:700;margin-bottom:.3rem;font-size:.85rem}
+.al-blue{background:#eff6ff;border-left:4px solid #3b82f6}
+.al-blue .alert-title{color:#1d4ed8}
+.al-green{background:#f0fdf4;border-left:4px solid #22c55e}
+.al-green .alert-title{color:#15803d}
+.al-yellow{background:#fffbeb;border-left:4px solid #f59e0b}
+.al-yellow .alert-title{color:#b45309}
+.al-red{background:#fef2f2;border-left:4px solid #ef4444}
+.al-red .alert-title{color:#b91c1c}
+.al-purple{background:#faf5ff;border-left:4px solid #9333ea}
+.al-purple .alert-title{color:#7e22ce}
+
+/* FORMULA */
+.flabel{display:inline-block;background:#16a34a;color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .65rem;border-radius:6px 6px 0 0;margin-bottom:-1px}
+.fbox{background:#f8fafc;border:1px solid #cbd5e1;border-top:3px solid #16a34a;border-radius:0 8px 8px 8px;padding:1.1rem 1.5rem;margin:.25rem 0 .85rem;overflow-x:auto;text-align:center}
+.fbox.no-top-radius{border-radius:8px}
+
+/* DETAILS */
+details{border:1px solid #e2e8f0;border-radius:8px;margin:.65rem 0;overflow:hidden}
+details>summary{padding:.65rem 1.1rem;cursor:pointer;font-weight:600;font-size:.875rem;background:#f1f5f9;list-style:none;display:flex;align-items:center;gap:.45rem;user-select:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:'▶';font-size:.65rem;color:#64748b;transition:transform .2s;margin-right:.1rem}
+details[open]>summary::before{transform:rotate(90deg)}
+details[open]>summary{background:#e2e8f0}
+.dc{padding:1.1rem}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.85rem}
+.tbl th{background:#14532d;color:#fff;padding:.5rem .85rem;text-align:left}
+.tbl td{padding:.5rem .85rem;border:1px solid #e2e8f0}
+.tbl tr:nth-child(even){background:#f0fdf4}
+
+/* STEPS */
+.step{display:flex;gap:.85rem;margin:.6rem 0}
+.step-n{background:#16a34a;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.15rem}
+.step-c{flex:1;font-size:.875rem;line-height:1.6}
+
+/* QUIZ */
+.qcard{background:#fff;border:1px solid #e2e8f0;border-radius:8px;margin:1.1rem 0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.qhdr{background:#1e3a5f;color:#fff;padding:.55rem 1.1rem;font-size:.82rem;font-weight:600}
+.qbody{padding:1.1rem}
+.qq{font-size:.875rem;line-height:1.6;margin-bottom:.7rem;font-weight:500}
+.qopt{padding:.35rem .75rem;border-radius:5px;margin:.2rem 0;font-size:.855rem;line-height:1.5}
+.qok{background:#dcfce7;color:#14532d;font-weight:700;border-left:3px solid #16a34a}
+.qwrong{color:#64748b}
+.qexp{background:#fffbeb;border-left:3px solid #f59e0b;padding:.7rem 1rem;border-radius:0 6px 6px 0;margin-top:.7rem;font-size:.84rem;line-height:1.6}
+
+/* CODE */
+.code{background:#1e293b;color:#e2e8f0;padding:.9rem 1.1rem;border-radius:8px;font-family:'Courier New',monospace;font-size:.82rem;margin:.75rem 0;overflow-x:auto;line-height:1.7}
+.kw{color:#7dd3fc}
+.cmt{color:#64748b}
+
+.divider{border:none;border-top:1px solid #e2e8f0;margin:2.25rem 0}
+#back-top{position:fixed;bottom:1.5rem;right:1.5rem;background:#14532d;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.2);font-size:.85rem}
+#back-top:hover{background:#15803d}
+
+p{font-size:.9rem;line-height:1.65;margin:.5rem 0}
+li{font-size:.875rem;line-height:1.65}
+ul,ol{padding-left:1.4rem;margin:.4rem 0}
+strong{color:#1e293b}
+
+@media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+</style>
+</head>
+
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sb-title">
+    <h1><i class="fas fa-brain"></i> Học Máy &amp; Ứng Dụng</h1>
+    <p>Ôn thi Cuối Kỳ — HK252 | CO5175</p>
+  </div>
+  <div class="sb-group">Trang chủ</div>
+  <a href="index.html" class="sb-link"><i class="fas fa-home"></i>Tổng quan các chương</a>
+  <div class="sb-group">Phân loại có giám sát</div>
+  <a href="knn.html" class="sb-link"><i class="fas fa-map-marker-alt"></i>Ch.3 — K-Nearest Neighbors</a>
+  <a href="bayes.html" class="sb-link"><i class="fas fa-calculator"></i>Ch.4 — Naive Bayes</a>
+  <a href="dtree.html" class="sb-link"><i class="fas fa-tree"></i>Ch.5 — Decision Trees</a>
+  <a href="nn.html" class="sb-link"><i class="fas fa-network-wired"></i>Ch.7 — Neural Networks</a>
+  <a href="svm.html" class="sb-link"><i class="fas fa-compress-arrows-alt"></i>Ch.8 — Support Vector Machines</a>
+  <a href="ensemble.html" class="sb-link"><i class="fas fa-layer-group"></i>Ch.9 — Ensemble Methods</a>
+  <a href="deep.html" class="sb-link"><i class="fas fa-microchip"></i>Ch.12 — Deep Learning</a>
+  <div class="sb-group">Chuyên đề ôn thi</div>
+  <a href="hmm.html" class="sb-link"><i class="fas fa-random"></i>Hidden Markov Models</a>
+  <a href="kmeans.html" class="sb-link" style="background:rgba(74,222,128,.15);border-left-color:#4ade80;color:#fff"><i class="fas fa-object-group"></i>K-Means Clustering</a>
+  <a href="logreg.html" class="sb-link"><i class="fas fa-chart-line"></i>Logistic Regression</a>
+  <div class="sb-group">Thi thử</div>
+  <a href="mock.html" class="sb-link"><i class="fas fa-file-alt"></i>Đề Thi Thử 2026</a>
+  <a href="exam2025.html" class="sb-link"><i class="fas fa-graduation-cap"></i>Đề CK Thật 2025</a>
+</nav>
+
+<main id="main">
+
+<!-- ========== K-MEANS ========== -->
+<section id="kmeans">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-star"></i> Chuyên đề trọng tâm #2</div>
+  <h2>Phân cụm K-Means</h2>
+  <p>Thuật toán phân cụm không giám sát tối thiểu hóa WCSS.</p>
+</div>
+
+<div class="s-title">1. Hàm mục tiêu WCSS</div>
+<div class="fbox no-top-radius">\[ J(C,\mu) = \sum_{k=1}^{K}\sum_{x\in C_k}\|x-\mu_k\|^2 \]</div>
+
+<div class="alert al-yellow">
+  <div class="alert-title">Câu 14 — Tính chất tối ưu hóa của WCSS</div>
+  <p><strong>C (đúng):</strong> Hàm WCSS là <strong>non-convex</strong>. Không gian phân gán cụm C là rời rạc tổ hợp → tồn tại nhiều cực tiểu cục bộ. K-Means chỉ đảm bảo tìm cực tiểu cục bộ.</p>
+</div>
+
+<div class="s-title">2. Thuật toán Lloyd (K-Means)</div>
+<div class="step"><div class="step-n">1</div><div class="step-c"><strong>Khởi tạo:</strong> Chọn ngẫu nhiên K tâm \(\mu_1,\ldots,\mu_K\).</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c"><strong>Assignment:</strong> \(C_k = \{x : \|x-\mu_k\|\leq\|x-\mu_j\|,\;\forall j\}\)</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c"><strong>Update:</strong> \(\mu_k = \frac{1}{|C_k|}\sum_{x\in C_k} x\) (Mean với L2-norm)</div></div>
+<div class="step"><div class="step-n">4</div><div class="step-c"><strong>Lặp</strong> bước 2–3 đến khi không có điểm nào thay đổi cụm.</div></div>
+
+<div class="alert al-green">
+  <div class="alert-title">Câu 16 — Đảm bảo hội tụ</div>
+  <p><strong>A (đúng):</strong> Số tổ hợp phân gán N điểm vào K cụm là <strong>hữu hạn</strong> (≤ K^N). Mỗi bước WCSS không tăng. Tập hữu hạn + monotone non-increasing → hội tụ.</p>
+</div>
+
+<div class="s-title">3. K-Medians — Biến thể với L1-norm</div>
+<div class="alert al-yellow">
+  <div class="alert-title">Câu 15 — Đổi sang Manhattan distance</div>
+  <p>Tối thiểu hóa \(\sum|x-c|\) (L1) → nghiệm tối ưu là <strong>Median</strong> (không phải Mean). Tối thiểu hóa \(\sum(x-c)^2\) (L2) → nghiệm là <strong>Mean</strong>.</p>
+  <p>→ Khi dùng Manhattan distance, bước Update phải đổi sang Median. <strong>Đáp án B</strong></p>
+</div>
+
+<div class="s-title">4. Chứng minh Hội tụ của Lloyd's Algorithm</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Hai điều kiện đảm bảo hội tụ hữu hạn</summary>
+<div class="dc">
+<p><strong>Điều kiện 1: WCSS không tăng tại mỗi bước</strong></p>
+<div class="step"><div class="step-n">A</div><div class="step-c"><strong>Assignment step:</strong> Mỗi điểm gán vào cụm có tâm gần nhất → \(\|x-\mu_{c_{\text{new}}}\| \leq \|x-\mu_{c_{\text{old}}}\|\) → WCSS không tăng.</div></div>
+<div class="step"><div class="step-n">B</div><div class="step-c"><strong>Update step:</strong> Mean là nghiệm tối ưu của \(\min_\mu \sum_{x\in C_k}\|x-\mu\|^2\) → thay tâm cũ bằng Mean luôn giảm hoặc giữ WCSS trong cluster đó.</div></div>
+<p style="margin:.7rem 0"><strong>Điều kiện 2: Số cấu hình phân gán là hữu hạn</strong></p>
+<p>Có tối đa \(K^N\) cách phân gán N điểm vào K cụm (thực tế ít hơn nhiều). Kết hợp với WCSS non-increasing → không thể lặp vô hạn → thuật toán dừng.</p>
+<div class="alert al-yellow" style="margin-top:.5rem">
+<div class="alert-title">Lưu ý quan trọng</div>
+Hội tụ đến <strong>cực tiểu CỤC BỘ</strong>, không phải toàn cục. Trong thực tế: chạy K-Means nhiều lần với init khác nhau (hoặc dùng K-Means++), chọn kết quả có WCSS nhỏ nhất.
+</div>
+</div>
+</details>
+
+<div class="s-title">5. Tính Phi lồi (Non-convex) — Tại sao tồn tại Local Minima?</div>
+
+<div class="alert al-red">
+  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> WCSS phi lồi theo không gian phân gán C</div>
+  <ul>
+    <li>Với phân gán C cố định → WCSS là hàm lồi theo μ → có global optimum là Mean → giải được chính xác.</li>
+    <li>Với μ cố định → tìm phân gán tối ưu là bài toán tổ hợp rời rạc → không convex.</li>
+    <li>Kết hợp hai không gian (rời rạc + liên tục) → WCSS toàn cục phi lồi → nhiều local minima.</li>
+  </ul>
+</div>
+
+<details>
+<summary><i class="fas fa-lightbulb"></i> Ví dụ: Cùng data, init khác → local minima khác</summary>
+<div class="dc">
+<p>6 điểm: A(0,0), B(1,0), C(5,0), D(6,0), E(3,3), F(3,-3). K=2.</p>
+<table class="tbl" style="font-size:.82rem">
+<thead><tr><th>Khởi tạo</th><th>Cụm 1</th><th>Cụm 2</th><th>WCSS</th></tr></thead>
+<tbody>
+<tr><td>μ₁=(0,0), μ₂=(5,0)</td><td>{A,B}</td><td>{C,D,E,F}</td><td>Nhỏ (tốt)</td></tr>
+<tr><td>μ₁=(3,3), μ₂=(3,-3)</td><td>{A,B,E}</td><td>{C,D,F}</td><td>Lớn hơn (local min)</td></tr>
+</tbody>
+</table>
+<p>Cùng dữ liệu, init khác → hội tụ đến các cực tiểu cục bộ khác nhau!</p>
+</div>
+</details>
+
+<div class="s-title">6. Bằng chứng toán học: Tại sao L1 → Median, L2 → Mean?</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Chứng minh bằng đạo hàm (1 chiều)</summary>
+<div class="dc">
+<p><strong>L2-norm → Mean:</strong> Tối thiểu hóa \(f(\mu) = \sum_{x\in C_k}(x-\mu)^2\):</p>
+<div class="fbox no-top-radius">
+\[ \frac{df}{d\mu} = -2\sum_{x\in C_k}(x-\mu) = 0 \implies \mu = \frac{1}{|C_k|}\sum_{x\in C_k} x = \textbf{Mean} \]
+</div>
+<p><strong>L1-norm → Median:</strong> Tối thiểu hóa \(g(\mu) = \sum_{x\in C_k}|x-\mu|\):</p>
+<div class="fbox no-top-radius">
+\[ \frac{dg}{d\mu} = -\sum_{x\in C_k}\text{sgn}(x-\mu) = 0 \implies \#\{x > \mu\} = \#\{x < \mu\} \implies \mu = \textbf{Median} \]
+</div>
+<div class="alert al-green" style="margin-top:.5rem">
+<div class="alert-title">Trực quan</div>
+<strong>Mean</strong> cân bằng khoảng cách có hướng (signed distances). <strong>Median</strong> cân bằng số lượng điểm hai phía. Median robust với outliers hơn Mean — đặc tính hữu ích khi data có noise.
+</div>
+</div>
+</details>
+
+<div class="s-title">7. Ví dụ tính toán đầy đủ — Một vòng lặp K-Means</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-database"></i> 5 điểm, K=2</div>
+  <p>Điểm dữ liệu: A(1,2), B(2,1), C(7,8), D(8,7), E(5,5). Khởi tạo: μ₁=(1,2), μ₂=(8,7).</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Assignment Step — Gán mỗi điểm vào cụm gần nhất</summary>
+<div class="dc">
+<div class="fbox no-top-radius">
+\[ d(A,\mu_1)=\sqrt{(1-1)^2+(2-2)^2}=0, \quad d(A,\mu_2)=\sqrt{(1-8)^2+(2-7)^2}=\sqrt{49+25}=\sqrt{74}\approx 8.60 \Rightarrow \mathbf{C_1} \]
+\[ d(B,\mu_1)=\sqrt{(2-1)^2+(1-2)^2}=\sqrt{2}\approx 1.41, \quad d(B,\mu_2)=\sqrt{(2-8)^2+(1-7)^2}=\sqrt{72}\approx 8.49 \Rightarrow \mathbf{C_1} \]
+\[ d(C,\mu_1)=\sqrt{(7-1)^2+(8-2)^2}=\sqrt{72}\approx 8.49, \quad d(C,\mu_2)=\sqrt{(7-8)^2+(8-7)^2}=\sqrt{2}\approx 1.41 \Rightarrow \mathbf{C_2} \]
+\[ d(D,\mu_1)=\sqrt{(8-1)^2+(7-2)^2}=\sqrt{74}\approx 8.60, \quad d(D,\mu_2)=\sqrt{(8-8)^2+(7-7)^2}=0 \Rightarrow \mathbf{C_2} \]
+\[ d(E,\mu_1)=\sqrt{(5-1)^2+(5-2)^2}=\sqrt{25}=5, \quad d(E,\mu_2)=\sqrt{(5-8)^2+(5-7)^2}=\sqrt{13}\approx 3.61 \Rightarrow \mathbf{C_2} \]
+</div>
+<p><strong>Kết quả phân gán:</strong> C₁ = {A, B}, C₂ = {C, D, E}</p>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Update Step — Cập nhật tâm cụm</summary>
+<div class="dc">
+<div class="fbox no-top-radius">
+\[ \mu_1^{\text{new}} = \text{Mean}(A, B) = \left(\frac{1+2}{2}, \frac{2+1}{2}\right) = (1.5,\; 1.5) \]
+\[ \mu_2^{\text{new}} = \text{Mean}(C, D, E) = \left(\frac{7+8+5}{3}, \frac{8+7+5}{3}\right) = \left(\frac{20}{3}, \frac{20}{3}\right) \approx (6.67,\; 6.67) \]
+</div>
+
+<p><strong>Kiểm tra WCSS:</strong></p>
+<div class="fbox no-top-radius">
+\[ \text{WCSS}_{\text{trước}} = d^2(A,\mu_1)+d^2(B,\mu_1)+d^2(C,\mu_2)+d^2(D,\mu_2)+d^2(E,\mu_2) \]
+\[ = 0 + 2 + 2 + 0 + 13 = \mathbf{17} \]
+\[ \text{WCSS}_{\text{sau}} = d^2(A,(1.5,1.5))+d^2(B,(1.5,1.5))+d^2(C,(6.67,6.67))+d^2(D,(6.67,6.67))+d^2(E,(6.67,6.67)) \]
+\[ = 0.5+0.5+1.88+1.88+5.57 = \mathbf{10.33} \]
+</div>
+<div class="alert al-green" style="margin-top:.5rem">
+<div class="alert-title">WCSS giảm từ 17 → 10.33 ✓</div>
+Đây minh họa tính chất monotone non-increasing: mỗi vòng lặp WCSS không tăng. Tiếp tục vòng lặp thứ 2 với μ₁=(1.5,1.5), μ₂=(6.67,6.67) cho đến khi không có điểm nào đổi cụm.
+</div>
+</div>
+</details>
+
+<details>
+<summary><i class="fas fa-calculator"></i> K-Medians với L1-norm — Cùng dữ liệu</summary>
+<div class="dc">
+<p>Dùng Manhattan distance, Update step dùng Median thay Mean:</p>
+<div class="fbox no-top-radius">
+\[ \mu_1^{\text{Medians}} = \text{Median}_\text{dim1}(A,B), \text{Median}_\text{dim2}(A,B) \]
+\[ = \text{Median}(1,2), \text{Median}(2,1) = (1.5, 1.5) \]
+\[ \mu_2^{\text{Medians}} = \text{Median}(7,8,5), \text{Median}(8,7,5) = (7, 7) \neq (6.67, 6.67) \]
+</div>
+<p>Tâm cụm 2 khác: (7,7) vs (6.67,6.67). Median ít bị ảnh hưởng bởi outliers hơn Mean.</p>
+</div>
+</details>
+</section>
+
+
+</main>
+
+<a href="#" id="back-top" title="Về đầu trang"><i class="fas fa-arrow-up"></i></a>
+
+<script>
+mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+</script>
+</body>
+</html>

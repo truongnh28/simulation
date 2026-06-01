@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logistic Regression | MLA HK252</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']], processEscapes: true },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:0;left:0;width:258px;height:100vh;background:#0a1f10;overflow-y:auto;z-index:100;flex-shrink:0}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:#2d6a4f;border-radius:2px}
+.sb-title{padding:1.25rem 1rem .75rem;border-bottom:1px solid #1a3a20}
+.sb-title h1{color:#86efac;font-size:.95rem;font-weight:700;line-height:1.4}
+.sb-title p{color:#6ee7b7;font-size:.7rem;margin-top:.2rem}
+.sb-group{padding:.6rem 1rem .15rem;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#4ade80}
+.sb-link{display:flex;align-items:center;gap:.45rem;padding:.35rem 1rem;color:#bbf7d0;font-size:.8rem;text-decoration:none;border-left:3px solid transparent;transition:all .15s}
+.sb-link:hover{background:rgba(74,222,128,.1);border-left-color:#4ade80;color:#fff}
+.sb-link i{width:14px;font-size:.7rem;color:#4ade80;flex-shrink:0}
+
+/* MAIN */
+#main{margin-left:258px;min-height:100vh;padding:2rem 2.5rem;max-width:calc(100% - 258px)}
+
+/* CHAPTER HEADER */
+.ch-hdr{background:linear-gradient(135deg,#14532d,#16a34a);color:#fff;padding:1.75rem 2rem;border-radius:10px;margin-bottom:1.75rem;box-shadow:0 4px 12px rgba(20,83,45,.3)}
+.ch-hdr .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#86efac;font-weight:700}
+.ch-hdr h2{font-size:1.75rem;font-weight:800;margin:.2rem 0 .4rem}
+.ch-hdr p{color:#d1fae5;font-size:.9rem}
+.ch-hdr-blue{background:linear-gradient(135deg,#1e3a5f,#1e4d8c)}
+.ch-hdr-blue .lbl{color:#93c5fd}
+.ch-hdr-blue p{color:#bfdbfe}
+
+/* SECTION TITLES */
+.s-title{font-size:1.2rem;font-weight:700;color:#14532d;border-left:4px solid #16a34a;padding-left:.7rem;margin:1.75rem 0 .9rem}
+.ss-title{font-size:1rem;font-weight:600;color:#166534;margin:1.25rem 0 .6rem}
+
+/* ALERTS */
+.alert{border-radius:0 8px 8px 0;padding:.85rem 1.1rem;margin:.85rem 0;font-size:.875rem}
+.alert-title{font-weight:700;margin-bottom:.3rem;font-size:.85rem}
+.al-blue{background:#eff6ff;border-left:4px solid #3b82f6}
+.al-blue .alert-title{color:#1d4ed8}
+.al-green{background:#f0fdf4;border-left:4px solid #22c55e}
+.al-green .alert-title{color:#15803d}
+.al-yellow{background:#fffbeb;border-left:4px solid #f59e0b}
+.al-yellow .alert-title{color:#b45309}
+.al-red{background:#fef2f2;border-left:4px solid #ef4444}
+.al-red .alert-title{color:#b91c1c}
+.al-purple{background:#faf5ff;border-left:4px solid #9333ea}
+.al-purple .alert-title{color:#7e22ce}
+
+/* FORMULA */
+.flabel{display:inline-block;background:#16a34a;color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .65rem;border-radius:6px 6px 0 0;margin-bottom:-1px}
+.fbox{background:#f8fafc;border:1px solid #cbd5e1;border-top:3px solid #16a34a;border-radius:0 8px 8px 8px;padding:1.1rem 1.5rem;margin:.25rem 0 .85rem;overflow-x:auto;text-align:center}
+.fbox.no-top-radius{border-radius:8px}
+
+/* DETAILS */
+details{border:1px solid #e2e8f0;border-radius:8px;margin:.65rem 0;overflow:hidden}
+details>summary{padding:.65rem 1.1rem;cursor:pointer;font-weight:600;font-size:.875rem;background:#f1f5f9;list-style:none;display:flex;align-items:center;gap:.45rem;user-select:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:'▶';font-size:.65rem;color:#64748b;transition:transform .2s;margin-right:.1rem}
+details[open]>summary::before{transform:rotate(90deg)}
+details[open]>summary{background:#e2e8f0}
+.dc{padding:1.1rem}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.85rem}
+.tbl th{background:#14532d;color:#fff;padding:.5rem .85rem;text-align:left}
+.tbl td{padding:.5rem .85rem;border:1px solid #e2e8f0}
+.tbl tr:nth-child(even){background:#f0fdf4}
+
+/* STEPS */
+.step{display:flex;gap:.85rem;margin:.6rem 0}
+.step-n{background:#16a34a;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.15rem}
+.step-c{flex:1;font-size:.875rem;line-height:1.6}
+
+/* QUIZ */
+.qcard{background:#fff;border:1px solid #e2e8f0;border-radius:8px;margin:1.1rem 0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.qhdr{background:#1e3a5f;color:#fff;padding:.55rem 1.1rem;font-size:.82rem;font-weight:600}
+.qbody{padding:1.1rem}
+.qq{font-size:.875rem;line-height:1.6;margin-bottom:.7rem;font-weight:500}
+.qopt{padding:.35rem .75rem;border-radius:5px;margin:.2rem 0;font-size:.855rem;line-height:1.5}
+.qok{background:#dcfce7;color:#14532d;font-weight:700;border-left:3px solid #16a34a}
+.qwrong{color:#64748b}
+.qexp{background:#fffbeb;border-left:3px solid #f59e0b;padding:.7rem 1rem;border-radius:0 6px 6px 0;margin-top:.7rem;font-size:.84rem;line-height:1.6}
+
+/* CODE */
+.code{background:#1e293b;color:#e2e8f0;padding:.9rem 1.1rem;border-radius:8px;font-family:'Courier New',monospace;font-size:.82rem;margin:.75rem 0;overflow-x:auto;line-height:1.7}
+.kw{color:#7dd3fc}
+.cmt{color:#64748b}
+
+.divider{border:none;border-top:1px solid #e2e8f0;margin:2.25rem 0}
+#back-top{position:fixed;bottom:1.5rem;right:1.5rem;background:#14532d;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.2);font-size:.85rem}
+#back-top:hover{background:#15803d}
+
+p{font-size:.9rem;line-height:1.65;margin:.5rem 0}
+li{font-size:.875rem;line-height:1.65}
+ul,ol{padding-left:1.4rem;margin:.4rem 0}
+strong{color:#1e293b}
+
+@media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+</style>
+</head>
+
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sb-title">
+    <h1><i class="fas fa-brain"></i> Học Máy &amp; Ứng Dụng</h1>
+    <p>Ôn thi Cuối Kỳ — HK252 | CO5175</p>
+  </div>
+  <div class="sb-group">Trang chủ</div>
+  <a href="index.html" class="sb-link"><i class="fas fa-home"></i>Tổng quan các chương</a>
+  <div class="sb-group">Phân loại có giám sát</div>
+  <a href="knn.html" class="sb-link"><i class="fas fa-map-marker-alt"></i>Ch.3 — K-Nearest Neighbors</a>
+  <a href="bayes.html" class="sb-link"><i class="fas fa-calculator"></i>Ch.4 — Naive Bayes</a>
+  <a href="dtree.html" class="sb-link"><i class="fas fa-tree"></i>Ch.5 — Decision Trees</a>
+  <a href="nn.html" class="sb-link"><i class="fas fa-network-wired"></i>Ch.7 — Neural Networks</a>
+  <a href="svm.html" class="sb-link"><i class="fas fa-compress-arrows-alt"></i>Ch.8 — Support Vector Machines</a>
+  <a href="ensemble.html" class="sb-link"><i class="fas fa-layer-group"></i>Ch.9 — Ensemble Methods</a>
+  <a href="deep.html" class="sb-link"><i class="fas fa-microchip"></i>Ch.12 — Deep Learning</a>
+  <div class="sb-group">Chuyên đề ôn thi</div>
+  <a href="hmm.html" class="sb-link"><i class="fas fa-random"></i>Hidden Markov Models</a>
+  <a href="kmeans.html" class="sb-link"><i class="fas fa-object-group"></i>K-Means Clustering</a>
+  <a href="logreg.html" class="sb-link" style="background:rgba(74,222,128,.15);border-left-color:#4ade80;color:#fff"><i class="fas fa-chart-line"></i>Logistic Regression</a>
+  <div class="sb-group">Thi thử</div>
+  <a href="mock.html" class="sb-link"><i class="fas fa-file-alt"></i>Đề Thi Thử 2026</a>
+  <a href="exam2025.html" class="sb-link"><i class="fas fa-graduation-cap"></i>Đề CK Thật 2025</a>
+</nav>
+
+<main id="main">
+
+<!-- ========== LOGISTIC REGRESSION ========== -->
+<section id="logreg">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-star"></i> Chuyên đề trọng tâm #3</div>
+  <h2>Hồi quy Logistic &amp; Mạng Nơ-ron cơ bản</h2>
+  <p>Phân loại xác suất — nền tảng cho nhiều câu hỏi về threshold, loss functions, gradient.</p>
+</div>
+
+<div class="s-title">1. Logit &amp; Odds Ratio</div>
+<div class="fbox no-top-radius">
+\[ z = \mathbf{w}\cdot\mathbf{x}+b = \log\frac{P(y=1|\mathbf{x})}{P(y=0|\mathbf{x})} = \text{log-odds} \]
+\[ \text{Odds Ratio} = e^z, \quad \hat{y} = \sigma(z) = \frac{1}{1+e^{-z}} \]
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Câu 8 — Tính Odds Ratio</summary>
+<div class="dc">
+<p>Logit: \(z = \ln(3)\cdot X_1 - \ln(2)\cdot X_2\). Input \(X=[2,1]^\top\):</p>
+<div class="fbox no-top-radius">
+\[ z = \ln(3)\times 2 - \ln(2)\times 1 = 2\ln 3 - \ln 2 = \ln 9 - \ln 2 = \ln(4.5) \]
+\[ \text{Odds Ratio} = e^{\ln(4.5)} = \mathbf{4.5} \]
+</div>
+<p>→ Đáp án: <strong>B. 4.5</strong></p>
+</div>
+</details>
+
+<div class="s-title">2. Decision Threshold, Precision &amp; Recall</div>
+<table class="tbl">
+<thead><tr><th>Threshold tăng</th><th>Precision</th><th>Recall</th><th>F1-Score</th></tr></thead>
+<tbody>
+<tr><td>0.5 → 0.85</td><td>Tăng (ít FP)</td><td>Giảm (nhiều FN)</td><td>Không đảm bảo tăng</td></tr>
+</tbody>
+</table>
+<div class="alert al-yellow">
+  <div class="alert-title">Câu 9 → C: Recall giảm, Precision thường tăng</div>
+</div>
+
+<div class="s-title">3. Bảng so sánh MSE vs Cross-Entropy</div>
+<table class="tbl">
+<thead><tr><th>Tiêu chí</th><th>MSE</th><th>Cross-Entropy</th></tr></thead>
+<tbody>
+<tr><td>Công thức</td><td>\(\frac{1}{2}(\hat{y}-y)^2\)</td><td>\(-y\log\hat{y}-(1-y)\log(1-\hat{y})\)</td></tr>
+<tr><td>\(\partial L/\partial z\) với sigmoid</td><td>\((\hat{y}-y)\hat{y}(1-\hat{y})\)</td><td>\(\hat{y}-y\)</td></tr>
+<tr><td>Gradient Vanishing?</td><td>Có — khi \(\hat{y}\to 0\) hoặc 1</td><td>Không</td></tr>
+<tr><td>Phù hợp</td><td>Regression</td><td>Classification</td></tr>
+</tbody>
+</table>
+
+<div class="s-title">4. L2 Regularization</div>
+<div class="fbox no-top-radius">\[ L_{total} = L_{CE} + \frac{\lambda}{2}\|\mathbf{w}\|^2 \]</div>
+<p>Thu nhỏ trọng số về 0, kiểm soát độ phức tạp mô hình, giảm overfitting.</p>
+
+<div class="s-title">5. Chứng minh Gradient Cross-Entropy — Tại sao sạch hơn MSE?</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Đạo hàm Cross-Entropy theo logit z (bước từng bước)</summary>
+<div class="dc">
+<p>Loss: \(L_{CE} = -y\log\hat{y} - (1-y)\log(1-\hat{y})\), với \(\hat{y}=\sigma(z)\), \(\sigma'(z)=\hat{y}(1-\hat{y})\).</p>
+<div class="fbox no-top-radius">
+\[ \frac{\partial L_{CE}}{\partial \hat{y}} = -\frac{y}{\hat{y}} + \frac{1-y}{1-\hat{y}} \]
+\[ \frac{\partial L_{CE}}{\partial z} = \frac{\partial L_{CE}}{\partial \hat{y}}\cdot\frac{\partial \hat{y}}{\partial z} = \left(-\frac{y}{\hat{y}}+\frac{1-y}{1-\hat{y}}\right)\cdot\hat{y}(1-\hat{y}) \]
+\[ = -y(1-\hat{y}) + (1-y)\hat{y} = \hat{y} - y \]
+</div>
+<div class="alert al-green" style="margin-top:.5rem">
+<div class="alert-title">Kết quả: ∂L_CE/∂z = ŷ − y (chỉ là lỗi dự đoán!)</div>
+Thừa số sigmoid \(\hat{y}(1-\hat{y})\) từ chain rule <strong>triệt tiêu hoàn toàn</strong> với \(\frac{1}{\hat{y}(1-\hat{y})}\) từ đạo hàm CE → gradient không vanish. Mô hình học đều nhau bất kể output gần 0 hay 1.
+</div>
+</div>
+</details>
+
+<div class="s-title">6. Chứng minh MSE + Sigmoid → Gradient Vanishing</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Đạo hàm MSE + Sigmoid — Nguyên nhân triệt tiêu</summary>
+<div class="dc">
+<p>Loss: \(L_{MSE}=\frac{1}{2}(\hat{y}-y)^2\), \(\hat{y}=\sigma(z)\):</p>
+<div class="fbox no-top-radius">
+\[ \frac{\partial L_{MSE}}{\partial z} = (\hat{y}-y)\cdot\underbrace{\hat{y}(1-\hat{y})}_{\text{đạo hàm sigmoid}} \]
+</div>
+<table class="tbl" style="font-size:.83rem">
+<thead><tr><th>Tình huống</th><th>ŷ</th><th>ŷ(1−ŷ)</th><th>Gradient ∂L/∂z</th></tr></thead>
+<tbody>
+<tr><td>Chưa chắc chắn</td><td>0.5</td><td>0.25 (max)</td><td>Lớn — học nhanh</td></tr>
+<tr><td>Đúng, khá chắc (y=1, ŷ=0.9)</td><td>0.9</td><td>0.09</td><td>Nhỏ — học chậm đi (OK)</td></tr>
+<tr><td><strong>Rất sai</strong> (y=0, ŷ=0.99)</td><td>0.99</td><td>0.0099 ≈ 0</td><td><strong>Vanish! — gần như không học</strong></td></tr>
+<tr><td><strong>Rất sai</strong> (y=1, ŷ=0.01)</td><td>0.01</td><td>0.0099 ≈ 0</td><td><strong>Vanish! — gần như không học</strong></td></tr>
+</tbody>
+</table>
+<div class="alert al-red" style="margin-top:.5rem">
+<div class="alert-title">Nghịch lý: Sai nhiều nhất → học ít nhất</div>
+Khi mô hình dự đoán cực kỳ sai (ŷ gần 0 hoặc 1 nhưng y ngược lại), sigmoid đang bão hòa → đạo hàm ≈ 0 → trọng số gần như không cập nhật → học rất chậm. Cross-Entropy không có vấn đề này vì thừa số sigmoid bị triệt tiêu trong công thức đạo hàm.
+</div>
+</div>
+</details>
+
+<div class="s-title">7. Decision Threshold — Trade-off Precision / Recall / F1 chi tiết</div>
+
+<div class="flabel">F1-Score</div>
+<div class="fbox">
+\[ F1 = \frac{2\cdot\text{Precision}\cdot\text{Recall}}{\text{Precision}+\text{Recall}} = \frac{2\text{TP}}{2\text{TP}+\text{FP}+\text{FN}} \]
+</div>
+
+<table class="tbl">
+<thead><tr><th>Threshold θ</th><th>Predict + khi</th><th>FP</th><th>FN</th><th>Precision</th><th>Recall</th></tr></thead>
+<tbody>
+<tr><td>θ = 0 (predict all +)</td><td>Luôn dự đoán Positive</td><td>Rất cao</td><td>0</td><td>= P(+) base rate</td><td>1.0</td></tr>
+<tr><td>θ = 0.5 (mặc định)</td><td>ŷ ≥ 0.5</td><td>Vừa</td><td>Vừa</td><td>Trung bình</td><td>Trung bình</td></tr>
+<tr><td>θ = 0.9 (chặt)</td><td>ŷ ≥ 0.9</td><td>Rất ít</td><td>Nhiều</td><td>Cao</td><td>Thấp</td></tr>
+<tr><td>θ = 1 (predict all -)</td><td>Không bao giờ +</td><td>0</td><td>Tất cả actual +</td><td>Undefined</td><td>0.0</td></tr>
+</tbody>
+</table>
+
+<div class="alert al-yellow">
+  <div class="alert-title"><i class="fas fa-lightbulb"></i> Khi nào dùng threshold thấp vs cao?</div>
+  <ul>
+    <li><strong>Recall ưu tiên (threshold thấp):</strong> Phát hiện ung thư, phát hiện gian lận — không bỏ sót ca bệnh dù có false alarm.</li>
+    <li><strong>Precision ưu tiên (threshold cao):</strong> Spam filter — tránh block email quan trọng, OK nếu spam lọt qua đôi chút.</li>
+    <li><strong>F1-Score:</strong> Khi cần cân bằng — không ưu tiên Precision hay Recall. Là mean điều hòa của hai độ đo.</li>
+  </ul>
+</div>
+
+<div class="s-title">8. L2 Regularization — Ý nghĩa Weight Decay và Điều chỉnh λ</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Gradient Descent với L2 — Weight Decay step</summary>
+<div class="dc">
+<p>Mục tiêu: \(L_{total} = L_{CE} + \frac{\lambda}{2}\|\mathbf{w}\|^2\). Gradient:</p>
+<div class="fbox no-top-radius">
+\[ \frac{\partial L_{total}}{\partial w_j} = \frac{\partial L_{CE}}{\partial w_j} + \lambda w_j \]
+\[ w_j \leftarrow w_j - \eta\!\left(\frac{\partial L_{CE}}{\partial w_j}+\lambda w_j\right) = \underbrace{(1-\eta\lambda)}_{\text{decay factor}} w_j - \eta\frac{\partial L_{CE}}{\partial w_j} \]
+</div>
+<p>Hệ số \((1-\eta\lambda) < 1\) → trọng số bị "thu nhỏ" (decay) tại mỗi bước ngay cả khi loss gradient = 0 → trọng số lớn bị phạt mạnh → mô hình đơn giản hơn.</p>
+<table class="tbl" style="margin-top:.6rem">
+<thead><tr><th>λ</th><th>Ảnh hưởng trọng số</th><th>Hiện tượng</th></tr></thead>
+<tbody>
+<tr><td>λ = 0</td><td>Không decay, w tự do</td><td>Dễ overfit</td></tr>
+<tr><td>λ = 0.001</td><td>Decay nhẹ, kiểm soát vừa phải</td><td>Cân bằng tốt</td></tr>
+<tr><td>λ = 100</td><td>Decay mạnh, hầu hết w → 0</td><td>Underfit — mô hình gần linear trivial</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<div class="s-title">9. Ý nghĩa từng trọng số — Odds Ratio theo từng đặc trưng</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-lightbulb"></i> Mỗi trọng số w_j là log(Odds Ratio) của đặc trưng x_j</div>
+  <div class="fbox no-top-radius">
+  \[ z = w_1 x_1 + w_2 x_2 + \cdots + w_D x_D + b \]
+  \[ \text{Khi } x_j \text{ tăng 1 đơn vị} \Rightarrow z \text{ tăng } w_j \Rightarrow \text{Odds nhân thêm } e^{w_j} \]
+  \[ \boxed{e^{w_j} = \text{Odds Ratio cho feature } x_j \text{ (per unit increase)}} \]
+  </div>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Ví dụ: Giải thích trọng số mô hình CustomerChurn</summary>
+<div class="dc">
+<p>Giả sử mô hình Logistic Regression học được:</p>
+<div class="fbox no-top-radius">
+\[ z = 1.5 \cdot X_1(\text{SupportTickets}) - 0.08 \cdot X_2(\text{ServiceUsage}) + 0.3 \cdot X_3(\text{Discount}) - 2.0 \]
+</div>
+<table class="tbl" style="font-size:.83rem">
+<thead><tr><th>Feature</th><th>w_j</th><th>e^{w_j} = OR</th><th>Diễn giải</th></tr></thead>
+<tbody>
+<tr><td>X1 SupportTickets</td><td>+1.5</td><td>e^1.5 ≈ 4.48</td><td>Mỗi ticket thêm → odds churn tăng 4.48 lần</td></tr>
+<tr><td>X2 ServiceUsage</td><td>-0.08</td><td>e^{-0.08} ≈ 0.923</td><td>Mỗi đơn vị dùng thêm → odds churn giảm 7.7%</td></tr>
+<tr><td>X3 DiscountApplied</td><td>+0.3</td><td>e^{0.3} ≈ 1.35</td><td>Có discount → odds churn tăng 35%</td></tr>
+<tr><td>Intercept b</td><td>-2.0</td><td>Base odds = e^{-2.0} ≈ 0.135</td><td>Khi X1=X2=X3=0, odds churn ≈ 13.5%</td></tr>
+</tbody>
+</table>
+<div class="alert al-green" style="margin-top:.5rem">
+<div class="alert-title">Quy tắc dấu và độ lớn</div>
+<ul>
+<li><strong>w_j &gt; 0:</strong> e^{w_j} &gt; 1 → feature dương tính với lớp 1 (tăng odds)</li>
+<li><strong>w_j &lt; 0:</strong> e^{w_j} &lt; 1 → feature âm tính với lớp 1 (giảm odds)</li>
+<li><strong>|w_j| lớn:</strong> Feature có ảnh hưởng mạnh. L2-reg kéo các w_j về 0 → giảm OR cực đoan</li>
+</ul>
+</div>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Tính toán prediction đầy đủ từ x đến class</summary>
+<div class="dc">
+<p>Dự đoán cho TS01: X1=4, X2=12, X3=0 (dùng mô hình trên):</p>
+<div class="fbox no-top-radius">
+\[ z = 1.5\times 4 + (-0.08)\times 12 + 0.3\times 0 + (-2.0) = 6.0 - 0.96 + 0 - 2.0 = 3.04 \]
+\[ \hat{y} = \sigma(z) = \frac{1}{1+e^{-3.04}} = \frac{1}{1+0.0477} \approx \mathbf{0.954} \]
+\[ \text{Odds} = e^{3.04} \approx 20.9 \quad\Rightarrow\quad \frac{P(\text{Churn})}{P(\text{No Churn})} = 20.9:1 \]
+\[ \text{Threshold } \theta=0.5: \hat{y}=0.954>0.5 \Rightarrow \textbf{Predict Churn (Yes)} \checkmark \]
+</div>
+<table class="tbl" style="font-size:.83rem;margin-top:.5rem">
+<thead><tr><th>Bước</th><th>Công thức</th><th>Kết quả</th></tr></thead>
+<tbody>
+<tr><td>Tính logit z</td><td>\(z = \mathbf{w}\cdot\mathbf{x}+b\)</td><td>3.04</td></tr>
+<tr><td>Tính odds</td><td>\(e^z\)</td><td>20.9</td></tr>
+<tr><td>Tính probability</td><td>\(\sigma(z) = \frac{e^z}{1+e^z}\)</td><td>0.954</td></tr>
+<tr><td>So sánh threshold</td><td>\(\hat{y} \geq \theta = 0.5\)</td><td>Yes → Churn</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+</section>
+
+
+</main>
+
+<a href="#" id="back-top" title="Về đầu trang"><i class="fas fa-arrow-up"></i></a>
+
+<script>
+mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+</script>
+</body>
+</html>

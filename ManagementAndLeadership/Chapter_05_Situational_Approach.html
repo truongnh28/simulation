@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GK5009 – Chương 5: Tiếp cận Tình huống (Situational Approach)</title>
+  <style>
+    :root {
+      --primary: #1a3c6e;
+      --secondary: #2e6da4;
+      --accent: #e8a020;
+      --light: #f4f7fb;
+      --text: #1c1c1c;
+      --muted: #5a6a7a;
+      --border: #d0daea;
+      --green: #1a6e3c;
+      --red: #8b1a1a;
+      --s1: #c0392b;
+      --s2: #d68910;
+      --s3: #1a6e3c;
+      --s4: #1a3c6e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 16px; line-height: 1.8;
+      color: var(--text); background: #fff;
+      max-width: 1100px; margin: 0 auto; padding: 40px 30px;
+    }
+    h1 { font-size: 2.2rem; color: var(--primary); border-bottom: 4px solid var(--accent); padding-bottom: 12px; margin-bottom: 8px; }
+    h2 { font-size: 1.6rem; color: var(--primary); margin-top: 48px; margin-bottom: 16px; border-left: 6px solid var(--accent); padding-left: 14px; }
+    h3 { font-size: 1.25rem; color: var(--secondary); margin-top: 32px; margin-bottom: 12px; }
+    h4 { font-size: 1.05rem; color: var(--primary); margin-top: 20px; margin-bottom: 8px; font-style: italic; }
+    p { margin-bottom: 14px; }
+    ul, ol { margin: 10px 0 14px 28px; } li { margin-bottom: 7px; }
+    .term { font-weight: bold; color: var(--primary); }
+    .definition { background: var(--light); border-left: 4px solid var(--secondary); padding: 12px 16px; margin: 14px 0; border-radius: 4px; }
+    .callout { background: #eaf4ff; border: 1px solid var(--secondary); padding: 14px 18px; margin: 18px 0; border-radius: 6px; }
+    .callout.warning { background: #fff4e0; border-color: var(--accent); }
+    .callout.important { background: #fdecea; border-color: var(--red); }
+    .callout.success { background: #e8f5ee; border-color: var(--green); }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95rem; }
+    th { background: var(--primary); color: #fff; padding: 10px 14px; text-align: left; }
+    td { border: 1px solid var(--border); padding: 9px 14px; vertical-align: top; }
+    tr:nth-child(even) td { background: var(--light); }
+    .section-label { display: inline-block; background: var(--primary); color: #fff; font-size: 0.78rem; font-weight: bold; letter-spacing: 1px; padding: 3px 10px; border-radius: 3px; margin-bottom: 6px; text-transform: uppercase; }
+    .toc { background: var(--light); border: 1px solid var(--border); padding: 18px 24px; margin: 24px 0 40px; border-radius: 6px; }
+    .toc h3 { color: var(--primary); margin-top: 0; margin-bottom: 10px; }
+    .toc a { color: var(--secondary); text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+    .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 30px; }
+    .highlight { background: #fffbcc; padding: 2px 4px; border-radius: 2px; }
+    hr { border: none; border-top: 2px solid var(--border); margin: 36px 0; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.82rem; font-weight: bold; }
+    .badge-red { background: #fde4e4; color: var(--red); }
+    .badge-green { background: #d4f0e0; color: var(--green); }
+    .badge-blue { background: #daeeff; color: var(--primary); }
+    .badge-yellow { background: #fff3cd; color: #856404; }
+
+    /* Style cards */
+    .style-card { border-radius: 8px; padding: 16px 20px; margin: 14px 0; border: 2px solid; }
+    .s1-card { border-color: var(--s1); background: #fef5f5; }
+    .s2-card { border-color: var(--s2); background: #fef9ec; }
+    .s3-card { border-color: var(--s3); background: #f0faf4; }
+    .s4-card { border-color: var(--s4); background: #eef3fb; }
+    .s1-card h4 { color: var(--s1); font-style: normal; margin-top: 0; }
+    .s2-card h4 { color: var(--s2); font-style: normal; margin-top: 0; }
+    .s3-card h4 { color: var(--s3); font-style: normal; margin-top: 0; }
+    .s4-card h4 { color: var(--s4); font-style: normal; margin-top: 0; }
+
+    /* Dev level cards */
+    .dev-card { border-radius: 6px; padding: 14px 18px; margin: 10px 0; border-left: 6px solid; }
+    .d1 { border-left-color: var(--s1); background: #fef5f5; }
+    .d2 { border-left-color: var(--s2); background: #fef9ec; }
+    .d3 { border-left-color: var(--s3); background: #f0faf4; }
+    .d4 { border-left-color: var(--s4); background: #eef3fb; }
+
+    /* SLII Matrix */
+    .matrix { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 4px; max-width: 600px; margin: 20px auto; border: 2px solid var(--primary); }
+    .matrix-cell { padding: 14px; text-align: center; font-size: 0.9rem; }
+    .matrix-label-x { text-align: center; font-weight: bold; color: var(--primary); margin-top: 6px; font-size: 0.9rem; }
+    .matrix-label-y { writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); font-weight: bold; color: var(--primary); font-size: 0.9rem; text-align: center; }
+  </style>
+</head>
+<body>
+
+<div class="section-label">GK5009 – Quản lý và Lãnh đạo | HK252</div>
+<h1>Chương 5: Tiếp cận Tình huống<br><small style="font-size:1rem;color:var(--muted);">The Situational Approach to Leadership (SLII®)</small></h1>
+<p class="meta">Nguồn: Northouse, P. G. (2021). <em>Leadership: Theory and Practice</em> (7th ed.). SAGE Publications. — Chapter 5 | Hersey & Blanchard (1969); Blanchard, Zigami & Zigami (1985); Blanchard (2013)</p>
+
+<div class="toc">
+  <h3>Mục lục</h3>
+  <ol>
+    <li><a href="#s1">Tổng quan chương & Bước đột phá Situational</a></li>
+    <li><a href="#s2">Phân tích chuyên sâu: Hai chiều & Bốn phong cách</a></li>
+    <li><a href="#s3">Mức độ Phát triển của Người theo (D1–D4)</a></li>
+    <li><a href="#s4">Mô hình & Khung lý thuyết: Ghép nối S với D</a></li>
+    <li><a href="#s5">Ví dụ thực tiễn</a></li>
+    <li><a href="#s6">Lưu ý học tập & Bẫy nhận thức phổ biến</a></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s1">1. Tổng quan & Bước đột phá Situational</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 1 – Overview</div>
+
+<p>Situational Approach (Tiếp cận Tình huống) là câu trả lời trực tiếp cho câu hỏi mà Behavioral Approach (Ch4) đặt ra nhưng không giải đáp được: <strong>"Phong cách lãnh đạo tốt nhất là phong cách nào?"</strong> Câu trả lời của Situational Approach là: <em>không có phong cách tốt nhất tuyệt đối — phong cách tốt nhất phụ thuộc vào tình huống, cụ thể là vào MỨC ĐỘ PHÁT TRIỂN của người theo (followers).</em></p>
+
+<div class="callout">
+  <strong>Nguyên tắc cốt lõi của Situational Approach:</strong><br>
+  Lãnh đạo hiệu quả yêu cầu người lãnh đạo <em>chẩn đoán mức độ phát triển của người theo</em> trong một nhiệm vụ cụ thể, rồi <em>điều chỉnh phong cách lãnh đạo</em> cho phù hợp. Không có phong cách cố định — lãnh đạo giỏi là lãnh đạo <strong>linh hoạt và thích ứng</strong>.
+</div>
+
+<h3>1.1 Lịch sử phát triển</h3>
+
+<p><strong>Hersey & Blanchard (1969)</strong> phát triển <em>Situational Leadership Theory (SLT)</em> — ban đầu gọi là "Life Cycle Theory of Leadership." Mô hình này dựa trên hai chiều hành vi lãnh đạo (task behavior và relationship behavior từ Ohio State) và thêm chiều thứ ba: mức độ trưởng thành của người theo (maturity level).</p>
+
+<p><strong>Blanchard, Zigami & Zigami (1985)</strong> phát triển phiên bản thứ hai gọi là <em>SLII®</em> (Situational Leadership II). Phiên bản này đổi tên "maturity" thành "development level" (mức độ phát triển) và tinh chỉnh mô tả các cấp độ. SLII® là phiên bản được Northouse (2021) trình bày chủ yếu.</p>
+
+<p><strong>Blanchard (2013)</strong> cập nhật lại thành <em>SLII® Model</em> với một số điều chỉnh nhỏ trong định nghĩa các cấp độ phát triển, nhưng cấu trúc cơ bản giữ nguyên.</p>
+
+<div class="callout warning">
+  <strong>Điểm quan trọng:</strong> Situational Approach đặc biệt nhấn mạnh rằng mức độ phát triển là <em>đặc thù cho từng nhiệm vụ cụ thể</em>, không phải thuộc tính tổng thể của người. Cùng một người có thể là D4 (chuyên gia tự lập) trong lĩnh vực này nhưng D1 (người mới bắt đầu) trong lĩnh vực khác. Đây là điểm thường bị hiểu nhầm nhất.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s2">2. Phân tích chuyên sâu: Hai chiều & Bốn phong cách Lãnh đạo</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 2 – Leadership Styles</div>
+
+<h3>2.1 Hai chiều hành vi lãnh đạo</h3>
+
+<div class="definition">
+  <strong>Directive Behavior (Hành vi Chỉ đạo / Task Behavior):</strong><br>
+  Mức độ lãnh đạo tham gia vào giao tiếp một chiều — nói với người theo <em>phải làm gì, như thế nào, khi nào, và ở đâu</em>. Bao gồm: đặt mục tiêu, tổ chức công việc, xác định thời hạn, và giám sát chặt chẽ.<br><br>
+  <strong>Bản chất giao tiếp:</strong> Một chiều (one-way) — người lãnh đạo chủ động truyền thông tin, hướng dẫn, và kiểm soát.
+</div>
+
+<div class="definition">
+  <strong>Supportive Behavior (Hành vi Hỗ trợ / Relationship Behavior):</strong><br>
+  Mức độ lãnh đạo tham gia vào giao tiếp hai chiều — lắng nghe người theo, khuyến khích, khen ngợi, hỏi han, chia sẻ thông tin, và tạo điều kiện để người theo tự quyết định.<br><br>
+  <strong>Bản chất giao tiếp:</strong> Hai chiều (two-way) — người lãnh đạo lắng nghe, khuyến khích, và hỗ trợ tình cảm.
+</div>
+
+<p>Giống như Ohio State Studies (Ch4), hai chiều này là <strong>độc lập</strong> — lãnh đạo có thể cao cả hai, thấp cả hai, hoặc cao một thấp một. Sự kết hợp tạo ra bốn phong cách lãnh đạo (S1–S4).</p>
+
+<hr/>
+
+<h3>2.2 Bốn Phong cách Lãnh đạo (S1–S4)</h3>
+
+<div class="style-card s1-card">
+  <h4>S1 — DIRECTING (Chỉ đạo): Cao Directive, Thấp Supportive</h4>
+  <p><strong>Đặc điểm:</strong> Lãnh đạo đưa ra hướng dẫn cụ thể và giám sát chặt chẽ việc thực hiện. Người lãnh đạo xác định các vai trò và nói với người theo phải làm gì, khi nào, và như thế nào — giao tiếp chủ yếu là một chiều. Quan tâm đến mục tiêu và kết quả, ít thời gian cho việc lắng nghe cảm xúc hay quan điểm của người theo.</p>
+  <p><strong>Hành vi cụ thể của lãnh đạo S1:</strong></p>
+  <ul>
+    <li>Đặt ra mục tiêu rõ ràng và cụ thể cho từng nhiệm vụ</li>
+    <li>Giải thích chi tiết làm thế nào để thực hiện nhiệm vụ (step-by-step)</li>
+    <li>Giám sát thường xuyên và theo dõi sát tiến độ</li>
+    <li>Cung cấp phản hồi rõ ràng về kết quả</li>
+    <li>Ít hỏi về cảm xúc hay ý kiến của người theo</li>
+  </ul>
+  <p><strong>Khi nào phù hợp:</strong> Khi người theo là người mới, chưa có kỹ năng cần thiết nhưng có động lực và nhiệt tình cao (D1 — Enthusiastic Beginner). Họ cần hướng dẫn rõ ràng về <em>phải làm gì</em>, không cần nhiều hỗ trợ cảm xúc vì họ đã có động lực sẵn.</p>
+  <p><strong>Lưu ý:</strong> S1 không có nghĩa là thô lỗ hay thiếu tôn trọng — lãnh đạo vẫn cư xử tử tế, chỉ là đặt trọng tâm vào cấu trúc và hướng dẫn nhiều hơn là tình cảm.</p>
+</div>
+
+<div class="style-card s2-card">
+  <h4>S2 — COACHING (Kèm cặp): Cao Directive, Cao Supportive</h4>
+  <p><strong>Đặc điểm:</strong> Lãnh đạo vẫn cung cấp nhiều hướng dẫn và kiểm soát nhiệm vụ, nhưng đồng thời giải thích lý do, lắng nghe cảm xúc và ý kiến của người theo, và khuyến khích họ. Giao tiếp là hai chiều — lãnh đạo hỏi han, lắng nghe, và khen ngợi nỗ lực — nhưng vẫn giữ quyền ra quyết định cuối cùng.</p>
+  <p><strong>Hành vi cụ thể của lãnh đạo S2:</strong></p>
+  <ul>
+    <li>Giải thích rõ ràng <em>tại sao</em> cần làm theo cách này (không chỉ <em>cái gì</em>)</li>
+    <li>Hỏi về quan điểm và cảm nhận của người theo</li>
+    <li>Khen ngợi tiến bộ và nỗ lực (dù kết quả chưa hoàn hảo)</li>
+    <li>Lắng nghe lo lắng và khó khăn của người theo</li>
+    <li>Nhưng vẫn đưa ra quyết định về cách thực hiện</li>
+  </ul>
+  <p><strong>Khi nào phù hợp:</strong> Khi người theo đã có một số kỹ năng nhưng mất đi sự nhiệt tình ban đầu — thất vọng, mất tự tin, hoặc không chắc về khả năng của mình (D2 — Disillusioned Learner). Họ cần cả hướng dẫn KỸ THUẬT lẫn hỗ trợ TÌNH CẢM.</p>
+  <p><strong>Lý do gọi là "Coaching":</strong> Giống như huấn luyện viên thể thao — vừa chỉ kỹ thuật chi tiết, vừa truyền cảm hứng và duy trì tinh thần cho vận động viên.</p>
+</div>
+
+<div class="style-card s3-card">
+  <h4>S3 — SUPPORTING (Hỗ trợ): Thấp Directive, Cao Supportive</h4>
+  <p><strong>Đặc điểm:</strong> Lãnh đạo ít đưa ra hướng dẫn cụ thể vì người theo đã có đủ năng lực — thay vào đó, tập trung vào lắng nghe, khuyến khích, và giúp người theo tự quyết định. Lãnh đạo chia sẻ quyền ra quyết định với người theo, hỏi ý kiến nhiều hơn ra lệnh, và công nhận đóng góp của người theo.</p>
+  <p><strong>Hành vi cụ thể của lãnh đạo S3:</strong></p>
+  <ul>
+    <li>Hỏi: "Theo bạn, cách tiếp cận nào tốt nhất?" — và thực sự lắng nghe</li>
+    <li>Ít giám sát chi tiết; tin tưởng người theo tự tổ chức công việc</li>
+    <li>Công nhận và khen ngợi công việc tốt một cách chân thành</li>
+    <li>Cung cấp nguồn lực và hỗ trợ khi người theo yêu cầu</li>
+    <li>Giúp người theo vượt qua sự do dự hay thiếu tự tin</li>
+  </ul>
+  <p><strong>Khi nào phù hợp:</strong> Khi người theo có năng lực cao nhưng không chắc chắn về mình, do dự, hoặc thiếu tự tin vào phán đoán của bản thân (D3 — Capable but Cautious Performer). Họ đã biết cách làm — vấn đề là tự tin vào khả năng đó.</p>
+  <p><strong>Sai lầm phổ biến:</strong> Nhiều lãnh đạo tiếp tục dùng S1 hoặc S2 với người D3 — điều này làm người theo cảm thấy không được tin tưởng và demotivate.</p>
+</div>
+
+<div class="style-card s4-card">
+  <h4>S4 — DELEGATING (Ủy quyền): Thấp Directive, Thấp Supportive</h4>
+  <p><strong>Đặc điểm:</strong> Lãnh đạo ít tham gia trực tiếp vào công việc của người theo — người theo tự lập kế hoạch, giải quyết vấn đề, và thực thi. Lãnh đạo giao nhiệm vụ và cho phép người theo quyết định cách thực hiện. Điều này không có nghĩa là lãnh đạo "bỏ mặc" — họ vẫn theo dõi và sẵn sàng hỗ trợ khi cần, nhưng không can thiệp không cần thiết.</p>
+  <p><strong>Hành vi cụ thể của lãnh đạo S4:</strong></p>
+  <ul>
+    <li>Giao nhiệm vụ và mục tiêu tổng thể; cho phép người theo tự quyết phương pháp</li>
+    <li>Ít hoặc không giám sát chi tiết — tin tưởng hoàn toàn vào năng lực người theo</li>
+    <li>Ít cần khuyến khích cảm xúc vì người theo đã có động lực nội tại cao</li>
+    <li>Sẵn sàng hỗ trợ khi được yêu cầu, nhưng không chủ động can thiệp</li>
+    <li>Công nhận kết quả tổng thể, không kiểm soát quá trình</li>
+  </ul>
+  <p><strong>Khi nào phù hợp:</strong> Khi người theo vừa có năng lực cao vừa có động lực cao và tự tin (D4 — Self-Reliant Achiever). Đây là trạng thái lý tưởng — người theo hoạt động độc lập hiệu quả.</p>
+  <p><strong>Sai lầm phổ biến:</strong> Hiểu S4 là "hands-off hoàn toàn." Không phải — lãnh đạo vẫn cần kiểm tra kết quả định kỳ, ăn mừng thành công, và sẵn sàng chuyển sang S3 hay S2 nếu người theo đối mặt với thách thức mới.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s3">3. Mức độ Phát triển của Người theo (D1–D4)</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 3 – Development Levels</div>
+
+<h3>3.1 Hai chiều cấu thành Mức độ Phát triển</h3>
+
+<div class="definition">
+  <strong>Competence (Năng lực):</strong> Kiến thức và kỹ năng đã được chứng minh qua việc thực hiện nhiệm vụ cụ thể — không phải tiềm năng, không phải bằng cấp, mà là năng lực thực tế đã thể hiện trong công việc. Năng lực được tích lũy qua đào tạo, giáo dục, và kinh nghiệm.
+</div>
+
+<div class="definition">
+  <strong>Commitment (Cam kết):</strong> Sự kết hợp của động lực (motivation) và sự tự tin (confidence) trong việc thực hiện nhiệm vụ. Người có commitment cao vừa muốn làm việc đó (motivated) vừa tin rằng mình có thể làm tốt (confident).
+</div>
+
+<div class="callout important">
+  <strong>Lưu ý quan trọng:</strong> Năng lực (competence) và cam kết (commitment) là hai chiều ĐỘC LẬP. Người có thể: (1) giỏi nhưng không muốn làm = high competence, low commitment; (2) muốn nhưng chưa giỏi = low competence, high commitment. Việc hiểu rõ cả hai chiều là quan trọng để chẩn đoán đúng D-level.
+</div>
+
+<hr/>
+
+<h3>3.2 Bốn Mức độ Phát triển (D1–D4)</h3>
+
+<div class="dev-card d1">
+  <strong>D1 — Enthusiastic Beginner (Người mới Nhiệt tình)</strong><br>
+  <strong>Năng lực:</strong> <span class="badge badge-red">Thấp</span> &nbsp; <strong>Cam kết:</strong> <span class="badge badge-green">Cao</span><br><br>
+  <p><strong>Mô tả:</strong> Người mới bắt đầu nhiệm vụ hoặc vai trò. Họ chưa có kỹ năng và kiến thức cần thiết, nhưng hào hứng và nhiệt tình cao vì đây là điều mới mẻ và thú vị. Họ <em>không biết những gì họ không biết</em> (unconscious incompetence) — nên chưa nhận ra độ khó của nhiệm vụ.</p>
+  <p><strong>Tại sao commitment cao?</strong> Vì họ chưa trải qua thất bại hay khó khăn của nhiệm vụ. Sự nhiệt tình là "hồn nhiên" — dựa trên kỳ vọng chứ chưa phải kinh nghiệm.</p>
+  <p><strong>Ví dụ:</strong> Sinh viên mới ra trường nhận việc đầu tiên — hào hứng, đầy năng lượng, nhưng chưa biết gì về văn hóa công ty hay cách làm việc thực tế. Nhân viên mới bắt đầu học kỹ năng bán hàng — nhiệt tình gọi điện ngay nhưng chưa biết cách xử lý từ chối.</p>
+  <p><strong>Nhu cầu:</strong> Hướng dẫn rõ ràng về <em>phải làm gì và làm thế nào</em>. Ít cần hỗ trợ cảm xúc vì đã có động lực sẵn.</p>
+  <p><strong>→ Phong cách phù hợp: S1 (Directing)</strong></p>
+</div>
+
+<div class="dev-card d2">
+  <strong>D2 — Disillusioned Learner (Người học Vỡ mộng)</strong><br>
+  <strong>Năng lực:</strong> <span class="badge badge-yellow">Thấp–Trung bình</span> &nbsp; <strong>Cam kết:</strong> <span class="badge badge-red">Thấp</span><br><br>
+  <p><strong>Mô tả:</strong> Người đã bắt đầu học và phát triển một số kỹ năng, nhưng đối mặt với khó khăn thực tế và thất vọng. Họ nhận ra rằng nhiệm vụ khó hơn họ nghĩ — sự nhiệt tình ban đầu bị xói mòn bởi thách thức, thất bại, và sự thiếu tự tin. Cam kết (đặc biệt là tự tin) giảm mạnh.</p>
+  <p><strong>Tại sao commitment thấp?</strong> Vì họ bắt đầu ý thức được mình chưa giỏi (conscious incompetence) và điều này làm giảm tự tin. Họ có thể nghi ngờ mình có khả năng làm được không, hoặc cảm thấy nhiệm vụ không đáng nỗ lực.</p>
+  <p><strong>Ví dụ:</strong> Nhân viên bán hàng sau 1 tháng — đã gọi hàng chục cuộc điện thoại nhưng bị từ chối nhiều lần, bắt đầu nghi ngờ mình có phù hợp với nghề không. Sinh viên đã hoàn thành năm nhất đại học — nhận ra chuyên ngành khó hơn kỳ vọng, đang cân nhắc có nên tiếp tục không.</p>
+  <p><strong>Nhu cầu:</strong> Cả hướng dẫn kỹ thuật (vẫn cần học) VÀ hỗ trợ cảm xúc (cần tin tưởng lại vào bản thân). Đây là giai đoạn "nguy hiểm" nhất — nếu không được hỗ trợ đúng, người theo có thể bỏ cuộc.</p>
+  <p><strong>→ Phong cách phù hợp: S2 (Coaching)</strong></p>
+</div>
+
+<div class="dev-card d3">
+  <strong>D3 — Capable but Cautious Performer (Người có năng lực nhưng Thận trọng)</strong><br>
+  <strong>Năng lực:</strong> <span class="badge badge-green">Cao</span> &nbsp; <strong>Cam kết:</strong> <span class="badge badge-yellow">Biến động</span><br><br>
+  <p><strong>Mô tả:</strong> Người đã phát triển được năng lực cao — họ biết cách làm và làm tốt. Nhưng sự cam kết của họ dao động: đôi khi tự tin, đôi khi do dự hay thiếu chắc chắn vào quyết định của mình. Đây không phải là thiếu kiến thức — mà là thiếu sự tự tin (confidence) hoặc lo lắng về sự công nhận và trách nhiệm.</p>
+  <p><strong>Tại sao commitment biến động?</strong> Có nhiều nguyên nhân: (1) Hoàn cảnh thay đổi làm người theo không chắc kỹ năng cũ có còn phù hợp không; (2) Lo lắng về việc đưa ra quyết định độc lập và chịu trách nhiệm; (3) Cần sự xác nhận và công nhận từ người khác; (4) Đôi khi thiếu động lực do cảm thấy nhàm chán với công việc đã quá thành thạo.</p>
+  <p><strong>Ví dụ:</strong> Senior engineer giỏi kỹ thuật nhưng do dự khi được yêu cầu tự đưa ra kiến trúc cho dự án lớn — "Tôi có đủ giỏi không?" Designer tài năng nhưng ngại trình bày ý tưởng trước khách hàng vì sợ bị từ chối.</p>
+  <p><strong>Nhu cầu:</strong> Ít hướng dẫn (họ đã biết cách làm), nhưng cần nhiều hỗ trợ tâm lý — sự tin tưởng, khuyến khích, và không gian để tự quyết định.</p>
+  <p><strong>→ Phong cách phù hợp: S3 (Supporting)</strong></p>
+</div>
+
+<div class="dev-card d4">
+  <strong>D4 — Self-Reliant Achiever (Người tự lập Đạt thành tích)</strong><br>
+  <strong>Năng lực:</strong> <span class="badge badge-green">Cao</span> &nbsp; <strong>Cam kết:</strong> <span class="badge badge-green">Cao</span><br><br>
+  <p><strong>Mô tả:</strong> Người có cả năng lực cao lẫn động lực và tự tin cao. Họ tự tổ chức công việc, giải quyết vấn đề độc lập, và hoạt động hiệu quả mà không cần nhiều hướng dẫn hay khuyến khích từ lãnh đạo. Đây là trạng thái lý tưởng — người theo hoạt động gần như như chuyên gia độc lập.</p>
+  <p><strong>Đặc điểm nhận biết:</strong> Tự đặt ra mục tiêu thách thức; chủ động tìm kiếm giải pháp trước khi hỏi lãnh đạo; giúp đỡ đồng nghiệp; luôn giao nộp đúng hạn và chất lượng cao; có quan điểm rõ ràng và tự tin bảo vệ.</p>
+  <p><strong>Ví dụ:</strong> Senior consultant có 10 năm kinh nghiệm, tự quản lý danh mục khách hàng, tự đề xuất chiến lược mới, và thường xuyên được đồng nghiệp hỏi ý kiến. Product manager dày dạn kinh nghiệm — hiểu thị trường sâu sắc, tự đưa ra roadmap, và đạt KPI liên tục.</p>
+  <p><strong>Nhu cầu:</strong> Tự chủ và quyền ra quyết định. Cần ít hướng dẫn và ít hỗ trợ tình cảm — nhưng vẫn cần sự công nhận thành tích và thách thức mới để không chán.</p>
+  <p><strong>→ Phong cách phù hợp: S4 (Delegating)</strong></p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s4">4. Mô hình & Khung lý thuyết: Ghép nối S với D</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 4 – Models & Frameworks</div>
+
+<h3>4.1 Ma trận ghép nối Phong cách và Mức độ Phát triển</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Mức độ Phát triển</th>
+      <th>Đặc điểm</th>
+      <th>Phong cách Phù hợp</th>
+      <th>Lý do Ghép nối</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background:#fef5f5;">
+      <td><strong>D1 — Enthusiastic Beginner</strong></td>
+      <td>Năng lực Thấp + Cam kết Cao</td>
+      <td><strong style="color:var(--s1);">S1 — Directing</strong><br>Cao Directive, Thấp Supportive</td>
+      <td>Cần nhiều hướng dẫn vì thiếu kỹ năng; ít cần hỗ trợ tình cảm vì đã có động lực</td>
+    </tr>
+    <tr style="background:#fef9ec;">
+      <td><strong>D2 — Disillusioned Learner</strong></td>
+      <td>Năng lực Thấp–Trung + Cam kết Thấp</td>
+      <td><strong style="color:var(--s2);">S2 — Coaching</strong><br>Cao Directive, Cao Supportive</td>
+      <td>Vẫn cần hướng dẫn kỹ thuật; đồng thời cần hỗ trợ để khôi phục động lực và tự tin</td>
+    </tr>
+    <tr style="background:#f0faf4;">
+      <td><strong>D3 — Capable but Cautious</strong></td>
+      <td>Năng lực Cao + Cam kết Biến động</td>
+      <td><strong style="color:var(--s3);">S3 — Supporting</strong><br>Thấp Directive, Cao Supportive</td>
+      <td>Đã có kỹ năng, không cần hướng dẫn nhiều; cần khuyến khích và trao quyền để tự tin hơn</td>
+    </tr>
+    <tr style="background:#eef3fb;">
+      <td><strong>D4 — Self-Reliant Achiever</strong></td>
+      <td>Năng lực Cao + Cam kết Cao</td>
+      <td><strong style="color:var(--s4);">S4 — Delegating</strong><br>Thấp Directive, Thấp Supportive</td>
+      <td>Có cả năng lực lẫn động lực; cần tự chủ và không gian hoạt động độc lập</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>4.2 Biểu đồ SLII® — Ma trận hai chiều</h3>
+
+<div style="max-width:640px; margin:20px auto;">
+  <table style="border-collapse:collapse; width:100%; table-layout:fixed;">
+    <tr>
+      <td style="border:none; width:40px; vertical-align:middle; text-align:center;">
+        <div style="writing-mode:vertical-rl;transform:rotate(180deg);font-weight:bold;color:var(--primary);font-size:0.85rem;">SUPPORTIVE BEHAVIOR →<br><small>Cao</small></div>
+      </td>
+      <td style="border:none;">
+        <table style="border-collapse:collapse; width:100%;">
+          <tr>
+            <td style="border:2px solid var(--s3); background:#f0faf4; padding:16px; text-align:center; vertical-align:top; width:50%;">
+              <div style="font-size:0.8rem; color:var(--muted);">Thấp Directive / Cao Supportive</div>
+              <div style="font-size:1.1rem; font-weight:bold; color:var(--s3); margin:6px 0;">S3</div>
+              <div style="font-weight:bold;">SUPPORTING</div>
+              <div style="font-size:0.85rem; margin-top:4px;">→ D3 (Capable but Cautious)</div>
+            </td>
+            <td style="border:2px solid var(--s2); background:#fef9ec; padding:16px; text-align:center; vertical-align:top; width:50%;">
+              <div style="font-size:0.8rem; color:var(--muted);">Cao Directive / Cao Supportive</div>
+              <div style="font-size:1.1rem; font-weight:bold; color:var(--s2); margin:6px 0;">S2</div>
+              <div style="font-weight:bold;">COACHING</div>
+              <div style="font-size:0.85rem; margin-top:4px;">→ D2 (Disillusioned Learner)</div>
+            </td>
+          </tr>
+          <tr>
+            <td style="border:2px solid var(--s4); background:#eef3fb; padding:16px; text-align:center; vertical-align:top;">
+              <div style="font-size:0.8rem; color:var(--muted);">Thấp Directive / Thấp Supportive</div>
+              <div style="font-size:1.1rem; font-weight:bold; color:var(--s4); margin:6px 0;">S4</div>
+              <div style="font-weight:bold;">DELEGATING</div>
+              <div style="font-size:0.85rem; margin-top:4px;">→ D4 (Self-Reliant Achiever)</div>
+            </td>
+            <td style="border:2px solid var(--s1); background:#fef5f5; padding:16px; text-align:center; vertical-align:top;">
+              <div style="font-size:0.8rem; color:var(--muted);">Cao Directive / Thấp Supportive</div>
+              <div style="font-size:1.1rem; font-weight:bold; color:var(--s1); margin:6px 0;">S1</div>
+              <div style="font-weight:bold;">DIRECTING</div>
+              <div style="font-size:0.85rem; margin-top:4px;">→ D1 (Enthusiastic Beginner)</div>
+            </td>
+          </tr>
+        </table>
+        <div style="display:flex; justify-content:space-between; margin-top:4px; font-size:0.82rem; color:var(--muted);">
+          <span>← Thấp</span>
+          <span style="font-weight:bold; color:var(--primary);">DIRECTIVE BEHAVIOR</span>
+          <span>Cao →</span>
+        </div>
+      </td>
+    </tr>
+  </table>
+  <div style="margin-top:10px; display:flex; justify-content:space-around; font-size:0.85rem; border:1px solid var(--border); padding:8px; border-radius:4px; background:var(--light);">
+    <span><strong>D1</strong> ←→ <strong style="color:var(--s1);">S1</strong></span>
+    <span><strong>D2</strong> ←→ <strong style="color:var(--s2);">S2</strong></span>
+    <span><strong>D3</strong> ←→ <strong style="color:var(--s3);">S3</strong></span>
+    <span><strong>D4</strong> ←→ <strong style="color:var(--s4);">S4</strong></span>
+  </div>
+</div>
+
+<h3>4.3 Điểm mạnh và Phê bình của Situational Approach</h3>
+
+<h4>Điểm mạnh:</h4>
+<ol>
+  <li><strong>Thực hành và dễ hiểu:</strong> Mô hình đơn giản, có tính ứng dụng cao trong thực tế — lãnh đạo có thể nhanh chóng áp dụng để điều chỉnh phong cách.</li>
+  <li><strong>Nhấn mạnh tính linh hoạt:</strong> Giải quyết hạn chế lớn nhất của Behavioral Approach — không có phong cách "tốt nhất" phổ quát, lãnh đạo phải thích ứng.</li>
+  <li><strong>Tôn trọng người theo:</strong> Đây là lý thuyết đầu tiên đặt người theo (followers) vào trung tâm của lãnh đạo — phong cách của lãnh đạo phải điều chỉnh theo nhu cầu của người theo, không phải ngược lại.</li>
+  <li><strong>Được sử dụng rộng rãi trong đào tạo:</strong> SLII® là một trong những mô hình lãnh đạo được dạy nhiều nhất trên thế giới trong các chương trình corporate training.</li>
+  <li><strong>Ứng dụng trong nhiều bối cảnh:</strong> Từ doanh nghiệp, quân sự, đến giáo dục — mô hình có thể áp dụng rộng rãi.</li>
+</ol>
+
+<h4>Phê bình/Hạn chế:</h4>
+<ol>
+  <li><strong>Bằng chứng thực nghiệm hạn chế:</strong> Dù được ứng dụng rộng rãi trong thực hành, Situational Approach có ít bằng chứng nghiên cứu học thuật hơn so với các lý thuyết khác. Nhiều nhà nghiên cứu chỉ ra rằng các nghiên cứu về SLII® phần lớn được thực hiện bởi chính Blanchard và cộng sự — thiếu nghiên cứu độc lập xác nhận.</li>
+  <li><strong>Định nghĩa "commitment" thiếu rõ ràng:</strong> Việc tách "commitment" thành "motivation" và "confidence" không phải lúc nào cũng dễ đo lường hoặc phân biệt trong thực tế.</li>
+  <li><strong>Không giải thích đủ về sự khác biệt văn hóa:</strong> Mức độ Directive behavior hay Supportive behavior cần thiết có thể thay đổi đáng kể giữa các nền văn hóa. Mô hình ban đầu phát triển trong bối cảnh Mỹ — áp dụng ở châu Á hay Việt Nam có thể cần điều chỉnh.</li>
+  <li><strong>Đơn giản hóa quá mức:</strong> Thực tế lãnh đạo phức tạp hơn bốn D-level và bốn S-level. Người theo có thể cùng lúc có nhiều nhiệm vụ ở các D-level khác nhau, và lãnh đạo phải quản lý điều này.</li>
+  <li><strong>Ít chú ý đến đặc điểm lãnh đạo và tổ chức:</strong> Mô hình tập trung vào tương tác lãnh đạo-người theo, nhưng ít xem xét đến các yếu tố tổ chức (văn hóa công ty, cấu trúc) và đặc điểm cá nhân của lãnh đạo.</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="s5">5. Ví dụ thực tiễn</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 5 – Practical Examples</div>
+
+<h3>5.1 Case: Quản lý đội ngũ đa dạng D-level</h3>
+
+<p><strong>Tình huống:</strong> Trưởng nhóm marketing của một công ty công nghệ quản lý nhóm 4 người:</p>
+<ul>
+  <li><strong>An (D1):</strong> Intern mới — đầy nhiệt tình nhưng chưa biết gì về digital marketing thực tế</li>
+  <li><strong>Bình (D2):</strong> Junior đã làm 6 tháng — đã làm vài campaign nhưng thất bại một số, đang mất tự tin</li>
+  <li><strong>Châu (D3):</strong> Mid-level 2 năm — kỹ năng kỹ thuật tốt nhưng ngại đề xuất chiến lược mới, hay xin ý kiến dù biết câu trả lời</li>
+  <li><strong>Dũng (D4):</strong> Senior 5 năm — tự quản lý toàn bộ mảng SEO, đạt KPI liên tục, không cần giám sát</li>
+</ul>
+
+<p><strong>Cách áp dụng SLII®:</strong></p>
+<ul>
+  <li><strong>Với An (D1→S1):</strong> Hướng dẫn chi tiết từng bước: "Hôm nay bạn viết 3 caption theo template này, đúng format này, gửi cho tôi review lúc 4h." Kiểm tra hàng ngày.</li>
+  <li><strong>Với Bình (D2→S2):</strong> Vừa hướng dẫn vừa khuyến khích: "Campaign vừa rồi có một số điểm chưa tốt — cùng phân tích nhé. Nhưng tôi thấy cách bạn phân tích dữ liệu thực sự rất tốt rồi đấy." Họp 1:1 hàng tuần để lắng nghe khó khăn.</li>
+  <li><strong>Với Châu (D3→S3):</strong> "Châu, bạn suy nghĩ gì về chiến lược Q4? Tôi muốn nghe đề xuất của bạn trước." Ít can thiệp vào cách làm, nhiều khuyến khích để Châu tự quyết định.</li>
+  <li><strong>Với Dũng (D4→S4):</strong> "Dũng phụ trách toàn bộ SEO strategy Q4 — tôi tin tưởng bạn tự quyết. Cuối tháng báo cáo kết quả nhé." Check-in ngắn monthly, không micromanage.</li>
+</ul>
+
+<h3>5.2 Case: Chuyển động giữa các D-level</h3>
+
+<p><strong>Tình huống:</strong> Một kỹ sư phần mềm giỏi (D4 trong mảng backend) được thăng chức lên Tech Lead. Trong vai trò mới, anh ta phải quản lý người, điều phối dự án, và giao tiếp với các phòng ban khác — những điều này hoàn toàn mới.</p>
+
+<p><strong>Phân tích SLII®:</strong> Dù là D4 trong công việc kỹ thuật, trong vai trò Tech Lead mới, anh là <strong>D1</strong>. Người quản lý cần chuyển từ S4 (với công việc kỹ thuật cũ) sang <strong>S1/S2</strong> (với vai trò mới).</p>
+
+<p><strong>Sai lầm phổ biến:</strong> Nhiều công ty giả định rằng người giỏi kỹ thuật (D4) sẽ tự nhiên giỏi quản lý — và không cung cấp đủ hỗ trợ cho vai trò mới. Kết quả: Tech Lead mới thất bại không phải vì thiếu kỹ năng kỹ thuật mà vì thiếu hỗ trợ phát triển kỹ năng lãnh đạo.</p>
+
+<!-- ============================================================ -->
+<h2 id="s6">6. Lưu ý học tập & Bẫy nhận thức phổ biến</h2>
+<!-- ============================================================ -->
+<div class="section-label">Section 6 – Study Notes & Common Pitfalls</div>
+
+<div class="callout warning">
+  <strong>Bẫy 1: Nhầm D-level là thuộc tính cố định của người</strong><br>
+  D-level là đặc thù cho từng NHIỆM VỤ CỤ THỂ, không phải thuộc tính tổng thể. Cùng một người có thể D4 trong nhiệm vụ A nhưng D1 trong nhiệm vụ B. Trong bài thi, khi phân tích D-level của ai đó, phải chỉ rõ "trong nhiệm vụ cụ thể nào."
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 2: Nhầm S4 Delegating với "bỏ mặc" (laissez-faire)</strong><br>
+  S4 không phải là bỏ mặc người theo. Lãnh đạo vẫn theo dõi kết quả, công nhận thành tích, và sẵn sàng điều chỉnh phong cách nếu cần. Sự khác biệt: lãnh đạo laissez-faire không quan tâm; lãnh đạo S4 <em>chủ ý</em> giảm can thiệp vì tin tưởng người theo có năng lực tự quản.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 3: Nhầm vị trí của S1–S4 trên ma trận</strong><br>
+  Nhiều sinh viên nhầm S1 là "thấp cả hai" (giống Impoverished trong Leadership Grid). Không phải! S1 là Cao Directive, Thấp Supportive. S4 mới là thấp cả hai — nhưng trong bối cảnh SLII, "thấp cả hai" nghĩa là trao quyền tự chủ, không phải không quan tâm. Đây là sự khác biệt quan trọng so với Leadership Grid.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 4: Nhầm giữa Hersey & Blanchard (SLT) và SLII®</strong><br>
+  Hersey & Blanchard (1969) phát triển Situational Leadership Theory gốc, dùng "maturity level." Blanchard et al. (1985) phát triển SLII® với "development level" — có một số thay đổi trong định nghĩa cấp độ. Northouse (2021) chủ yếu trình bày SLII®. Khi viết bài, nên ghi rõ đang nói về phiên bản nào.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 5: Nhầm commitment = motivation (bỏ quên confidence)</strong><br>
+  Commitment = Motivation + Confidence. Hai yếu tố này độc lập: người có thể có motivation cao (muốn làm) nhưng confidence thấp (không tin mình làm được) — và ngược lại. Đây là lý do D3 (high competence, variable commitment) tồn tại — người D3 thường có motivation nhất định nhưng confidence không ổn định.
+</div>
+
+<h3>Câu hỏi ôn tập</h3>
+<ol>
+  <li>Tại sao Situational Approach được xem là câu trả lời cho hạn chế của Behavioral Approach? Nguyên tắc cốt lõi của nó là gì?</li>
+  <li>Mô tả hai chiều hành vi lãnh đạo trong SLII® (Directive và Supportive). Điểm khác biệt cơ bản giữa hai chiều là gì?</li>
+  <li>Phân tích bốn mức độ phát triển D1–D4. Tại sao D1 và D4 đều có "Low Supportive" nhưng hoàn toàn khác nhau về bản chất?</li>
+  <li>Giải thích tại sao lãnh đạo cần thay đổi phong cách khi cùng một người được giao nhiệm vụ mới. Cho ví dụ cụ thể.</li>
+  <li>Phân tích điểm mạnh và hạn chế của Situational Approach. Hạn chế nào bạn cho là quan trọng nhất và tại sao?</li>
+</ol>
+
+<h3>Từ khóa quan trọng</h3>
+<table>
+  <thead><tr><th>Thuật ngữ</th><th>Định nghĩa ngắn</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Situational Leadership (SLT)</strong></td><td>Hersey & Blanchard (1969) — phiên bản gốc dùng "maturity level"</td></tr>
+    <tr><td><strong>SLII®</strong></td><td>Blanchard et al. (1985) — phiên bản cập nhật dùng "development level"</td></tr>
+    <tr><td><strong>Directive Behavior</strong></td><td>Hành vi chỉ đạo một chiều — nói cho biết phải làm gì, thế nào, khi nào</td></tr>
+    <tr><td><strong>Supportive Behavior</strong></td><td>Hành vi hỗ trợ hai chiều — lắng nghe, khuyến khích, tạo điều kiện tự quyết</td></tr>
+    <tr><td><strong>Development Level (D1–D4)</strong></td><td>Mức độ phát triển của người theo trong nhiệm vụ cụ thể = Competence + Commitment</td></tr>
+    <tr><td><strong>Competence</strong></td><td>Kiến thức và kỹ năng thực tế đã được chứng minh trong nhiệm vụ</td></tr>
+    <tr><td><strong>Commitment</strong></td><td>Kết hợp của Motivation (muốn làm) + Confidence (tin mình làm được)</td></tr>
+    <tr><td><strong>S1 Directing</strong></td><td>Cao Directive, Thấp Supportive → phù hợp D1</td></tr>
+    <tr><td><strong>S2 Coaching</strong></td><td>Cao Directive, Cao Supportive → phù hợp D2</td></tr>
+    <tr><td><strong>S3 Supporting</strong></td><td>Thấp Directive, Cao Supportive → phù hợp D3</td></tr>
+    <tr><td><strong>S4 Delegating</strong></td><td>Thấp Directive, Thấp Supportive → phù hợp D4</td></tr>
+    <tr><td><strong>D1 Enthusiastic Beginner</strong></td><td>Năng lực thấp, Cam kết cao — người mới nhiệt tình</td></tr>
+    <tr><td><strong>D2 Disillusioned Learner</strong></td><td>Năng lực thấp–trung, Cam kết thấp — học viên vỡ mộng</td></tr>
+    <tr><td><strong>D3 Capable but Cautious</strong></td><td>Năng lực cao, Cam kết biến động — giỏi nhưng thiếu tự tin</td></tr>
+    <tr><td><strong>D4 Self-Reliant Achiever</strong></td><td>Năng lực cao, Cam kết cao — tự lập và đạt thành tích</td></tr>
+  </tbody>
+</table>
+
+<hr/>
+<p style="text-align:center; color:var(--muted); font-size:0.85rem;">GK5009 – Quản lý và Lãnh đạo | HK252 | Tài liệu học tập tổng hợp | Nguồn: Northouse (2021), 7th ed., Chapter 5; Hersey & Blanchard (1969); Blanchard et al. (1985, 2013)</p>
+</body>
+</html>

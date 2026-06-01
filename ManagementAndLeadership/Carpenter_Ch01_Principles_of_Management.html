@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carpenter Ch01 – Principles of Management</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #2c3e50; line-height: 1.75; font-size: 15px; }
+
+  header { background: linear-gradient(135deg, #1a5276, #2980b9); color: white; padding: 40px 48px; }
+  header .badge { display: inline-block; background: rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 16px; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+  header h1 { font-size: 2.2em; font-weight: 700; margin-bottom: 8px; }
+  header p.subtitle { font-size: 1.05em; opacity: 0.88; }
+
+  nav { background: #1a5276; display: flex; gap: 0; overflow-x: auto; }
+  nav a { color: rgba(255,255,255,0.8); text-decoration: none; padding: 12px 20px; font-size: 13px; white-space: nowrap; transition: all 0.2s; border-bottom: 3px solid transparent; }
+  nav a:hover { background: rgba(255,255,255,0.1); color: white; border-bottom-color: #f39c12; }
+
+  main { max-width: 1100px; margin: 32px auto; padding: 0 24px 60px; }
+
+  section { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 32px; overflow: hidden; }
+  .section-header { padding: 20px 32px; display: flex; align-items: center; gap: 14px; }
+  .section-header .icon { font-size: 1.6em; }
+  .section-header h2 { font-size: 1.25em; font-weight: 700; }
+  .section-body { padding: 8px 32px 32px; }
+
+  .s1 .section-header { background: #eaf4fb; border-left: 5px solid #2980b9; }
+  .s2 .section-header { background: #e9f7ef; border-left: 5px solid #27ae60; }
+  .s3 .section-header { background: #fef9e7; border-left: 5px solid #f39c12; }
+  .s4 .section-header { background: #fdf2f8; border-left: 5px solid #8e44ad; }
+  .s5 .section-header { background: #fdedec; border-left: 5px solid #e74c3c; }
+
+  h3 { font-size: 1.08em; font-weight: 700; color: #1a5276; margin: 24px 0 10px; padding-bottom: 5px; border-bottom: 2px solid #eaf4fb; }
+  h4 { font-size: 0.98em; font-weight: 700; color: #2c3e50; margin: 16px 0 8px; }
+  p { margin-bottom: 10px; }
+  ul, ol { margin: 8px 0 12px 20px; }
+  li { margin-bottom: 6px; }
+  strong { color: #1a5276; }
+  em { color: #7f8c8d; font-style: normal; font-size: 0.92em; }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th { background: #1a5276; color: white; padding: 10px 14px; text-align: left; font-size: 13px; }
+  td { padding: 9px 14px; border-bottom: 1px solid #ecf0f1; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f9fa; }
+  tr:hover td { background: #eaf4fb; }
+
+  .definition-box { background: linear-gradient(135deg, #eaf4fb, #d6eaf8); border-left: 5px solid #2980b9; border-radius: 8px; padding: 16px 20px; margin: 16px 0; }
+  .definition-box .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #7f8c8d; margin-bottom: 6px; font-weight: 600; }
+  .definition-box .content { font-size: 1.05em; color: #1a5276; font-weight: 500; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 16px 0; }
+  .card { border-radius: 10px; padding: 16px 18px; }
+  .card .card-title { font-weight: 700; font-size: 0.95em; margin-bottom: 6px; }
+  .card .card-body { font-size: 0.88em; line-height: 1.6; }
+  .card-blue { background: #eaf4fb; border-left: 4px solid #2980b9; }
+  .card-green { background: #e9f7ef; border-left: 4px solid #27ae60; }
+  .card-orange { background: #fef9e7; border-left: 4px solid #f39c12; }
+  .card-purple { background: #f5eef8; border-left: 4px solid #8e44ad; }
+  .card-red { background: #fdedec; border-left: 4px solid #e74c3c; }
+  .card-teal { background: #e8f8f5; border-left: 4px solid #1abc9c; }
+  .card-gray { background: #f2f3f4; border-left: 4px solid #7f8c8d; }
+
+  .polc-table { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin: 16px 0; }
+  .polc-col { border-radius: 10px; overflow: hidden; }
+  .polc-col .polc-head { padding: 12px; font-weight: 700; font-size: 0.95em; color: white; text-align: center; }
+  .polc-col .polc-body { padding: 12px; font-size: 0.85em; }
+  .polc-col .polc-body li { margin-bottom: 5px; color: #2c3e50; }
+  .p-col .polc-head { background: #c0392b; }
+  .p-col .polc-body { background: #fdedec; }
+  .o-col .polc-head { background: #d35400; }
+  .o-col .polc-body { background: #fef0e7; }
+  .l-col .polc-head { background: #7d6608; }
+  .l-col .polc-body { background: #fef9e7; }
+  .c-col .polc-head { background: #1e8449; }
+  .c-col .polc-body { background: #e9f7ef; }
+
+  .mintz-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin: 16px 0; }
+  .mintz-cat { border-radius: 10px; overflow: hidden; }
+  .mintz-cat .cat-head { padding: 10px 14px; font-weight: 700; font-size: 0.9em; color: white; }
+  .mintz-cat .cat-body { padding: 12px 14px; font-size: 0.85em; }
+  .mintz-cat .cat-body li { margin-bottom: 7px; }
+  .cat-inter .cat-head { background: #2980b9; }
+  .cat-inter .cat-body { background: #eaf4fb; }
+  .cat-info .cat-head { background: #27ae60; }
+  .cat-info .cat-body { background: #e9f7ef; }
+  .cat-deci .cat-head { background: #8e44ad; }
+  .cat-deci .cat-body { background: #f5eef8; }
+
+  .pipeline { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+  .pipeline-level { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 8px; }
+  .pipeline-level .lvl-num { font-weight: 700; font-size: 0.85em; color: white; background: #2980b9; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .pipeline-level .lvl-title { font-weight: 700; font-size: 0.9em; min-width: 200px; }
+  .pipeline-level .lvl-desc { font-size: 0.85em; color: #555; }
+  .pipeline-level:nth-child(odd) { background: #eaf4fb; }
+  .pipeline-level:nth-child(even) { background: #f8f9fa; }
+
+  .tbl-fayol td:first-child { font-weight: 700; color: #c0392b; white-space: nowrap; }
+
+  .ocb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 10px; margin: 16px 0; }
+  .ocb-card { background: #f8f9fa; border-radius: 8px; padding: 12px 14px; border-top: 3px solid #2980b9; }
+  .ocb-card .ocb-name { font-weight: 700; font-size: 0.88em; color: #1a5276; margin-bottom: 4px; }
+  .ocb-card .ocb-def { font-size: 0.82em; color: #555; }
+
+  .trap-list { counter-reset: trap; list-style: none; margin: 0; }
+  .trap-list li { counter-increment: trap; display: flex; gap: 12px; margin-bottom: 12px; padding: 12px 16px; background: #fff8f8; border-radius: 8px; border-left: 4px solid #e74c3c; }
+  .trap-list li::before { content: counter(trap); background: #e74c3c; color: white; border-radius: 50%; width: 24px; height: 24px; font-size: 0.8em; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+  .review-list { list-style: none; margin: 0; }
+  .review-list li { padding: 10px 14px; margin-bottom: 8px; background: #e9f7ef; border-radius: 8px; padding-left: 36px; position: relative; font-size: 0.93em; }
+  .review-list li::before { content: "?"; position: absolute; left: 12px; color: #27ae60; font-weight: 700; }
+
+  .compare-table th:first-child { width: 20%; }
+
+  .tbl-type td:first-child { font-weight: 700; color: #8e44ad; }
+  .tbl-type td:nth-child(2) { font-style: italic; }
+
+  .highlight { background: #fffde7; border-left: 4px solid #f39c12; padding: 12px 16px; border-radius: 6px; margin: 12px 0; font-size: 0.93em; }
+
+  @media (max-width: 700px) {
+    .polc-table { grid-template-columns: 1fr 1fr; }
+    .mintz-grid { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.5em; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">Carpenter – Principles of Management 2.0 | Ch. 1</div>
+  <h1>Introduction to Principles of Management</h1>
+  <p class="subtitle">P-O-L-C Framework · Mintzberg's 10 Roles · Fayol's 14 Principles · Types of Managers · Performance Levels</p>
+</header>
+
+<nav>
+  <a href="#overview">1. Tổng quan</a>
+  <a href="#analysis">2. Phân tích chuyên sâu</a>
+  <a href="#models">3. Mô hình &amp; Khung phân tích</a>
+  <a href="#examples">4. Ví dụ thực tiễn</a>
+  <a href="#notes">5. Ôn tập &amp; Bẫy nhận thức</a>
+</nav>
+
+<main>
+
+<!-- ============================================================ SECTION 1 -->
+<section class="s1" id="overview">
+  <div class="section-header">
+    <span class="icon">📋</span>
+    <div>
+      <h2>Phần 1 – Tổng quan chương</h2>
+      <em>What is Management? Core definitions and scope</em>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>1.1 Management là gì?</h3>
+    <div class="definition-box">
+      <div class="label">Định nghĩa cổ điển</div>
+      <div class="content">"Management is the art of getting things done through the efforts of other people."</div>
+    </div>
+    <p>Định nghĩa này nhấn mạnh hai yếu tố cốt lõi: (1) <strong>nghệ thuật</strong> — không phải khoa học cứng nhắc mà đòi hỏi phán đoán, linh hoạt; (2) <strong>thông qua người khác</strong> — nhà quản lý không tự làm tất cả mà phối hợp, hướng dẫn người khác thực hiện.</p>
+
+    <div class="definition-box">
+      <div class="label">Principles of Management — Nguyên tắc quản lý</div>
+      <div class="content">"The means by which you actually manage, that is, get things done through others — individually, in groups, or in organizations."</div>
+    </div>
+    <p><strong>Principles of Management</strong> là các nguyên tắc, công cụ và phương pháp cụ thể giúp nhà quản lý vận hành tổ chức theo ba cấp độ: cá nhân, nhóm, và toàn tổ chức.</p>
+
+    <h3>1.2 Mục tiêu học tập chương 1</h3>
+    <div class="card-grid">
+      <div class="card card-blue">
+        <div class="card-title">Nhận biết nhà quản lý</div>
+        <div class="card-body">Hiểu ai là manager, bản chất công việc và các loại hình manager khác nhau trong tổ chức.</div>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">Ba lĩnh vực học thuật</div>
+        <div class="card-body">Hiểu tầm quan trọng của Leadership (lãnh đạo), Entrepreneurship (khởi nghiệp), và Strategy (chiến lược).</div>
+      </div>
+      <div class="card card-orange">
+        <div class="card-title">Khung P-O-L-C</div>
+        <div class="card-body">Nắm vững 4 chức năng quản lý: Planning, Organizing, Leading, Controlling và mối liên hệ giữa chúng.</div>
+      </div>
+      <div class="card card-purple">
+        <div class="card-title">Hiệu suất tổ chức</div>
+        <div class="card-body">Hiểu hiệu suất ở cấp độ cá nhân (in-role, extra-role/OCBs) và nhóm (group vs. team).</div>
+      </div>
+      <div class="card card-red">
+        <div class="card-title">Học cách học</div>
+        <div class="card-body">Xây dựng "Survivor's Guide" — phong cách học (visual, auditory, kinesthetic) và vòng Gauge-Discover-Reflect.</div>
+      </div>
+    </div>
+
+    <h3>1.3 Ba lĩnh vực học thuật nền tảng</h3>
+    <p>Carpenter định vị môn Principles of Management ở giao điểm của ba ngành học thuật:</p>
+    <div class="card-grid">
+      <div class="card card-blue">
+        <div class="card-title">Leadership — Lãnh đạo</div>
+        <div class="card-body">Actions taken to mobilize others to want to struggle toward a common goal. Bao gồm cả việc sử dụng quyền lực chính thức (position, ownership) khi cần thiết. Lãnh đạo tốt là điều kiện cần thiết cho quản lý tốt.</div>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">Entrepreneurship — Khởi nghiệp</div>
+        <div class="card-body">Nhận diện cơ hội (needs, wants, problems, challenges) và sử dụng/tạo ra nguồn lực để triển khai ý tưởng đổi mới thành các dự án được hoạch định kỹ. Entrepreneurs are leaders who convert ideas into action.</div>
+      </div>
+      <div class="card card-orange">
+        <div class="card-title">Strategy — Chiến lược</div>
+        <div class="card-body">The central, integrated, externally-oriented concept of how an organization will achieve its objectives. <strong>Strategic management</strong>: body of knowledge about development and implementation of good strategies.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ SECTION 2 -->
+<section class="s2" id="analysis">
+  <div class="section-header">
+    <span class="icon">🔬</span>
+    <div>
+      <h2>Phần 2 – Phân tích chuyên sâu</h2>
+      <em>Types of Managers · P-O-L-C · Mintzberg Roles · Performance · OCBs</em>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>2.1 Các loại nhà quản lý (Types of Managers)</h3>
+    <p>Carpenter phân biệt managers theo <strong>vị trí dọc</strong> (vertical hierarchy) và <strong>chức năng ngang</strong> (horizontal/functional):</p>
+
+    <table class="tbl-type">
+      <thead>
+        <tr><th>Loại Manager</th><th>Mô tả</th><th>Ví dụ</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Top Managers</td><td>Phát triển chiến lược tổng thể; là người bảo hộ tầm nhìn và sứ mệnh tổ chức; chịu trách nhiệm với toàn bộ tổ chức.</td><td>CEO, President, Michael Dell (Dell Inc.)</td></tr>
+        <tr><td>Functional Managers</td><td>Chịu trách nhiệm về hiệu quả và hiệu lực của một lĩnh vực chức năng cụ thể như kế toán, marketing, R&amp;D.</td><td>Brand managers tại Kellogg's, General Mills</td></tr>
+        <tr><td>Supervisory/Team Managers</td><td>Điều phối một nhóm nhỏ trong một chức năng cụ thể, hoặc nhóm liên chức năng.</td><td>Hotel managers (chịu trách nhiệm toàn bộ hoạt động khách sạn)</td></tr>
+        <tr><td>Line Managers</td><td>Lãnh đạo nhóm đóng góp trực tiếp vào sản phẩm/dịch vụ của tổ chức; giữ vai trò then chốt trong dây chuyền sản xuất.</td><td>Assembly line supervisor (ngành ô tô)</td></tr>
+        <tr><td>Staff Managers</td><td>Lãnh đạo nhóm tạo ra đầu vào gián tiếp; thường đóng vai trò tư vấn (advisory role).</td><td>White House Chief of Staff, HR Manager</td></tr>
+        <tr><td>Project Managers</td><td>Chịu trách nhiệm hoạch định, thực thi và hoàn thành dự án theo thời hạn và ngân sách xác định.</td><td>IT project managers, construction managers</td></tr>
+        <tr><td>General Managers</td><td>Quản lý một đơn vị kinh doanh có doanh thu xác định — cửa hàng, business unit, hoặc product line.</td><td>Michael Scott (Dunder-Mifflin, The Office)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>2.2 Sự thay đổi vai trò quản lý: Truyền thống vs. Hiện đại</h3>
+    <div class="card-grid">
+      <div class="card card-gray">
+        <div class="card-title">Mô hình Truyền thống (Kim tự tháp thường)</div>
+        <div class="card-body">
+          <ul>
+            <li>Top managers đảm bảo tính cạnh tranh của tổ chức và <em>job security</em> của cấp dưới</li>
+            <li>Lower-level managers thực thi chiến lược của top management với <strong>loyalty and obedience</strong></li>
+            <li>Quyền lực tập trung ở đỉnh tháp</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">Mô hình Hiện đại (Kim tự tháp ngược)</div>
+        <div class="card-body">
+          <ul>
+            <li>Lower-level managers và employees <strong>được trao quyền (empowered)</strong> — chịu trách nhiệm về tính cạnh tranh và sự phát triển của bản thân</li>
+            <li>Top management hỗ trợ <strong>phát triển nhân lực</strong> và đảm bảo <em>employability</em></li>
+            <li>Quyền lực phân tán, innovation từ cơ sở</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <p>Xu hướng hiện đại phản ánh sự chuyển dịch từ kiểm soát sang <strong>trao quyền (empowerment)</strong>, từ tuân thủ sang <strong>chủ động sáng tạo</strong>.</p>
+
+    <h3>2.3 Chức năng quản lý – Fayol và sự ra đời của P-O-L-C</h3>
+    <p>Henri Fayol (1841–1925) — kỹ sư mỏ người Pháp — đề xuất lý thuyết quản lý đầu tiên trong tác phẩm <em>Administration Industrielle et Générale</em> (1918, dịch sang tiếng Anh 1949). Ông xác định <strong>5 chức năng quản lý</strong>:</p>
+    <ol>
+      <li><strong>Planning</strong> — Hoạch định</li>
+      <li><strong>Organizing</strong> — Tổ chức</li>
+      <li><strong>Commanding (Directing)</strong> — Ra lệnh/Chỉ đạo</li>
+      <li><strong>Coordinating</strong> — Phối hợp</li>
+      <li><strong>Controlling</strong> — Kiểm soát</li>
+    </ol>
+    <p>Nhà nghiên cứu sau này gộp Commanding và Coordinating thành <strong>Leading</strong>, tạo thành khung <strong>P-O-L-C</strong> hiện đại (Carpenter sử dụng theo Robbins &amp; Coulter, 11th ed.).</p>
+
+    <h3>2.4 Hệ thống phản hồi giữa các chức năng quản lý</h3>
+    <p>Bốn chức năng không tuyến tính một chiều mà có <strong>vòng phản hồi (feedback loops)</strong>:</p>
+    <ul>
+      <li><strong>Immediate correction</strong>: Sử dụng training, development, team building ngay trong giai đoạn Directing</li>
+      <li><strong>Moderate correction</strong>: Modify jobs, reengineer organization, benchmark processes</li>
+      <li><strong>Long-term correction</strong>: Redefine goals với quá trình hoạch định mới</li>
+    </ul>
+    <p>Điều này cho thấy quản lý là <strong>quá trình vòng lặp liên tục</strong>, không phải chuỗi tuyến tính.</p>
+
+    <h3>2.5 Mintzberg's 10 Managerial Roles (1973)</h3>
+    <p>Henry Mintzberg — giáo sư McGill University — nghiên cứu thực tế công việc của các CEO trong 1 tuần. Ông bác bỏ quan điểm cho rằng managers ngồi hoạch định và tổ chức một cách có hệ thống. Thực tế: công việc của managers <strong>bị phân mảnh, không liên tục, phản ứng với sự kiện</strong>. Ông phân nhóm thành 10 vai trò trong 3 danh mục:</p>
+
+    <div class="mintz-grid">
+      <div class="mintz-cat cat-inter">
+        <div class="cat-head">Interpersonal Roles<br><em style="font-weight:300; font-size:0.85em;">(Provide Information)</em></div>
+        <div class="cat-body">
+          <ul>
+            <li><strong>Figurehead</strong>: Đại diện tổ chức trong các lễ nghi chính thức — ký văn bản, tiếp khách, dự khai trương. Thực hiện nghĩa vụ pháp lý và xã hội.</li>
+            <li><strong>Leader</strong>: Động viên, phát triển nhân viên; chịu trách nhiệm về kết quả của team.</li>
+            <li><strong>Liaison</strong>: Xây dựng và duy trì mạng lưới bên ngoài bộ phận/tổ chức — các đối tác, đồng nghiệp cùng ngành.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="mintz-cat cat-info">
+        <div class="cat-head">Informational Roles<br><em style="font-weight:300; font-size:0.85em;">(Process Information)</em></div>
+        <div class="cat-body">
+          <ul>
+            <li><strong>Monitor</strong>: Chủ động tìm kiếm thông tin từ nội bộ và bên ngoài để hiểu tổ chức và môi trường.</li>
+            <li><strong>Disseminator</strong>: Phân phối thông tin đến các thành viên trong tổ chức.</li>
+            <li><strong>Spokesperson</strong>: Đại diện tổ chức truyền thông tin ra bên ngoài — báo chí, cổ đông, cộng đồng.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="mintz-cat cat-deci">
+        <div class="cat-head">Decisional Roles<br><em style="font-weight:300; font-size:0.85em;">(Use Information)</em></div>
+        <div class="cat-body">
+          <ul>
+            <li><strong>Entrepreneur</strong>: Khởi xướng thay đổi, tìm kiếm cơ hội cải thiện tổ chức.</li>
+            <li><strong>Disturbance Handler</strong>: Phản ứng với áp lực không lường trước — khủng hoảng, xung đột, gián đoạn hoạt động.</li>
+            <li><strong>Resource Allocator</strong>: Phân bổ nguồn lực tổ chức — tiền, thời gian, nhân lực, thiết bị.</li>
+            <li><strong>Negotiator</strong>: Đại diện tổ chức trong các đàm phán quan trọng với đối tác, nhân viên, nhà cung cấp.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight">
+      <strong>Insight của Mintzberg:</strong> Managers không chỉ "plan, organize, lead, control" theo trình tự. Họ liên tục chuyển đổi giữa các vai trò trong ngày làm việc. Vai trò Decisional đặc biệt quan trọng vì sử dụng thông tin để đưa ra hành động.
+    </div>
+
+    <h3>2.6 The Leadership Pipeline — Chuỗi lãnh đạo (Charan, Drotter &amp; Noel)</h3>
+    <p>Mô hình Leadership Pipeline mô tả 7 cấp độ lãnh đạo với 6 giai đoạn chuyển tiếp quan trọng. Mỗi Passage đòi hỏi thay đổi về <em>work values, time applications, và skills</em>:</p>
+
+    <div class="pipeline">
+      <div class="pipeline-level">
+        <div class="lvl-num">1</div>
+        <div class="lvl-title">Manager of Self</div>
+        <div class="lvl-desc">Cá nhân đóng góp trực tiếp — chuyên môn kỹ thuật, tự quản lý thời gian và kết quả cá nhân.</div>
+      </div>
+      <div class="pipeline-level">
+        <div class="lvl-num" style="background:#e67e22">P1</div>
+        <div class="lvl-title">Passage One</div>
+        <div class="lvl-desc">Chuyển từ Managing Self → Managing Others. Thách thức: từ bỏ làm việc trực tiếp, học cách ủy quyền và phát triển người khác.</div>
+      </div>
+      <div class="pipeline-level">
+        <div class="lvl-num">2</div>
+        <div class="lvl-title">Manager of Others</div>
+        <div class="lvl-desc">Quản lý nhóm — lập kế hoạch công việc, tuyển dụng, huấn luyện, đánh giá hiệu suất nhân viên.</div>
+      </div>
+      <div class="pipeline-level">
+        <div class="lvl-num" style="background:#e67e22">P2</div>
+        <div class="lvl-title">Passage Two</div>
+        <div class="lvl-desc">Chuyển từ Managing Others → Manager of Managers. Thách thức: phải quản lý cả managers, không chỉ individual contributors.</div>
+      </div>
+      <div class="pipeline-level">
+        <div class="lvl-num">3</div>
+        <div class="lvl-title">Manager of Managers</div>
+        <div class="lvl-desc">Quản lý các manager khác — cần kỹ năng chọn lựa và phát triển manager, không còn trực tiếp quản lý nhân viên.</div>
+      </div>
+      <div class="pipeline-level">
+        <div class="lvl-num" style="background:#e67e22">P3</div>
+        <div class="lvl-title">Passage Three</div>
+        <div class="lvl-desc">→ Functional Manager. Lần đầu tiên quản lý các lĩnh vực ngoài chuyên môn của mình.</div>
+      </div>
+      <div class="pipeline-level">
+        <div class="lvl-num">4</div>
+        <div class="lvl-title">Functional Manager</div>
+        <div class="lvl-desc">Quản lý toàn bộ một phòng ban/chức năng (Marketing, Finance, Operations). Cần tư duy chiến lược chức năng.</div>
+      </div>
+      <div class="pipeline-level">
+        <div class="lvl-num" style="background:#e67e22">P4</div>
+        <div class="lvl-title">Passage Four</div>
+        <div class="lvl-desc">→ Business Manager. Lần đầu chịu trách nhiệm P&amp;L (Profit &amp; Loss) của một đơn vị kinh doanh.</div>
+      </div>
+      <div class="pipeline-level">
+        <div class="lvl-num">5</div>
+        <div class="lvl-title">Business Manager</div>
+        <div class="lvl-desc">Điều hành một business unit độc lập — cần cân bằng ngắn hạn và dài hạn, nội bộ và thị trường.</div>
+      </div>
+      <div class="pipeline-level">
+        <div class="lvl-num" style="background:#e67e22">P5</div>
+        <div class="lvl-title">Passage Five</div>
+        <div class="lvl-desc">→ Group Manager. Quản lý nhiều business managers, cần phân bổ nguồn lực xuyên đơn vị.</div>
+      </div>
+      <div class="pipeline-level">
+        <div class="lvl-num">6</div>
+        <div class="lvl-title">Group Manager</div>
+        <div class="lvl-desc">Quản lý danh mục các business units — tư duy portfolio, xác định đâu cần đầu tư và đâu cần thoái vốn.</div>
+      </div>
+      <div class="pipeline-level">
+        <div class="lvl-num" style="background:#e67e22">P6</div>
+        <div class="lvl-title">Passage Six</div>
+        <div class="lvl-desc">→ Enterprise Manager. Chuyển từ quản lý bộ phận sang lãnh đạo toàn tổ chức.</div>
+      </div>
+      <div class="pipeline-level">
+        <div class="lvl-num">7</div>
+        <div class="lvl-title">Enterprise Manager (CEO)</div>
+        <div class="lvl-desc">Lãnh đạo toàn doanh nghiệp — tầm nhìn dài hạn, quản lý hội đồng quản trị, định hình văn hóa tổ chức.</div>
+      </div>
+    </div>
+
+    <h3>2.7 Hiệu suất tổ chức — Ba cấp độ</h3>
+    <h4>A. Organizational Performance — Hiệu suất tổ chức (Triple Bottom Line)</h4>
+    <p><strong>Triple Bottom Line (3Ps)</strong> — Elkington, 1994: Tổ chức phải đo lường thành công trên <strong>ba chiều</strong>, không chỉ lợi nhuận:</p>
+    <div class="card-grid">
+      <div class="card card-orange">
+        <div class="card-title">Profit (Economic)</div>
+        <div class="card-body">Hiệu suất kinh tế = khả năng tạo ra lợi nhuận thông qua <em>product innovation</em> và sử dụng hiệu quả nguồn lực. Đo bằng: ROI, ROE, EPS, revenue growth.</div>
+      </div>
+      <div class="card card-blue">
+        <div class="card-title">People (Social)</div>
+        <div class="card-body">Corporate Social Responsibility (CSR): tổ chức cân nhắc tác động của hoạt động đến customers, suppliers, employees, shareholders, communities.</div>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">Planet (Environmental)</div>
+        <div class="card-body">Tác động môi trường — resource consumption, land use, waste management. Sustainable business practices.</div>
+      </div>
+    </div>
+
+    <h4>B. Individual-Level Performance — Hiệu suất cá nhân</h4>
+    <div class="card-grid">
+      <div class="card card-blue">
+        <div class="card-title">In-Role Performance</div>
+        <div class="card-body">Thực hiện đúng những gì được mô tả trong job description. Cá nhân được tuyển dụng với kỳ vọng cụ thể này. Đây là hiệu suất <em>tối thiểu</em> cần đạt.</div>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">Extra-Role Performance (OCBs)</div>
+        <div class="card-body">Hành vi <em>tự nguyện</em> vượt mô tả công việc — không được khen thưởng trực tiếp nhưng tạo ra giá trị lớn. Organizational Citizenship Behaviors (OCBs).</div>
+      </div>
+    </div>
+
+    <h4>C. Organizational Citizenship Behaviors (OCBs)</h4>
+    <p>OCBs là <strong>các hành vi tự nguyện giúp người khác và tạo lợi ích cho tổ chức</strong>, không nằm trong yêu cầu công việc chính thức. Carpenter phân loại chi tiết:</p>
+
+    <div class="ocb-grid">
+      <div class="ocb-card">
+        <div class="ocb-name">Altruism</div>
+        <div class="ocb-def">Hành vi giúp đỡ tự nguyện — hướng dẫn nhân viên mới dùng thiết bị, giúp đồng nghiệp hoàn thành khối lượng công việc tồn đọng.</div>
+      </div>
+      <div class="ocb-card">
+        <div class="ocb-name">Interpersonal Helping</div>
+        <div class="ocb-def">Hỗ trợ đồng nghiệp khi họ cần trong công việc — tập trung vào hỗ trợ cá nhân cụ thể.</div>
+      </div>
+      <div class="ocb-card">
+        <div class="ocb-name">Courtesy</div>
+        <div class="ocb-def">Cử chỉ ngăn ngừa vấn đề — thông báo trước về lịch trình, hỏi ý kiến trước khi quyết định ảnh hưởng người khác.</div>
+      </div>
+      <div class="ocb-card">
+        <div class="ocb-name">Peacemaking</div>
+        <div class="ocb-def">Hành vi ngăn chặn, giải quyết hoặc giảm nhẹ xung đột giữa người với người trong tổ chức.</div>
+      </div>
+      <div class="ocb-card">
+        <div class="ocb-name">Cheerleading</div>
+        <div class="ocb-def">Khuyến khích và tăng cường động lực đồng nghiệp bằng lời nói và cử chỉ tích cực.</div>
+      </div>
+      <div class="ocb-card">
+        <div class="ocb-name">Sportsmanship</div>
+        <div class="ocb-def">Thái độ công dân — chịu đựng sự bất tiện và áp đặt tất yếu của công việc mà không phàn nàn.</div>
+      </div>
+      <div class="ocb-card">
+        <div class="ocb-name">Organizational Loyalty</div>
+        <div class="ocb-def">Nhận diện và trung thành với tổ chức — vượt lên trên lợi ích cục bộ của cá nhân/phòng ban.</div>
+      </div>
+      <div class="ocb-card">
+        <div class="ocb-name">Organizational Compliance</div>
+        <div class="ocb-def">Tuân thủ tự nguyện cấu trúc, mô tả công việc và chính sách nhân sự — thể hiện qua đúng giờ, quản lý tài nguyên tốt.</div>
+      </div>
+      <div class="ocb-card">
+        <div class="ocb-name">Individual Initiative</div>
+        <div class="ocb-def">Hành xử vượt mức tối thiểu yêu cầu về chuyên cần, đúng giờ, giữ gìn, bảo tồn tài nguyên.</div>
+      </div>
+      <div class="ocb-card">
+        <div class="ocb-name">Civic Virtue</div>
+        <div class="ocb-def">Tham gia có trách nhiệm vào đời sống chính trị của tổ chức — đọc thông báo, dự họp, cập nhật vấn đề tổ chức.</div>
+      </div>
+      <div class="ocb-card">
+        <div class="ocb-name">Self-Development</div>
+        <div class="ocb-def">Chủ động cải thiện kiến thức, kỹ năng, năng lực để đóng góp tốt hơn — tham gia khóa đào tạo nâng cao, học kỹ năng mới.</div>
+      </div>
+    </div>
+
+    <h4>D. Group-Level Performance</h4>
+    <p>Hiệu suất nhóm tập trung vào cả <strong>kết quả (outcomes)</strong> và <strong>quá trình (process)</strong> của tập thể. Phân biệt quan trọng:</p>
+    <table>
+      <thead>
+        <tr><th>Tiêu chí</th><th>Group — Nhóm</th><th>Team — Đội</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Định nghĩa</td><td>Tập hợp cá nhân; hiệu suất = tổng đầu vào − process loss</td><td>Nhóm nhỏ với kỹ năng bổ sung cho nhau, cam kết mục tiêu chung</td></tr>
+        <tr><td>Trách nhiệm</td><td>Có thể theo đuổi agenda riêng trong bối cảnh nhóm</td><td>Mutually accountable — cùng chịu trách nhiệm chung</td></tr>
+        <tr><td>Hiệu suất</td><td>Group output = inputs − process losses</td><td>Synergy — kết quả lớn hơn tổng đầu vào cá nhân</td></tr>
+        <tr><td>Commitment</td><td>Thấp hơn; mục tiêu có thể mơ hồ</td><td>Cam kết cao với mục tiêu, phương pháp, và nhau</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</section>
+
+<!-- ============================================================ SECTION 3 -->
+<section class="s3" id="models">
+  <div class="section-header">
+    <span class="icon">🏗️</span>
+    <div>
+      <h2>Phần 3 – Mô hình & Khung phân tích</h2>
+      <em>P-O-L-C Framework đầy đủ · Fayol's 14 Principles · CSR</em>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>3.1 Khung P-O-L-C — Chi tiết toàn diện</h3>
+    <p><em>Nguồn: Robbins &amp; Coulter, Management 11th ed.; Carpenter et al., Principles of Management 2.0</em></p>
+
+    <div class="polc-table">
+      <div class="polc-col p-col">
+        <div class="polc-head">P — Planning<br>Hoạch định</div>
+        <div class="polc-body">
+          <strong>Định nghĩa:</strong> Setting goals, establishing strategies, and developing plans to coordinate activities.<br><br>
+          <strong>Nội dung gồm:</strong>
+          <ul>
+            <li>1. Vision &amp; Mission</li>
+            <li>2. Strategizing</li>
+            <li>3. Goals &amp; Objectives</li>
+          </ul>
+          <br>
+          <strong>Roman Empire example:</strong> Hoạch định kiến trúc — cầu, đường, cống dẫn nước, nhà tắm công cộng; lưới đô thị được áp dụng đến ngày nay.
+        </div>
+      </div>
+      <div class="polc-col o-col">
+        <div class="polc-head">O — Organizing<br>Tổ chức</div>
+        <div class="polc-body">
+          <strong>Định nghĩa:</strong> Determining what needs to be done, how it will be done, and who is to do it.<br><br>
+          <strong>Nội dung gồm:</strong>
+          <ul>
+            <li>1. Organization Design</li>
+            <li>2. Culture</li>
+            <li>3. Social Networks</li>
+          </ul>
+          <br>
+          <strong>Roman Empire example:</strong> Quân đội La Mã — Legions gồm ~5,000 quân, chia thành Cohorts (~600), chia thành Centuries (~100).
+        </div>
+      </div>
+      <div class="polc-col l-col">
+        <div class="polc-head">L — Leading<br>Lãnh đạo</div>
+        <div class="polc-body">
+          <strong>Định nghĩa:</strong> Motivating, leading, and any other actions involved in dealing with people.<br><br>
+          <strong>Nội dung gồm:</strong>
+          <ul>
+            <li>1. Leadership</li>
+            <li>2. Decision Making</li>
+            <li>3. Communications</li>
+            <li>4. Groups/Teams</li>
+            <li>5. Motivation</li>
+          </ul>
+          <br>
+          <strong>Roman Empire example:</strong> Hệ thống checks &amp; balances — hai Consuls được bầu hàng năm, được tư vấn bởi Senate.
+        </div>
+      </div>
+      <div class="polc-col c-col">
+        <div class="polc-head">C — Controlling<br>Kiểm soát</div>
+        <div class="polc-body">
+          <strong>Định nghĩa:</strong> Monitoring activities to ensure they are accomplished as planned.<br><br>
+          <strong>Nội dung gồm:</strong>
+          <ul>
+            <li>1. Systems/Processes</li>
+            <li>2. Strategic Human Resources</li>
+          </ul>
+          <br>
+          <strong>Roman Empire example:</strong> Luật La Mã — kiểm soát hòa bình trên lãnh thổ, quyền sở hữu tài sản, hiệu quả hơn mọi đế chế trước đó.
+        </div>
+      </div>
+    </div>
+
+    <h3>3.2 Fayol's 14 Principles of Management</h3>
+    <p>Bên cạnh 5 chức năng, Fayol đề xuất <strong>14 nguyên tắc</strong> để vận hành tổ chức hiệu quả. Đây là nền tảng của lý thuyết quản lý cổ điển:</p>
+
+    <table class="tbl-fayol">
+      <thead>
+        <tr><th>#</th><th>Nguyên tắc</th><th>Giải thích chi tiết</th><th>Ứng dụng hiện đại</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Division of Work</td><td>Chuyên môn hóa công việc → nâng cao năng suất và chất lượng. Mỗi người làm ít nhiệm vụ hơn nhưng thành thạo hơn.</td><td>Job design, phân công chuyên biệt trong nhà máy, phòng ban</td></tr>
+        <tr><td>2</td><td>Authority &amp; Responsibility</td><td>Quyền hạn phải đi kèm trách nhiệm tương ứng. Managers cần quyền ra lệnh để thực thi trách nhiệm.</td><td>Job description, accountability frameworks</td></tr>
+        <tr><td>3</td><td>Discipline</td><td>Nhân viên phải tuân thủ quy tắc, thỏa thuận. Discipline cần bình đẳng và công bằng.</td><td>Code of conduct, HR policies, performance management</td></tr>
+        <tr><td>4</td><td>Unity of Command</td><td>Mỗi nhân viên chỉ nhận lệnh từ <strong>một</strong> cấp trên. Tránh mâu thuẫn mệnh lệnh.</td><td>Nguyên tắc "one boss" trong cơ cấu tổ chức truyền thống</td></tr>
+        <tr><td>5</td><td>Unity of Direction</td><td>Mỗi nhóm hoạt động hướng đến một mục tiêu chung với một kế hoạch và một người lãnh đạo.</td><td>Strategic alignment, OKRs (Objectives &amp; Key Results)</td></tr>
+        <tr><td>6</td><td>Subordination of Individual Interest to General Interest</td><td>Lợi ích cá nhân phải đặt sau lợi ích tập thể. Nhà quản lý phải hòa giải khi xung đột.</td><td>Teamwork culture, organizational values</td></tr>
+        <tr><td>7</td><td>Remuneration</td><td>Lương thưởng phải công bằng cho cả nhân viên và tổ chức. Khuyến khích năng suất.</td><td>Compensation design, pay-for-performance systems</td></tr>
+        <tr><td>8</td><td>Centralization</td><td>Cần xác định mức độ tập trung hóa phù hợp. Không phải tập trung hóa hay phân quyền tuyệt đối.</td><td>Organizational design, decentralization in modern firms</td></tr>
+        <tr><td>9</td><td>Scalar Chain (Hierarchy)</td><td>Chuỗi quyền lực từ trên xuống dưới. Giao tiếp thông thường đi theo chuỗi, nhưng có thể "ngang" trong trường hợp cấp bách (Gangplank).</td><td>Organizational charts, escalation paths</td></tr>
+        <tr><td>10</td><td>Order</td><td>Mỗi người, mỗi vật có vị trí xác định. Trật tự xã hội và vật chất.</td><td>Workplace organization, 5S methodology</td></tr>
+        <tr><td>11</td><td>Equity</td><td>Nhà quản lý đối xử với nhân viên bằng sự tử tế và công bằng để khuyến khích trung thành.</td><td>Equal opportunity, fair treatment policies</td></tr>
+        <tr><td>12</td><td>Stability of Tenure</td><td>Giảm thiểu turnover — nhân viên cần thời gian để thành thạo công việc. Turnover cao tốn kém và gây mất ổn định.</td><td>Employee retention programs, onboarding</td></tr>
+        <tr><td>13</td><td>Initiative</td><td>Khuyến khích nhân viên đề xuất ý kiến và chủ động thực hiện kế hoạch — tạo sự thỏa mãn và động lực.</td><td>Empowerment, intrapreneurship, innovation programs</td></tr>
+        <tr><td>14</td><td>Esprit de Corps</td><td>Xây dựng tinh thần đoàn kết, hòa hợp nhóm — strength in unity. Tránh chia rẽ.</td><td>Team building, organizational culture, morale</td></tr>
+      </tbody>
+    </table>
+
+    <h3>3.3 Corporate Social Responsibility (CSR) — Khái niệm và thực hành</h3>
+    <div class="definition-box">
+      <div class="label">Định nghĩa CSR</div>
+      <div class="content">CSR là khái niệm trong đó tổ chức cân nhắc lợi ích của xã hội bằng cách chịu trách nhiệm về tác động của hoạt động đến <strong>customers, suppliers, employees, shareholders, communities, and the environment</strong> trong mọi khía cạnh hoạt động.</div>
+    </div>
+    <p>Ví dụ tiêu biểu từ slide:</p>
+    <ul>
+      <li><strong>The Body Shop</strong>: Social audit hàng năm từ 1989; three-part Mission (Economic, Product, Social)</li>
+      <li><strong>TOMS Shoes</strong>: "One for One" — mua 1 đôi giày = tặng 1 đôi cho trẻ em nghèo</li>
+      <li><strong>Ben &amp; Jerry's</strong>: Phúc lợi nhân viên, phát triển cộng đồng, cam kết môi trường</li>
+      <li><strong>SC Johnson</strong>: "Good neighbor" — cam kết cộng đồng toàn cầu</li>
+      <li><strong>Target</strong>: 5% thu nhập → cộng đồng từ 1946; $3M+/tuần</li>
+    </ul>
+
+    <h3>3.4 Lịch sử tư tưởng quản lý — Bối cảnh Carpenter</h3>
+    <p>Để hiểu tại sao P-O-L-C ra đời, cần biết lịch sử phát triển:</p>
+    <table>
+      <thead><tr><th>Trường phái</th><th>Thời kỳ</th><th>Đại diện</th><th>Đóng góp chính</th></tr></thead>
+      <tbody>
+        <tr><td>Scientific Management</td><td>1880–1920</td><td>Frederick W. Taylor</td><td>Time &amp; motion studies; chia nhỏ công việc; trả lương theo năng suất; "one best way"</td></tr>
+        <tr><td>Classical Administrative</td><td>1910–1940</td><td>Henri Fayol</td><td>14 Principles; 5 Functions → P-O-L-C</td></tr>
+        <tr><td>Bureaucratic Management</td><td>1900–1950</td><td>Max Weber</td><td>Tổ chức dựa trên luật lệ, phân cấp rõ ràng, tuyển dụng theo năng lực</td></tr>
+        <tr><td>Human Relations</td><td>1920–1950</td><td>Elton Mayo (Hawthorne Studies)</td><td>Yếu tố xã hội quan trọng hơn điều kiện vật chất; nhóm không chính thức ảnh hưởng năng suất</td></tr>
+        <tr><td>Behavioral Science</td><td>1950–1970</td><td>Maslow, McGregor, Herzberg</td><td>Tháp nhu cầu; Theory X vs. Y; motivation factors</td></tr>
+        <tr><td>Systems Theory</td><td>1960–nay</td><td>Nhiều tác giả</td><td>Tổ chức là hệ thống mở; tác động lẫn nhau với môi trường</td></tr>
+        <tr><td>Contingency Theory</td><td>1970–nay</td><td>Lawrence &amp; Lorsch</td><td>Không có "one best way" — phụ thuộc vào hoàn cảnh cụ thể</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</section>
+
+<!-- ============================================================ SECTION 4 -->
+<section class="s4" id="examples">
+  <div class="section-header">
+    <span class="icon">🌍</span>
+    <div>
+      <h2>Phần 4 – Ví dụ thực tiễn</h2>
+      <em>P-O-L-C trong thực tế · Mintzberg Roles · OCBs · CSR</em>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>4.1 P-O-L-C trong Đế chế La Mã (slide example)</h3>
+    <p>Slide Carpenter dùng ví dụ Roman Empire để minh họa P-O-L-C vượt thời gian:</p>
+    <table>
+      <thead><tr><th>Chức năng</th><th>Biểu hiện trong Roman Empire</th><th>Bài học</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Planning</strong></td><td>Hoạch định kiến trúc — cầu, đường, aqueducts, baths; lưới đô thị được copy đến ngày nay</td><td>Tầm nhìn dài hạn + hệ thống hạ tầng = sức bền tổ chức</td></tr>
+        <tr><td><strong>Organizing</strong></td><td>Quân đội: Legions (~5,000) → Cohorts (~600) → Centuries (~100)</td><td>Cơ cấu phân cấp rõ ràng → unity of command; scalable</td></tr>
+        <tr><td><strong>Leading</strong></td><td>Hai Consuls được bầu hàng năm + Senate tư vấn → Checks &amp; Balances</td><td>Phân quyền kiểm soát lẫn nhau → được mô phỏng trong chính phủ và doanh nghiệp hiện đại</td></tr>
+        <tr><td><strong>Controlling</strong></td><td>Roman Law — kiểm soát hành vi công dân, đất đai, quyền sở hữu; hiệu quả hơn các đế chế trước</td><td>Systems &amp; processes đảm bảo tính nhất quán hành vi tổ chức</td></tr>
+      </tbody>
+    </table>
+
+    <h3>4.2 Mintzberg Roles trong thực tế CEO</h3>
+    <div class="card-grid">
+      <div class="card card-blue">
+        <div class="card-title">Elon Musk — Entrepreneur + Spokesperson</div>
+        <div class="card-body">Liên tục khởi xướng thay đổi (Electric vehicles, SpaceX, Twitter/X). Dùng Twitter làm công cụ Spokesperson cho Tesla và SpaceX — thông báo sản phẩm mới, ảnh hưởng cổ phiếu.</div>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">Tim Cook — Resource Allocator + Liaison</div>
+        <div class="card-body">Phân bổ hàng tỷ USD cho R&amp;D, acquisitions. Duy trì quan hệ với suppliers toàn cầu (đặc biệt Foxconn) — vai trò Liaison quan trọng.</div>
+      </div>
+      <div class="card card-orange">
+        <div class="card-title">Middle Manager — Monitor + Disturbance Handler</div>
+        <div class="card-body">Quản lý cấp trung dành ~40% thời gian xử lý thông tin (Monitor) và phản ứng với sự cố bất ngờ — conflict giữa nhóm, trễ deadline (Disturbance Handler).</div>
+      </div>
+    </div>
+
+    <h3>4.3 OCBs trong tổ chức — Vai trò thực tế</h3>
+    <p>Nghiên cứu chỉ ra rằng OCBs <strong>dự báo hiệu suất tổ chức</strong> tốt hơn in-role performance vì:</p>
+    <ul>
+      <li><strong>Altruism</strong>: Nhân viên kỳ cựu hướng dẫn nhân viên mới → giảm ramp-up time, giảm chi phí đào tạo chính thức</li>
+      <li><strong>Civic Virtue</strong>: Nhân viên dự các cuộc họp không bắt buộc, đọc email công ty → thông tin lan toa nhanh hơn, ít miscommunication</li>
+      <li><strong>Conscientiousness</strong>: Nhân viên đến sớm, ở muộn khi cần → buffer capacity cho tổ chức</li>
+      <li><strong>Self-Development</strong>: Nhân viên tự học thêm kỹ năng mới → tổ chức có nguồn nhân lực linh hoạt hơn</li>
+    </ul>
+    <div class="highlight">
+      <strong>Paradox:</strong> OCBs không được reward trực tiếp nhưng managers đánh giá cao nhân viên có OCBs cao khi xét thăng tiến và đánh giá hiệu suất — đây là "hiệu quả gián tiếp" của OCBs.
+    </div>
+
+    <h3>4.4 Ví dụ CSR — Ben &amp; Jerry's</h3>
+    <p>Ben &amp; Jerry's từ 1989 thực hiện <strong>Social Audit</strong> hàng năm — kiểm toán tác động xã hội và môi trường, song hành với báo cáo tài chính. Mission Statement gồm 3 phần:</p>
+    <ol>
+      <li><strong>Economic Mission</strong>: Vận hành công ty mang lại lợi nhuận bền vững</li>
+      <li><strong>Product Mission</strong>: Tạo ra các sản phẩm chất lượng cao sử dụng nguyên liệu tự nhiên</li>
+      <li><strong>Social Mission</strong>: Tích cực cải thiện chất lượng cuộc sống cộng đồng</li>
+    </ol>
+    <p>Đây là ví dụ điển hình về Triple Bottom Line — ba sứ mệnh song hành thay vì prioritize lợi nhuận trên tất cả.</p>
+
+    <h3>4.5 Leadership Pipeline — Ví dụ từ thực tiễn Việt Nam</h3>
+    <table>
+      <thead><tr><th>Passage</th><th>Thách thức điển hình</th><th>Lỗi phổ biến</th></tr></thead>
+      <tbody>
+        <tr><td>P1: Self → Others</td><td>Chuyên gia giỏi được thăng lên làm trưởng nhóm</td><td>Tiếp tục làm việc kỹ thuật thay vì quản lý đội — micromanagement</td></tr>
+        <tr><td>P2: Others → Mgr of Mgrs</td><td>Quản lý các team lead</td><td>Không phát triển được managers dưới — chỉ báo cáo kết quả, không mentor</td></tr>
+        <tr><td>P4: → Business Mgr</td><td>Lần đầu chịu trách nhiệm P&amp;L</td><td>Tư duy chức năng — chỉ tối ưu bộ phận mình, bỏ qua cross-function impacts</td></tr>
+        <tr><td>P6: → Enterprise Mgr</td><td>CEO mới được bổ nhiệm</td><td>Tiếp tục can thiệp chi tiết vào business units thay vì đặt ra strategy và culture</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</section>
+
+<!-- ============================================================ SECTION 5 -->
+<section class="s5" id="notes">
+  <div class="section-header">
+    <span class="icon">⚠️</span>
+    <div>
+      <h2>Phần 5 – Ghi chú ôn tập &amp; Bẫy nhận thức</h2>
+      <em>Common Pitfalls · Review Questions · Key Vocabulary</em>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>5.1 Bẫy nhận thức thường gặp</h3>
+    <ul class="trap-list">
+      <li>
+        <strong>Nhầm "management = leadership":</strong> Nhiều sinh viên dùng hai từ này thay thế nhau. Trong Carpenter, <em>management</em> là khung hoạt động bao gồm P-O-L-C, còn <em>leadership</em> chỉ là chức năng L (Leading) trong khung đó. Quản lý bao trùm lãnh đạo, nhưng lãnh đạo không đủ để quản lý.
+      </li>
+      <li>
+        <strong>Fayol 5 functions ≠ P-O-L-C:</strong> Fayol có 5 functions (Planning, Organizing, Commanding, Coordinating, Controlling). P-O-L-C gộp Commanding + Coordinating thành Leading. Đây là sự hiện đại hóa, không phải thay thế hoàn toàn.
+      </li>
+      <li>
+        <strong>Nhầm Mintzberg Roles với Fayol Functions:</strong> P-O-L-C là <em>chức năng</em> (những gì managers cần làm về mặt lý thuyết). Mintzberg Roles là <em>vai trò thực tế</em> (những gì managers thực sự làm, quan sát được). Mintzberg phê phán Fayol vì quá lý tưởng hóa.
+      </li>
+      <li>
+        <strong>Nhầm In-Role và Extra-Role Performance:</strong> In-role = làm đúng JD = tối thiểu. Extra-role (OCBs) = tự nguyện, không được KPI trực tiếp nhưng có giá trị lớn. Nhân viên có thể có in-role cao nhưng OCB thấp (và ngược lại).
+      </li>
+      <li>
+        <strong>Nhầm Group và Team:</strong> Không phải mọi nhóm làm việc cùng nhau đều là "team." Team đòi hỏi <em>complementary skills + common purpose + mutual accountability</em>. Nhiều "team" trong doanh nghiệp thực ra chỉ là groups.
+      </li>
+      <li>
+        <strong>Triple Bottom Line không phải "CSR thay thế lợi nhuận":</strong> 3BL không nói rằng doanh nghiệp phải hy sinh lợi nhuận để có CSR. Mục tiêu là đạt cả ba — <em>Profit + People + Planet</em> — đồng thời. Nghiên cứu chỉ ra CSR mạnh tương quan với financial performance tốt hơn dài hạn.
+      </li>
+      <li>
+        <strong>Leadership Pipeline: "Passage" không tự động xảy ra:</strong> Nhiều người được thăng chức nhưng không thực sự "make the passage" — họ vẫn tư duy theo cấp độ cũ. Đây là nguyên nhân chính khiến nhiều leader mới thất bại dù có năng lực kỹ thuật tốt.
+      </li>
+    </ul>
+
+    <h3>5.2 Câu hỏi ôn tập</h3>
+    <ul class="review-list">
+      <li>Định nghĩa Management và Principles of Management là gì? Sự khác biệt giữa hai khái niệm này?</li>
+      <li>Liệt kê và giải thích 4 thành phần của P-O-L-C Framework. Cho ví dụ về mỗi thành phần trong một doanh nghiệp cụ thể.</li>
+      <li>Mintzberg phân 10 managerial roles thành 3 nhóm nào? Tại sao ông phê phán cách mô tả công việc quản lý theo Fayol?</li>
+      <li>Phân biệt Top Manager, Functional Manager, và General Manager. Trách nhiệm chính của mỗi loại là gì?</li>
+      <li>In-role performance và extra-role performance (OCBs) khác nhau như thế nào? Tại sao OCBs quan trọng dù không được khen thưởng trực tiếp?</li>
+      <li>Triple Bottom Line (3Ps) là gì? CSR liên quan đến 3BL như thế nào?</li>
+      <li>Leadership Pipeline có bao nhiêu cấp độ và bao nhiêu Passages? Tại sao mỗi Passage là một thách thức quan trọng?</li>
+      <li>Fayol đề xuất bao nhiêu nguyên tắc quản lý? Nguyên tắc nào quan trọng nhất và tại sao?</li>
+      <li>So sánh Group và Team. Khi nào một nhóm trở thành team?</li>
+      <li>Vai trò của Leadership, Entrepreneurship, và Strategy trong Principles of Management là gì? Tại sao ba lĩnh vực này được đặt trong một Venn diagram?</li>
+    </ul>
+
+    <h3>5.3 Bảng từ khóa trọng tâm</h3>
+    <table>
+      <thead><tr><th>Thuật ngữ</th><th>Định nghĩa ngắn</th><th>Liên quan đến</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Management</strong></td><td>Nghệ thuật hoàn thành công việc thông qua người khác</td><td>Định nghĩa cơ bản</td></tr>
+        <tr><td><strong>P-O-L-C Framework</strong></td><td>Planning, Organizing, Leading, Controlling — 4 chức năng quản lý</td><td>Fayol, Robbins &amp; Coulter</td></tr>
+        <tr><td><strong>Mintzberg's 10 Roles</strong></td><td>Interpersonal (3) + Informational (3) + Decisional (4)</td><td>Thực tế công việc manager</td></tr>
+        <tr><td><strong>Leadership Pipeline</strong></td><td>7 cấp độ lãnh đạo, 6 Passages chuyển tiếp</td><td>Charan, Drotter, Noel</td></tr>
+        <tr><td><strong>OCBs</strong></td><td>Organizational Citizenship Behaviors — extra-role performance tự nguyện</td><td>Individual performance</td></tr>
+        <tr><td><strong>Triple Bottom Line</strong></td><td>Profit + People + Planet — 3 chiều đo lường tổ chức</td><td>CSR, sustainability</td></tr>
+        <tr><td><strong>CSR</strong></td><td>Corporate Social Responsibility — trách nhiệm xã hội doanh nghiệp</td><td>Triple Bottom Line</td></tr>
+        <tr><td><strong>In-Role Performance</strong></td><td>Thực hiện đúng mô tả công việc</td><td>Individual performance</td></tr>
+        <tr><td><strong>Esprit de Corps</strong></td><td>Fayol's Principle #14 — tinh thần đoàn kết</td><td>14 Principles</td></tr>
+        <tr><td><strong>Unity of Command</strong></td><td>Fayol's Principle #4 — mỗi người chỉ có một cấp trên</td><td>14 Principles</td></tr>
+        <tr><td><strong>Figurehead</strong></td><td>Vai trò đại diện tổ chức trong các nghi thức — thuộc Interpersonal Roles</td><td>Mintzberg</td></tr>
+        <tr><td><strong>Disturbance Handler</strong></td><td>Vai trò xử lý khủng hoảng bất ngờ — thuộc Decisional Roles</td><td>Mintzberg</td></tr>
+        <tr><td><strong>Strategy</strong></td><td>Central, integrated, externally-oriented concept of how org will achieve objectives</td><td>Strategic management</td></tr>
+        <tr><td><strong>Entrepreneurship</strong></td><td>Nhận diện cơ hội + sử dụng/tạo nguồn lực triển khai ý tưởng đổi mới</td><td>Innovation, leadership</td></tr>
+      </tbody>
+    </table>
+
+    <h3>5.4 So sánh tổng hợp: Fayol vs. Mintzberg</h3>
+    <table class="compare-table">
+      <thead><tr><th>Tiêu chí</th><th>Fayol (P-O-L-C)</th><th>Mintzberg (10 Roles)</th></tr></thead>
+      <tbody>
+        <tr><td>Phương pháp</td><td>Prescriptive — mô tả những gì NQLÝ NÊN làm</td><td>Descriptive — mô tả những gì NQLÝ THỰC SỰ làm</td></tr>
+        <tr><td>Cơ sở</td><td>Kinh nghiệm thực tiễn của Fayol tại tập đoàn khai thác mỏ</td><td>Quan sát trực tiếp 5 CEO trong 1 tuần (nghiên cứu 1973)</td></tr>
+        <tr><td>Bản chất quản lý</td><td>Có hệ thống, có kế hoạch, logic</td><td>Bị phân mảnh, không liên tục, phản ứng với sự kiện</td></tr>
+        <tr><td>Giá trị</td><td>Khung lý thuyết để học và dạy quản lý</td><td>Mô tả thực tế — giúp phát triển năng lực cụ thể</td></tr>
+        <tr><td>Hạn chế</td><td>Quá lý tưởng hóa; bỏ qua bản chất hỗn độn thực tế</td><td>Nghiên cứu mẫu nhỏ, chủ yếu top management</td></tr>
+        <tr><td>Ứng dụng</td><td>Job design, organizational design, training curricula</td><td>Competency development, leadership assessment</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</section>
+
+</main>
+
+<footer style="text-align:center; padding: 24px; color: #7f8c8d; font-size: 13px; border-top: 1px solid #ecf0f1; margin-top: 16px;">
+  GK5009 — Quản lý và Lãnh đạo | Carpenter et al., <em>Principles of Management 2.0</em> (2013) | Tài liệu ôn tập tổng hợp
+</footer>
+
+</body>
+</html>

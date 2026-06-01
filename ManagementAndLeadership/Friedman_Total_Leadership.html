@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Friedman — Total Leadership | GK5009</title>
+<style>
+  :root {
+    --primary: #7b2d00;
+    --secondary: #c0392b;
+    --accent: #e67e22;
+    --accent2: #f39c12;
+    --light: #fdf6f0;
+    --lighter: #fffaf7;
+    --border: #f0c9a0;
+    --text: #1c1c1c;
+    --muted: #6e4e3a;
+    --white: #ffffff;
+    --green: #145a32;
+    --blue: #1a4c7e;
+    --purple: #6c3483;
+    --teal: #117a65;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; background: #fdf0e8; color: var(--text); line-height: 1.75; font-size: 15px; }
+
+  /* ── HEADER ── */
+  header { background: linear-gradient(135deg, #7b2d00 0%, #a93226 55%, #c0392b 100%); color: white; padding: 48px 40px 36px; border-bottom: 4px solid var(--accent); }
+  header .tag { display: inline-block; background: var(--accent); color: white; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  header h1 { font-size: 2.2rem; font-weight: 800; line-height: 1.2; margin-bottom: 8px; }
+  header .subtitle { font-size: 1.05rem; opacity: 0.88; margin-bottom: 14px; }
+  header .meta { display: flex; gap: 24px; font-size: 0.84rem; opacity: 0.72; flex-wrap: wrap; }
+  header .meta span::before { content: "• "; opacity: 0.5; }
+
+  /* ── NAV ── */
+  nav { background: var(--primary); padding: 0 40px; display: flex; gap: 4px; overflow-x: auto; border-bottom: 3px solid var(--secondary); }
+  nav a { color: rgba(255,255,255,0.75); text-decoration: none; padding: 14px 18px; font-size: 0.82rem; font-weight: 600; white-space: nowrap; border-bottom: 3px solid transparent; margin-bottom: -3px; transition: all 0.2s; }
+  nav a:hover { color: white; border-bottom-color: var(--accent); }
+
+  /* ── MAIN ── */
+  main { max-width: 1100px; margin: 0 auto; padding: 40px 30px; }
+
+  /* ── SECTION ── */
+  .section { background: white; border-radius: 12px; margin-bottom: 36px; box-shadow: 0 2px 12px rgba(123,45,0,0.08); overflow: hidden; }
+  .section-header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 22px 32px; display: flex; align-items: center; gap: 16px; }
+  .section-number { width: 44px; height: 44px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 900; flex-shrink: 0; color: white; }
+  .section-header h2 { font-size: 1.35rem; font-weight: 800; }
+  .section-header .en { font-size: 0.85rem; opacity: 0.78; margin-top: 2px; font-style: italic; }
+  .section-body { padding: 32px; }
+
+  /* ── TYPOGRAPHY ── */
+  h3 { font-size: 1.15rem; color: var(--primary); font-weight: 700; margin: 28px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  h4 { font-size: 1rem; color: var(--secondary); font-weight: 700; margin: 20px 0 8px; }
+  p { margin-bottom: 14px; }
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { margin-bottom: 6px; }
+  strong { color: var(--primary); }
+
+  /* ── ZERO-SUM vs INTEGRATION ── */
+  .comparison { display: grid; grid-template-columns: 1fr 56px 1fr; margin: 20px 0; border-radius: 10px; overflow: hidden; }
+  .old-view { background: #fdecea; padding: 24px; }
+  .new-view { background: #d5f5e3; padding: 24px; }
+  .vs-mid { background: #2c3e50; color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1rem; }
+  .old-view h4 { color: #922b21; margin-bottom: 10px; font-size: 1.05rem; }
+  .new-view h4 { color: var(--green); margin-bottom: 10px; font-size: 1.05rem; }
+
+  /* ── DOMAINS ── */
+  .domains-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 18px 0; }
+  .domain-card { background: white; border-top: 5px solid; border-radius: 10px; padding: 20px 14px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+  .domain-card:nth-child(1) { border-top-color: #2980b9; }
+  .domain-card:nth-child(2) { border-top-color: #27ae60; }
+  .domain-card:nth-child(3) { border-top-color: #8e44ad; }
+  .domain-card:nth-child(4) { border-top-color: #e67e22; }
+  .domain-icon { font-size: 2.2rem; margin-bottom: 8px; }
+  .domain-name { font-weight: 800; color: var(--primary); font-size: 1.05rem; margin-bottom: 6px; }
+  .domain-desc { font-size: 0.8rem; color: #555; }
+  .domain-examples { margin-top: 10px; font-size: 0.78rem; color: var(--muted); text-align: left; padding: 8px; background: #f9f9f9; border-radius: 6px; }
+
+  /* ── DOMAIN NEGLECT TABLE ── */
+  .neglect-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.88rem; }
+  .neglect-table thead tr { background: var(--primary); color: white; }
+  .neglect-table th { padding: 10px 14px; text-align: left; }
+  .neglect-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .neglect-table tr:nth-child(even) { background: var(--light); }
+  .neglect-table .domain-tag { font-weight: 700; }
+
+  /* ── 3 PRINCIPLES ── */
+  .principles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 20px 0; }
+  .principle-card { border-radius: 10px; padding: 24px; }
+  .principle-card.real { background: #eaf2ff; border: 2px solid #2980b9; }
+  .principle-card.whole { background: #eafaf1; border: 2px solid var(--green); }
+  .principle-card.inno { background: #fdf9e7; border: 2px solid #f39c12; }
+  .p-label { font-size: 1.5rem; font-weight: 900; margin-bottom: 4px; }
+  .principle-card.real .p-label { color: #2980b9; }
+  .principle-card.whole .p-label { color: var(--green); }
+  .principle-card.inno .p-label { color: #d35400; }
+  .p-name { font-weight: 700; color: var(--primary); margin-bottom: 4px; font-size: 1.05rem; }
+  .p-sub { font-size: 0.82rem; color: var(--muted); font-style: italic; margin-bottom: 12px; }
+  .principle-card ul { padding-left: 16px; }
+  .principle-card li { font-size: 0.85rem; margin-bottom: 5px; }
+
+  /* ── 5-STEP PROCESS ── */
+  .process-flow { display: flex; flex-direction: column; gap: 0; margin: 20px 0; position: relative; }
+  .process-flow::before { content: ''; position: absolute; left: 28px; top: 28px; bottom: 28px; width: 3px; background: linear-gradient(to bottom, var(--accent), var(--secondary)); }
+  .p-step { display: flex; gap: 18px; align-items: flex-start; padding: 12px 0; position: relative; z-index: 1; }
+  .ps-num { width: 56px; height: 56px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; color: white; font-weight: 900; box-shadow: 0 2px 8px rgba(0,0,0,0.2); border: 2px solid white; font-size: 1.3rem; }
+  .ps-num.s1 { background: #e74c3c; }
+  .ps-num.s2 { background: #e67e22; }
+  .ps-num.s3 { background: #f39c12; }
+  .ps-num.s4 { background: var(--green); }
+  .ps-num.s5 { background: #2980b9; }
+  .ps-body { flex: 1; background: var(--light); border-radius: 10px; padding: 18px 22px; border-left: 4px solid; }
+  .p-step:nth-child(1) .ps-body { border-left-color: #e74c3c; }
+  .p-step:nth-child(2) .ps-body { border-left-color: #e67e22; }
+  .p-step:nth-child(3) .ps-body { border-left-color: #f39c12; }
+  .p-step:nth-child(4) .ps-body { border-left-color: var(--green); }
+  .p-step:nth-child(5) .ps-body { border-left-color: #2980b9; }
+  .ps-body h4 { color: var(--primary); margin-top: 0; }
+  .ps-body .key-q { background: white; border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; margin: 8px 0; font-size: 0.88rem; font-style: italic; color: var(--secondary); font-weight: 600; }
+
+  /* ── 9 EXPERIMENTS ── */
+  .exp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 18px 0; }
+  .exp-card { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+  .exp-card h4 { font-size: 0.95rem; color: var(--primary); margin: 0 0 8px; border-bottom: 2px solid var(--accent); padding-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .exp-num { display: inline-flex; align-items: center; justify-content: center; background: var(--secondary); color: white; width: 22px; height: 22px; border-radius: 50%; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+  .exp-card p { font-size: 0.82rem; margin-bottom: 8px; color: var(--muted); }
+  .exp-card ul { padding-left: 14px; margin: 0; }
+  .exp-card li { font-size: 0.82rem; margin-bottom: 4px; }
+  .exp-domain-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+  .dtag { font-size: 0.68rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; color: white; }
+  .dtag.work { background: #2980b9; }
+  .dtag.home { background: #27ae60; }
+  .dtag.comm { background: #8e44ad; }
+  .dtag.self { background: #e67e22; }
+
+  /* ── SELECTION CRITERIA ── */
+  .criteria-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 16px 0; }
+  .crit-card { border-radius: 10px; padding: 16px 12px; text-align: center; }
+  .crit-card:nth-child(1) { background: #eaf2ff; border-top: 3px solid #2980b9; }
+  .crit-card:nth-child(2) { background: #fdedec; border-top: 3px solid #e74c3c; }
+  .crit-card:nth-child(3) { background: #eafaf1; border-top: 3px solid #27ae60; }
+  .crit-card:nth-child(4) { background: #fdf9e7; border-top: 3px solid #f39c12; }
+  .crit-card:nth-child(5) { background: #f5eefe; border-top: 3px solid #8e44ad; }
+  .crit-num { font-size: 1.6rem; font-weight: 900; margin-bottom: 4px; }
+  .crit-card:nth-child(1) .crit-num { color: #2980b9; }
+  .crit-card:nth-child(2) .crit-num { color: #e74c3c; }
+  .crit-card:nth-child(3) .crit-num { color: #27ae60; }
+  .crit-card:nth-child(4) .crit-num { color: #d35400; }
+  .crit-card:nth-child(5) .crit-num { color: #8e44ad; }
+  .crit-name { font-weight: 700; font-size: 0.88rem; color: var(--primary); margin-bottom: 6px; }
+  .crit-desc { font-size: 0.78rem; color: var(--muted); }
+
+  /* ── STAKEHOLDERS ── */
+  .stakeholder-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 16px 0; }
+  .sk-card { border-radius: 10px; padding: 16px; }
+  .sk-card.work { background: #eaf2ff; border-top: 3px solid #2980b9; }
+  .sk-card.home { background: #eafaf1; border-top: 3px solid #27ae60; }
+  .sk-card.comm { background: #f5eefe; border-top: 3px solid #8e44ad; }
+  .sk-card.self { background: #fdf6ec; border-top: 3px solid #e67e22; }
+  .sk-card h4 { margin-top: 0; font-size: 0.92rem; }
+  .sk-card.work h4 { color: #1a4c7e; }
+  .sk-card.home h4 { color: var(--green); }
+  .sk-card.comm h4 { color: #5a2d82; }
+  .sk-card.self h4 { color: #c0392b; }
+  .sk-card ul { padding-left: 14px; margin: 0; }
+  .sk-card li { font-size: 0.82rem; margin-bottom: 4px; }
+
+  /* ── RESEARCH STATS ── */
+  .stats-area { margin: 20px 0; }
+  .stats-label { font-size: 0.85rem; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
+  .stats-row { display: flex; gap: 12px; margin-bottom: 12px; }
+  .stat-card { flex: 1; background: white; border-radius: 10px; padding: 18px; text-align: center; border: 1px solid var(--border); }
+  .stat-num { font-size: 2rem; font-weight: 900; color: var(--secondary); }
+  .stat-num.highlight { color: #c0392b; }
+  .stat-domain { font-size: 0.88rem; font-weight: 700; color: var(--primary); }
+  .stat-type { font-size: 0.75rem; color: #555; }
+
+  /* ── CASE STUDIES ── */
+  .case-detailed { background: var(--light); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 5px solid var(--accent); }
+  .case-header { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
+  .case-avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--secondary); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 900; flex-shrink: 0; }
+  .case-meta h4 { color: var(--primary); font-size: 1.1rem; margin-bottom: 4px; }
+  .case-meta .role { font-size: 0.85rem; color: var(--muted); font-style: italic; }
+  .case-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+  .case-block { background: white; border-radius: 8px; padding: 14px 16px; }
+  .case-block h5 { color: var(--secondary); font-size: 0.88rem; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .case-block ul { padding-left: 14px; margin: 0; }
+  .case-block li { font-size: 0.85rem; margin-bottom: 4px; }
+  .case-result { background: #d5f5e3; border-radius: 8px; padding: 12px 16px; margin-top: 12px; }
+  .case-result strong { color: var(--green); display: block; margin-bottom: 4px; }
+  .case-result p { font-size: 0.88rem; margin-bottom: 0; }
+
+  /* ── CALLOUTS ── */
+  .callout { border-radius: 10px; padding: 16px 20px; margin: 16px 0; display: flex; gap: 12px; align-items: flex-start; }
+  .callout.info { background: #eaf2ff; border-left: 4px solid #2980b9; }
+  .callout.warn { background: #fdf9e7; border-left: 4px solid #f39c12; }
+  .callout.key { background: var(--light); border-left: 4px solid var(--accent); }
+  .callout.tip { background: #eafaf1; border-left: 4px solid var(--green); }
+  .callout.danger { background: #fdedec; border-left: 4px solid #e74c3c; }
+  .callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+  .callout-body strong { display: block; margin-bottom: 4px; color: var(--primary); }
+  .callout-body p { margin-bottom: 0; font-size: 0.92rem; }
+
+  /* ── TABLES ── */
+  .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.88rem; }
+  .data-table thead tr { background: var(--primary); color: white; }
+  .data-table th { padding: 10px 14px; text-align: left; }
+  .data-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .data-table tr:nth-child(even) { background: var(--light); }
+
+  /* ── PITFALLS ── */
+  .pitfall-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0; }
+  .pitfall-card { background: #fff5f5; border: 2px solid #e74c3c; border-radius: 10px; padding: 18px; }
+  .pitfall-card .pf-num { background: #e74c3c; color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800; float: right; margin-left: 8px; }
+  .pitfall-card h4 { color: #c0392b; font-size: 0.95rem; margin-bottom: 8px; }
+  .pitfall-card p { font-size: 0.88rem; margin-bottom: 0; }
+
+  /* ── HIGHLIGHT BOX ── */
+  .highlight-box { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 12px; padding: 24px 28px; margin: 20px 0; text-align: center; }
+  .highlight-box .big { font-size: 1.4rem; font-weight: 900; margin-bottom: 8px; }
+  .highlight-box p { opacity: 0.9; margin-bottom: 0; font-size: 0.95rem; }
+
+  /* ── QUOTE ── */
+  blockquote { border-left: 5px solid var(--accent); background: var(--light); padding: 16px 20px; border-radius: 0 10px 10px 0; margin: 16px 0; font-style: italic; color: var(--primary); }
+  blockquote cite { font-style: normal; font-size: 0.82rem; color: var(--muted); display: block; margin-top: 8px; }
+
+  /* ── METRICS ── */
+  .metrics-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.85rem; }
+  .metrics-table thead tr { background: var(--primary); color: white; }
+  .metrics-table th { padding: 10px 14px; text-align: left; }
+  .metrics-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .metrics-table tr:nth-child(even) { background: var(--light); }
+  .metrics-table .domain-col { font-weight: 700; }
+
+  /* ── FOOTER ── */
+  footer { background: var(--primary); color: rgba(255,255,255,0.75); text-align: center; padding: 24px 40px; font-size: 0.82rem; margin-top: 20px; }
+
+  @media (max-width: 768px) {
+    .domains-grid, .exp-grid, .principles-grid, .criteria-grid, .stakeholder-grid { grid-template-columns: 1fr 1fr; }
+    .stats-row { flex-wrap: wrap; }
+    .case-grid, .pitfall-grid { grid-template-columns: 1fr; }
+    .comparison { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.6rem; }
+    main { padding: 24px 16px; }
+    .section-body { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tag">GK5009 — HBR Paper #1</div>
+  <h1>Be a Better Leader, Have a Richer Life</h1>
+  <div class="subtitle">Total Leadership — Tích hợp 4 lĩnh vực cuộc sống để tạo ra Four-Way Wins</div>
+  <div class="meta">
+    <span>Stewart D. Friedman · Wharton School, University of Pennsylvania</span>
+    <span>Harvard Business Review, April 2008 (Reprint R0804H)</span>
+    <span>Nghiên cứu: 300+ chuyên gia · 4 tháng · Ford Motor Leadership Program</span>
+  </div>
+</header>
+
+<nav>
+  <a href="#overview">1. Tổng quan</a>
+  <a href="#analysis">2. Phân tích chuyên sâu</a>
+  <a href="#models">3. Mô hình & Công thức</a>
+  <a href="#examples">4. Ví dụ thực tiễn</a>
+  <a href="#review">5. Ghi chú ôn tập</a>
+</nav>
+
+<main>
+
+<!-- ═══════ SECTION 1 ═══════ -->
+<section class="section" id="overview">
+  <div class="section-header">
+    <div class="section-number">1</div>
+    <div>
+      <h2>Tổng Quan / Overview</h2>
+      <div class="en">Central thesis · Context · Key paradox · Research background</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>Luận điểm Trung tâm</h3>
+    <blockquote>
+      "Traditional thinking pits work and the rest of our lives against each other. But taking smart steps to integrate work, home, community, and self will make you a more productive leader and a more fulfilled person."
+      <cite>— Stewart D. Friedman, Wharton School</cite>
+    </blockquote>
+
+    <p>Friedman, người sáng lập chương trình <strong>Total Leadership</strong> tại Wharton và từng là Giám đốc Phát triển Lãnh đạo tại Ford Motor Company, bác bỏ một niềm tin phổ biến: rằng để thành công ở công việc, bạn phải hy sinh cuộc sống cá nhân — và ngược lại. Lập luận cốt lõi của ông: <strong>đây là false choice</strong> — sự đánh đổi này không tất yếu, và chấp nhận nó là từ bỏ cơ hội tạo ra giá trị ở tất cả lĩnh vực cùng một lúc.</p>
+
+    <div class="comparison">
+      <div class="old-view">
+        <h4>❌ Quan điểm Cũ: Zero-Sum</h4>
+        <p>Công việc và cuộc sống là <em>đối lập nhau</em>. Mỗi giờ dành cho gia đình là một giờ mất đi cho sự nghiệp. Mỗi ưu tiên cá nhân là giảm hiệu suất công việc. Phải chọn một.</p>
+        <ul style="font-size:0.85rem; margin-top:8px;">
+          <li>Tư duy: "Tôi phải hy sinh một thứ để có thứ kia"</li>
+          <li>Kết quả: Cảm giác mãn nguyện thấp ở tất cả lĩnh vực</li>
+          <li>Hệ quả: Kiệt sức, mất ý nghĩa, không thực sự hiệu quả ở bất kỳ lĩnh vực nào</li>
+        </ul>
+      </div>
+      <div class="vs-mid">VS</div>
+      <div class="new-view">
+        <h4>✅ Quan điểm Mới: Integration</h4>
+        <p>Các lĩnh vực <em>bổ sung cho nhau</em>. Một nhà lãnh đạo cân bằng và hạnh phúc ở nhà sẽ là nhà lãnh đạo tốt hơn ở công ty. Đầu tư vào bản thân tạo năng lượng bền vững cho công việc.</p>
+        <ul style="font-size:0.85rem; margin-top:8px;">
+          <li>Tư duy: "Tôi có thể tạo ra giá trị ở nhiều lĩnh vực cùng lúc"</li>
+          <li>Kết quả: Four-way wins — lợi ích đồng thời ở cả 4 lĩnh vực</li>
+          <li>Hệ quả: Hiệu suất cao hơn, hạnh phúc hơn, bền vững hơn</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Tại sao KHÔNG phải "Work-Life Balance"?</h3>
+    <p>Friedman cố ý không dùng thuật ngữ "work-life balance" vì nó có nghĩa ngầm là <em>50/50 allocation</em> — vẫn là tư duy zero-sum. "Balance" gợi ý rằng nếu một bên lên thì bên kia phải xuống, như cân đĩa. Thay vào đó, ông dùng <strong>integration</strong> — tích hợp có chủ ý để các lĩnh vực tạo ra giá trị cho nhau. Ví dụ: dành thời gian cho gia đình <em>không nhất thiết</em> giảm thành công nghề nghiệp nếu bạn thiết kế thông minh.</p>
+
+    <h3>Nghịch lý Quan trọng nhất của Nghiên cứu</h3>
+    <div class="callout key">
+      <div class="callout-icon">⚡</div>
+      <div class="callout-body">
+        <strong>Paradox: Dành ít thời gian hơn cho công việc → Hiệu suất công việc tăng</strong>
+        <p>Sau 4 tháng áp dụng Total Leadership, những người tham gia nghiên cứu dành <em>ít thời gian hơn</em> cho công việc so với trước, nhưng hiệu suất công việc <strong>tăng +9%</strong>. Giải thích: khi được tái nạp năng lượng qua các lĩnh vực khác (Self, Home, Community), người ta làm việc với chất lượng cao hơn trong thời gian ngắn hơn. Đây là bằng chứng mạnh nhất chống lại zero-sum thinking.</p>
+      </div>
+    </div>
+
+    <h3>Bối cảnh Nghiên cứu</h3>
+    <p>Friedman đã nghiên cứu và giảng dạy Total Leadership trong <strong>hơn hai thập kỷ</strong> — tại Wharton School và với hàng chục công ty lớn trên toàn thế giới. Ông từng là Giám đốc Chương trình Phát triển Lãnh đạo tại Ford Motor Company, nơi ông triển khai chương trình cho hàng nghìn executive. Dữ liệu trong bài viết HBR đến từ nghiên cứu với <strong>hơn 300 chuyên gia kinh doanh</strong> trong 4 tháng, đo lường mức độ thỏa mãn và hiệu suất ở cả 4 lĩnh vực trước và sau khi áp dụng Total Leadership experiments.</p>
+
+    <h3>Ý nghĩa của "Total" và "Leadership"</h3>
+    <ul>
+      <li><strong>"Total":</strong> Toàn bộ con người — không phải chỉ là nhân viên hay vai trò chuyên môn. Nhìn nhận bản thân và người khác như những con người đầy đủ với 4 lĩnh vực tương tác.</li>
+      <li><strong>"Leadership":</strong> Không phải chỉ là quản lý người khác — mà là tạo ra thay đổi có chủ ý, bền vững, mang lại lợi ích <em>cho chính mình và cho người khác</em> đồng thời. Lãnh đạo bản thân là điều kiện tiên quyết để lãnh đạo người khác.</li>
+    </ul>
+
+  </div>
+</section>
+
+<!-- ═══════ SECTION 2 ═══════ -->
+<section class="section" id="analysis">
+  <div class="section-header">
+    <div class="section-number">2</div>
+    <div>
+      <h2>Phân Tích Chuyên Sâu / In-depth Analysis</h2>
+      <div class="en">4 domains · 4-way wins · 3 principles · 5-step process · 9 experiments</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>A. Bốn Lĩnh vực Cuộc sống (Four Life Domains)</h3>
+    <p>Friedman xác định 4 lĩnh vực tạo nên cuộc sống đầy đủ của một con người. Không lĩnh vực nào quan trọng hơn lĩnh vực nào — và chúng <strong>ảnh hưởng qua lại lẫn nhau</strong> theo cả chiều tích cực lẫn tiêu cực.</p>
+
+    <div class="domains-grid">
+      <div class="domain-card">
+        <div class="domain-icon">💼</div>
+        <div class="domain-name">Work</div>
+        <div class="domain-desc">Sự nghiệp, tổ chức, đồng nghiệp, khách hàng, mục tiêu chuyên môn</div>
+        <div class="domain-examples">Bao gồm: năng suất, thăng tiến, đóng góp nghề nghiệp, phát triển kỹ năng, ảnh hưởng trong tổ chức</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-icon">🏠</div>
+        <div class="domain-name">Home</div>
+        <div class="domain-desc">Gia đình, vợ/chồng/người yêu, con cái, cha mẹ, bạn thân</div>
+        <div class="domain-examples">Bao gồm: chất lượng quan hệ thân thiết, trách nhiệm làm cha/mẹ, sự gắn kết gia đình, thời gian chất lượng</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-icon">🤝</div>
+        <div class="domain-name">Community</div>
+        <div class="domain-desc">Tổ chức dân sự, tôn giáo, từ thiện, hàng xóm, hiệp hội</div>
+        <div class="domain-examples">Bao gồm: hoạt động tình nguyện, hội đồng phi lợi nhuận, đóng góp xã hội, kết nối cộng đồng</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-icon">🧠</div>
+        <div class="domain-name">Self</div>
+        <div class="domain-desc">Thể chất, tinh thần, tâm linh, trí tuệ, giá trị cá nhân</div>
+        <div class="domain-examples">Bao gồm: sức khỏe thể chất, phát triển trí tuệ, sức khỏe tinh thần, cảm giác sống có ý nghĩa, tâm linh</div>
+      </div>
+    </div>
+
+    <h4>Hậu quả của việc Bỏ bê các Lĩnh vực</h4>
+    <p>Các lĩnh vực <em>không độc lập</em> — bỏ bê một lĩnh vực cuối cùng sẽ ảnh hưởng tiêu cực đến các lĩnh vực khác:</p>
+
+    <table class="neglect-table">
+      <thead>
+        <tr><th>Lĩnh vực bỏ bê</th><th>Triệu chứng trực tiếp</th><th>Ảnh hưởng lan sang các lĩnh vực khác</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="domain-tag" style="color:#2980b9;">Work</span></td>
+          <td>Mất định hướng nghề nghiệp, giảm thu nhập, mất ý thức đóng góp</td>
+          <td>Căng thẳng tài chính → Home; mất cảm giác có ích → Self; mất kết nối xã hội nghề nghiệp → Community</td>
+        </tr>
+        <tr>
+          <td><span class="domain-tag" style="color:#27ae60;">Home</span></td>
+          <td>Quan hệ thân thiết rạn nứt, con cái thiếu sự hiện diện của cha/mẹ, cô đơn</td>
+          <td>Xung đột gia đình → giảm tập trung Work; thiếu hỗ trợ cảm xúc → suy giảm Self; mất mạng lưới xã hội từ gia đình → Community</td>
+        </tr>
+        <tr>
+          <td><span class="domain-tag" style="color:#8e44ad;">Community</span></td>
+          <td>Cảm giác bị cô lập, thiếu ý nghĩa đóng góp xã hội, thu hẹp mạng lưới</td>
+          <td>Mất kết nối và mạng lưới nghề nghiệp → Work; thiếu gương mẫu cho con cái → Home; cảm giác cô đơn → Self</td>
+        </tr>
+        <tr>
+          <td><span class="domain-tag" style="color:#e67e22;">Self</span></td>
+          <td>Kiệt sức, bệnh tật, mất sức sáng tạo, trầm cảm, không có năng lượng</td>
+          <td>Giảm năng suất và hiện diện → Work; ít có mặt và thiếu năng lượng → Home; thu mình, ít tham gia → Community</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>B. Four-Way Wins — Chiến thắng Bốn chiều</h3>
+    <p><strong>Four-way wins</strong> là những thay đổi tạo ra lợi ích <em>đồng thời và có ý nghĩa</em> trong tất cả 4 lĩnh vực. Đây không phải là "điều gì đó tốt cho công việc và không tệ cho gia đình" — mà là tìm kiếm những hành động thực sự <em>cải thiện</em> tất cả 4 chiều.</p>
+
+    <div class="callout info">
+      <div class="callout-icon">📌</div>
+      <div class="callout-body">
+        <strong>Ví dụ Four-Way Win: Chạy marathon với đồng nghiệp</strong>
+        <p><strong>Work:</strong> Tăng gắn kết với đồng nghiệp, tạo văn hóa công ty lành mạnh, cải thiện tinh thần đội nhóm. <strong>Home:</strong> Gương mẫu sức khỏe cho con cái; hôn thê có thể cùng tham gia. <strong>Community:</strong> Chạy từ thiện gây quỹ cho tổ chức phi lợi nhuận. <strong>Self:</strong> Cải thiện sức khỏe thể chất và tinh thần, cảm giác hoàn thành thách thức.</p>
+      </div>
+    </div>
+
+    <p><strong>Phân biệt Four-way win với "Compromise" (thỏa hiệp):</strong> Thỏa hiệp = tất cả các bên đều chấp nhận ít hơn để đồng ý. Four-way win = tất cả các bên đều được hơn. Đây là sự khác biệt về chất lượng tư duy — từ "tôi có thể mất gì ít nhất?" sang "tôi có thể tạo ra nhiều giá trị nhất ở đâu?"</p>
+
+    <h3>C. Ba Nguyên tắc Total Leadership</h3>
+
+    <div class="principles-grid">
+      <div class="principle-card real">
+        <div class="p-label">Be Real</div>
+        <div class="p-name">Hành động với Sự Chân thực</div>
+        <div class="p-sub">Act with authenticity by clarifying what's important</div>
+        <p style="font-size:0.88rem; margin-bottom:10px;">Yêu cầu bạn <em>biết mình thực sự quan trọng điều gì</em> — không phải những gì bạn nghĩ mình nên quan trọng. Gồm ba bước:</p>
+        <ul>
+          <li>Làm rõ <strong>giá trị cốt lõi</strong>: Điều gì thực sự quan trọng với bạn?</li>
+          <li>Xây dựng <strong>tầm nhìn lãnh đạo</strong>: Bạn muốn tạo ra loại tác động gì trong 15 năm tới?</li>
+          <li>Đánh giá <strong>sự gắn kết</strong>: Hành động hàng ngày của bạn có phản ánh giá trị đó không?</li>
+        </ul>
+        <p style="font-size:0.82rem; margin-top:8px; font-style:italic;">Người không Be Real: nói gia đình là ưu tiên #1 nhưng làm việc đến 10 giờ tối mỗi ngày; nói sức khỏe quan trọng nhưng không bao giờ tập thể dục.</p>
+      </div>
+      <div class="principle-card whole">
+        <div class="p-label">Be Whole</div>
+        <div class="p-name">Hành động với Sự Toàn vẹn</div>
+        <div class="p-sub">Act with integrity by respecting the whole person</div>
+        <p style="font-size:0.88rem; margin-bottom:10px;">Nhìn nhận bản thân và <em>những người xung quanh</em> như những con người đầy đủ với 4 lĩnh vực — không phải chỉ là vai trò công việc. Gồm:</p>
+        <ul>
+          <li>Hiểu rằng mỗi người trong cuộc sống bạn (đồng nghiệp, cấp dưới, gia đình) đều có 4 lĩnh vực riêng</li>
+          <li>Tôn trọng và quan tâm đến <strong>toàn bộ con người</strong> của họ</li>
+          <li>Tìm cách hỗ trợ sự thịnh vượng của họ trong nhiều lĩnh vực</li>
+          <li>Không yêu cầu cấp dưới "để gia đình ở nhà khi đến văn phòng"</li>
+        </ul>
+      </div>
+      <div class="principle-card inno">
+        <div class="p-label">Be Innovative</div>
+        <div class="p-name">Hành động với Sự Sáng tạo</div>
+        <div class="p-sub">Act with creativity by experimenting with how things get done</div>
+        <p style="font-size:0.88rem; margin-bottom:10px;">Thách thức những <em>giả định truyền thống</em> về cách làm việc và sống. Gồm:</p>
+        <ul>
+          <li>Đặt câu hỏi: <em>Tại sao phải làm thế này?</em> Có cách nào khác không?</li>
+          <li>Thiết kế <strong>thử nghiệm nhỏ</strong> để test các giả định mới</li>
+          <li>Học từ thất bại nhanh và thích nghi</li>
+          <li>Không tìm cách tối ưu cho một lĩnh vực — tìm cách tối ưu cho nhiều lĩnh vực cùng lúc</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>D. Quy trình 5 Bước Total Leadership</h3>
+
+    <div class="process-flow">
+      <div class="p-step">
+        <div class="ps-num s1">1</div>
+        <div class="ps-body">
+          <h4>Clarify Values &amp; Leadership Vision</h4>
+          <div class="key-q">Tôi quan trọng điều gì? Tôi muốn tạo ra tác động gì?</div>
+          <p style="font-size:0.88rem; margin-bottom:8px;">Đây là bước nền tảng. Friedman yêu cầu học viên viết ra một <strong>bản tuyên bố tầm nhìn lãnh đạo</strong> — không phải kế hoạch sự nghiệp, mà là tầm nhìn về loại người họ muốn trở thành và loại tác động họ muốn tạo ra trong 15 năm tới, ở tất cả 4 lĩnh vực.</p>
+          <p style="font-size:0.85rem;">Sau đó, đánh giá: Hành động hàng ngày của tôi (cách tôi chi tiêu thời gian, tiền bạc, sự chú ý) có phù hợp với tầm nhìn đó không? Khoảng cách này là điểm khởi đầu cho experiments.</p>
+        </div>
+      </div>
+
+      <div class="p-step">
+        <div class="ps-num s2">2</div>
+        <div class="ps-body">
+          <h4>Identify Stakeholders Across All 4 Domains</h4>
+          <div class="key-q">Ai là người quan trọng nhất trong mỗi lĩnh vực? Kỳ vọng của họ là gì?</div>
+          <p style="font-size:0.88rem; margin-bottom:8px;">Lập danh sách 3-5 người quan trọng nhất trong <em>mỗi</em> lĩnh vực. Đây là những người: (1) phụ thuộc vào bạn, và (2) bạn phụ thuộc vào họ để đạt được mục tiêu.</p>
+          <p style="font-size:0.85rem;"><em>Work:</em> sếp, đồng nghiệp, cấp dưới, khách hàng quan trọng. <em>Home:</em> vợ/chồng, con, cha mẹ, bạn thân. <em>Community:</em> tổ chức bạn tham gia, hàng xóm quan trọng. <em>Self:</em> bản thân tương lai, bác sĩ/huấn luyện viên.</p>
+        </div>
+      </div>
+
+      <div class="p-step">
+        <div class="ps-num s3">3</div>
+        <div class="ps-body">
+          <h4>Talk with Stakeholders — Cuộc trò chuyện Quan trọng nhất</h4>
+          <div class="key-q">Họ thực sự cần gì từ tôi? Điều đó khác với những gì tôi nghĩ không?</div>
+          <p style="font-size:0.88rem; margin-bottom:8px;"><strong>Phát hiện quan trọng nhất của Friedman:</strong> Khi bạn thực sự ngồi xuống và hỏi stakeholders họ cần gì từ bạn, câu trả lời thường <em>khác và ít hơn nhiều</em> so với những gì bạn giả định. Điều này tạo ra "cơ hội thay đổi" không ngờ tới.</p>
+          <p style="font-size:0.85rem;">Ví dụ: Bạn nghĩ vợ muốn bạn về nhà sớm hơn → thực ra cô ấy muốn bạn <em>hiện diện trọn vẹn</em> khi ở nhà, dù chỉ 2 giờ. Bạn nghĩ sếp muốn bạn làm thêm giờ → thực ra ông ấy muốn bạn <em>hoàn thành 3 dự án cụ thể</em>. Biết được điều này, bạn có thể thiết kế giải pháp thực sự hiệu quả.</p>
+        </div>
+      </div>
+
+      <div class="p-step">
+        <div class="ps-num s4">4</div>
+        <div class="ps-body">
+          <h4>Design Experiments — Thiết kế Thử nghiệm</h4>
+          <div class="key-q">Tôi có thể thử nghiệm điều gì, nhỏ và kiểm soát được, để tạo four-way wins?</div>
+          <p style="font-size:0.88rem; margin-bottom:8px;">Thiết kế <strong>tối đa 3 thử nghiệm</strong> cùng lúc. Mỗi thử nghiệm phải: nhỏ đủ để thất bại mà không gây thiệt hại lớn; lớn đủ để tạo ra thay đổi thực sự; và có tiềm năng tạo ra lợi ích ở nhiều lĩnh vực.</p>
+          <p style="font-size:0.85rem;">Friedman phát hiện: trong mỗi nhóm 3 thử nghiệm, thường 2 thành công và 1 thất bại — đây là <em>tỷ lệ học tập tốt</em>. Thất bại cung cấp thông tin quan trọng để thiết kế thử nghiệm tốt hơn tiếp theo.</p>
+        </div>
+      </div>
+
+      <div class="p-step">
+        <div class="ps-num s5">5</div>
+        <div class="ps-body">
+          <h4>Measure, Learn &amp; Adapt — Đo lường, Học hỏi và Thích nghi</h4>
+          <div class="key-q">Cách duy nhất để thất bại là không rút ra bài học từ thử nghiệm</div>
+          <p style="font-size:0.88rem; margin-bottom:8px;">Thiết kế <strong>scorecard</strong> cho mỗi thử nghiệm với 2 loại metrics: <em>Results metrics</em> (đo kết quả — đạt được gì?) và <em>Action metrics</em> (đo quá trình — làm gì?). Metrics có thể là định lượng hoặc định tính, khách quan hoặc chủ quan — miễn là <strong>theo dõi được và có ý nghĩa</strong>.</p>
+          <p style="font-size:0.85rem;">Lặp lại vòng lặp: Learn → Adapt → New experiment. Mỗi round của vòng lặp này tích lũy hiểu biết về bản thân và tạo ra thay đổi ngày càng có ý nghĩa hơn.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>E. Lập bản đồ Stakeholders trong 4 Lĩnh vực</h3>
+
+    <div class="stakeholder-grid">
+      <div class="sk-card work">
+        <h4>💼 Work Stakeholders</h4>
+        <ul>
+          <li>Quản lý trực tiếp (sếp)</li>
+          <li>Cấp dưới quan trọng</li>
+          <li>Đồng nghiệp phụ thuộc nhau</li>
+          <li>Khách hàng chiến lược</li>
+          <li>Mentor/sponsor trong tổ chức</li>
+        </ul>
+      </div>
+      <div class="sk-card home">
+        <h4>🏠 Home Stakeholders</h4>
+        <ul>
+          <li>Vợ/chồng hoặc người yêu</li>
+          <li>Con cái (theo độ tuổi)</li>
+          <li>Cha mẹ và cha mẹ vợ/chồng</li>
+          <li>Bạn bè thân thiết</li>
+          <li>Người chăm sóc/giúp việc</li>
+        </ul>
+      </div>
+      <div class="sk-card comm">
+        <h4>🤝 Community Stakeholders</h4>
+        <ul>
+          <li>Tổ chức phi lợi nhuận tham gia</li>
+          <li>Hội đồng hoặc ban điều hành</li>
+          <li>Nhà thờ/đền/chùa</li>
+          <li>Hiệp hội nghề nghiệp</li>
+          <li>Hàng xóm và cộng đồng địa phương</li>
+        </ul>
+      </div>
+      <div class="sk-card self">
+        <h4>🧠 Self Stakeholders</h4>
+        <ul>
+          <li>Bản thân tương lai (10-15 năm)</li>
+          <li>Bác sĩ/chuyên gia sức khỏe</li>
+          <li>Huấn luyện viên/coach</li>
+          <li>Người cố vấn tinh thần</li>
+          <li>Cộng đồng học tập/phát triển</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>F. 9 Loại Thử nghiệm (Experiment Categories)</h3>
+    <p>Nghiên cứu của Friedman phát hiện hầu hết các thử nghiệm thành công rơi vào một hoặc kết hợp từ 9 loại này:</p>
+
+    <div class="exp-grid">
+      <div class="exp-card">
+        <h4><span class="exp-num">1</span>Tracking &amp; Reflecting</h4>
+        <p>Ghi chép có hệ thống để tăng tự nhận thức và duy trì ưu tiên theo đúng giá trị.</p>
+        <ul>
+          <li>Ghi lại thời gian thực chi tiêu mỗi ngày trong 2 tuần → so sánh với kỳ vọng</li>
+          <li>Nhật ký cảm xúc: khi nào tôi cảm thấy hứng khởi nhất? Khi nào uể oải?</li>
+          <li>Theo dõi số buổi tập gym và mức năng lượng → tìm correlation</li>
+        </ul>
+        <div class="exp-domain-tags">
+          <span class="dtag self">Self</span><span class="dtag work">Work</span><span class="dtag home">Home</span>
+        </div>
+      </div>
+      <div class="exp-card">
+        <h4><span class="exp-num">2</span>Planning &amp; Organizing</h4>
+        <p>Lên kế hoạch và tổ chức thời gian tốt hơn để phân bổ đúng theo giá trị.</p>
+        <ul>
+          <li>Dùng calendar cho <em>tất cả</em> hoạt động, không chỉ cuộc họp công việc</li>
+          <li>Chia sẻ lịch với vợ/chồng để cùng lên kế hoạch gia đình</li>
+          <li>Dành 30 phút tối Chủ nhật lên kế hoạch tuần tới theo 4 lĩnh vực</li>
+          <li>Đặt "block" không thể xâm phạm cho hoạt động quan trọng ở mỗi lĩnh vực</li>
+        </ul>
+        <div class="exp-domain-tags">
+          <span class="dtag work">Work</span><span class="dtag home">Home</span><span class="dtag self">Self</span>
+        </div>
+      </div>
+      <div class="exp-card">
+        <h4><span class="exp-num">3</span>Rejuvenating &amp; Restoring</h4>
+        <p>Chăm sóc thể chất, tinh thần, tâm linh để làm việc với năng lượng cao hơn.</p>
+        <ul>
+          <li>Cam kết 30 phút vận động hàng ngày — coi như cuộc họp không thể hủy</li>
+          <li>Từ bỏ thói quen xấu (hút thuốc, ăn tối muộn, thiếu ngủ)</li>
+          <li>Đọc sách không liên quan công việc 20 phút/tối trước khi ngủ</li>
+          <li>Thực hành thiền hoặc thở có chủ ý 10 phút/sáng</li>
+        </ul>
+        <div class="exp-domain-tags">
+          <span class="dtag self">Self</span><span class="dtag work">Work</span><span class="dtag home">Home</span>
+        </div>
+      </div>
+      <div class="exp-card">
+        <h4><span class="exp-num">4</span>Appreciating &amp; Caring</h4>
+        <p>Trân trọng và quan tâm đến người khác để tạo kết nối ở cấp độ con người.</p>
+        <ul>
+          <li>Gọi điện cho cha mẹ hoặc bạn thân mỗi tuần một lần</li>
+          <li>Tham gia book club hoặc câu lạc bộ sức khỏe cùng đồng nghiệp</li>
+          <li>Dành "one-on-one time" không có thiết bị điện tử với mỗi con mỗi tuần</li>
+          <li>Viết email cảm ơn một đồng nghiệp mỗi tuần</li>
+        </ul>
+        <div class="exp-domain-tags">
+          <span class="dtag home">Home</span><span class="dtag comm">Community</span><span class="dtag work">Work</span>
+        </div>
+      </div>
+      <div class="exp-card">
+        <h4><span class="exp-num">5</span>Focusing &amp; Concentrating</h4>
+        <p>Hiện diện tâm lý hoàn toàn (psychological presence) khi cần — đặt ưu tiên để nói "không".</p>
+        <ul>
+          <li>Tắt thông báo điện thoại khi họp với khách hàng quan trọng</li>
+          <li>Quy tắc: không dùng điện thoại trong bữa ăn gia đình</li>
+          <li>Kiểm tra email theo 3 khung giờ cố định thay vì liên tục</li>
+          <li>Deep work: 2 giờ không bị ngắt quãng mỗi sáng cho dự án quan trọng nhất</li>
+        </ul>
+        <div class="exp-domain-tags">
+          <span class="dtag work">Work</span><span class="dtag home">Home</span><span class="dtag self">Self</span>
+        </div>
+      </div>
+      <div class="exp-card">
+        <h4><span class="exp-num">6</span>Revealing &amp; Engaging</h4>
+        <p>Chia sẻ bản thân nhiều hơn và lắng nghe để xây dựng mối quan hệ sâu hơn.</p>
+        <ul>
+          <li>Chia sẻ tầm nhìn lãnh đạo với team để họ hiểu "why" của bạn</li>
+          <li>Trò chuyện hàng tuần với vợ/chồng về điều gì quan trọng với mỗi người</li>
+          <li>Mentoring một nhân viên mới — chia sẻ bài học từ kinh nghiệm</li>
+          <li>Kể cho con nghe về công việc của bạn và giá trị bạn theo đuổi</li>
+        </ul>
+        <div class="exp-domain-tags">
+          <span class="dtag home">Home</span><span class="dtag work">Work</span><span class="dtag comm">Community</span>
+        </div>
+      </div>
+      <div class="exp-card">
+        <h4><span class="exp-num">7</span>Time Shifting &amp; Re-Placing</h4>
+        <p>Linh hoạt thời gian và địa điểm làm việc để cân bằng tốt hơn mà không giảm năng suất.</p>
+        <ul>
+          <li>Làm việc từ nhà 1 ngày/tuần để tránh hành trình di chuyển</li>
+          <li>Học nhạc hoặc ngôn ngữ trong giờ nghỉ trưa (thay vì lướt mạng)</li>
+          <li>Làm việc trên tàu/xe buýt để tiết kiệm thời gian cho hoạt động gia đình tối</li>
+          <li>Họp đứng hoặc họp đi bộ để kết hợp vận động</li>
+        </ul>
+        <div class="exp-domain-tags">
+          <span class="dtag work">Work</span><span class="dtag home">Home</span><span class="dtag self">Self</span>
+        </div>
+      </div>
+      <div class="exp-card">
+        <h4><span class="exp-num">8</span>Delegating &amp; Developing</h4>
+        <p>Phân bổ lại nhiệm vụ để giải phóng thời gian và phát triển người khác đồng thời.</p>
+        <ul>
+          <li>Giao cho cấp dưới dự án bạn có thể làm tốt hơn — nhưng họ cần làm để phát triển</li>
+          <li>Thuê người giúp việc gia đình để giải phóng thời gian chất lượng với con</li>
+          <li>Loại bỏ hoàn toàn các hoạt động ưu tiên thấp — dừng làm thứ không ai cần</li>
+          <li>Để hôn thê tự tổ chức một kỳ nghỉ thay vì bạn phải lo tất cả</li>
+        </ul>
+        <div class="exp-domain-tags">
+          <span class="dtag work">Work</span><span class="dtag home">Home</span><span class="dtag self">Self</span>
+        </div>
+      </div>
+      <div class="exp-card">
+        <h4><span class="exp-num">9</span>Exploring &amp; Venturing</h4>
+        <p>Thử nghiệm vai trò mới, sự nghiệp mới hoặc hoạt động mới phù hợp hơn với giá trị.</p>
+        <ul>
+          <li>Đảm nhận vai trò cross-functional mới trong công ty</li>
+          <li>Tham gia hội đồng quản trị tổ chức phi lợi nhuận</li>
+          <li>Thử phong cách coaching/mentoring mới với cấp dưới</li>
+          <li>Khám phá sở thích hoàn toàn mới (học nhạc, nghệ thuật, ngôn ngữ)</li>
+        </ul>
+        <div class="exp-domain-tags">
+          <span class="dtag work">Work</span><span class="dtag self">Self</span><span class="dtag comm">Community</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>G. Tiêu chí Chọn Thử nghiệm — 5 Câu hỏi Lọc</h3>
+    <p>Khi có nhiều ý tưởng thử nghiệm, Friedman đề xuất 5 câu hỏi để chọn 3 thử nghiệm tốt nhất. Ưu tiên thử nghiệm nào đáp ứng <em>nhiều tiêu chí nhất</em>:</p>
+
+    <div class="criteria-grid">
+      <div class="crit-card">
+        <div class="crit-num">ROI</div>
+        <div class="crit-name">Return on Investment</div>
+        <div class="crit-desc">Thử nghiệm nào tạo ra nhiều giá trị nhất cho nhiều lĩnh vực nhất? Hiệu quả đa chiều?</div>
+      </div>
+      <div class="crit-card">
+        <div class="crit-num">😔</div>
+        <div class="crit-name">Cost of Regret</div>
+        <div class="crit-desc">Nếu không làm thử nghiệm này, tôi sẽ tiếc điều gì nhất sau 5 năm? Chi phí tiếc nuối?</div>
+      </div>
+      <div class="crit-card">
+        <div class="crit-num">📈</div>
+        <div class="crit-name">Leadership Skills</div>
+        <div class="crit-desc">Thử nghiệm nào giúp phát triển kỹ năng lãnh đạo tôi cần nhất hiện tại?</div>
+      </div>
+      <div class="crit-card">
+        <div class="crit-num">😊</div>
+        <div class="crit-name">Fun Factor</div>
+        <div class="crit-desc">Thử nghiệm nào tôi thực sự muốn làm? Đam mê và hứng thú là nhiên liệu cho sự kiên trì.</div>
+      </div>
+      <div class="crit-card">
+        <div class="crit-num">🎯</div>
+        <div class="crit-name">Vision Alignment</div>
+        <div class="crit-desc">Thử nghiệm nào đẩy tôi tiến gần nhất đến tầm nhìn về cuộc sống mình muốn?</div>
+      </div>
+    </div>
+
+    <h3>H. Thiết kế Metrics — Scorecard Hiệu quả</h3>
+    <p>Mỗi thử nghiệm cần <strong>2 loại metrics</strong>:</p>
+    <ul>
+      <li><strong>Results Metrics:</strong> Đo kết quả đạt được — "Tôi đã đạt được gì?" Có thể là định lượng (số cuộc gặp, số lần tập gym) hoặc định tính (cảm nhận chủ quan, phản hồi từ người khác).</li>
+      <li><strong>Action Metrics:</strong> Đo những hành động cụ thể cần thực hiện — "Tôi đã làm những gì?" Giúp theo dõi quá trình và nhận diện điểm tắc nghẽn.</li>
+    </ul>
+
+    <table class="metrics-table">
+      <thead>
+        <tr><th>Lĩnh vực</th><th>Mục tiêu</th><th>Results Metrics</th><th>Action Metrics</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="domain-col" style="color:#2980b9;">Work</td>
+          <td>Mở rộng mạng lưới lãnh đạo</td>
+          <td>Số kết nối mới chất lượng/tháng; Phản hồi về kỹ năng lãnh đạo từ cấp trên</td>
+          <td>Tham dự 1 sự kiện networking/tháng; Gặp 2 người mentor mới trong quý</td>
+        </tr>
+        <tr>
+          <td class="domain-col" style="color:#27ae60;">Home</td>
+          <td>Cải thiện kết nối với con cái</td>
+          <td>Đánh giá chất lượng thời gian từ bản thân và con; Số cuộc trò chuyện sâu/tuần</td>
+          <td>Tắt điện thoại từ 6-8pm; "One-on-one" 30 phút với mỗi con mỗi tuần</td>
+        </tr>
+        <tr>
+          <td class="domain-col" style="color:#8e44ad;">Community</td>
+          <td>Đóng góp cho tổ chức phi lợi nhuận</td>
+          <td>Số giờ tình nguyện/tháng; Tác động cụ thể (số người được giúp)</td>
+          <td>Tham gia 2 cuộc họp board/tháng; Hoàn thành 1 dự án cụ thể trong quý</td>
+        </tr>
+        <tr>
+          <td class="domain-col" style="color:#e67e22;">Self</td>
+          <td>Cải thiện sức khỏe thể chất</td>
+          <td>Chỉ số sức khỏe (cân nặng, huyết áp); Mức năng lượng chủ quan (1-10)</td>
+          <td>Tập gym 4 buổi/tuần; Ngủ đủ 7 tiếng/đêm; Ăn sáng healthy 5/7 ngày</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</section>
+
+<!-- ═══════ SECTION 3 ═══════ -->
+<section class="section" id="models">
+  <div class="section-header">
+    <div class="section-number">3</div>
+    <div>
+      <h2>Mô Hình &amp; Công Thức / Models &amp; Frameworks</h2>
+      <div class="en">Total Leadership matrix · Research statistics · Experiment taxonomy</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>Mô hình 1: Total Leadership — 3 Nguyên tắc × 4 Lĩnh vực</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>Nguyên tắc</th><th>Từ khóa</th><th>Biểu hiện trong Work</th><th>Biểu hiện trong Home</th><th>Biểu hiện trong Community</th><th>Biểu hiện trong Self</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Be Real</strong></td>
+          <td>Authenticity</td>
+          <td>Biết giá trị nghề nghiệp cốt lõi; nói thật với cấp trên về ưu tiên</td>
+          <td>Thành thật với gia đình về giới hạn; không giả vờ "tất cả đều ổn"</td>
+          <td>Chọn tổ chức thực sự phù hợp với giá trị cá nhân</td>
+          <td>Biết điều gì thực sự nuôi dưỡng mình; không giả vờ với chính mình</td>
+        </tr>
+        <tr>
+          <td><strong>Be Whole</strong></td>
+          <td>Integrity</td>
+          <td>Coi cấp dưới như con người đầy đủ, không chỉ là "nguồn lực"</td>
+          <td>Dành sự hiện diện tâm lý trọn vẹn khi ở nhà</td>
+          <td>Tham gia vì tác động thực sự, không vì hình thức</td>
+          <td>Chăm sóc cả thể chất lẫn tinh thần, không bỏ bê một chiều</td>
+        </tr>
+        <tr>
+          <td><strong>Be Innovative</strong></td>
+          <td>Creativity</td>
+          <td>Thách thức cách làm việc thông thường; đề xuất WFH hay flex hours</td>
+          <td>Thử cách mới để gắn kết gia đình (ăn tối chủ đề, dự án gia đình)</td>
+          <td>Tạo ra giá trị mới cho tổ chức thay vì chỉ tham gia thụ động</td>
+          <td>Thử nghiệm thói quen mới; không bị kẹt trong routine cũ không hiệu quả</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Mô hình 2: 9 Loại Thử nghiệm — Bảng Phân loại</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>#</th><th>Loại</th><th>Mục đích chính</th><th>Domain tác động trực tiếp</th><th>Cơ chế tạo four-way win</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Tracking &amp; Reflecting</td><td>Tự nhận thức</td><td>Self → cả 4</td><td>Nhận ra khoảng cách → điều chỉnh hành vi → cải thiện tất cả lĩnh vực</td></tr>
+        <tr><td>2</td><td>Planning &amp; Organizing</td><td>Phân bổ thời gian tối ưu</td><td>Work + Home + Self</td><td>Thời gian được phân bổ theo giá trị → ít lãng phí → nhiều hơn cho mọi lĩnh vực</td></tr>
+        <tr><td>3</td><td>Rejuvenating &amp; Restoring</td><td>Tái nạp năng lượng</td><td>Self → Work, Home</td><td>Người khỏe mạnh và tỉnh táo → hiệu suất cao hơn → chất lượng hiện diện cao hơn</td></tr>
+        <tr><td>4</td><td>Appreciating &amp; Caring</td><td>Kết nối con người</td><td>Home + Community + Work</td><td>Quan hệ tốt hơn → hỗ trợ lẫn nhau → giảm xung đột → mọi lĩnh vực hưởng lợi</td></tr>
+        <tr><td>5</td><td>Focusing &amp; Concentrating</td><td>Hiện diện trọn vẹn</td><td>Work + Home</td><td>Làm ít hơn nhưng tốt hơn → năng suất cao hơn + chất lượng quan hệ cao hơn</td></tr>
+        <tr><td>6</td><td>Revealing &amp; Engaging</td><td>Chia sẻ và lắng nghe</td><td>Home + Work + Community</td><td>Hiểu nhau → hợp tác tốt hơn → tin tưởng cao hơn → mọi lĩnh vực hưởng lợi</td></tr>
+        <tr><td>7</td><td>Time Shifting &amp; Re-Placing</td><td>Linh hoạt thời gian/nơi</td><td>Work + Home + Self</td><td>Giảm thời gian lãng phí (di chuyển) → phân bổ lại cho lĩnh vực có giá trị cao hơn</td></tr>
+        <tr><td>8</td><td>Delegating &amp; Developing</td><td>Giải phóng và phát triển</td><td>Work → Home, Self</td><td>Phát triển người khác → giải phóng bản thân → thời gian và năng lượng cho lĩnh vực khác</td></tr>
+        <tr><td>9</td><td>Exploring &amp; Venturing</td><td>Gắn kết với giá trị cốt lõi</td><td>Work + Self + Community</td><td>Làm điều có ý nghĩa → động lực nội tại cao hơn → spillover sang tất cả lĩnh vực</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Mô hình 3: Kết quả Nghiên cứu (300+ Business Professionals, 4 Months)</h3>
+
+    <div class="stats-area">
+      <div class="stats-label">📊 Mức độ Thỏa mãn (Satisfaction) tăng sau 4 tháng:</div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num">+20%</div><div class="stat-domain">Work</div><div class="stat-type">Satisfaction</div></div>
+        <div class="stat-card"><div class="stat-num">+28%</div><div class="stat-domain">Home</div><div class="stat-type">Satisfaction</div></div>
+        <div class="stat-card"><div class="stat-num">+31%</div><div class="stat-domain">Community</div><div class="stat-type">Satisfaction</div></div>
+        <div class="stat-card"><div class="stat-num highlight">+39%</div><div class="stat-domain" style="color:#c0392b;">Self</div><div class="stat-type">Satisfaction (tăng nhiều nhất!)</div></div>
+      </div>
+      <div class="stats-label">📈 Hiệu suất (Performance) cũng tăng (dù dành ÍT thời gian hơn cho Work):</div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num">+9%</div><div class="stat-domain">Work</div><div class="stat-type">Performance</div></div>
+        <div class="stat-card"><div class="stat-num">+15%</div><div class="stat-domain">Home</div><div class="stat-type">Performance</div></div>
+        <div class="stat-card"><div class="stat-num">+12%</div><div class="stat-domain">Community</div><div class="stat-type">Performance</div></div>
+        <div class="stat-card"><div class="stat-num">+25%</div><div class="stat-domain">Self</div><div class="stat-type">Performance</div></div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-icon">🔬</div>
+      <div class="callout-body">
+        <strong>Giải thích nghịch lý "Ít thời gian → Hiệu suất cao hơn"</strong>
+        <p>Khi người ta đầu tư vào Self (sức khỏe, phục hồi) và Home (quan hệ hỗ trợ, giảm xung đột gia đình), họ đến công sở với nhiều năng lượng hơn, ít stress hơn, và sự tập trung cao hơn. <em>Chất lượng</em> thời gian làm việc tăng lên, bù đắp và vượt qua sự giảm về <em>số lượng</em>. Đây là cơ chế renewal theory trong tâm lý học tổ chức.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════ SECTION 4 ═══════ -->
+<section class="section" id="examples">
+  <div class="section-header">
+    <div class="section-number">4</div>
+    <div>
+      <h2>Ví Dụ Thực Tiễn / Practical Examples</h2>
+      <div class="en">Case studies: Kenneth Chen · Lim · Ismail · Sales Director</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>Case Study 1: Kenneth Chen — Joining a Community Board</h3>
+    <div class="case-detailed">
+      <div class="case-header">
+        <div class="case-avatar">KC</div>
+        <div class="case-meta">
+          <h4>Kenneth Chen</h4>
+          <div class="role">Corporate Lawyer tại Philadelphia — mục tiêu trở thành CEO, cải thiện quan hệ gia đình, đóng góp cho cộng đồng</div>
+        </div>
+      </div>
+      <div class="case-grid">
+        <div class="case-block">
+          <h5>Bối cảnh &amp; Thách thức</h5>
+          <ul>
+            <li>Tham vọng trở thành CEO nhưng thiếu kỹ năng lãnh đạo board-level</li>
+            <li>Quan hệ với em gái (giáo viên) xa cách — ít chủ đề chung</li>
+            <li>Hôn thê chưa hiểu về công việc và tham vọng của anh</li>
+            <li>Chưa có cơ hội đóng góp có ý nghĩa cho cộng đồng</li>
+          </ul>
+        </div>
+        <div class="case-block">
+          <h5>Thử nghiệm được Thiết kế</h5>
+          <ul>
+            <li>Tham gia hội đồng quản trị tổ chức phi lợi nhuận giáo dục tại Philadelphia</li>
+            <li>Mời em gái (giáo viên) tham gia cùng — tạo chủ đề chung</li>
+            <li>Thảo luận với hôn thê về cơ hội và kỳ vọng, mời cô cùng tham gia nếu muốn</li>
+            <li>Thiết kế scorecard với metrics rõ ràng cho cả 4 lĩnh vực</li>
+          </ul>
+        </div>
+        <div class="case-block">
+          <h5>Four-Way Win Analysis</h5>
+          <ul>
+            <li><strong>Work:</strong> Học kỹ năng lãnh đạo board, mở rộng mạng lưới executive</li>
+            <li><strong>Home:</strong> Chủ đề chung với em gái; hôn thê hiểu và ủng hộ tham vọng</li>
+            <li><strong>Community:</strong> Đóng góp thực sự cho giáo dục ở Philadelphia</li>
+            <li><strong>Self:</strong> Cảm giác sống có mục đích, tự tin hơn về năng lực lãnh đạo</li>
+          </ul>
+        </div>
+        <div class="case-block">
+          <h5>Metrics của Kenneth</h5>
+          <ul>
+            <li><strong>Work:</strong> Số kết nối mới; phản hồi về kỹ năng lãnh đạo từ board</li>
+            <li><strong>Home:</strong> Số cuộc trò chuyện sâu với em gái/tuần; hôn thê có tham gia không?</li>
+            <li><strong>Community:</strong> Số cuộc họp tham dự; dự án hoàn thành</li>
+            <li><strong>Self:</strong> Nhật ký cảm xúc hàng ngày; phản hồi từ người khác về empathy</li>
+          </ul>
+        </div>
+      </div>
+      <div class="case-result">
+        <strong>Kết quả sau 3 năm:</strong>
+        <p>Kenneth vào succession track CEO, em gái trở thành đồng nghiệp trong hoạt động cộng đồng (quan hệ cải thiện đáng kể), hôn thê hiểu và ủng hộ tham vọng của anh sâu sắc hơn. Anh trở thành nhà lãnh đạo tốt hơn trong mọi khía cạnh cuộc sống.</p>
+      </div>
+    </div>
+
+    <h3>Case Study 2: Lim — Chicago Marathon</h3>
+    <div class="case-detailed">
+      <div class="case-header">
+        <div class="case-avatar">LM</div>
+        <div class="case-meta">
+          <h4>Lim</h4>
+          <div class="role">Giám đốc tại công ty tài chính — cảm thấy mất sức và mất tập trung; vợ (Joanne) sắp sinh con đầu</div>
+        </div>
+      </div>
+      <div class="case-grid">
+        <div class="case-block">
+          <h5>Bối cảnh &amp; Thách thức</h5>
+          <ul>
+            <li>Kiệt sức sau nhiều năm làm việc cường độ cao</li>
+            <li>Tinh thần team đang xuống thấp → hiệu suất business unit giảm</li>
+            <li>Vợ Joanne lo lắng: chồng dành quá nhiều thời gian tập chạy khi sắp có con</li>
+            <li>Cần cải thiện sức khỏe nhưng không muốn ảnh hưởng đến gia đình</li>
+          </ul>
+        </div>
+        <div class="case-block">
+          <h5>Thử nghiệm ban đầu và thích nghi</h5>
+          <ul>
+            <li><strong>Thử nghiệm 1:</strong> Chạy Chicago Marathon — cải thiện Self</li>
+            <li>Vấn đề: Joanne lo lắng về thời gian tập luyện khi thai kỳ gần tới hạn</li>
+            <li><strong>Thích nghi:</strong> Thêm thử nghiệm WFH thứ Năm chiều (Time Shifting)</li>
+            <li><strong>Thích nghi tiếp:</strong> Mua baby sling và tham gia lớp học làm cha</li>
+          </ul>
+        </div>
+      </div>
+      <div class="case-result">
+        <strong>Kết quả:</strong>
+        <p>Joanne tự nguyện chạy nửa sau của marathon cùng Lim. Hoạt động của team được tổ chức lại với văn hóa linh hoạt hơn. Hiệu suất business unit và tinh thần team đều cải thiện. Lim và Joanne có chủ đề chung mới và kết nối sâu hơn trước kỳ nghỉ sinh. <em>Bài học: Thử nghiệm cần thích nghi khi hoàn cảnh thay đổi — không cứng nhắc theo kế hoạch ban đầu.</em></p>
+      </div>
+    </div>
+
+    <h3>Case Study 3: Ismail — Restructuring (Small Wins)</h3>
+    <div class="case-detailed">
+      <div class="case-header">
+        <div class="case-avatar">IS</div>
+        <div class="case-meta">
+          <h4>Ismail</h4>
+          <div class="role">CEO 50 tuổi — thành công về mặt tài chính nhưng thiếu sense of purpose; muốn tái cấu trúc công ty và vai trò của mình</div>
+        </div>
+      </div>
+      <p>Mục tiêu ban đầu của Ismail lớn và mơ hồ: "Tái cấu trúc công ty và vai trò của mình trong đó." Thay vì bắt đầu bằng một kế hoạch lớn, ông bắt đầu bằng thử nghiệm nhỏ nhất có thể: <strong>thay đổi phương pháp giao tiếp</strong> với đồng nghiệp và với vợ — lắng nghe nhiều hơn, áp đặt ít hơn.</p>
+      <p>Những thay đổi nhỏ này tạo ra niềm tin mới, từ đó mở ra không gian để delegation lớn hơn, từ đó dẫn đến cấu trúc tổ chức phẳng hơn. Sau 18 tháng, ông thực sự đạt được mục tiêu lớn ban đầu.</p>
+      <div class="case-result">
+        <strong>Triết lý "Small Wins":</strong>
+        <p><em>"A testament to the idea of winning the small battles and letting the war be won as a result."</em> — Ismail. Nghịch lý của thay đổi lớn: chính xác vì nó quá lớn để tiếp cận trực tiếp, cần bắt đầu bằng những thay đổi nhỏ có thể kiểm soát được, xây dựng momentum và niềm tin từng bước.</p>
+      </div>
+    </div>
+
+    <h3>Case Study 4: Sales Director — Time Shifting</h3>
+    <p>Giám đốc bán hàng của công ty xi măng toàn cầu có hành trình di chuyển rất dài mỗi ngày. Công ty có văn hóa truyền thống: mọi người phải có mặt tại văn phòng. Thử nghiệm: <strong>làm việc từ thư viện công cộng địa phương một ngày mỗi tuần</strong>.</p>
+    <ul>
+      <li><strong>Self:</strong> Tiết kiệm 3-4 tiếng di chuyển → thời gian cho sở thích cá nhân và nghỉ ngơi</li>
+      <li><strong>Work:</strong> Năng suất tăng (làm việc trong môi trường yên tĩnh, không bị ngắt quãng)</li>
+      <li><strong>Home:</strong> Về nhà sớm hơn → thêm thời gian chất lượng với gia đình</li>
+      <li><strong>Community:</strong> Gương mẫu cho đồng nghiệp thấy văn hóa linh hoạt hơn là khả thi</li>
+    </ul>
+    <p><em>Kết quả: Anh trở thành người đi đầu thay đổi văn hóa làm việc trong công ty, được công nhận không chỉ về hiệu suất cá nhân mà còn về vai trò dẫn dắt sự thay đổi tổ chức.</em></p>
+
+  </div>
+</section>
+
+<!-- ═══════ SECTION 5 ═══════ -->
+<section class="section" id="review">
+  <div class="section-header">
+    <div class="section-number">5</div>
+    <div>
+      <h2>Ghi Chú Ôn Tập &amp; Bẫy Nhận Thức / Study Notes &amp; Cognitive Traps</h2>
+      <div class="en">Key concepts · Common mistakes · Exam tips</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>Bảng Tóm tắt Nhanh — Toàn bộ Framework</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>Khái niệm</th><th>Nội dung cốt lõi</th><th>Từ khóa nhớ</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Total Leadership</strong></td>
+          <td>Framework tích hợp 4 lĩnh vực; "total" = whole person; "leadership" = sustainable change benefiting self AND others</td>
+          <td>Wharton; Friedman; Integration, not Balance</td>
+        </tr>
+        <tr>
+          <td><strong>Zero-Sum vs Integration</strong></td>
+          <td>Zero-sum: work vs life là đối lập, phải chọn. Integration: 4 lĩnh vực tương hỗ, four-way wins</td>
+          <td>Paradox: less time at work → better performance</td>
+        </tr>
+        <tr>
+          <td><strong>Four-way wins</strong></td>
+          <td>Thay đổi tạo lợi ích đồng thời cho cả 4 lĩnh vực; khác với compromise (tất cả đều được ít hơn)</td>
+          <td>Không phải trade-off; mutual value creation</td>
+        </tr>
+        <tr>
+          <td><strong>Be Real</strong></td>
+          <td>Authenticity — biết giá trị cốt lõi, xây tầm nhìn lãnh đạo, check alignment hàng động-giá trị</td>
+          <td>Clarify what's important; leadership vision</td>
+        </tr>
+        <tr>
+          <td><strong>Be Whole</strong></td>
+          <td>Integrity — nhìn nhận bản thân và người khác như con người đầy đủ với 4 lĩnh vực</td>
+          <td>Respect the whole person; không phải chỉ vai trò</td>
+        </tr>
+        <tr>
+          <td><strong>Be Innovative</strong></td>
+          <td>Creativity — thách thức giả định truyền thống; thử nghiệm nhỏ; học từ thất bại</td>
+          <td>Small wins; 9 categories; max 3 at once</td>
+        </tr>
+        <tr>
+          <td><strong>5-Step Process</strong></td>
+          <td>Clarify → Identify stakeholders → Talk → Design experiments → Measure &amp; Adapt</td>
+          <td>Stakeholders' actual needs &lt; assumed needs</td>
+        </tr>
+        <tr>
+          <td><strong>9 Experiment types</strong></td>
+          <td>Tracking, Planning, Rejuvenating, Appreciating, Focusing, Revealing, Time Shifting, Delegating, Exploring</td>
+          <td>Nhóm 3: Nội tâm / Quan hệ / Cấu trúc</td>
+        </tr>
+        <tr>
+          <td><strong>Metrics</strong></td>
+          <td>Results metrics (đo gì) + Action metrics (làm gì); scorecard cho mỗi thử nghiệm ở mỗi lĩnh vực</td>
+          <td>Kenneth Chen's scorecard; 2 loại metrics</td>
+        </tr>
+        <tr>
+          <td><strong>Research results</strong></td>
+          <td>300+ professionals, 4 months: satisfaction +20–39%, performance +9–25%; ít giờ Work hơn nhưng Work performance vẫn tăng</td>
+          <td>Self satisfaction tăng nhiều nhất (+39%)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Bẫy Nhận thức Phổ biến</h3>
+    <div class="pitfall-grid">
+      <div class="pitfall-card">
+        <div class="pf-num">1</div>
+        <h4>Nhầm "Integration" với "Balance"</h4>
+        <p>Balance = phân bổ thời gian 50/50 (vẫn zero-sum). Integration = thiết kế các hoạt động tạo giá trị cho nhiều lĩnh vực cùng lúc. Không phải "cân bằng" mà là "tích hợp thông minh."</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pf-num">2</div>
+        <h4>Thử nghiệm quá tham vọng ngay từ đầu</h4>
+        <p>Thay đổi lớn = rủi ro lớn + kiên trì khó = thất bại cao. Small wins approach: bắt đầu bằng thứ nhỏ nhất có thể tạo ra học hỏi và động lực. Ismail: bắt đầu bằng thay đổi cách giao tiếp.</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pf-num">3</div>
+        <h4>Coi thất bại của thử nghiệm là thất bại cá nhân</h4>
+        <p>"The only way to fail with an experiment is to fail to learn from it." Thử nghiệm thất bại = dữ liệu quý giá. 1/3 thử nghiệm thất bại là tỷ lệ học tập tốt, không phải dấu hiệu năng lực kém.</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pf-num">4</div>
+        <h4>Bỏ qua bước "Talk to Stakeholders" (bước 3)</h4>
+        <p>Nhiều người trực tiếp thiết kế experiments mà không hỏi stakeholders thực sự cần gì. Phát hiện của Friedman: nhu cầu thực thường ít hơn và khác với những gì bạn giả định → cơ hội bị bỏ lỡ.</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pf-num">5</div>
+        <h4>Chạy quá nhiều thử nghiệm cùng lúc</h4>
+        <p>Tối đa 3 experiments đồng thời. Nhiều hơn → phân tán năng lượng → không thử nghiệm nào được đầu tư đủ → tất cả đều thất bại. Focus là chìa khóa của small wins approach.</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pf-num">6</div>
+        <h4>Chỉ đo Results Metrics, bỏ qua Action Metrics</h4>
+        <p>Results metrics cho biết bạn đạt được gì. Action metrics cho biết bạn đã làm gì — cần thiết để phân tích khi kết quả không như mong đợi: "Kết quả kém vì tôi không thực hiện đủ actions, hay vì actions đó không đúng?"</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pf-num">7</div>
+        <h4>Bỏ qua lĩnh vực "Self"</h4>
+        <p>Nhiều người coi việc đầu tư cho bản thân là "ích kỷ." Nghiên cứu cho thấy: Self satisfaction tăng nhiều nhất (+39%), và đây là lĩnh vực khi được cải thiện, tạo ra spillover lớn nhất sang các lĩnh vực khác. Self không phải là xa xỉ — là nền tảng.</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pf-num">8</div>
+        <h4>Nhầm Four-way win với "something good for work"</h4>
+        <p>Four-way win yêu cầu lợi ích <em>có ý nghĩa và thực sự</em> ở TẤT CẢ 4 lĩnh vực, không phải "tốt cho lĩnh vực này và không tệ cho lĩnh vực kia." Cần tư duy chủ động về cách tạo ra giá trị đa chiều.</p>
+      </div>
+    </div>
+
+    <h3>Câu hỏi Ôn tập</h3>
+    <ol>
+      <li>Giải thích sự khác biệt giữa "zero-sum thinking" và "integration thinking" trong Total Leadership. Cho ví dụ cụ thể từ thực tế.</li>
+      <li>Mô tả 4 lĩnh vực cuộc sống theo Friedman. Tại sao việc bỏ bê một lĩnh vực cuối cùng ảnh hưởng đến các lĩnh vực khác?</li>
+      <li>Ba nguyên tắc "Be Real, Be Whole, Be Innovative" có nghĩa gì? Mỗi nguyên tắc biểu hiện như thế nào trong thực tế hàng ngày?</li>
+      <li>Mô tả quy trình 5 bước Total Leadership. Tại sao bước "Talk to Stakeholders" thường tạo ra bất ngờ?</li>
+      <li>Giải thích 9 loại thử nghiệm. Cho ví dụ về một thử nghiệm kết hợp nhiều loại để tạo ra four-way win.</li>
+      <li>Tại sao Friedman đề xuất tối đa 3 thử nghiệm cùng lúc? "2 thành công, 1 thất bại" có nghĩa gì?</li>
+      <li>Giải thích sự khác biệt giữa Results Metrics và Action Metrics. Cho ví dụ từ case study của Kenneth Chen.</li>
+      <li>Mô tả nghịch lý chính trong kết quả nghiên cứu của Friedman. Tại sao kết quả này lại quan trọng?</li>
+      <li>Phân tích case study của Ismail qua lăng kính "small wins approach." Bài học chính là gì?</li>
+      <li>Tại sao Total Leadership liên quan đến "lãnh đạo"? Làm thế nào việc tích hợp 4 lĩnh vực của cá nhân giúp bạn trở thành nhà lãnh đạo tốt hơn?</li>
+    </ol>
+
+    <div class="callout tip">
+      <div class="callout-icon">🎓</div>
+      <div class="callout-body">
+        <strong>Liên kết với các tài liệu khác trong GK5009</strong>
+        <p><strong>Drucker (Managing Oneself):</strong> Cả hai đều nhấn mạnh việc biết bản thân là nền tảng. Drucker hỏi "What are my strengths?" — Friedman hỏi "What are my values and what matters to me?" Chúng bổ sung cho nhau. <strong>Whetten Ch08 (Empowering &amp; Delegating):</strong> "Delegating &amp; Developing" là một trong 9 loại thử nghiệm của Friedman — và là kỹ năng được phân tích kỹ trong Whetten. <strong>Humphrey (Emotional Leadership):</strong> "Be Whole" trong Total Leadership tương ứng với việc nhìn nhận cấp dưới như con người đầy đủ với cảm xúc — điều mà Humphrey nghiên cứu sâu.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <strong>GK5009 — Quản lý và Lãnh đạo</strong> &nbsp;|&nbsp; Stewart D. Friedman — "Be a Better Leader, Have a Richer Life" &nbsp;|&nbsp; HBR, April 2008 (R0804H)
+  <br><br>
+  <span style="opacity:0.6; font-size:0.78rem;">
+    Hoàn thành: Carpenter ✓ (Ch01, Ch04, Ch05, Ch06) | Northouse ✓ (Ch01-08) | Whetten ✓ (Ch06, Ch08) | HBR ✓ (Friedman, Drucker) | Humphrey ✓ | Unit 0 ✓
+  </span>
+</footer>
+
+</body>
+</html>

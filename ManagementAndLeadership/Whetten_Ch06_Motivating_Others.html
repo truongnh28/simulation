@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GK5009 – Whetten Ch06: Motivating Others</title>
+  <style>
+    :root {
+      --primary: #145a32;
+      --secondary: #27ae60;
+      --accent: #f39c12;
+      --light: #f0f9f4;
+      --text: #1c1c1c;
+      --muted: #5a6e5a;
+      --border: #a9dfbf;
+      --red: #922b21;
+      --blue: #1a4c7e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 16px;
+      line-height: 1.85;
+      color: var(--text);
+      background: #fff;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 30px;
+    }
+    h1 { font-size: 2.2rem; color: var(--primary); border-bottom: 4px solid var(--accent); padding-bottom: 12px; margin-bottom: 8px; }
+    h2 { font-size: 1.6rem; color: var(--primary); border-left: 5px solid var(--secondary); padding-left: 14px; margin: 36px 0 16px; }
+    h3 { font-size: 1.25rem; color: var(--secondary); margin: 24px 0 10px; }
+    h4 { font-size: 1.05rem; color: var(--primary); margin: 18px 0 8px; font-style: italic; }
+    p { margin-bottom: 14px; }
+    ul, ol { margin: 10px 0 14px 24px; }
+    li { margin-bottom: 7px; }
+    strong { color: var(--primary); }
+    em { color: var(--muted); }
+
+    .header-block {
+      background: linear-gradient(135deg, #145a32, #27ae60);
+      color: white;
+      padding: 32px 36px;
+      border-radius: 10px;
+      margin-bottom: 36px;
+    }
+    .header-block h1 { color: white; border-bottom-color: rgba(255,255,255,0.4); }
+    .header-block .subtitle { font-size: 1.05rem; opacity: 0.9; margin-top: 8px; }
+    .header-block .meta { font-size: 0.9rem; opacity: 0.75; margin-top: 6px; }
+
+    .section-card {
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 26px 30px;
+      margin-bottom: 28px;
+    }
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary);
+      border-bottom: 2px solid var(--secondary);
+      padding-bottom: 8px;
+      margin-bottom: 18px;
+    }
+
+    .quote-box {
+      background: #fff;
+      border-left: 5px solid var(--secondary);
+      padding: 18px 22px;
+      margin: 18px 0;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      font-size: 1.05rem;
+    }
+    .quote-box cite {
+      display: block;
+      margin-top: 10px;
+      font-style: normal;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .formula-box {
+      background: #fff;
+      border: 2px solid var(--secondary);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 18px 0;
+      text-align: center;
+    }
+    .formula-line {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--primary);
+      margin: 6px 0;
+      font-family: 'Courier New', monospace;
+    }
+
+    /* 2x2 Satisfaction/Performance grid */
+    .sat-perf-grid {
+      display: grid;
+      grid-template-columns: 80px 1fr 1fr;
+      grid-template-rows: 40px 1fr 1fr;
+      gap: 4px;
+      margin: 22px 0;
+      max-width: 640px;
+    }
+    .sat-perf-grid .corner { background: transparent; }
+    .sat-perf-grid .col-label {
+      background: var(--primary);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold; font-size: 0.9rem;
+      border-radius: 4px;
+    }
+    .sat-perf-grid .row-label {
+      background: var(--primary);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold; font-size: 0.85rem;
+      text-align: center;
+      border-radius: 4px;
+      padding: 8px 4px;
+    }
+    .sat-perf-cell {
+      padding: 16px;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+    .cell-integrating { background: #d5f5e3; color: #145a32; border: 2px solid #27ae60; }
+    .cell-indulging   { background: #fef9e7; color: #7d6608; border: 2px solid #f39c12; }
+    .cell-imposing    { background: #fde8e8; color: #922b21; border: 2px solid #e74c3c; }
+    .cell-ignoring    { background: #f2f3f4; color: #566573; border: 2px solid #aab7b8; }
+    .sat-perf-cell .type-label { font-size: 1.1rem; display: block; margin-bottom: 4px; }
+    .sat-perf-cell .type-desc { font-size: 0.82rem; font-weight: normal; }
+
+    /* Flow arrows */
+    .flow-row {
+      display: flex; align-items: center; gap: 10px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+    .flow-box {
+      background: var(--primary);
+      color: white;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+    .flow-arrow { font-size: 1.5rem; color: var(--secondary); }
+
+    /* Theory X/Y cards */
+    .xy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 18px 0; }
+    .xy-card { padding: 20px; border-radius: 8px; }
+    .theory-x { background: #fdecea; border: 2px solid #e74c3c; }
+    .theory-y { background: #d5f5e3; border: 2px solid #27ae60; }
+    .xy-card h4 { font-size: 1.1rem; font-style: normal; margin-top: 0; }
+    .theory-x h4 { color: #922b21; }
+    .theory-y h4 { color: #145a32; }
+
+    /* Ability tools grid */
+    .tools-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 18px 0; }
+    .tool-card {
+      background: #fff;
+      border: 2px solid var(--secondary);
+      border-radius: 8px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+    .tool-card .tool-num { font-size: 1.8rem; font-weight: bold; color: var(--secondary); }
+    .tool-card .tool-name { font-weight: bold; color: var(--primary); font-size: 0.95rem; }
+
+    /* Need theories comparison */
+    .need-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      margin: 18px 0;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .need-col { border-right: 1px solid var(--border); }
+    .need-col:last-child { border-right: none; }
+    .need-header { background: var(--primary); color: white; padding: 10px 14px; font-weight: bold; text-align: center; }
+    .need-row { padding: 10px 14px; border-top: 1px solid var(--border); font-size: 0.92rem; text-align: center; }
+    .need-row:nth-child(even) { background: #f8fdf9; }
+
+    /* Murray's manifest needs */
+    .manifest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 18px 0; }
+    .manifest-card {
+      background: #fff;
+      border-top: 4px solid var(--secondary);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .manifest-card h4 { font-style: normal; color: var(--primary); margin-top: 0; font-size: 1rem; }
+    .manifest-card .n-label { font-size: 1.1rem; font-weight: bold; color: var(--secondary); }
+
+    /* Integrative model */
+    .integrative {
+      background: #fff;
+      border: 2px solid var(--primary);
+      border-radius: 10px;
+      padding: 24px;
+      margin: 22px 0;
+    }
+    .integrative-title { font-weight: bold; font-size: 1.1rem; color: var(--primary); margin-bottom: 16px; text-align: center; }
+    .int-flow {
+      display: flex; align-items: flex-start; gap: 12px;
+      margin: 12px 0; flex-wrap: wrap;
+    }
+    .int-node {
+      background: var(--primary);
+      color: white;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      min-width: 110px;
+      text-align: center;
+    }
+    .int-node.alt { background: var(--secondary); }
+    .int-inputs { background: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; font-size: 0.88rem; }
+    .int-factors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+    .int-factor {
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+    }
+    .int-factor strong { display: block; font-size: 0.95rem; color: var(--primary); margin-bottom: 4px; }
+    .int-factor .f-num {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      line-height: 24px;
+      text-align: center;
+      font-size: 0.8rem;
+      margin-right: 6px;
+    }
+
+    /* Award best practices */
+    .award-list { list-style: none; margin: 0; padding: 0; }
+    .award-list li {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .award-list li:last-child { border-bottom: none; }
+    .award-num {
+      background: var(--accent);
+      color: white;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold; flex-shrink: 0;
+    }
+
+    /* Goal characteristics */
+    .goal-chars { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 16px 0; }
+    .goal-char {
+      background: #fff;
+      border-left: 4px solid var(--secondary);
+      padding: 12px 16px;
+      border-radius: 0 6px 6px 0;
+    }
+    .goal-char strong { display: block; color: var(--primary); }
+
+    /* Danger signals */
+    .danger-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 16px 0; }
+    .danger-card {
+      background: #fdecea;
+      border: 2px solid #e74c3c;
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .danger-card .d-num { font-size: 2rem; font-weight: bold; color: #e74c3c; }
+    .danger-card .d-title { font-weight: bold; color: #922b21; font-size: 0.95rem; }
+
+    /* Work design strategies */
+    .wds-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 16px 0; }
+    .wds-item {
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      text-align: center;
+      font-size: 0.88rem;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    /* Equity */
+    .equity-formula {
+      background: #fff;
+      border: 2px dashed var(--secondary);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      margin: 16px 0;
+      font-size: 1.1rem;
+    }
+    .equity-formula .eq-frac { font-size: 1.3rem; font-weight: bold; color: var(--primary); }
+
+    /* Tip / Pitfall boxes */
+    .tip-box {
+      background: #d5f5e3;
+      border-left: 5px solid var(--secondary);
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 14px 0;
+    }
+    .pitfall-box {
+      background: #fdecea;
+      border-left: 5px solid #e74c3c;
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 14px 0;
+    }
+    .tip-box strong, .pitfall-box strong { display: block; margin-bottom: 4px; }
+    .tip-box strong { color: #145a32; }
+    .pitfall-box strong { color: #922b21; }
+
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      font-size: 0.92rem;
+    }
+    .summary-table th {
+      background: var(--primary);
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    .summary-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .summary-table tr:nth-child(even) td { background: var(--light); }
+
+    .tag { display: inline-block; background: var(--secondary); color: white; font-size: 0.78rem; padding: 2px 8px; border-radius: 12px; margin-right: 4px; font-weight: bold; }
+    .tag.orange { background: var(--accent); }
+    .tag.red { background: var(--red); }
+
+    footer {
+      margin-top: 60px;
+      border-top: 2px solid var(--border);
+      padding-top: 20px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header-block">
+  <h1>Whetten Ch06: Motivating Others</h1>
+  <div class="subtitle">Tạo động lực cho người khác — Quản lý kỹ năng cá nhân</div>
+  <div class="meta">Whetten &amp; Cameron — Developing Management Skills, 7th Ed. (2007) &nbsp;|&nbsp; GK5009 Quản lý và Lãnh đạo</div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-card">
+  <div class="section-title">I. Tổng quan (Overview)</div>
+
+  <h3>Mục tiêu học tập (Learning Objectives)</h3>
+  <p>Sau khi học chương này, sinh viên có khả năng:</p>
+  <ol>
+    <li><strong>Chẩn đoán vấn đề hiệu suất công việc</strong> — phân biệt nguyên nhân từ năng lực hay từ động lực</li>
+    <li><strong>Nâng cao năng lực làm việc của người khác</strong> — nhận diện khi nào năng lực suy giảm và áp dụng 5 công cụ khắc phục</li>
+    <li><strong>Xây dựng môi trường làm việc tạo động lực</strong> — hiểu rằng quản lý không "tạo động lực" mà tạo ra môi trường để người khác tự tạo động lực cho chính họ</li>
+  </ol>
+
+  <div class="quote-box">
+    "I don't motivate my players. You cannot motivate someone, all you can do is provide a motivating environment and the players will motivate themselves."
+    <cite>— Phil Jackson, sau khi giành chức vô địch NBA lần thứ 7 với tư cách HLV</cite>
+  </div>
+
+  <p>Triết lý của Phil Jackson phản ánh quan điểm cốt lõi của chương: <strong>động lực phải đến từ bên trong</strong>. Nhiệm vụ của nhà quản lý không phải là "bơm" động lực vào nhân viên mà là loại bỏ chướng ngại vật, thiết lập mục tiêu rõ ràng, tạo hệ thống phần thưởng công bằng và xây dựng môi trường trong đó mỗi cá nhân muốn làm tốt công việc của mình.</p>
+
+  <h3>Tại sao Motivating Others là kỹ năng thiết yếu?</h3>
+  <p>Tạo động lực là một trong những thách thức dai dẳng nhất trong quản lý. Ngay cả khi tổ chức có chiến lược tốt, hệ thống vận hành tốt, và nhân sự có năng lực — nếu thiếu động lực, kết quả sẽ luôn dưới tiềm năng. Hiểu cơ chế của động lực giúp nhà quản lý:</p>
+  <ul>
+    <li>Phân tích nguyên nhân khi nhân viên không đạt hiệu suất mong đợi</li>
+    <li>Lựa chọn can thiệp phù hợp thay vì áp dụng giải pháp chung chung</li>
+    <li>Xây dựng hệ thống mục tiêu, phần thưởng và phản hồi có tính nhất quán</li>
+    <li>Tránh những sai lầm phổ biến như "thưởng A trong khi kỳ vọng B"</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-card">
+  <div class="section-title">II. Phân tích chuyên sâu (In-depth Analysis)</div>
+
+  <!-- Part A: Performance Formula -->
+  <h2>A. Công thức Hiệu suất (Performance Formula)</h2>
+
+  <div class="formula-box">
+    <div class="formula-line">Performance = Ability × Motivation (Effort)</div>
+    <div style="margin-top:10px; color:#555; font-size:0.95rem;">trong đó:</div>
+    <div class="formula-line" style="font-size:1rem;">Ability = Aptitude × Training × Resources</div>
+    <div class="formula-line" style="font-size:1rem;">Motivation = Desire × Commitment</div>
+  </div>
+
+  <p>Công thức này có tính chất <strong>nhân (multiplicative)</strong>, không phải cộng. Nếu bất kỳ yếu tố nào bằng 0, kết quả sẽ bằng 0. Một nhân viên có năng lực xuất sắc nhưng không có Commitment (cam kết) sẽ không tạo ra hiệu suất. Tương tự, nhân viên có Desire cao nhưng thiếu Training và Resources sẽ gặp trần thủy tinh.</p>
+
+  <p><strong>Phân tích từng yếu tố:</strong></p>
+  <ul>
+    <li><strong>Aptitude (Năng khiếu bẩm sinh):</strong> khả năng thiên bẩm phù hợp với loại công việc — ví dụ, khả năng ngôn ngữ với vai trò bán hàng, tư duy logic với lập trình</li>
+    <li><strong>Training (Đào tạo):</strong> các kỹ năng và kiến thức được trau dồi qua quá trình học tập, huấn luyện</li>
+    <li><strong>Resources (Nguồn lực):</strong> công cụ, thiết bị, thông tin, ngân sách, sự hỗ trợ cần thiết để hoàn thành nhiệm vụ</li>
+    <li><strong>Desire (Mong muốn):</strong> ý chí muốn thực hiện công việc, xuất phát từ sở thích, mục tiêu cá nhân, hay niềm tin vào ý nghĩa công việc</li>
+    <li><strong>Commitment (Cam kết):</strong> sự kiên trì duy trì nỗ lực qua thời gian, kể cả khi gặp khó khăn</li>
+  </ul>
+
+  <!-- Part B: Diagnosing Poor Performance -->
+  <h2>B. Chẩn đoán Hiệu suất Kém (Diagnosing Poor Performance)</h2>
+
+  <p>Khi nhân viên không đạt hiệu suất mong đợi, nhà quản lý cần đặt 4 câu hỏi chẩn đoán trước khi hành động:</p>
+  <ol>
+    <li><strong>Nhiệm vụ khó đến mức nào?</strong> — Có phải kỳ vọng không thực tế so với độ phức tạp của công việc?</li>
+    <li><strong>Cá nhân đó có năng lực phù hợp không?</strong> — Aptitude, kỹ năng và kinh nghiệm có đáp ứng yêu cầu?</li>
+    <li><strong>Họ có đang cố gắng hết sức không?</strong> — Mức độ nỗ lực và tập trung của họ ra sao?</li>
+    <li><strong>Họ có đang cải thiện không?</strong> — Có xu hướng tiến bộ theo thời gian hay không?</li>
+  </ol>
+
+  <p>Hai nguyên nhân gốc rễ chính cần phân biệt:</p>
+  <div class="xy-grid">
+    <div class="xy-card theory-x">
+      <h4>Vấn đề về Năng lực (Ability Problem)</h4>
+      <p>Nhân viên <em>muốn</em> làm tốt nhưng <em>không thể</em>. Biểu hiện: nỗ lực cao nhưng kết quả không cải thiện, làm đúng theo hướng dẫn nhưng vẫn sai.</p>
+      <p><strong>Can thiệp:</strong> Đào tạo, tái bố trí, cung cấp thêm nguồn lực.</p>
+    </div>
+    <div class="xy-card theory-y">
+      <h4>Vấn đề về Động lực (Motivation Problem)</h4>
+      <p>Nhân viên <em>có thể</em> làm tốt nhưng <em>không muốn</em>. Biểu hiện: từng làm tốt trong quá khứ, làm tốt khi có giám sát, hoặc làm tốt trong các tình huống khác.</p>
+      <p><strong>Can thiệp:</strong> Điều chỉnh mục tiêu, phần thưởng, kỳ vọng, công việc.</p>
+    </div>
+  </div>
+
+  <!-- Part C: Ability Degeneration -->
+  <h2>C. Ba Dấu hiệu Nguy hiểm của Năng lực Suy thoái</h2>
+
+  <div class="danger-grid">
+    <div class="danger-card">
+      <div class="d-num">1</div>
+      <div class="d-title">Taking Refuge in a Specialty</div>
+      <p style="font-size:0.9rem; margin-top:8px;">Rút lui vào chuyên môn hẹp: nhà lãnh đạo hoặc nhân viên tránh các thách thức mới bằng cách chỉ tập trung vào điều mình đã biết chắc, từ chối mở rộng hay học thêm.</p>
+    </div>
+    <div class="danger-card">
+      <div class="d-num">2</div>
+      <div class="d-title">Focusing on Past Performance</div>
+      <p style="font-size:0.9rem; margin-top:8px;">Tập trung vào thành tích trong quá khứ: sống dựa trên vinh quang cũ thay vì thích nghi với yêu cầu hiện tại. Môi trường thay đổi nhưng kỹ năng đứng yên.</p>
+    </div>
+    <div class="danger-card">
+      <div class="d-num">3</div>
+      <div class="d-title">Exaggerating Aspects of the Leadership Role</div>
+      <p style="font-size:0.9rem; margin-top:8px;">Phóng đại vai trò lãnh đạo: tập trung quá mức vào quản lý hành chính, quan hệ chính trị trong tổ chức, bỏ quên phát triển năng lực thực sự.</p>
+    </div>
+  </div>
+
+  <!-- Part D: Five Tools for Improving Ability -->
+  <h2>D. Năm Công cụ Cải thiện Năng lực</h2>
+
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-num">1</div>
+      <div class="tool-name">Resupply</div>
+      <p style="font-size:0.82rem; margin-top:6px; color:#555;">Cung cấp thêm nguồn lực: công cụ, thiết bị, thông tin, ngân sách</p>
+    </div>
+    <div class="tool-card">
+      <div class="tool-num">2</div>
+      <div class="tool-name">Retrain</div>
+      <p style="font-size:0.82rem; margin-top:6px; color:#555;">Đào tạo lại: cập nhật kỹ năng, huấn luyện chuyên sâu hơn</p>
+    </div>
+    <div class="tool-card">
+      <div class="tool-num">3</div>
+      <div class="tool-name">Refit</div>
+      <p style="font-size:0.82rem; margin-top:6px; color:#555;">Điều chỉnh công việc: làm cho công việc phù hợp hơn với điểm mạnh của người đó</p>
+    </div>
+    <div class="tool-card">
+      <div class="tool-num">4</div>
+      <div class="tool-name">Reassign</div>
+      <p style="font-size:0.82rem; margin-top:6px; color:#555;">Bố trí lại: chuyển sang vị trí khác phù hợp hơn với năng lực</p>
+    </div>
+    <div class="tool-card">
+      <div class="tool-num">5</div>
+      <div class="tool-name">Release</div>
+      <p style="font-size:0.82rem; margin-top:6px; color:#555;">Cho thôi việc: lựa chọn cuối cùng khi 4 công cụ trên không hiệu quả</p>
+    </div>
+  </div>
+
+  <!-- Part E: Management Styles - Theory X/Y -->
+  <h2>E. Phong cách Quản lý — Lý thuyết X và Y</h2>
+
+  <div class="xy-grid">
+    <div class="xy-card theory-x">
+      <h4>Theory X — McGregor</h4>
+      <p>Nhân viên vốn <strong>lười biếng</strong>, né tránh công việc, cần kiểm soát chặt, đe dọa và áp lực để hoàn thành nhiệm vụ.</p>
+      <p><em>Hệ quả quản lý:</em> Micromanagement, giám sát liên tục, phạt nhiều hơn thưởng, môi trường sợ hãi.</p>
+    </div>
+    <div class="xy-card theory-y">
+      <h4>Theory Y — McGregor</h4>
+      <p>Nhân viên vốn <strong>muốn làm tốt</strong>, tìm kiếm ý nghĩa trong công việc, có khả năng tự định hướng và sáng tạo nếu được trao quyền.</p>
+      <p><em>Hệ quả quản lý:</em> Trao quyền, tạo cơ hội phát triển, thiết lập mục tiêu có ý nghĩa, tin tưởng và hỗ trợ.</p>
+    </div>
+  </div>
+
+  <!-- Part F: Satisfaction vs Performance Matrix -->
+  <h2>F. Ma trận Sự thỏa mãn và Hiệu suất</h2>
+
+  <div class="sat-perf-grid">
+    <div class="corner"></div>
+    <div class="col-label">LOW Performance</div>
+    <div class="col-label">HIGH Performance</div>
+    <div class="row-label">HIGH<br>Satisfaction</div>
+    <div class="sat-perf-cell cell-indulging">
+      <span class="type-label">Indulging</span>
+      <span class="type-desc">Chiều chuộng — ưu tiên thoải mái, bỏ qua kết quả</span>
+    </div>
+    <div class="sat-perf-cell cell-integrating">
+      <span class="type-label">Integrating ★</span>
+      <span class="type-desc">Tích hợp — lý tưởng: thỏa mãn CAO &amp; hiệu suất CAO</span>
+    </div>
+    <div class="row-label">LOW<br>Satisfaction</div>
+    <div class="sat-perf-cell cell-ignoring">
+      <span class="type-label">Ignoring</span>
+      <span class="type-desc">Bỏ mặc — không quan tâm cả hai chiều</span>
+    </div>
+    <div class="sat-perf-cell cell-imposing">
+      <span class="type-label">Imposing</span>
+      <span class="type-desc">Áp đặt — ép hiệu suất, bỏ qua phúc lợi nhân viên</span>
+    </div>
+  </div>
+
+  <ul>
+    <li><strong>Indulging (Chiều chuộng):</strong> Nhà quản lý quá quan tâm đến hạnh phúc nhân viên mà không đặt ra yêu cầu hiệu suất rõ ràng. Nhân viên vui vẻ nhưng không phát triển.</li>
+    <li><strong>Imposing (Áp đặt):</strong> Nhà quản lý chỉ tập trung vào kết quả, không quan tâm đến điều kiện làm việc hay cảm xúc nhân viên. Hiệu suất có thể cao ngắn hạn nhưng burnout và turnover cao.</li>
+    <li><strong>Ignoring (Bỏ mặc):</strong> Nhà quản lý không quan tâm đến cả hai. Đây là phong cách tệ nhất.</li>
+    <li><strong>Integrating (Tích hợp) ★:</strong> Nhà quản lý đạt được đồng thời hiệu suất cao và sự thỏa mãn cao — điều này đòi hỏi kỹ năng thiết lập mục tiêu, tạo điều kiện, và hệ thống phần thưởng hiệu quả.</li>
+  </ul>
+
+  <!-- Part G: Old vs New View of Motivation -->
+  <h2>G. Quan điểm Cũ vs. Mới về Tạo Động lực</h2>
+
+  <h3>Quan điểm cũ (Old View) — "Contented Cows give more Milk"</h3>
+  <div class="flow-row">
+    <div class="flow-box">Satisfaction</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">Motivation</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">Performance</div>
+  </div>
+  <p>Quan điểm này cho rằng nếu nhân viên hạnh phúc, họ sẽ làm việc chăm chỉ hơn. Nhưng nghiên cứu thực nghiệm không ủng hộ mối quan hệ tuyến tính đơn giản này — hạnh phúc không tự động tạo ra hiệu suất.</p>
+
+  <h3>Quan điểm mới (New View) — Mô hình vòng lặp</h3>
+  <div class="flow-row">
+    <div class="flow-box">Motivation</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">Performance</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">Outcomes</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">Satisfaction</div>
+  </div>
+  <p>Theo quan điểm mới, <strong>Motivation (động lực) dẫn đến Performance (hiệu suất)</strong>, hiệu suất tốt dẫn đến Outcomes (kết quả — thành tích, phần thưởng), và kết quả này tạo ra Satisfaction. Satisfaction lại củng cố Motivation cho chu kỳ tiếp theo. Điểm khởi đầu là động lực, không phải sự thỏa mãn.</p>
+
+  <!-- Part H: Goal Setting -->
+  <h2>H. Thiết lập Mục tiêu (Goal Setting)</h2>
+
+  <p>Theo quan điểm mới, <strong>Motivation bắt đầu bằng việc thiết lập mục tiêu có độ khó vừa phải, được hiểu rõ và được chấp thuận</strong>. Đây là bước khởi đầu của chuỗi Motivation → Performance → Outcomes.</p>
+
+  <div class="goal-chars">
+    <div class="goal-char">
+      <strong>Specific (Cụ thể)</strong>
+      Mục tiêu cần rõ ràng, không mơ hồ — "tăng doanh số 15%" tốt hơn "tăng doanh số."
+    </div>
+    <div class="goal-char">
+      <strong>Consistent (Nhất quán)</strong>
+      Các mục tiêu không được mâu thuẫn với nhau — mục tiêu cắt giảm chi phí không được xung đột với mục tiêu nâng chất lượng dịch vụ.
+    </div>
+    <div class="goal-char">
+      <strong>Appropriately Challenging (Thách thức vừa phải)</strong>
+      Quá dễ → không tạo động lực. Quá khó → bỏ cuộc. Mục tiêu tốt nhất nằm ở vùng "moderately difficult" — đòi hỏi nỗ lực nhưng có thể đạt được.
+    </div>
+    <div class="goal-char">
+      <strong>Provide Feedback (Có phản hồi)</strong>
+      Người thực hiện cần biết tiến độ của mình. Không có phản hồi, mục tiêu mất đi tác dụng định hướng.
+    </div>
+  </div>
+
+  <!-- Part I: Path Goal Theory -->
+  <h2>I. Lý thuyết Đường — Mục tiêu (Path Goal Theory)</h2>
+
+  <p>Sau khi thiết lập mục tiêu, nhiệm vụ tiếp theo của nhà quản lý là <strong>loại bỏ những chướng ngại vật trên đường đến mục tiêu</strong>. Vai trò của nhà quản lý là "dọn đường" (clearing the path) để nhân viên có thể đi từ Effort đến Performance một cách thông suốt.</p>
+  <p>Các chướng ngại vật phổ biến cần được xác định và loại bỏ:</p>
+  <ul>
+    <li>Thiếu thông tin hoặc hướng dẫn không rõ ràng</li>
+    <li>Quy trình hành chính làm chậm tiến độ</li>
+    <li>Xung đột giữa các phòng ban</li>
+    <li>Thiếu thẩm quyền để ra quyết định cần thiết</li>
+    <li>Thiếu nguồn lực vật chất hoặc tài chính</li>
+  </ul>
+
+  <!-- Part J: Performance → Outcomes -->
+  <h2>J. Phần thưởng và Kỷ luật (Performance → Outcomes)</h2>
+
+  <p>Khi nhân viên đạt hiệu suất, việc liên kết hiệu suất với Outcomes (kết quả) là bước quyết định để duy trì và tăng cường động lực trong tương lai. Có hai loại công cụ:</p>
+  <ul>
+    <li><strong>Rewarding (Khen thưởng):</strong> liên kết hành vi mong muốn với kết quả mà nhân viên trân trọng — tăng lương, thăng chức, công nhận công khai, cơ hội phát triển.</li>
+    <li><strong>Disciplining (Kỷ luật):</strong> phản hồi tiêu cực đối với hành vi không mong muốn để ngăn chặn sự tái diễn — cảnh cáo, khiển trách, giảm lương, sa thải.</li>
+  </ul>
+
+  <div class="quote-box" style="font-size:1rem;">
+    "Managers get what they reinforce, not what they want."
+    <cite>— Nguyên tắc cốt lõi của Behavior Shaping</cite>
+  </div>
+
+  <h3>Hai loại Kết quả (Outcomes)</h3>
+  <ul>
+    <li><strong>Extrinsic Outcomes (Kết quả bên ngoài):</strong> nằm ngoài sự kiểm soát của cá nhân — lương thưởng, thăng chức, điều kiện làm việc, sự công nhận từ người khác.</li>
+    <li><strong>Intrinsic Outcomes (Kết quả bên trong):</strong> cảm xúc và nhận thức mà cá nhân trải nghiệm khi hoàn thành công việc tốt — cảm giác thành tựu, tự hào, ý nghĩa, năng lực.</li>
+  </ul>
+  <p>Quản lý hiệu quả sử dụng cả hai loại. Extrinsic Outcomes thu hút và giữ chân nhân viên; Intrinsic Outcomes tạo ra sự gắn kết sâu sắc và bền lâu hơn.</p>
+
+  <!-- Part K: Behavior Shaping -->
+  <h2>K. Tạo hình Hành vi (Behavior Shaping Strategies)</h2>
+
+  <table class="summary-table">
+    <tr>
+      <th>Chiến lược</th>
+      <th>Định nghĩa</th>
+      <th>Mục đích</th>
+      <th>Ví dụ</th>
+    </tr>
+    <tr>
+      <td><strong>Rewarding</strong></td>
+      <td>Liên kết hành vi mong muốn với kết quả nhân viên trân trọng</td>
+      <td>Khuyến khích lặp lại hành vi tốt</td>
+      <td>Thưởng nhóm đạt KPI, công nhận công khai trước đồng nghiệp</td>
+    </tr>
+    <tr>
+      <td><strong>Disciplining</strong></td>
+      <td>Phản hồi tiêu cực với hành vi không mong muốn</td>
+      <td>Ngăn chặn sự tái diễn hành vi xấu</td>
+      <td>Cảnh cáo chính thức, khiển trách, giảm phúc lợi</td>
+    </tr>
+  </table>
+
+  <h3>Chương trình Khen thưởng Hiệu quả nhất (Best Award Programs)</h3>
+  <ul class="award-list">
+    <li><div class="award-num">1</div><div><strong>Give awards publicly (Trao thưởng công khai):</strong> Công nhận trước mặt đồng nghiệp tăng giá trị biểu tượng của phần thưởng, tạo hiệu ứng lan tỏa động lực.</div></li>
+    <li><div class="award-num">2</div><div><strong>Use awards infrequently (Sử dụng thưởng không thường xuyên):</strong> Phần thưởng quá thường xuyên mất đi ý nghĩa — khi mọi thứ đều được thưởng, không có gì còn đặc biệt.</div></li>
+    <li><div class="award-num">3</div><div><strong>Embed them in a reward process (Nhúng vào quy trình khen thưởng):</strong> Phần thưởng cần là một phần của hệ thống có nguyên tắc rõ ràng, không phải tùy hứng.</div></li>
+    <li><div class="award-num">4</div><div><strong>Acknowledge past recipients (Công nhận người nhận thưởng trước):</strong> Trong lễ trao thưởng, nhắc đến những người đã được thưởng tạo cảm giác truyền thống và uy tín.</div></li>
+    <li><div class="award-num">5</div><div><strong>Match award with culture (Phù hợp với văn hóa):</strong> Phần thưởng phải phù hợp với giá trị và văn hóa tổ chức — không phải mọi tổ chức đều chuộng khen thưởng công khai rầm rộ.</div></li>
+  </ul>
+
+  <!-- Part L: Work Design -->
+  <h2>L. Thiết kế Công việc (Work Design)</h2>
+
+  <p><strong>Định nghĩa:</strong> Quá trình kết hợp đặc điểm công việc với kỹ năng và sở thích của người lao động để tạo ra sự phù hợp tối ưu, từ đó tăng Intrinsic Motivation.</p>
+
+  <h3>Job Characteristics Model (Hackman &amp; Oldham)</h3>
+  <p>Mô hình này xác định 5 đặc điểm công việc cốt lõi ảnh hưởng đến trạng thái tâm lý và kết quả công việc:</p>
+  <table class="summary-table">
+    <tr>
+      <th>Đặc điểm Cốt lõi</th>
+      <th>Ý nghĩa</th>
+      <th>Dẫn đến trạng thái tâm lý</th>
+    </tr>
+    <tr>
+      <td>Skill Variety (Đa dạng kỹ năng)</td>
+      <td>Công việc đòi hỏi nhiều kỹ năng và tài năng khác nhau</td>
+      <td>Experienced meaningfulness</td>
+    </tr>
+    <tr>
+      <td>Task Identity (Nhận diện nhiệm vụ)</td>
+      <td>Hoàn thành một "mảnh công việc" có đầu có đuôi, nhìn thấy kết quả trọn vẹn</td>
+      <td>Experienced meaningfulness</td>
+    </tr>
+    <tr>
+      <td>Task Significance (Tầm quan trọng)</td>
+      <td>Công việc có tác động đáng kể đến người khác hay tổ chức</td>
+      <td>Experienced meaningfulness</td>
+    </tr>
+    <tr>
+      <td>Autonomy (Tự chủ)</td>
+      <td>Quyền tự do lên kế hoạch và thực hiện theo cách của mình</td>
+      <td>Experienced responsibility</td>
+    </tr>
+    <tr>
+      <td>Feedback (Phản hồi)</td>
+      <td>Thông tin rõ ràng về hiệu quả công việc đang làm</td>
+      <td>Knowledge of results</td>
+    </tr>
+  </table>
+
+  <h3>Work Design Strategies (Chiến lược Thiết kế Công việc)</h3>
+  <div class="wds-grid">
+    <div class="wds-item">Combine Tasks<br><span style="font-weight:normal; font-size:0.8rem;">Kết hợp nhiều nhiệm vụ nhỏ thành một công việc phong phú hơn</span></div>
+    <div class="wds-item">Form Identifiable Work Units<br><span style="font-weight:normal; font-size:0.8rem;">Tạo đơn vị công việc có thể nhận diện từ đầu đến cuối</span></div>
+    <div class="wds-item">Establish Client Relationships<br><span style="font-weight:normal; font-size:0.8rem;">Kết nối trực tiếp nhân viên với khách hàng để tạo ý nghĩa</span></div>
+    <div class="wds-item">Increase Authority<br><span style="font-weight:normal; font-size:0.8rem;">Trao thêm quyền quyết định để tăng cảm giác tự chủ</span></div>
+    <div class="wds-item">Feedback<br><span style="font-weight:normal; font-size:0.8rem;">Tạo cơ chế phản hồi liên tục và rõ ràng</span></div>
+  </div>
+
+  <!-- Part M: Need Theories -->
+  <h2>M. Lý thuyết Nhu cầu (Need Theories)</h2>
+
+  <div class="need-compare">
+    <div class="need-col">
+      <div class="need-header">Maslow — Hierarchy of Needs</div>
+      <div class="need-row" style="background:#d5f5e3;"><strong>Self-Actualization</strong><br><small>Tự hiện thực hóa bản thân</small></div>
+      <div class="need-row"><strong>Esteem</strong><br><small>Được tôn trọng, địa vị</small></div>
+      <div class="need-row" style="background:#d5f5e3;"><strong>Belongingness</strong><br><small>Yêu thương, gắn kết xã hội</small></div>
+      <div class="need-row"><strong>Safety</strong><br><small>An toàn, bảo mật</small></div>
+      <div class="need-row" style="background:#d5f5e3;"><strong>Physiological</strong><br><small>Ăn, uống, nghỉ ngơi</small></div>
+    </div>
+    <div class="need-col">
+      <div class="need-header">Alderfer — ERG Theory</div>
+      <div class="need-row" style="background:#d5f5e3;"><strong>Growth</strong><br><small>Phát triển cá nhân, sáng tạo</small></div>
+      <div class="need-row"></div>
+      <div class="need-row" style="background:#d5f5e3;"><strong>Social (Relatedness)</strong><br><small>Quan hệ xã hội, giao tiếp</small></div>
+      <div class="need-row"></div>
+      <div class="need-row" style="background:#d5f5e3;"><strong>Existence</strong><br><small>Nhu cầu cơ bản + an toàn</small></div>
+    </div>
+    <div class="need-col">
+      <div class="need-header">So sánh</div>
+      <div class="need-row" style="background:#fef9e7;"><em>Tự hiện thực → Growth</em></div>
+      <div class="need-row"><em>Esteem → Growth (một phần)</em></div>
+      <div class="need-row" style="background:#fef9e7;"><em>Belongingness → Social</em></div>
+      <div class="need-row"><em>Safety → Existence (một phần)</em></div>
+      <div class="need-row" style="background:#fef9e7;"><em>Physiological → Existence</em></div>
+    </div>
+  </div>
+
+  <p>Điểm khác biệt quan trọng: ERG Theory của Alderfer linh hoạt hơn — con người có thể đồng thời có nhiều nhu cầu ở nhiều cấp độ, và khi nhu cầu cao không được thỏa mãn, họ có thể quay lại ưu tiên nhu cầu thấp hơn (frustration-regression).</p>
+
+  <!-- Part N: Murray's Manifest Needs -->
+  <h2>N. Ba Nhu cầu Nổi bật của Murray (Manifest Needs)</h2>
+
+  <div class="manifest-grid">
+    <div class="manifest-card">
+      <div class="n-label">nAch</div>
+      <h4>Need for Achievement</h4>
+      <p>Nhu cầu thành tích: hành vi hướng đến <em>cạnh tranh với một tiêu chuẩn xuất sắc</em>. Người có nAch cao thích thách thức vừa phải, muốn phản hồi cụ thể về kết quả và chịu trách nhiệm cá nhân.</p>
+    </div>
+    <div class="manifest-card">
+      <div class="n-label">nAff</div>
+      <h4>Need for Affiliation</h4>
+      <p>Nhu cầu liên kết: mong muốn được <em>chấp nhận và được trấn an</em> bởi người khác. Người có nAff cao ưu tiên mối quan hệ hài hòa, né tránh xung đột, quan tâm đến ý kiến của người khác.</p>
+    </div>
+    <div class="manifest-card">
+      <div class="n-label">nPow</div>
+      <h4>Need for Power</h4>
+      <p>Nhu cầu quyền lực: mong muốn <em>gây ảnh hưởng lên người khác và kiểm soát môi trường</em>. Có thể là "personalized power" (quyền lực vì bản thân) hay "socialized power" (quyền lực vì mục tiêu tập thể).</p>
+    </div>
+  </div>
+
+  <!-- Part O: Common Mistakes -->
+  <h2>O. Sai lầm Phổ biến về Nhu cầu và Quy kết</h2>
+
+  <div class="pitfall-box">
+    <strong>Sai lầm 1: Giả định tất cả nhân viên coi trọng cùng một phần thưởng</strong>
+    Người có nAch cao muốn thách thức và công nhận năng lực; người có nAff cao muốn được chấp nhận và thuộc về nhóm. Áp dụng phần thưởng đồng nhất sẽ không tạo động lực cho cả hai.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Sai lầm 2: Giả định sở thích của quản lý = sở thích của nhân viên</strong>
+    Quản lý thích tiền thưởng không có nghĩa nhân viên cũng vậy. Một số nhân viên trân trọng thời gian nghỉ thêm, cơ hội đào tạo, hay được làm việc linh hoạt hơn tiền.
+  </div>
+
+  <h3>Cafeteria Style Systems (Hệ thống Phúc lợi Tự chọn)</h3>
+  <p>Giải pháp cho sai lầm trên: cho phép nhân viên lựa chọn từ một "thực đơn" phúc lợi — bảo hiểm sức khỏe, bảo hiểm nhân thọ, kế hoạch hưu trí, ngày nghỉ, chương trình đào tạo — tùy theo nhu cầu và hoàn cảnh cá nhân. Hệ thống này thừa nhận rằng nhân viên ở các giai đoạn cuộc sống khác nhau có ưu tiên khác nhau.</p>
+
+  <!-- Part P: Fairness and Equity -->
+  <h2>P. Công bằng và Bình đẳng (Fairness and Equity)</h2>
+
+  <div class="equity-formula">
+    <p style="margin-bottom:10px; font-size:0.95rem; color:#555;">Nhân viên đánh giá:</p>
+    <span class="eq-frac">Outcomes (Kết quả nhận được) / Inputs (Đóng góp của bản thân)</span>
+    <p style="margin:10px 0; font-size:1.1rem;">so sánh với</p>
+    <span class="eq-frac">Outcomes (của người tham chiếu) / Inputs (của người tham chiếu)</span>
+  </div>
+
+  <p>Khi nhân viên <strong>cảm nhận bất bình đẳng</strong>, họ bị thúc đẩy điều chỉnh:</p>
+  <ul>
+    <li><strong>Giảm Inputs của bản thân</strong> — làm ít hơn, cố gắng ít hơn ("tại sao tôi phải nỗ lực nếu họ được trả nhiều hơn?")</li>
+    <li><strong>Tăng Outcomes của bản thân</strong> — yêu cầu tăng lương, thưởng thêm, hoặc ăn cắp</li>
+    <li><strong>Thay đổi người tham chiếu</strong> — so sánh với người khác trong nhóm tham chiếu khác</li>
+    <li><strong>Rời khỏi tổ chức</strong> — nghỉ việc để thoát khỏi tình trạng bất công bằng</li>
+  </ul>
+
+  <!-- Part Q: Feedback -->
+  <h2>Q. Phản hồi (Feedback) — Kết nối Hành vi với Kết quả</h2>
+
+  <p>Để tạo kết nối hiệu quả giữa hành vi và kết quả (behavior-outcome link), có hai yếu tố then chốt:</p>
+  <ol>
+    <li><strong>Khoảng thời gian giữa hành vi và phần thưởng:</strong> Phần thưởng càng gần với hành vi về mặt thời gian, kết nối càng mạnh. Phần thưởng trì hoãn 6 tháng sau khi đạt mục tiêu có tác dụng tạo động lực yếu hơn nhiều so với phần thưởng tức thì.</li>
+    <li><strong>Giải thích (Feedback) cho phần thưởng:</strong> Phần thưởng phải đi kèm thông tin rõ ràng về <em>tại sao</em> nhân viên được thưởng — hành vi cụ thể nào dẫn đến kết quả này. Không có giải thích, nhân viên không biết điều gì cần lặp lại.</li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-card">
+  <div class="section-title">III. Mô hình &amp; Công thức (Models &amp; Formulas)</div>
+
+  <h2>Mô hình Tích hợp (Integrative Model of Motivation)</h2>
+  <p>Đây là mô hình tổng hợp, kết hợp TẤT CẢ các yếu tố đã thảo luận trong chương thành một khung phân tích duy nhất:</p>
+
+  <div class="integrative">
+    <div class="integrative-title">Integrative Model of Motivation — Whetten &amp; Cameron</div>
+
+    <div class="int-flow">
+      <div>
+        <div class="int-node" style="margin-bottom:8px;">EFFORT<br><small style="font-weight:normal;">(Desire &amp; Commitment)</small></div>
+        <div class="int-inputs"><strong>+</strong> Goals/Expectations<br><strong>−</strong> Ability constraints</div>
+      </div>
+      <div class="flow-arrow" style="font-size:2rem; align-self:center;">→</div>
+      <div class="int-node" style="align-self:center;">PERFORMANCE</div>
+      <div class="flow-arrow" style="font-size:2rem; align-self:center;">→</div>
+      <div>
+        <div class="int-node" style="margin-bottom:8px;">OUTCOMES<br><small style="font-weight:normal;">(Extrinsic &amp; Intrinsic)</small></div>
+        <div class="int-inputs"><strong>→</strong> SATISFACTION</div>
+      </div>
+    </div>
+
+    <div style="margin-top:8px; margin-bottom:12px; text-align:center; color:#555;">
+      Absenteeism and Turnover ← kết quả tiêu cực khi chuỗi bị đứt gãy
+    </div>
+
+    <div class="int-factors">
+      <div class="int-factor">
+        <strong><span class="f-num">1</span>Goals / Expectations</strong>
+        Phải được chấp thuận (accepted), thách thức và cụ thể, có phản hồi rõ ràng
+      </div>
+      <div class="int-factor">
+        <strong><span class="f-num">2</span>Ability</strong>
+        Aptitude × Training × Resources — tất cả phải đủ để chuyển Effort thành Performance
+      </div>
+      <div class="int-factor">
+        <strong><span class="f-num">3</span>Reinforcement</strong>
+        Kỷ luật + Khen thưởng — phản hồi sau Performance định hình hành vi tương lai
+      </div>
+      <div class="int-factor">
+        <strong><span class="f-num">4</span>Equity</strong>
+        So sánh xã hội + Kỳ vọng cá nhân — cảm nhận công bằng ảnh hưởng đến Effort
+      </div>
+      <div class="int-factor">
+        <strong><span class="f-num">5</span>Salience</strong>
+        Tầm quan trọng cá nhân của Outcomes — phần thưởng phải có giá trị với người nhận cụ thể
+      </div>
+      <div class="int-factor">
+        <strong><span class="f-num">6</span>Timeliness</strong>
+        Khoảng cách thời gian giữa hành vi và phần thưởng — càng ngắn, kết nối càng mạnh
+      </div>
+    </div>
+  </div>
+
+  <h2>Công thức Hiệu suất</h2>
+  <div class="formula-box">
+    <div class="formula-line">Performance = Ability × Motivation</div>
+    <div class="formula-line" style="font-size:0.95rem; margin-top:8px;">Ability = Aptitude × Training × Resources</div>
+    <div class="formula-line" style="font-size:0.95rem;">Motivation = Desire × Commitment</div>
+    <p style="font-size:0.85rem; color:#555; margin-top:12px;"><em>Lưu ý: Đây là hàm nhân (multiplicative) — nếu bất kỳ yếu tố nào = 0, kết quả = 0.</em></p>
+  </div>
+
+  <h2>Ma trận 4 Kiểu Quản lý (Satisfaction × Performance)</h2>
+  <table class="summary-table">
+    <tr>
+      <th>Kiểu</th>
+      <th>Satisfaction</th>
+      <th>Performance</th>
+      <th>Đặc điểm</th>
+      <th>Hệ quả</th>
+    </tr>
+    <tr>
+      <td><strong>Integrating ★</strong></td>
+      <td>Cao</td>
+      <td>Cao</td>
+      <td>Quan tâm đồng đều cả hai chiều</td>
+      <td>Lý tưởng — bền vững dài hạn</td>
+    </tr>
+    <tr>
+      <td><strong>Indulging</strong></td>
+      <td>Cao</td>
+      <td>Thấp</td>
+      <td>Chú trọng phúc lợi, bỏ qua kết quả</td>
+      <td>Nhân viên vui nhưng không phát triển</td>
+    </tr>
+    <tr>
+      <td><strong>Imposing</strong></td>
+      <td>Thấp</td>
+      <td>Cao</td>
+      <td>Ép hiệu suất, không quan tâm cảm xúc</td>
+      <td>Burnout, turnover cao</td>
+    </tr>
+    <tr>
+      <td><strong>Ignoring</strong></td>
+      <td>Thấp</td>
+      <td>Thấp</td>
+      <td>Không quan tâm cả hai</td>
+      <td>Tệ nhất — sụp đổ hoàn toàn</td>
+    </tr>
+  </table>
+
+  <h2>So sánh Maslow và Alderfer (ERG)</h2>
+  <table class="summary-table">
+    <tr>
+      <th>Maslow</th>
+      <th>Alderfer (ERG)</th>
+      <th>Điểm khác biệt</th>
+    </tr>
+    <tr>
+      <td>Phân cấp 5 bậc nghiêm ngặt</td>
+      <td>3 cấp linh hoạt</td>
+      <td>ERG không yêu cầu thỏa mãn từ dưới lên</td>
+    </tr>
+    <tr>
+      <td>Tiến lên khi cấp thấp thỏa mãn</td>
+      <td>Frustration-Regression: quay xuống khi cấp cao không đạt</td>
+      <td>ERG thực tế hơn với hành vi trong tổ chức</td>
+    </tr>
+    <tr>
+      <td>Chỉ một nhu cầu kích hoạt tại một thời điểm</td>
+      <td>Nhiều nhu cầu cùng hoạt động đồng thời</td>
+      <td>ERG phù hợp hơn với nghiên cứu thực nghiệm</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-card">
+  <div class="section-title">IV. Ví dụ thực tiễn (Practical Examples)</div>
+
+  <h2>Phil Jackson — NBA Coach</h2>
+  <p>Phil Jackson (Chicago Bulls, Los Angeles Lakers) là minh chứng sống cho triết lý "provide a motivating environment": ông không ra lệnh, không ép buộc, mà xây dựng văn hóa tin tưởng, rõ ràng về vai trò, và tạo môi trường trong đó mỗi cầu thủ tự tìm thấy động lực nội tại của mình. Kết quả: 11 chức vô địch NBA với tư cách huấn luyện viên.</p>
+
+  <h2>Ví dụ 5 Công cụ Cải thiện Năng lực trong Thực tế</h2>
+  <table class="summary-table">
+    <tr>
+      <th>Công cụ</th>
+      <th>Tình huống</th>
+      <th>Hành động cụ thể</th>
+    </tr>
+    <tr>
+      <td>Resupply</td>
+      <td>Nhân viên IT không có phần mềm mới nhất</td>
+      <td>Mua giấy phép phần mềm, nâng cấp hệ thống</td>
+    </tr>
+    <tr>
+      <td>Retrain</td>
+      <td>Nhân viên bán hàng yếu kỹ năng thuyết trình</td>
+      <td>Gửi đi khóa học Public Speaking, coaching 1-on-1</td>
+    </tr>
+    <tr>
+      <td>Refit</td>
+      <td>Nhân viên giỏi phân tích nhưng ghét gặp khách hàng</td>
+      <td>Chuyển sang vai trò backend analyst, giảm bớt client contact</td>
+    </tr>
+    <tr>
+      <td>Reassign</td>
+      <td>Nhân viên marketing không phù hợp với digital</td>
+      <td>Chuyển sang phòng PR truyền thống, phù hợp hơn với điểm mạnh</td>
+    </tr>
+    <tr>
+      <td>Release</td>
+      <td>Sau 3 lần đào tạo và 2 lần bố trí lại vẫn không cải thiện</td>
+      <td>Thực hiện PIP (Performance Improvement Plan) và cuối cùng chấm dứt hợp đồng</td>
+    </tr>
+  </table>
+
+  <h2>Cafeteria Benefits — Ví dụ Công ty Công nghệ</h2>
+  <p>Một công ty tech có 500 nhân viên thay vì áp dụng gói phúc lợi đồng nhất, cung cấp "điểm phúc lợi" hàng năm. Nhân viên trẻ độc thân ưu tiên đào tạo và thời gian WFH. Nhân viên có gia đình ưu tiên bảo hiểm sức khỏe gia đình và ngày nghỉ. Nhân viên cao tuổi ưu tiên kế hoạch hưu trí. Kết quả: mức độ hài lòng về phúc lợi tăng 35% mà không tăng ngân sách.</p>
+
+  <h2>Ví dụ Equity Theory trong Thực tế</h2>
+  <p>Một nhân viên kỹ thuật xuất sắc phát hiện đồng nghiệp cùng cấp có kinh nghiệm ít hơn nhưng lương cao hơn 15%. Phản ứng theo Equity Theory: anh ta bắt đầu làm việc cẩn thận hơn nhưng chậm hơn, tránh những nhiệm vụ thêm (giảm Inputs), và cuối cùng nghỉ việc sau 6 tháng. Giải pháp: hệ thống trả lương minh bạch với tiêu chí rõ ràng.</p>
+
+  <h2>Goal Setting — Ví dụ Thực tế</h2>
+  <p>Một nhóm kinh doanh được giao mục tiêu "tăng doanh số" (mơ hồ) — không ai biết "tăng bao nhiêu?" và "đến khi nào?". Sau khi áp dụng SMART goal: "Tăng doanh số phân khúc B2B thêm 20% trong Q3 bằng cách tiếp cận 50 khách hàng mới và chuyển đổi ít nhất 10 trong số đó" — nhóm có hướng đi rõ ràng, có thể theo dõi tiến độ hàng tuần, và tự điều chỉnh khi cần.</p>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-card">
+  <div class="section-title">V. Ghi chú Ôn tập &amp; Bẫy Nhận thức (Study Notes &amp; Common Pitfalls)</div>
+
+  <h2>Tóm tắt Nhanh — Các Khái niệm Cốt lõi</h2>
+  <table class="summary-table">
+    <tr>
+      <th>Khái niệm</th>
+      <th>Định nghĩa ngắn gọn</th>
+      <th>Từ khóa nhớ</th>
+    </tr>
+    <tr>
+      <td>Performance Formula</td>
+      <td>Performance = Ability × Motivation; multiplicative, không phải additive</td>
+      <td>= Aptitude × Training × Resources × Desire × Commitment</td>
+    </tr>
+    <tr>
+      <td>Theory X / Y</td>
+      <td>X: nhân viên lười — Y: nhân viên muốn làm tốt</td>
+      <td>McGregor; X → kiểm soát; Y → trao quyền</td>
+    </tr>
+    <tr>
+      <td>4 Management Styles</td>
+      <td>Indulging / Integrating / Ignoring / Imposing (ma trận 2×2)</td>
+      <td>Integrating = ideal; Ignoring = worst</td>
+    </tr>
+    <tr>
+      <td>5 Tools for Ability</td>
+      <td>Resupply / Retrain / Refit / Reassign / Release</td>
+      <td>5 chữ "Re" — dùng theo thứ tự, Release là cuối</td>
+    </tr>
+    <tr>
+      <td>Goal Characteristics</td>
+      <td>Specific / Consistent / Appropriately Challenging / Feedback</td>
+      <td>SCAF</td>
+    </tr>
+    <tr>
+      <td>Extrinsic vs Intrinsic</td>
+      <td>Extrinsic = bên ngoài kiểm soát; Intrinsic = trải nghiệm cá nhân</td>
+      <td>Extrinsic thu hút; Intrinsic giữ chân</td>
+    </tr>
+    <tr>
+      <td>Maslow vs ERG</td>
+      <td>Maslow: 5 bậc cứng nhắc; ERG: 3 cấp linh hoạt</td>
+      <td>ERG = Existence, Relatedness, Growth</td>
+    </tr>
+    <tr>
+      <td>Murray's Manifest Needs</td>
+      <td>nAch (thành tích), nAff (liên kết), nPow (quyền lực)</td>
+      <td>3 chữ n</td>
+    </tr>
+    <tr>
+      <td>Equity Theory</td>
+      <td>So sánh Outcomes/Inputs của mình với người tham chiếu</td>
+      <td>Bất công → giảm Inputs hoặc nghỉ việc</td>
+    </tr>
+    <tr>
+      <td>Integrative Model</td>
+      <td>Goals → Effort → Performance → Outcomes → Satisfaction; + Equity + Salience + Timeliness</td>
+      <td>6 yếu tố: Goals, Ability, Reinforcement, Equity, Salience, Timeliness</td>
+    </tr>
+  </table>
+
+  <h2>Bẫy Nhận thức Phổ biến</h2>
+
+  <div class="pitfall-box">
+    <strong>Bẫy 1: "Nếu tôi trả lương cao hơn, nhân viên sẽ làm việc chăm chỉ hơn"</strong>
+    Sai — Lương cao tăng Satisfaction (khi công bằng) nhưng không trực tiếp tăng Motivation theo mô hình mới. Lương thường là Hygiene Factor (theo Herzberg) — sự vắng mặt của nó tạo bất mãn, nhưng sự hiện diện không tạo ra động lực lâu dài.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Bẫy 2: Nhầm lẫn Ability Problem với Motivation Problem</strong>
+    Đây là sai lầm phổ biến nhất. Nếu chẩn đoán sai và dùng sai công cụ — ví dụ: kỷ luật nhân viên thiếu năng lực (thay vì đào tạo), hoặc gửi đào tạo nhân viên thiếu động lực (thay vì điều chỉnh mục tiêu/phần thưởng) — không chỉ lãng phí nguồn lực mà còn gây tổn hại thêm.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Bẫy 3: Reward A while hoping for B (Kerr, 1975)</strong>
+    Thưởng cho những gì có thể đo lường được (dễ dàng) thay vì những gì thực sự quan trọng. Ví dụ: thưởng số giờ làm việc trong khi mong muốn kết quả; thưởng cá nhân trong khi cần teamwork.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Bẫy 4: Một phần thưởng phù hợp với tất cả</strong>
+    Bỏ qua sự khác biệt cá nhân (nAch, nAff, nPow, giai đoạn cuộc sống). Giải pháp: cafeteria systems, điều chỉnh cá nhân hóa.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Bẫy 5: Trì hoãn phần thưởng quá lâu</strong>
+    Phần thưởng trao 6 tháng sau thành tích có tác dụng định hướng hành vi rất yếu. Nguyên tắc timeliness bị bỏ qua phổ biến trong hệ thống đánh giá hàng năm.
+  </div>
+
+  <h2>Mẹo Ôn thi</h2>
+
+  <div class="tip-box">
+    <strong>Khi được hỏi về chẩn đoán hiệu suất kém:</strong>
+    Luôn bắt đầu bằng 4 câu hỏi chẩn đoán, sau đó phân biệt Ability vs Motivation problem. Nếu là Ability: dùng 5 Re-tools. Nếu là Motivation: dùng các công cụ trong Integrative Model.
+  </div>
+
+  <div class="tip-box">
+    <strong>Khi được hỏi về Integrative Model:</strong>
+    Vẽ chuỗi: EFFORT → PERFORMANCE → OUTCOMES → SATISFACTION; sau đó gắn 6 yếu tố: Goals (số 1), Ability (số 2), Reinforcement (số 3), Equity (số 4), Salience (số 5), Timeliness (số 6). Đừng quên Absenteeism &amp; Turnover là kết quả tiêu cực khi chuỗi đứt gãy.
+  </div>
+
+  <div class="tip-box">
+    <strong>Khi được hỏi phân biệt Maslow và ERG:</strong>
+    Chỉ ra 3 điểm: (1) số cấp (5 vs 3), (2) tính linh hoạt (cứng nhắc vs linh hoạt), (3) frustration-regression là đặc thù của ERG không có trong Maslow.
+  </div>
+
+  <div class="tip-box">
+    <strong>Khi được hỏi về phong cách quản lý:</strong>
+    Vẽ ma trận 2×2 với Satisfaction (Y-axis) và Performance (X-axis). Integrating là lý tưởng, Ignoring là tệ nhất.
+  </div>
+
+  <div class="tip-box">
+    <strong>Câu hỏi thường gặp — "Tại sao Motivation không = Satisfaction?"</strong>
+    Vì theo mô hình mới: Motivation dẫn đến Performance → Outcomes → Satisfaction (không phải ngược lại). Satisfaction là kết quả, không phải nguyên nhân của Performance.
+  </div>
+</div>
+
+<footer>
+  <p>Tài liệu học tập GK5009 — Quản lý và Lãnh đạo</p>
+  <p>Nguồn: Whetten &amp; Cameron, <em>Developing Management Skills</em>, 7th Ed. (2007) — Chapter 6: Motivating Others</p>
+  <p>Whetten group: Ch06 ✓ &nbsp;|&nbsp; Carpenter group hoàn chỉnh: Ch01 ✓ Ch04 ✓ Ch05 ✓ Ch06 ✓</p>
+</footer>
+
+</body>
+</html>

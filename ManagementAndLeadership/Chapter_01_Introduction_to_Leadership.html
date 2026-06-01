@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GK5009 – Chương 1: Giới thiệu về Lãnh đạo</title>
+  <style>
+    :root {
+      --primary: #1a3c6e;
+      --secondary: #2e6da4;
+      --accent: #e8a020;
+      --light: #f4f7fb;
+      --text: #1c1c1c;
+      --muted: #5a6a7a;
+      --border: #d0daea;
+      --green: #1a6e3c;
+      --red: #8b1a1a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text);
+      background: #fff;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 30px;
+    }
+    h1 { font-size: 2.2rem; color: var(--primary); border-bottom: 4px solid var(--accent); padding-bottom: 12px; margin-bottom: 8px; }
+    h2 { font-size: 1.6rem; color: var(--primary); margin-top: 48px; margin-bottom: 16px; border-left: 6px solid var(--accent); padding-left: 14px; }
+    h3 { font-size: 1.25rem; color: var(--secondary); margin-top: 32px; margin-bottom: 12px; }
+    h4 { font-size: 1.05rem; color: var(--primary); margin-top: 20px; margin-bottom: 8px; font-style: italic; }
+    p { margin-bottom: 14px; }
+    ul, ol { margin: 10px 0 14px 28px; }
+    li { margin-bottom: 7px; }
+    .term { font-weight: bold; color: var(--primary); }
+    .definition { background: var(--light); border-left: 4px solid var(--secondary); padding: 12px 16px; margin: 14px 0; border-radius: 4px; }
+    .quote { background: #fdf6e3; border-left: 4px solid var(--accent); padding: 12px 16px; margin: 14px 0; font-style: italic; border-radius: 4px; }
+    .callout { background: #eaf4ff; border: 1px solid var(--secondary); padding: 14px 18px; margin: 18px 0; border-radius: 6px; }
+    .callout.warning { background: #fff4e0; border-color: var(--accent); }
+    .callout.important { background: #fdecea; border-color: var(--red); }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95rem; }
+    th { background: var(--primary); color: #fff; padding: 10px 14px; text-align: left; }
+    td { border: 1px solid var(--border); padding: 9px 14px; vertical-align: top; }
+    tr:nth-child(even) td { background: var(--light); }
+    .section-label {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      padding: 3px 10px;
+      border-radius: 3px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .toc { background: var(--light); border: 1px solid var(--border); padding: 18px 24px; margin: 24px 0 40px; border-radius: 6px; }
+    .toc h3 { color: var(--primary); margin-top: 0; margin-bottom: 10px; }
+    .toc ol { margin-left: 18px; }
+    .toc li { margin-bottom: 4px; }
+    .toc a { color: var(--secondary); text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+    .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 30px; }
+    .highlight { background: #fffbcc; padding: 2px 4px; border-radius: 2px; }
+    hr { border: none; border-top: 2px solid var(--border); margin: 36px 0; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.82rem; font-weight: bold; }
+    .badge-blue { background: #daeeff; color: var(--primary); }
+    .badge-green { background: #d4f0e0; color: var(--green); }
+    .badge-red { background: #fde4e4; color: var(--red); }
+  </style>
+</head>
+<body>
+
+<div class="section-label">GK5009 – Quản lý và Lãnh đạo | HK252</div>
+<h1>Chương 1: Giới thiệu về Lãnh đạo<br><small style="font-size:1rem;color:var(--muted);">Introduction to Leadership</small></h1>
+<p class="meta">Nguồn: Northouse, P. G. (2021). <em>Leadership: Theory and Practice</em> (7th ed.). SAGE Publications. — Chapter 1</p>
+
+<div class="toc">
+  <h3>Mục lục</h3>
+  <ol>
+    <li><a href="#s1">Tổng quan chương & Vị trí trong khóa học</a></li>
+    <li><a href="#s2">Phân tích chuyên sâu: Các khái niệm cốt lõi</a></li>
+    <li><a href="#s3">Mô hình & Khung lý thuyết</a></li>
+    <li><a href="#s4">Ví dụ thực tiễn</a></li>
+    <li><a href="#s5">Lưu ý học tập & Bẫy nhận thức phổ biến</a></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s1">1. Tổng quan chương & Vị trí trong khóa học</h2>
+<!-- ============================================================ -->
+
+<div class="section-label">Section 1 – Overview</div>
+
+<p>Chương 1 đặt nền tảng khái niệm cho toàn bộ khóa học GK5009. Trước khi có thể nghiên cứu các lý thuyết lãnh đạo cụ thể (Trait, Skills, Style, Situational, v.v.), người học cần xây dựng một sự hiểu biết rõ ràng về <span class="term">lãnh đạo là gì</span>, <span class="term">tại sao nó quan trọng</span>, và <span class="term">nó khác với quản lý như thế nào</span>.</p>
+
+<p>Lãnh đạo là một trong những chủ đề được nghiên cứu nhiều nhất nhưng cũng được hiểu kém nhất trong khoa học xã hội. Từ năm 1900 đến nay, đã có hàng nghìn nghiên cứu với hàng chục định nghĩa khác nhau. Sự phong phú này phản ánh thực tế rằng lãnh đạo là một hiện tượng <em>phức tạp, đa chiều, và phụ thuộc vào bối cảnh</em>.</p>
+
+<div class="callout">
+  <strong>Câu hỏi trung tâm của chương:</strong>
+  <ul>
+    <li>Lãnh đạo là gì và nó bao gồm những thành phần nào?</li>
+    <li>Lãnh đạo là đặc điểm bẩm sinh hay là quá trình có thể học được?</li>
+    <li>Ai là lãnh đạo — chỉ người được bổ nhiệm, hay bất kỳ ai có thể tạo ra ảnh hưởng?</li>
+    <li>Lãnh đạo và quyền lực có liên quan với nhau như thế nào?</li>
+    <li>Lãnh đạo khác quản lý ở điểm nào?</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s2">2. Phân tích chuyên sâu: Các khái niệm cốt lõi</h2>
+<!-- ============================================================ -->
+
+<div class="section-label">Section 2 – In-depth Analysis</div>
+
+<h3>2.1 Định nghĩa Lãnh đạo</h3>
+
+<div class="definition">
+  <strong>Định nghĩa chuẩn (Northouse, 2021):</strong><br>
+  <em>"Leadership is a process whereby an individual influences a group of individuals to achieve a common goal."</em><br><br>
+  <strong>Tạm dịch:</strong> "Lãnh đạo là một <u>quá trình</u> mà trong đó một cá nhân <u>tác động/ảnh hưởng</u> đến một nhóm cá nhân khác để đạt được một <u>mục tiêu chung</u>."
+</div>
+
+<p>Đây không phải là định nghĩa duy nhất. Northouse nhấn mạnh rằng trong suốt lịch sử nghiên cứu, các học giả đã định nghĩa lãnh đạo theo nhiều cách khác nhau, phụ thuộc vào góc độ họ quan tâm: tính cách, hành vi, quan hệ quyền lực, hay kết quả. Tuy nhiên, định nghĩa trên được Northouse sử dụng xuyên suốt cuốn sách vì nó bao quát và thực tế nhất.</p>
+
+<h3>2.2 Năm thành phần cấu thành của Lãnh đạo</h3>
+
+<p>Định nghĩa trên chứa đựng <strong>5 thành phần quan trọng</strong>, mỗi thành phần có hàm ý sâu sắc:</p>
+
+<h4>Thành phần 1: Lãnh đạo là một QUÁ TRÌNH (Process)</h4>
+
+<div class="definition">
+  <strong>Quan điểm Lãnh đạo là Quá trình:</strong> Lãnh đạo không phải là một đặc điểm hoặc tính chất cố định nằm sẵn trong người lãnh đạo, mà là một sự kiện giao tiếp/tương tác (transactional event) xảy ra giữa người lãnh đạo và những người theo họ (followers). Lãnh đạo xảy ra trong ngữ cảnh của một mối quan hệ, không phải là một chiều từ trên xuống.
+</div>
+
+<p>Quan niệm lãnh đạo là "quá trình" có hai hàm ý lớn:</p>
+<ul>
+  <li><strong>Hàm ý 1:</strong> Lãnh đạo là hiện tượng có thể quan sát được, không phải là một đặc tính bí ẩn hay cá nhân đặc biệt. Nó là điều <em>bất kỳ ai cũng có thể học và thực hành</em>, không phải đặc quyền của một số cá nhân xuất chúng.</li>
+  <li><strong>Hàm ý 2:</strong> Lãnh đạo có tính tương tác — nó liên quan đến cả người lãnh đạo lẫn người theo. Kết quả của lãnh đạo bị ảnh hưởng bởi <em>cả hai phía</em>. Người theo không phải là thụ động; họ chủ động góp phần vào quá trình lãnh đạo.</li>
+</ul>
+
+<h4>Thành phần 2: Lãnh đạo liên quan đến SỰ ẢNH HƯỞNG (Influence)</h4>
+
+<p>Ảnh hưởng là trung tâm của lãnh đạo. Không có ảnh hưởng, không có lãnh đạo. Câu hỏi không phải là "có ảnh hưởng không?" mà là "ảnh hưởng được thực hiện như thế nào?" — có thể thông qua ép buộc, thuyết phục, truyền cảm hứng, hay tạo ra các điều kiện để người khác tự nguyện hành động.</p>
+
+<div class="callout warning">
+  <strong>Lưu ý quan trọng về ảnh hưởng và ép buộc:</strong><br>
+  Northouse phân biệt rõ ràng giữa ảnh hưởng (influence) và ép buộc (coercion). <span class="term">Ép buộc</span> là việc sử dụng quyền lực hoặc sức mạnh để buộc người khác phải hành động bất kể ý muốn của họ. Đây <strong>KHÔNG</strong> được coi là lãnh đạo theo nghĩa đích thực, bởi vì nó không phục vụ lợi ích tốt nhất của người theo. Lãnh đạo đích thực dựa trên sự ảnh hưởng, không phải ép buộc.
+</div>
+
+<h4>Thành phần 3: Lãnh đạo xảy ra trong BỐI CẢNH NHÓM (Group Context)</h4>
+
+<p>Lãnh đạo không xảy ra trong chân không. Nó xảy ra trong bối cảnh của một nhóm người — có thể là nhóm nhỏ, tổ chức, cộng đồng, hay toàn xã hội. Lãnh đạo liên quan đến ảnh hưởng đến <em>nhiều</em> cá nhân theo hướng cùng đạt mục tiêu chung. Mục tiêu là mục tiêu của nhóm, không phải chỉ của cá nhân người lãnh đạo.</p>
+
+<p>Điều này có nghĩa là lãnh đạo luôn mang tính <em>xã hội</em> — nó đòi hỏi hiểu biết về động lực nhóm, mối quan hệ giữa các thành viên, và cách quản lý sự khác biệt trong nhóm.</p>
+
+<h4>Thành phần 4: Lãnh đạo có liên quan đến VIỆC ĐẠT MỤC TIÊU (Goal Attainment)</h4>
+
+<p>Lãnh đạo được định hướng về phía mục tiêu. Người lãnh đạo không chỉ tạo ra ảnh hưởng ngẫu nhiên; họ hướng người theo về phía một kết quả mong muốn. Đây là yếu tố phân biệt lãnh đạo với các hình thức ảnh hưởng xã hội khác (ví dụ: ảnh hưởng của quảng cáo, hay ảnh hưởng của bạn bè trong đám đông).</p>
+
+<h4>Thành phần 5: Mục tiêu là mục tiêu CHUNG (Common Goal)</h4>
+
+<p>Từ "chung" (common) ở đây rất quan trọng. Mục tiêu phải là mục tiêu của tập thể, được chia sẻ bởi người lãnh đạo và người theo — không phải là mục tiêu cá nhân của người lãnh đạo áp đặt lên người khác. Điều này nhấn mạnh chiều kích đạo đức của lãnh đạo: người lãnh đạo đích thực không thao túng người khác vì lợi ích cá nhân.</p>
+
+<hr/>
+
+<h3>2.3 Lãnh đạo là Đặc điểm (Trait) hay là Quá trình (Process)?</h3>
+
+<p>Đây là một trong những câu hỏi cơ bản nhất và được tranh luận nhiều nhất trong nghiên cứu lãnh đạo. Northouse trình bày hai quan điểm đối lập:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tiêu chí</th>
+      <th>Lãnh đạo là Đặc điểm (Trait View)</th>
+      <th>Lãnh đạo là Quá trình (Process View)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Bản chất</strong></td>
+      <td>Lãnh đạo là thuộc tính sẵn có trong một số cá nhân; người lãnh đạo sinh ra đã có những đặc điểm đặc biệt</td>
+      <td>Lãnh đạo là hiện tượng tương tác, xảy ra giữa người lãnh đạo và người theo trong một bối cảnh cụ thể</td>
+    </tr>
+    <tr>
+      <td><strong>Ai có thể lãnh đạo?</strong></td>
+      <td>Chỉ một số người được trời phú cho những phẩm chất lãnh đạo</td>
+      <td>Bất kỳ ai cũng có thể trở thành lãnh đạo trong bối cảnh phù hợp</td>
+    </tr>
+    <tr>
+      <td><strong>Có thể học được không?</strong></td>
+      <td>Không, hoặc rất khó thay đổi các đặc điểm cơ bản</td>
+      <td>Có, lãnh đạo là kỹ năng có thể học, luyện tập, và cải thiện</td>
+    </tr>
+    <tr>
+      <td><strong>Ví dụ điển hình</strong></td>
+      <td>"Great Man Theory" — chỉ những người vĩ đại như Napoleon, Churchill mới có thể lãnh đạo</td>
+      <td>Lãnh đạo tình huống, lãnh đạo biến đổi — phụ thuộc vào tương tác với bối cảnh</td>
+    </tr>
+    <tr>
+      <td><strong>Hạn chế</strong></td>
+      <td>Không giải thích được sự đa dạng của lãnh đạo trong thực tế; bỏ qua vai trò của người theo</td>
+      <td>Ít cụ thể hơn trong việc chỉ ra ai sẽ lãnh đạo hiệu quả trong một tình huống nhất định</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout important">
+  <strong>Lập trường của Northouse (2021):</strong> Northouse ủng hộ quan điểm <em>Lãnh đạo là Quá trình</em>. Ông cho rằng đây là cách hiểu đầy đủ và hữu ích hơn vì nó: (1) không giới hạn lãnh đạo cho một số ít người, (2) làm cho lãnh đạo có thể học và dạy được, (3) thừa nhận vai trò của người theo trong quá trình lãnh đạo.
+</div>
+
+<hr/>
+
+<h3>2.4 Lãnh đạo Được Bổ nhiệm (Assigned) vs. Lãnh đạo Nổi bật (Emergent)</h3>
+
+<div class="definition">
+  <strong>Lãnh đạo Được Bổ nhiệm (Assigned Leadership):</strong> Lãnh đạo dựa trên chức danh hoặc vị trí chính thức trong tổ chức. Ví dụ: Giám đốc điều hành (CEO), Trưởng phòng, Giáo viên, Thuyền trưởng.
+</div>
+
+<div class="definition">
+  <strong>Lãnh đạo Nổi bật (Emergent Leadership):</strong> Lãnh đạo xuất hiện tự nhiên từ trong một nhóm — cá nhân trở thành lãnh đạo không phải vì được chỉ định mà vì các thành viên khác trong nhóm tự nguyện coi và đối xử với họ như lãnh đạo. Điều này xảy ra khi cá nhân đó thể hiện sự tham gia tích cực, quyết đoán, thông báo tốt, và hỗ trợ người khác.
+</div>
+
+<p>Điều quan trọng là Northouse nhấn mạnh: <span class="highlight">Cả hai loại đều là lãnh đạo thực sự.</span> Một người có thể là lãnh đạo được bổ nhiệm nhưng không thực sự có ảnh hưởng (chỉ có quyền lực hình thức). Ngược lại, một người không có chức danh nào cũng có thể là lãnh đạo thực sự nếu người khác nhìn nhận và phản ứng với họ như vậy.</p>
+
+<p>Ví dụ về Emergent Leadership trong thực tế: Trong một nhóm sinh viên làm dự án không có ai được chỉ định làm trưởng nhóm, một người bắt đầu tổ chức các cuộc họp, phân công công việc, và giải quyết xung đột — dần dần nhóm tự nhiên xem người đó là lãnh đạo. Đây là emergent leadership.</p>
+
+<hr/>
+
+<h3>2.5 Lãnh đạo và Quyền lực (Power)</h3>
+
+<p>Quyền lực (power) gắn chặt với lãnh đạo vì lãnh đạo liên quan đến ảnh hưởng, và quyền lực là khả năng tạo ra ảnh hưởng. Northouse dựa trên phân loại kinh điển của <strong>French & Raven (1959)</strong> về năm cơ sở quyền lực:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Loại Quyền lực</th>
+      <th>Định nghĩa</th>
+      <th>Nguồn gốc</th>
+      <th>Ví dụ</th>
+      <th>Ảnh hưởng đến Người theo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Coercive Power</strong><br>(Quyền lực Cưỡng chế)</td>
+      <td>Quyền lực dựa trên khả năng trừng phạt hoặc đe dọa trừng phạt</td>
+      <td>Vị trí chính thức</td>
+      <td>Sa thải, giáng chức, kỷ luật, đe dọa</td>
+      <td>Tuân thủ vì sợ hãi; tạo ra sự chống đối và bất mãn tiềm ẩn</td>
+    </tr>
+    <tr>
+      <td><strong>Reward Power</strong><br>(Quyền lực Khen thưởng)</td>
+      <td>Quyền lực dựa trên khả năng cung cấp các phần thưởng mà người khác mong muốn</td>
+      <td>Vị trí chính thức</td>
+      <td>Tăng lương, thăng chức, khen ngợi, giải thưởng</td>
+      <td>Tuân thủ vì lợi ích; hiệu quả khi phần thưởng được coi trọng</td>
+    </tr>
+    <tr>
+      <td><strong>Legitimate Power</strong><br>(Quyền lực Hợp pháp)</td>
+      <td>Quyền lực dựa trên vị trí chính thức hoặc vai trò được xã hội thừa nhận</td>
+      <td>Vị trí chính thức</td>
+      <td>Quyền hạn của CEO, giám đốc, hay quan chức được bầu</td>
+      <td>Tuân thủ vì thừa nhận quyền hạn; phụ thuộc vào cấu trúc tổ chức</td>
+    </tr>
+    <tr>
+      <td><strong>Expert Power</strong><br>(Quyền lực Chuyên môn)</td>
+      <td>Quyền lực dựa trên kiến thức, kỹ năng, và chuyên môn đặc biệt</td>
+      <td>Cá nhân</td>
+      <td>Bác sĩ, kỹ sư giỏi, chuyên gia tư vấn có kinh nghiệm</td>
+      <td>Tuân thủ vì tin tưởng; người theo tự nguyện và tích cực hơn</td>
+    </tr>
+    <tr>
+      <td><strong>Referent Power</strong><br>(Quyền lực Tham chiếu/Nhân cách)</td>
+      <td>Quyền lực dựa trên sức hút, khả năng truyền cảm hứng, và sự đồng nhất hóa — người khác muốn giống hoặc được người lãnh đạo công nhận</td>
+      <td>Cá nhân</td>
+      <td>Lãnh đạo có sức lôi cuốn (charismatic), được yêu kính</td>
+      <td>Tuân thủ vì ngưỡng mộ và đồng nhất hóa; mạnh nhất và bền vững nhất</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>Phân loại Quyền lực theo nguồn gốc:</strong>
+  <ul>
+    <li><span class="badge badge-blue">Quyền lực Vị trí (Position Power)</span> = Coercive + Reward + Legitimate → đến từ chức danh, có thể mất khi mất chức danh</li>
+    <li><span class="badge badge-green">Quyền lực Cá nhân (Personal Power)</span> = Expert + Referent → đến từ con người, tồn tại bất kể chức danh</li>
+  </ul>
+  <br>
+  <strong>Hàm ý thực tiễn:</strong> Northouse và các nghiên cứu cho thấy <em>Personal Power</em> thường tạo ra ảnh hưởng sâu sắc và bền vững hơn <em>Position Power</em>. Lãnh đạo giỏi xây dựng cả hai, nhưng đặc biệt chú trọng phát triển Expert Power và Referent Power.
+</div>
+
+<hr/>
+
+<h3>2.6 Lãnh đạo và Ép buộc (Coercion)</h3>
+
+<p>Northouse dành một phần riêng để phân biệt <span class="term">lãnh đạo</span> và <span class="term">ép buộc</span> bởi vì đây là ranh giới đạo đức quan trọng:</p>
+
+<div class="definition">
+  <strong>Ép buộc (Coercion):</strong> Sử dụng quyền lực hoặc sức mạnh để buộc người khác hành động theo ý muốn của mình, bất kể ý muốn của họ, và không nhằm phục vụ lợi ích tốt nhất của người bị ảnh hưởng.
+</div>
+
+<p><strong>Ví dụ phân biệt:</strong></p>
+<ul>
+  <li>Một nhà lãnh đạo thuyết phục nhân viên làm thêm giờ vì dự án quan trọng, giải thích lý do và cam kết bồi thường xứng đáng → Đây là <em>lãnh đạo</em>.</li>
+  <li>Một ông chủ đe dọa sa thải nếu nhân viên không làm thêm giờ không lương → Đây là <em>ép buộc</em>, không phải lãnh đạo.</li>
+</ul>
+
+<p>Điều này không có nghĩa là lãnh đạo không bao giờ sử dụng coercive power (quyền lực cưỡng chế). Đôi khi cần thiết phải kỷ luật hoặc thậm chí sa thải ai đó. Nhưng điểm khác biệt là: lãnh đạo đích thực sử dụng quyền lực này một cách có trách nhiệm, vì lợi ích của tổ chức và các thành viên, không vì lợi ích cá nhân hay để thỏa mãn bản ngã.</p>
+
+<hr/>
+
+<h3>2.7 Lãnh đạo (Leadership) vs. Quản lý (Management)</h3>
+
+<p>Đây là một trong những phân biệt quan trọng nhất trong khóa học. Nhiều người dùng hai thuật ngữ này thay thế cho nhau, nhưng <strong>Kotter (1990)</strong> — một trong những học giả có ảnh hưởng nhất về chủ đề này — đã chỉ ra rằng chúng là hai chức năng khác biệt nhau:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tiêu chí</th>
+      <th>QUẢN LÝ (Management)</th>
+      <th>LÃNH ĐẠO (Leadership)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Hoạt động cốt lõi</strong></td>
+      <td>Lập kế hoạch, lập ngân sách, tổ chức nhân lực, kiểm soát, giải quyết vấn đề</td>
+      <td>Thiết lập hướng đi, tạo sự liên kết, thúc đẩy và truyền cảm hứng</td>
+    </tr>
+    <tr>
+      <td><strong>Mục tiêu chính</strong></td>
+      <td>Tạo ra trật tự và nhất quán (order and consistency)</td>
+      <td>Tạo ra sự thay đổi và chuyển động (change and movement)</td>
+    </tr>
+    <tr>
+      <td><strong>Lập kế hoạch</strong></td>
+      <td>Lập kế hoạch chi tiết và lịch trình; phân bổ nguồn lực cụ thể</td>
+      <td>Thiết lập hướng đi (vision); xây dựng chiến lược để đạt đến tầm nhìn đó</td>
+    </tr>
+    <tr>
+      <td><strong>Tổ chức con người</strong></td>
+      <td>Thiết kế cơ cấu tổ chức; xác định vai trò và trách nhiệm; định staffing</td>
+      <td>Tạo sự liên kết (alignment) — truyền thông hướng đi; xây dựng các liên minh và nhóm hiểu và chấp nhận tầm nhìn</td>
+    </tr>
+    <tr>
+      <td><strong>Thực thi</strong></td>
+      <td>Kiểm soát và giải quyết vấn đề; giám sát kết quả so với kế hoạch; xác định sai lệch và điều chỉnh</td>
+      <td>Thúc đẩy và truyền cảm hứng — giúp mọi người vượt qua rào cản chính trị, quan liêu, và nguồn lực bằng cách đáp ứng nhu cầu cơ bản</td>
+    </tr>
+    <tr>
+      <td><strong>Kết quả</strong></td>
+      <td>Dự đoán được, đúng tiến độ, đúng ngân sách</td>
+      <td>Sự thay đổi, thường là sự thay đổi đột phá</td>
+    </tr>
+    <tr>
+      <td><strong>Ví dụ điển hình</strong></td>
+      <td>Quản lý chuỗi cung ứng, quản lý dự án, quản lý ngân sách</td>
+      <td>Đổi mới chiến lược, xây dựng văn hóa tổ chức, dẫn dắt thay đổi</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout important">
+  <strong>Cảnh báo quan trọng về sự phân biệt Leadership vs. Management:</strong><br>
+  Northouse cẩn thận nhấn mạnh rằng cả <em>quản lý</em> và <em>lãnh đạo</em> đều cần thiết cho sự thành công của tổ chức. Không phải "lãnh đạo tốt hơn quản lý" hay ngược lại. Các tổ chức cần cả hai. Vấn đề là khi một tổ chức có <em>quá nhiều quản lý, quá ít lãnh đạo</em> — hoặc ngược lại. Nhà lãnh đạo giỏi thường có kỹ năng của cả hai, biết khi nào cần áp dụng từng loại.
+</div>
+
+<p>Zaleznik (1977, 1983) cũng đề xuất quan điểm tương tự nhưng cực đoan hơn — ông cho rằng nhà lãnh đạo và nhà quản lý là những <em>loại người khác nhau</em> về tâm lý và động lực. Quan điểm của Kotter (1990) được Northouse ủng hộ hơn vì nó thực tế và ít đơn giản hóa hơn.</p>
+
+<!-- ============================================================ -->
+<h2 id="s3">3. Mô hình & Khung lý thuyết</h2>
+<!-- ============================================================ -->
+
+<div class="section-label">Section 3 – Models & Frameworks</div>
+
+<h3>3.1 Mô hình 5 Thành phần của Lãnh đạo</h3>
+
+<div class="callout">
+  <strong>Sơ đồ tóm tắt định nghĩa của Northouse:</strong>
+  <pre style="font-family: monospace; margin-top: 10px;">
+  [CÁ NHÂN LÃNH ĐẠO]
+         │
+         │ TẠO RA ẢNH HƯỞNG (Influence)
+         ↓
+  [NHÓM NGƯỜI THEO] ────── trong ──── [BỐI CẢNH NHÓM]
+         │
+         │ cùng hành động hướng tới
+         ↓
+  [MỤC TIÊU CHUNG (Common Goal)]
+
+  Tất cả xảy ra trong: QUÁ TRÌNH (Process) — không phải một sự kiện đơn lẻ
+  </pre>
+</div>
+
+<h3>3.2 Phân loại Quyền lực theo French & Raven (1959)</h3>
+
+<div class="callout">
+  <pre style="font-family: monospace;">
+QUYỀN LỰC (POWER)
+├── QUYỀN LỰC VỊ TRÍ (Position Power) [đến từ chức danh]
+│   ├── Coercive Power (khả năng trừng phạt)
+│   ├── Reward Power (khả năng khen thưởng)
+│   └── Legitimate Power (quyền hạn hợp pháp)
+└── QUYỀN LỰC CÁ NHÂN (Personal Power) [đến từ con người]
+    ├── Expert Power (chuyên môn, kiến thức)
+    └── Referent Power (sức hút, nhân cách)
+  </pre>
+</div>
+
+<h3>3.3 So sánh Lãnh đạo vs. Quản lý (Kotter, 1990)</h3>
+
+<div class="callout">
+  <pre style="font-family: monospace;">
+                QUẢN LÝ                    LÃNH ĐẠO
+                (Management)               (Leadership)
+                    │                          │
+Tạo ra: ───────── Trật tự & Nhất quán ─────── Thay đổi & Chuyển động
+                    │                          │
+Qua: ─────────── Lập kế hoạch          ────── Thiết lập hướng đi
+                  Tổ chức nhân lực      ────── Tạo sự liên kết
+                  Kiểm soát             ────── Thúc đẩy & Truyền cảm hứng
+  </pre>
+</div>
+
+<h3>3.4 Matrix: Lãnh đạo Được Bổ nhiệm vs. Nổi bật</h3>
+
+<table>
+  <thead>
+    <tr><th></th><th>Có Quyền lực Chính thức</th><th>Không có Quyền lực Chính thức</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Người khác coi là Lãnh đạo</strong></td>
+      <td>Lãnh đạo Được Bổ nhiệm + Được thừa nhận → Lý tưởng nhất</td>
+      <td>Lãnh đạo Nổi bật → Quyền lực cá nhân cao</td>
+    </tr>
+    <tr>
+      <td><strong>Người khác không coi là Lãnh đạo</strong></td>
+      <td>"Người quản lý" — có chức danh nhưng không có ảnh hưởng thực</td>
+      <td>Không phải lãnh đạo</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="s4">4. Ví dụ thực tiễn</h2>
+<!-- ============================================================ -->
+
+<div class="section-label">Section 4 – Practical Examples</div>
+
+<h3>4.1 Phân tích Case: Lãnh đạo là Quá trình vs. Đặc điểm</h3>
+
+<p><strong>Tình huống A — Quan điểm Trait (Đặc điểm):</strong> Công ty A bổ nhiệm nhân viên mới vào vị trí trưởng phòng dựa trên tiêu chí "người đó có 'aura' của lãnh đạo — tự tin, nói chuyện thuyết phục, ngoại hình ấn tượng." Kết quả: Trưởng phòng mới thất bại vì không biết cách xây dựng mối quan hệ với nhóm, không hiểu bối cảnh văn hóa tổ chức, và xử lý xung đột kém.</p>
+
+<p><strong>Tình huống B — Quan điểm Process (Quá trình):</strong> Công ty B phát triển lãnh đạo qua các chương trình huấn luyện có cấu trúc, bao gồm: phản hồi 360 độ, coaching cá nhân, và cơ hội dẫn dắt các dự án thực tế từ nhỏ đến lớn. Kết quả: Nhiều nhân viên ở các cấp khác nhau phát triển năng lực lãnh đạo thực sự.</p>
+
+<h3>4.2 Ví dụ về 5 Loại Quyền lực trong Môi trường Doanh nghiệp Việt Nam</h3>
+
+<ul>
+  <li><strong>Coercive Power:</strong> Giám đốc nhà máy dùng quyền "cắt thưởng cuối năm" để buộc nhân viên làm thêm giờ. → Nhân viên tuân thủ nhưng bất mãn, dẫn đến tỷ lệ nghỉ việc cao.</li>
+  <li><strong>Reward Power:</strong> Trưởng nhóm bán hàng thưởng chuyến đi du lịch cho nhân viên đạt KPI. → Nhân viên có động lực ngắn hạn, nhưng phụ thuộc vào phần thưởng.</li>
+  <li><strong>Legitimate Power:</strong> Giám đốc ký phê duyệt ngân sách — ai cũng tuân thủ vì đó là quy trình hợp pháp của công ty.</li>
+  <li><strong>Expert Power:</strong> Senior engineer được cả nhóm hỏi ý kiến kỹ thuật, dù không có chức danh quản lý. → Tự nhiên trở thành lãnh đạo nổi bật (emergent leader).</li>
+  <li><strong>Referent Power:</strong> CEO nổi tiếng về liêm chính và quan tâm nhân viên — nhân viên làm việc hết mình không vì sợ hay vì thưởng, mà vì không muốn làm thất vọng người mà họ kính trọng.</li>
+</ul>
+
+<h3>4.3 Ví dụ về Lãnh đạo Nổi bật (Emergent Leadership)</h3>
+
+<p><strong>Tình huống thực tế:</strong> Trong một nhóm startup gồm 5 người đồng sáng lập, ban đầu không ai giữ chức danh CEO. Theo thời gian, một người tự nhiên bắt đầu: (1) tổ chức các cuộc họp thường xuyên và có cấu trúc, (2) đại diện nhóm gặp nhà đầu tư, (3) đưa ra quyết định khi nhóm bế tắc, và (4) giải quyết mâu thuẫn nội bộ. Sau 6 tháng, cả nhóm tự nhiên gọi người đó là "leader" dù không ai chính thức bầu hay bổ nhiệm. → Đây là emergent leadership điển hình.</p>
+
+<h3>4.4 Ví dụ phân biệt Leader vs. Manager</h3>
+
+<p><strong>Tình huống:</strong> Công ty phần mềm đang chuyển đổi từ mô hình phần mềm đóng gói sang SaaS.</p>
+<ul>
+  <li><strong>Manager:</strong> Lập kế hoạch chi tiết để migrate hệ thống hiện tại; phân công developer; theo dõi tiến độ sprint hàng tuần; báo cáo lên cấp trên về tỷ lệ hoàn thành.</li>
+  <li><strong>Leader:</strong> Giải thích cho toàn bộ nhân viên <em>tại sao</em> sự thay đổi này là cần thiết; xây dựng tầm nhìn về công ty trong 3 năm tới; thuyết phục những người hoài nghi; truyền cảm hứng để mọi người vượt qua khó khăn của quá trình chuyển đổi; đảm bảo toàn bộ tổ chức hiểu và hướng về cùng một mục tiêu.</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="s5">5. Lưu ý học tập & Bẫy nhận thức phổ biến</h2>
+<!-- ============================================================ -->
+
+<div class="section-label">Section 5 – Study Notes & Common Pitfalls</div>
+
+<h3>5.1 Những điểm HAY bị nhầm lẫn</h3>
+
+<div class="callout warning">
+  <strong>Bẫy 1: Nhầm "Lãnh đạo" với "Người có chức danh cao"</strong><br>
+  Nhiều sinh viên mặc định rằng CEO, Giám đốc = Lãnh đạo. Đây là sai lầm. Theo Northouse, lãnh đạo là về <em>ảnh hưởng thực sự</em>, không phải chức danh. Một nhân viên bình thường có thể là lãnh đạo nổi bật; một CEO có thể không có ảnh hưởng thực sự ngoài quyền lực hợp pháp của chức vụ.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 2: Nhầm "Ảnh hưởng" với "Ép buộc"</strong><br>
+  Ảnh hưởng (influence) và ép buộc (coercion) không phải một. Lãnh đạo dựa trên ảnh hưởng — người theo tự nguyện thay đổi hành vi của mình. Ép buộc tạo ra sự tuân thủ bề ngoài nhưng không tạo ra sự cam kết thực sự. Trong bài thi/kiểm tra, khi được hỏi về lãnh đạo, đừng đề cập đến ép buộc như một đặc điểm tích cực.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 3: Cho rằng "Quản lý" là xấu hơn "Lãnh đạo"</strong><br>
+  Northouse không có hàm ý này. Cả hai đều cần thiết. Trong đề thi/bài thảo luận, nếu được hỏi so sánh leadership và management, hãy giải thích sự khác biệt về chức năng và kết quả, không phải về giá trị tốt/xấu.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 4: Nhầm "Expert Power" và "Legitimate Power"</strong><br>
+  Legitimate Power đến từ chức danh/vị trí chính thức. Expert Power đến từ kiến thức và kỹ năng. Một người có thể có expert power mà không có legitimate power (ví dụ: chuyên gia tư vấn bên ngoài), hoặc có legitimate power mà không có expert power (ví dụ: Giám đốc mới được bổ nhiệm chưa có kinh nghiệm thực tế trong ngành).
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 5: Quên các thành phần trong định nghĩa của Northouse</strong><br>
+  Định nghĩa "Leadership is a process whereby an individual influences a group of individuals to achieve a common goal" chứa 5 yếu tố cần giải thích: <em>process, individual, influences, group, common goal</em>. Trong bài thi tự luận, liệt kê và giải thích từng yếu tố sẽ cho thấy sự hiểu biết sâu sắc.
+</div>
+
+<h3>5.2 Các câu hỏi ôn tập quan trọng</h3>
+
+<ol>
+  <li>Giải thích tại sao Northouse định nghĩa lãnh đạo là một "quá trình" (process) chứ không phải là một "đặc điểm" (trait). Điều này có hàm ý gì về khả năng học và phát triển lãnh đạo?</li>
+  <li>Phân biệt Assigned Leadership và Emergent Leadership. Cho ví dụ cụ thể về mỗi loại trong bối cảnh doanh nghiệp Việt Nam.</li>
+  <li>Mô tả 5 cơ sở quyền lực của French & Raven. Loại quyền lực nào tạo ra sự cam kết sâu nhất từ người theo và tại sao?</li>
+  <li>Tại sao Northouse cho rằng ép buộc (coercion) không phải là lãnh đạo thực sự? Đưa ra ranh giới đạo đức giữa sử dụng quyền lực cưỡng chế và ép buộc.</li>
+  <li>Theo Kotter (1990), quản lý và lãnh đạo khác nhau về mục tiêu cuối cùng như thế nào? Tại sao tổ chức cần cả hai?</li>
+</ol>
+
+<h3>5.3 Các Từ khóa & Thuật ngữ quan trọng cần nhớ</h3>
+
+<table>
+  <thead>
+    <tr><th>Thuật ngữ (Anh)</th><th>Thuật ngữ (Việt)</th><th>Định nghĩa ngắn gọn</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Leadership</td><td>Lãnh đạo</td><td>Quá trình cá nhân ảnh hưởng đến nhóm để đạt mục tiêu chung</td></tr>
+    <tr><td>Process</td><td>Quá trình</td><td>Lãnh đạo là giao tiếp/tương tác, không phải đặc điểm cố định</td></tr>
+    <tr><td>Influence</td><td>Ảnh hưởng</td><td>Cơ chế trung tâm của lãnh đạo; khác với ép buộc</td></tr>
+    <tr><td>Assigned Leadership</td><td>Lãnh đạo Được Bổ nhiệm</td><td>Lãnh đạo dựa trên chức danh chính thức</td></tr>
+    <tr><td>Emergent Leadership</td><td>Lãnh đạo Nổi bật</td><td>Lãnh đạo xuất hiện tự nhiên từ trong nhóm</td></tr>
+    <tr><td>Coercive Power</td><td>Quyền lực Cưỡng chế</td><td>Khả năng trừng phạt</td></tr>
+    <tr><td>Reward Power</td><td>Quyền lực Khen thưởng</td><td>Khả năng trao phần thưởng</td></tr>
+    <tr><td>Legitimate Power</td><td>Quyền lực Hợp pháp</td><td>Quyền hạn từ vị trí chính thức</td></tr>
+    <tr><td>Expert Power</td><td>Quyền lực Chuyên môn</td><td>Quyền lực từ kiến thức/kỹ năng</td></tr>
+    <tr><td>Referent Power</td><td>Quyền lực Nhân cách</td><td>Quyền lực từ sức hút và sự đồng nhất hóa</td></tr>
+    <tr><td>Coercion</td><td>Ép buộc</td><td>Buộc người khác hành động trái ý muốn — KHÔNG phải lãnh đạo</td></tr>
+    <tr><td>Management</td><td>Quản lý</td><td>Tạo trật tự và nhất quán qua lập kế hoạch và kiểm soát</td></tr>
+  </tbody>
+</table>
+
+<hr/>
+<p style="text-align:center; color:var(--muted); font-size:0.85rem;">GK5009 – Quản lý và Lãnh đạo | HK252 | Tài liệu học tập tổng hợp | Nguồn: Northouse (2021), 7th ed., Chapter 1</p>
+
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đề Thi Thử 2026 | MLA HK252</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']], processEscapes: true },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:0;left:0;width:258px;height:100vh;background:#0a1f10;overflow-y:auto;z-index:100;flex-shrink:0}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:#2d6a4f;border-radius:2px}
+.sb-title{padding:1.25rem 1rem .75rem;border-bottom:1px solid #1a3a20}
+.sb-title h1{color:#86efac;font-size:.95rem;font-weight:700;line-height:1.4}
+.sb-title p{color:#6ee7b7;font-size:.7rem;margin-top:.2rem}
+.sb-group{padding:.6rem 1rem .15rem;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#4ade80}
+.sb-link{display:flex;align-items:center;gap:.45rem;padding:.35rem 1rem;color:#bbf7d0;font-size:.8rem;text-decoration:none;border-left:3px solid transparent;transition:all .15s}
+.sb-link:hover{background:rgba(74,222,128,.1);border-left-color:#4ade80;color:#fff}
+.sb-link i{width:14px;font-size:.7rem;color:#4ade80;flex-shrink:0}
+
+/* MAIN */
+#main{margin-left:258px;min-height:100vh;padding:2rem 2.5rem;max-width:calc(100% - 258px)}
+
+/* CHAPTER HEADER */
+.ch-hdr{background:linear-gradient(135deg,#14532d,#16a34a);color:#fff;padding:1.75rem 2rem;border-radius:10px;margin-bottom:1.75rem;box-shadow:0 4px 12px rgba(20,83,45,.3)}
+.ch-hdr .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#86efac;font-weight:700}
+.ch-hdr h2{font-size:1.75rem;font-weight:800;margin:.2rem 0 .4rem}
+.ch-hdr p{color:#d1fae5;font-size:.9rem}
+.ch-hdr-blue{background:linear-gradient(135deg,#1e3a5f,#1e4d8c)}
+.ch-hdr-blue .lbl{color:#93c5fd}
+.ch-hdr-blue p{color:#bfdbfe}
+
+/* SECTION TITLES */
+.s-title{font-size:1.2rem;font-weight:700;color:#14532d;border-left:4px solid #16a34a;padding-left:.7rem;margin:1.75rem 0 .9rem}
+.ss-title{font-size:1rem;font-weight:600;color:#166534;margin:1.25rem 0 .6rem}
+
+/* ALERTS */
+.alert{border-radius:0 8px 8px 0;padding:.85rem 1.1rem;margin:.85rem 0;font-size:.875rem}
+.alert-title{font-weight:700;margin-bottom:.3rem;font-size:.85rem}
+.al-blue{background:#eff6ff;border-left:4px solid #3b82f6}
+.al-blue .alert-title{color:#1d4ed8}
+.al-green{background:#f0fdf4;border-left:4px solid #22c55e}
+.al-green .alert-title{color:#15803d}
+.al-yellow{background:#fffbeb;border-left:4px solid #f59e0b}
+.al-yellow .alert-title{color:#b45309}
+.al-red{background:#fef2f2;border-left:4px solid #ef4444}
+.al-red .alert-title{color:#b91c1c}
+.al-purple{background:#faf5ff;border-left:4px solid #9333ea}
+.al-purple .alert-title{color:#7e22ce}
+
+/* FORMULA */
+.flabel{display:inline-block;background:#16a34a;color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .65rem;border-radius:6px 6px 0 0;margin-bottom:-1px}
+.fbox{background:#f8fafc;border:1px solid #cbd5e1;border-top:3px solid #16a34a;border-radius:0 8px 8px 8px;padding:1.1rem 1.5rem;margin:.25rem 0 .85rem;overflow-x:auto;text-align:center}
+.fbox.no-top-radius{border-radius:8px}
+
+/* DETAILS */
+details{border:1px solid #e2e8f0;border-radius:8px;margin:.65rem 0;overflow:hidden}
+details>summary{padding:.65rem 1.1rem;cursor:pointer;font-weight:600;font-size:.875rem;background:#f1f5f9;list-style:none;display:flex;align-items:center;gap:.45rem;user-select:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:'▶';font-size:.65rem;color:#64748b;transition:transform .2s;margin-right:.1rem}
+details[open]>summary::before{transform:rotate(90deg)}
+details[open]>summary{background:#e2e8f0}
+.dc{padding:1.1rem}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.85rem}
+.tbl th{background:#14532d;color:#fff;padding:.5rem .85rem;text-align:left}
+.tbl td{padding:.5rem .85rem;border:1px solid #e2e8f0}
+.tbl tr:nth-child(even){background:#f0fdf4}
+
+/* STEPS */
+.step{display:flex;gap:.85rem;margin:.6rem 0}
+.step-n{background:#16a34a;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.15rem}
+.step-c{flex:1;font-size:.875rem;line-height:1.6}
+
+/* QUIZ */
+.qcard{background:#fff;border:1px solid #e2e8f0;border-radius:8px;margin:1.1rem 0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.qhdr{background:#1e3a5f;color:#fff;padding:.55rem 1.1rem;font-size:.82rem;font-weight:600}
+.qbody{padding:1.1rem}
+.qq{font-size:.875rem;line-height:1.6;margin-bottom:.7rem;font-weight:500}
+.qopt{padding:.35rem .75rem;border-radius:5px;margin:.2rem 0;font-size:.855rem;line-height:1.5}
+.qok{background:#dcfce7;color:#14532d;font-weight:700;border-left:3px solid #16a34a}
+.qwrong{color:#64748b}
+.qexp{background:#fffbeb;border-left:3px solid #f59e0b;padding:.7rem 1rem;border-radius:0 6px 6px 0;margin-top:.7rem;font-size:.84rem;line-height:1.6}
+
+/* CODE */
+.code{background:#1e293b;color:#e2e8f0;padding:.9rem 1.1rem;border-radius:8px;font-family:'Courier New',monospace;font-size:.82rem;margin:.75rem 0;overflow-x:auto;line-height:1.7}
+.kw{color:#7dd3fc}
+.cmt{color:#64748b}
+
+.divider{border:none;border-top:1px solid #e2e8f0;margin:2.25rem 0}
+#back-top{position:fixed;bottom:1.5rem;right:1.5rem;background:#14532d;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.2);font-size:.85rem}
+#back-top:hover{background:#15803d}
+
+p{font-size:.9rem;line-height:1.65;margin:.5rem 0}
+li{font-size:.875rem;line-height:1.65}
+ul,ol{padding-left:1.4rem;margin:.4rem 0}
+strong{color:#1e293b}
+
+@media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+</style>
+</head>
+
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sb-title">
+    <h1><i class="fas fa-brain"></i> Học Máy &amp; Ứng Dụng</h1>
+    <p>Ôn thi Cuối Kỳ — HK252 | CO5175</p>
+  </div>
+  <div class="sb-group">Trang chủ</div>
+  <a href="index.html" class="sb-link"><i class="fas fa-home"></i>Tổng quan các chương</a>
+  <div class="sb-group">Phân loại có giám sát</div>
+  <a href="knn.html" class="sb-link"><i class="fas fa-map-marker-alt"></i>Ch.3 — K-Nearest Neighbors</a>
+  <a href="bayes.html" class="sb-link"><i class="fas fa-calculator"></i>Ch.4 — Naive Bayes</a>
+  <a href="dtree.html" class="sb-link"><i class="fas fa-tree"></i>Ch.5 — Decision Trees</a>
+  <a href="nn.html" class="sb-link"><i class="fas fa-network-wired"></i>Ch.7 — Neural Networks</a>
+  <a href="svm.html" class="sb-link"><i class="fas fa-compress-arrows-alt"></i>Ch.8 — Support Vector Machines</a>
+  <a href="ensemble.html" class="sb-link"><i class="fas fa-layer-group"></i>Ch.9 — Ensemble Methods</a>
+  <a href="deep.html" class="sb-link"><i class="fas fa-microchip"></i>Ch.12 — Deep Learning</a>
+  <div class="sb-group">Chuyên đề ôn thi</div>
+  <a href="hmm.html" class="sb-link"><i class="fas fa-random"></i>Hidden Markov Models</a>
+  <a href="kmeans.html" class="sb-link"><i class="fas fa-object-group"></i>K-Means Clustering</a>
+  <a href="logreg.html" class="sb-link"><i class="fas fa-chart-line"></i>Logistic Regression</a>
+  <div class="sb-group">Thi thử</div>
+  <a href="mock.html" class="sb-link" style="background:rgba(74,222,128,.15);border-left-color:#4ade80;color:#fff"><i class="fas fa-file-alt"></i>Đề Thi Thử 2026</a>
+  <a href="exam2025.html" class="sb-link"><i class="fas fa-graduation-cap"></i>Đề CK Thật 2025</a>
+</nav>
+
+<main id="main">
+
+<!-- ========== MOCK EXAM ========== -->
+<section id="mock">
+<div class="ch-hdr ch-hdr-blue">
+  <div class="lbl"><i class="fas fa-file-alt"></i> Đề thi thử 2026</div>
+  <h2>Thi thử CK — 25 câu trắc nghiệm (Mã đề 5231)</h2>
+  <p>Học kỳ 2, 2025–2026 | CO5175 — Học máy và Ứng dụng | 12/05/2026</p>
+</div>
+
+<div class="alert al-green">
+  <div class="alert-title"><i class="fas fa-check-circle"></i> ĐÁP ÁN NHANH</div>
+  <p style="font-family:monospace;font-size:.9rem">
+  1.B | 2.C | 3.B | 4.B | 5.B | 6.A | 7.B | 8.B | 9.C | 10.C<br>
+  11.B | 12.A | 13.A | 14.C | 15.B | 16.A | 17.D | 18.B | 19.A | 20.B<br>
+  21.D | 22.B | 23.B | 24.B | 25.A
+  </p>
+</div>
+
+<div class="s-title">Nhóm HMM (Câu 1–4, 19, 21–22, 24–25)</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 1 — Viterbi: Cơ sở toán học</div>
+<div class="qbody">
+<div class="qq">Trong HMM, thuật toán Viterbi tìm chuỗi trạng thái ẩn tối ưu. Cơ sở toán học cốt lõi cho phép Viterbi đạt độ phức tạp tuyến tính theo thời gian thay vì hàm mũ là gì?</div>
+<div class="qopt qwrong">A. Khai triển chuỗi Taylor để xấp xỉ hàm likelihood</div>
+<div class="qopt qok">B. Nguyên lý tối ưu Bellman và tính chất Markov bậc 1 ✓</div>
+<div class="qopt qwrong">C. Giả định các trạng thái ẩn độc lập tuyệt đối với nhau</div>
+<div class="qopt qwrong">D. Sử dụng Gradient Descent để cập nhật đường đi tại mỗi bước thời gian</div>
+<div class="qexp"><strong>Giải thích:</strong> Nguyên lý Bellman: đường đi tối ưu đến (t,j) đi qua đường đi tối ưu đến (t-1,i). Tính chất Markov: trạng thái hiện tại chỉ phụ thuộc trạng thái ngay trước. Kết hợp → quy hoạch động với \(\mathcal{O}(N^2T)\) thay vì \(\mathcal{O}(N^T)\).</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 2 — Forward Algorithm: Dữ liệu bị thiếu</div>
+<div class="qbody">
+<div class="qq">Trong chuỗi quan sát HMM, tại t=k dữ liệu bị thiếu. Điều chỉnh tốt nhất cho thuật toán Forward tại bước k?</div>
+<div class="qopt qwrong">A. Cắt chuỗi làm hai nửa độc lập tại k và nhân hai likelihoods</div>
+<div class="qopt qwrong">B. Thay thế o_k bằng giá trị quan sát phổ biến nhất (Mode)</div>
+<div class="qopt qok">C. Tính tổng biên (marginalize) qua các trạng thái bằng cách đặt b_j(o_k)=1 cho mọi j ✓</div>
+<div class="qopt qwrong">D. Khởi tạo lại thuật toán Forward từ bước k+1 với xác suất tiên nghiệm π</div>
+<div class="qexp"><strong>Giải thích:</strong> Đặt \(b_j(o_k)=1\) tương đương marginalize qua tất cả quan sát có thể — không cung cấp thông tin bức xạ tại bước này nhưng vẫn duy trì tính liên tục của chuỗi Forward.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 3 — Baum-Welch: Khởi tạo A = Identity Matrix</div>
+<div class="qbody">
+<div class="qq">Nếu khởi tạo Baum-Welch với A là ma trận đơn vị và ít dữ liệu quan sát, HMM sẽ hoạt động thế nào?</div>
+<div class="qopt qwrong">A. Hội tụ cực nhanh vì đạo hàm bậc hai luôn dương</div>
+<div class="qopt qok">B. Mô hình bị khóa cứng — trạng thái ẩn ban đầu không bao giờ chuyển sang trạng thái nào khác ✓</div>
+<div class="qopt qwrong">C. Tự động chuyển đổi thành mô hình phân cụm tĩnh như K-Means</div>
+<div class="qopt qwrong">D. Phân phối xác suất trạng thái trở thành đều sau đúng 1 vòng lặp</div>
+<div class="qexp"><strong>Giải thích:</strong> A=I → \(a_{ij}=0\) với \(i\neq j\) → \(\xi_t(i,j)\propto\alpha_t(i)\cdot a_{ij}\cdot\ldots=0\). Không có cập nhật nào cho \(a_{ij}\), mô hình mắc kẹt mãi.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 4 — Forward-Backward vs Viterbi</div>
+<div class="qbody">
+<div class="qq">Nhược điểm nghiêm trọng nhất của chuỗi Q_FB (Forward-Backward) so với Q_Viterbi trong decoding?</div>
+<div class="qopt qwrong">A. Tốn nhiều thời gian tính toán hơn Viterbi theo cấp số nhân</div>
+<div class="qopt qok">B. Joint probability của toàn bộ chuỗi Q_FB có thể bằng 0 do vi phạm cấu trúc mô hình ✓</div>
+<div class="qopt qwrong">C. Không tối đa hóa được số lượng trạng thái đoán đúng từng mốc thời gian độc lập</div>
+<div class="qopt qwrong">D. Luôn bỏ qua sự phụ thuộc vào ma trận bức xạ</div>
+<div class="qexp"><strong>Giải thích:</strong> FB chọn \(\hat{q}_t=\arg\max_i\gamma_t(i)\) độc lập tại mỗi bước. Chuỗi kết quả có thể chứa chuyển trạng thái với \(a_{ij}=0\) → \(P(Q_{FB},O|\lambda)=0\). Viterbi đảm bảo toàn bộ đường đi hợp lệ.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 19 — HMM bậc 2: Kích thước tensor</div>
+<div class="qbody">
+<div class="qq">HMM bậc 2 với N trạng thái: xác suất chuyển tại t phụ thuộc vào 2 trạng thái liền trước (t-1 và t-2). Kích thước vật lý của cấu trúc lưu toàn bộ tham số chuyển trạng thái là bao nhiêu chiều?</div>
+<div class="qopt qok">A. Khối dữ liệu kích thước N×N×N (hoặc tương đương ma trận phẳng N²×N) ✓</div>
+<div class="qopt qwrong">B. Ma trận vuông N×N</div>
+<div class="qopt qwrong">C. Mảng hai chiều N×2</div>
+<div class="qopt qwrong">D. Số lượng trạng thái lũy thừa: 2^N</div>
+<div class="qexp"><strong>Giải thích:</strong> \(a_{ijk}=P(q_t=k\mid q_{t-1}=j, q_{t-2}=i)\). Có N lựa chọn cho i, N cho j, N cho k → tensor 3 chiều N×N×N.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 21 — Biến ξ trong Baum-Welch</div>
+<div class="qbody">
+<div class="qq">Biến kỳ vọng trung gian \(\xi_t(i,j)\) biểu diễn P(ở trạng thái i tại t và chuyển sang j tại t+1). Biểu thức nào đúng?</div>
+<div class="qopt qwrong">A. \(\xi_t(i,j) = \max(\alpha_t(i),\,\beta_{t+1}(j))\)</div>
+<div class="qopt qwrong">B. \(\xi_t(i,j) = \sum_{k=1}^{N}\alpha_t(i)\cdot\beta_t(k)\)</div>
+<div class="qopt qwrong">C. \(\xi_t(i,j) = \alpha_t(i)\cdot\beta_t(j)\)</div>
+<div class="qopt qok">D. \(\xi_t(i,j) = \dfrac{\alpha_t(i)\cdot a_{ij}\cdot b_j(o_{t+1})\cdot\beta_{t+1}(j)}{P(O\mid\lambda)}\) ✓</div>
+<div class="qexp"><strong>Giải thích:</strong> Tử số = \(\alpha_t(i)\) (đến i tại t) × \(a_{ij}\) (chuyển i→j) × \(b_j(o_{t+1})\) (phát quan sát tiếp theo) × \(\beta_{t+1}(j)\) (phần còn lại). Mẫu số: \(P(O|\lambda)\) để chuẩn hóa.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 22 — Tính Likelihood P(o₁)</div>
+<div class="qbody">
+<div class="qq">HMM 2 trạng thái S₁,S₂. π=[1,0], P(o₁|S₁)=0.7. Giá trị P(o₁) tại T=1 là bao nhiêu?</div>
+<div class="qopt qwrong">A. 1.0</div>
+<div class="qopt qok">B. 0.7 ✓</div>
+<div class="qopt qwrong">C. 0.35</div>
+<div class="qopt qwrong">D. Không thể tính vì chưa có ma trận A</div>
+<div class="qexp"><strong>Giải thích:</strong> \(P(o_1)=\pi_{S_1}\cdot b_{S_1}(o_1)+\pi_{S_2}\cdot b_{S_2}(o_1) = 1\times 0.7 + 0\times(\cdot) = 0.7\). Ma trận A không cần tại T=1.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 24 — Ý nghĩa b_j(o_t) trong nhận dạng tiếng nói</div>
+<div class="qbody">
+<div class="qq">Trong HMM ASR: trạng thái ẩn = Âm vị. Tham số b_j(o_t) truyền đạt ý nghĩa gì?</div>
+<div class="qopt qwrong">A. Xác suất người nói phát ra âm vị j tại thời điểm t bất kể âm thanh thu được</div>
+<div class="qopt qok">B. Xác suất mô hình thu nhận được đoạn âm thanh o_t, biết hệ thống đang phát ra âm vị j ✓</div>
+<div class="qopt qwrong">C. Xác suất hệ thống chuyển từ âm vị o_t sang âm vị j trong bước tiếp theo</div>
+<div class="qopt qwrong">D. Xác suất tổng thể để xuất hiện o_t trong toàn bộ cơ sở dữ liệu lời nói</div>
+<div class="qexp"><strong>Giải thích:</strong> Theo định nghĩa: \(b_j(o_t)=P(o_t\mid q_t=j)\) — xác suất quan sát o_t khi trạng thái ẩn là j. Trong ASR: xác suất thu được tín hiệu âm thanh o_t nếu đang phát âm vị j.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 25 — Viterbi Log-space với a_ij = 0</div>
+<div class="qbody">
+<div class="qq">Trong Viterbi log-space, nếu a_ij=0 (chuyển i→j bị cấm), cơ chế nào loại bỏ đường đi này?</div>
+<div class="qopt qok">A. log(0)=−∞ khiến toán tử Max tại bước quy hoạch động gạt bỏ nhánh này ✓</div>
+<div class="qopt qwrong">B. Cấu trúc lệnh if kiểm tra giá trị 0 được cài đặt cứng trong mã nguồn</div>
+<div class="qopt qwrong">C. Phép cộng dồn trung bình các xác suất lân cận triệt tiêu nhánh a_ij</div>
+<div class="qopt qwrong">D. a_ij=0 làm tràn biến mảng Gradient, tự kích hoạt ngắt thuật toán</div>
+<div class="qexp"><strong>Giải thích:</strong> \(\log\delta_t(j)=\max_i[\log\delta_{t-1}(i)+\log a_{ij}]+\log b_j(o_t)\). Khi \(a_{ij}=0\): \(\log(0)=-\infty\). Tổng = \(-\infty\) &lt; mọi giá trị hợp lệ → max operator tự loại bỏ.</div>
+</div>
+</div>
+
+<div class="s-title">Nhóm SVM (Câu 5–7, 23)</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 5 — SVM 1D: Phân tách tuyến tính</div>
+<div class="qbody">
+<div class="qq">Dữ liệu 1D: Lớp +1 gồm \(\{-2, 2\}\), Lớp -1 gồm \(\{0\}\). Khẳng định nào đúng về biên quyết định SVM với dữ liệu này?</div>
+<div class="qopt qwrong">A. Có thể phân tách tuyến tính bằng cách đặt một điểm (siêu phẳng 1D) tại x=1</div>
+<div class="qopt qok">B. Không thể phân tách tuyến tính — không tồn tại bất kỳ một điểm nào chia hoàn toàn 2 lớp ✓</div>
+<div class="qopt qwrong">C. Có thể phân tách tuyến tính nếu dùng Soft-margin SVM</div>
+<div class="qopt qwrong">D. Không thể phân tách trừ khi dùng Kernel phi tuyến bậc 3</div>
+<div class="qexp"><strong>Giải thích:</strong> Trong 1D, siêu phẳng là một điểm p. Lớp +1 có điểm ở cả hai phía của 0 ({-2} &lt; 0 &lt; {2}). Không có điểm p nào đặt được {-2,2} cùng phía và {0} phía còn lại. Dữ liệu không linearly separable. Soft-margin vẫn là tuyến tính.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 6 — Margin Width</div>
+<div class="qbody">
+<div class="qq">Hard-margin SVM: H₁: 2x₁+x₂−3=0, H₂: 2x₁+x₂+1=0. Margin width là bao nhiêu?</div>
+<div class="qopt qok">A. \(4/\sqrt{5}\) ✓</div>
+<div class="qopt qwrong">B. \(\sqrt{5}\)</div>
+<div class="qopt qwrong">C. \(2/\sqrt{5}\)</div>
+<div class="qopt qwrong">D. 4</div>
+<div class="qexp"><strong>Giải thích:</strong> \(\|\mathbf{w}\|=\sqrt{4+1}=\sqrt{5}\). Margin = \(|3-(-1)|/\sqrt{5}=4/\sqrt{5}\).</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 7 — RBF Kernel với γ → ∞</div>
+<div class="qbody">
+<div class="qq">SVM dùng RBF kernel \(K(x,x')=\exp(-\gamma\|x-x'\|^2)\). Khi γ→∞, ma trận Gram và mô hình như thế nào?</div>
+<div class="qopt qwrong">A. Ma trận Kernel → ma trận toàn số 1, dẫn đến underfit nghiêm trọng</div>
+<div class="qopt qok">B. Ma trận Kernel ≈ Identity Matrix, mô hình bị overfit cực đại ✓</div>
+<div class="qopt qwrong">C. Ma trận Kernel → ma trận đường chéo toàn số 0</div>
+<div class="qopt qwrong">D. Ma trận Kernel hoạt động như Linear Kernel tiêu chuẩn</div>
+<div class="qexp"><strong>Giải thích:</strong> Khi γ→∞: \(K(x_i,x_j)=e^{-\gamma\|x_i-x_j\|^2}\to 0\) với \(i\neq j\) (vì \(\|x_i-x_j\|^2&gt;0\)), và \(K(x_i,x_i)=1\). Gram ≈ Identity → mỗi điểm là "vùng riêng" → overfit.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 23 — Soft-margin SVM với C → ∞</div>
+<div class="qbody">
+<div class="qq">Trong Soft-margin SVM, khi C→∞, mô hình sẽ có đặc điểm gì?</div>
+<div class="qopt qwrong">A. Tối đa hóa lề vô cực, bỏ qua mọi sai số phân loại (Extreme Underfit)</div>
+<div class="qopt qok">B. Xử phạt cực kỳ nghiêm ngặt các điểm vi phạm — margin bị ép hẹp lại, bám sát data (nguy cơ Overfit) ✓</div>
+<div class="qopt qwrong">C. Mô hình dừng ở vòng lặp đầu tiên do ma trận suy biến</div>
+<div class="qopt qwrong">D. Tự động chuyển siêu phẳng tuyến tính thành mặt cong đa thức</div>
+<div class="qexp"><strong>Giải thích:</strong> C→∞ phạt mọi lỗi vô cùng lớn → không chấp nhận bất kỳ điểm nào vi phạm margin → tương đương Hard-margin SVM → margin bị ép hẹp → overfit.</div>
+</div>
+</div>
+
+<div class="s-title">Nhóm Logistic Regression (Câu 8–9, 12–13, 20)</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 8 — Odds Ratio</div>
+<div class="qbody">
+<div class="qq">Logistic Regression với logit \(z=\ln(3)\cdot X_1 - \ln(2)\cdot X_2\). Input \(X=[2,1]^\top\). Odds Ratio là?</div>
+<div class="qopt qwrong">A. 0.818</div>
+<div class="qopt qok">B. 4.5 ✓</div>
+<div class="qopt qwrong">C. ln(4.5)</div>
+<div class="qopt qwrong">D. 3.5</div>
+<div class="qexp"><strong>Giải thích:</strong> \(z=2\ln3-\ln2=\ln9-\ln2=\ln(4.5)\). Odds Ratio = \(e^{\ln(4.5)}=4.5\).</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 9 — Decision Threshold và Precision/Recall</div>
+<div class="qbody">
+<div class="qq">Tăng decision threshold từ 0.5 lên 0.85 trong phân loại nhị phân Logistic Regression (dự đoán dương = 1)?</div>
+<div class="qopt qwrong">A. Recall tăng, Precision giảm</div>
+<div class="qopt qwrong">B. Decision boundary uốn cong thành phi tuyến</div>
+<div class="qopt qok">C. Recall giảm, Precision thường có xu hướng tăng ✓</div>
+<div class="qopt qwrong">D. F1-Score chắc chắn luôn tăng đến mức cực đại</div>
+<div class="qexp"><strong>Giải thích:</strong> Threshold cao → ít điểm được dự đoán dương → nhiều TP bị bỏ sót (FN tăng) → Recall giảm. Những gì được dự đoán dương thường chắc chắn hơn → ít FP → Precision tăng.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 12 — MSE + Sigmoid = Gradient Vanishing</div>
+<div class="qbody">
+<div class="qq">Neural network phân loại nhị phân dùng sigmoid đầu ra. Tại sao MSE gây gradient vanishing khi y=1 nhưng ŷ→0?</div>
+<div class="qopt qok">A. Đạo hàm MSE theo logit z chứa tích số ŷ(1−ŷ), triệt tiêu về 0 khi ŷ→0 ✓</div>
+<div class="qopt qwrong">B. MSE không chứa phép toán logarit, không đủ mạnh phạt sai số &gt;1</div>
+<div class="qopt qwrong">C. MSE là hàm lồi thuần túy nên đạo hàm ở các vùng biên = 0</div>
+<div class="qopt qwrong">D. Khoảng cách Euclidean giữa y và ŷ bị chặn trên, gây tràn bộ nhớ</div>
+<div class="qexp"><strong>Giải thích:</strong> \(\partial E_{MSE}/\partial z = (\hat{y}-y)\cdot\hat{y}(1-\hat{y})\). Khi \(\hat{y}\to 0\): \(\hat{y}(1-\hat{y})\to 0\) → gradient tiệm cận 0 dù lỗi \(|\hat{y}-y|\) lớn.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 13 — Đạo hàm Cross-Entropy theo logit z</div>
+<div class="qbody">
+<div class="qq">Phân loại nhị phân với \(\hat{y}=\sigma(z)\), nhãn \(y\in\{0,1\}\). \(\partial L_{CE}/\partial z\) là?</div>
+<div class="qopt qok">A. \(\hat{y}-y\) ✓</div>
+<div class="qopt qwrong">B. \((\hat{y}-y)\hat{y}(1-\hat{y})\)</div>
+<div class="qopt qwrong">C. \(-y\log(\hat{y})-(1-y)\log(1-\hat{y})\)</div>
+<div class="qopt qwrong">D. \(-y/\hat{y}+(1-y)/(1-\hat{y})\)</div>
+<div class="qexp"><strong>Giải thích:</strong> Chain rule: \(\partial L/\partial z = \partial L/\partial\hat{y}\cdot\partial\hat{y}/\partial z = \left(-y/\hat{y}+(1-y)/(1-\hat{y})\right)\cdot\hat{y}(1-\hat{y})\). Rút gọn: \(= -(y(1-\hat{y}) - (1-y)\hat{y}) = \hat{y}-y\).</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 20 — L2-Logistic vs Soft-margin SVM</div>
+<div class="qbody">
+<div class="qq">Điểm khác biệt cốt lõi về toán học giữa L2-Regularized Logistic Regression và Soft-margin SVM tuyến tính?</div>
+<div class="qopt qwrong">A. Logistic không có tối đa hóa lề; SVM không tối ưu hàm khả năng</div>
+<div class="qopt qok">B. Hàm mất mát: Logistic dùng Cross-Entropy (Log-loss), SVM dùng Hinge Loss ✓</div>
+<div class="qopt qwrong">C. SVM xử phạt trọng số qua L1-norm; Logistic luôn dùng L2-norm</div>
+<div class="qopt qwrong">D. Hai thuật toán đồng nhất về hàm mục tiêu, chỉ khác thuật toán tối ưu</div>
+<div class="qexp"><strong>Giải thích:</strong> Cả hai dùng L2-regularization. Điểm khác nhau cốt lõi: hàm mất mát — Logistic dùng Log-loss (smooth, xử lý xác suất), SVM dùng Hinge Loss (sparse support vectors, margin-based).</div>
+</div>
+</div>
+
+<div class="s-title">Nhóm Naive Bayes (Câu 10–11)</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 10 — Spam Filter: Tính xác suất hậu nghiệm</div>
+<div class="qbody">
+<div class="qq">P(Spam)=0.2, P(Ham)=0.8. P("Khuyến_mãi"|Spam)=0.5, P("Khuyến_mãi"|Ham)=0.05. Email chứa đúng 1 từ "Khuyến_mãi". Xác suất là Spam (chuẩn hóa)?</div>
+<div class="qopt qwrong">A. 10.0%</div>
+<div class="qopt qwrong">B. 50.0%</div>
+<div class="qopt qok">C. 71.4% ✓</div>
+<div class="qopt qwrong">D. 90.9%</div>
+<div class="qexp"><strong>Giải thích:</strong> Spam score = 0.2×0.5 = 0.10. Ham score = 0.8×0.05 = 0.04. P(Spam|KM) = 0.10/(0.10+0.04) = 0.10/0.14 ≈ 71.4%.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 11 — Hệ quả của Conditional Independence</div>
+<div class="qbody">
+<div class="qq">Trong Multinomial Naive Bayes phân loại văn bản, giả định độc lập có điều kiện dẫn đến hệ quả tiêu cực phổ biến nhất trong thực tế?</div>
+<div class="qopt qwrong">A. Không thể áp dụng Laplace Smoothing do xung đột giả định</div>
+<div class="qopt qok">B. Xác suất hậu nghiệm thường bị lệch cực đoan (đẩy sát 0 hoặc 1), mô hình quá tự tin (overconfident) ✓</div>
+<div class="qopt qwrong">C. Mô hình không xử lý được từ vựng Out-of-Vocabulary</div>
+<div class="qopt qwrong">D. Mô hình chỉ hoạt động với văn bản có độ dài feature vector bằng nhau</div>
+<div class="qexp"><strong>Giải thích:</strong> Khi các đặc trưng không thực sự độc lập (thường xảy ra với từ vựng), tích nhiều xác suất tương quan đẩy posterior cực đoan về 0 hoặc 1 → overconfident, dù phân loại vẫn đúng hướng.</div>
+</div>
+</div>
+
+<div class="s-title">Nhóm K-Means &amp; KNN (Câu 14–18)</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 14 — Tính chất của hàm mục tiêu WCSS</div>
+<div class="qbody">
+<div class="qq">Hàm WCSS: \(J(C,\mu)=\sum_{k=1}^{K}\sum_{x\in C_k}\|x-\mu_k\|^2\). Tính chất hình học tổng quát của hàm này?</div>
+<div class="qopt qwrong">A. Lồi nghiêm ngặt (strictly convex), đảm bảo tìm được nghiệm tối ưu toàn cục</div>
+<div class="qopt qwrong">B. Tuyến tính, độ phức tạp chỉ tăng tỷ lệ thuận với số mẫu</div>
+<div class="qopt qok">C. Không lồi (non-convex), do không gian phân gán cụm rời rạc tổ hợp — chứa rất nhiều cực tiểu cục bộ ✓</div>
+<div class="qopt qwrong">D. Lồi theo C nhưng không lồi theo μ</div>
+<div class="qexp"><strong>Giải thích:</strong> J phụ thuộc cả C (rời rạc) lẫn μ (liên tục). Không gian C tổ hợp rời rạc → non-convex. Lloyd's algorithm chỉ đảm bảo cực tiểu cục bộ.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 15 — K-Medians với Manhattan distance</div>
+<div class="qbody">
+<div class="qq">Khi thay Euclidean bằng Manhattan (L1) trong K-Means, bước cập nhật tâm cụm PHẢI đổi thành gì?</div>
+<div class="qopt qwrong">A. Mode (giá trị xuất hiện nhiều nhất)</div>
+<div class="qopt qok">B. Trung vị (Median) theo từng chiều tọa độ ✓</div>
+<div class="qopt qwrong">C. Mean nhưng chuẩn hóa chia cho phương sai mẫu</div>
+<div class="qopt qwrong">D. Không cần thay đổi — Mean vẫn là tối ưu cho mọi khoảng cách Minkowski</div>
+<div class="qexp"><strong>Giải thích:</strong> \(\arg\min_c \sum|x-c|\) có nghiệm là Median. \(\arg\min_c \sum(x-c)^2\) có nghiệm là Mean. Đổi sang L1 → bước Update phải dùng Median.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 16 — Đảm bảo hội tụ của K-Means (Lloyd's)</div>
+<div class="qbody">
+<div class="qq">Thuật toán K-Means (Lloyd's) PHẢI dừng trong hữu hạn bước. Tính chất nào đảm bảo điều này?</div>
+<div class="qopt qok">A. Số tổ hợp phân gán hữu hạn của N điểm vào K tập hợp, kết hợp WCSS không bao giờ tăng sau mỗi bước ✓</div>
+<div class="qopt qwrong">B. Thuật toán áp dụng Gradient Descent với learning rate giảm dần về 0</div>
+<div class="qopt qwrong">C. Tâm cụm tự động nới rộng margin ra vô cực sau một số vòng lặp</div>
+<div class="qopt qwrong">D. Dữ liệu tự động bị giảm chiều theo PCA ở mỗi bước</div>
+<div class="qexp"><strong>Giải thích:</strong> Tổng số trạng thái phân gán ≤ K^N (hữu hạn). WCSS giảm đơn điệu sau mỗi bước. Tập hữu hạn + monotone → hội tụ trong hữu hạn bước.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 17 — Cấu trúc dữ liệu tối ưu cho KNN</div>
+<div class="qbody">
+<div class="qq">Để khắc phục chi phí \(\mathcal{O}(N\cdot D)\) cho mỗi truy vấn KNN, cấu trúc dữ liệu nào được dùng?</div>
+<div class="qopt qwrong">A. Stack và Linked List</div>
+<div class="qopt qwrong">B. Hash Map và B-Tree</div>
+<div class="qopt qwrong">C. Priority Queue chạy theo DFS</div>
+<div class="qopt qok">D. KD-Tree (K-Dimensional Tree) và Ball-Tree ✓</div>
+<div class="qexp"><strong>Giải thích:</strong> KD-Tree phân vùng không gian theo từng chiều, giảm tìm kiếm xuống \(\mathcal{O}(\log N)\) cho chiều thấp. Ball-Tree dùng hyperballs, hiệu quả hơn cho chiều cao.</div>
+</div>
+</div>
+
+<div class="qcard">
+<div class="qhdr">Câu 18 — KNN khi K = N</div>
+<div class="qbody">
+<div class="qq">Khi K trong KNN tăng lên bằng N (tổng số mẫu huấn luyện), hiện tượng gì chắc chắn xảy ra?</div>
+<div class="qopt qwrong">A. Mô hình dần về Low Bias - High Variance, biên phân quyết định phức tạp cực độ</div>
+<div class="qopt qok">B. Biên phân quyết định biến mất, mô hình luôn dự đoán theo lớp đa số (Majority Class) ✓</div>
+<div class="qopt qwrong">C. Khoảng cách tính toán bị tràn bộ nhớ do cộng dồn N lần</div>
+<div class="qopt qwrong">D. Training Error giảm dần về 0</div>
+<div class="qexp"><strong>Giải thích:</strong> K=N → toàn bộ tập huấn luyện là hàng xóm của mọi điểm → bỏ phiếu đa số trên toàn bộ tập → luôn chọn Majority Class. High Bias, Low Variance → Underfit. Training Error ≠ 0 nếu có lớp thiểu số.</div>
+</div>
+</div>
+
+</section>
+
+
+</main>
+
+<a href="#" id="back-top" title="Về đầu trang"><i class="fas fa-arrow-up"></i></a>
+
+<script>
+mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+</script>
+</body>
+</html>

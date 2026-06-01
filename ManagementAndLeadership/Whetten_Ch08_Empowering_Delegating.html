@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GK5009 – Whetten Ch08: Empowering and Delegating</title>
+  <style>
+    :root {
+      --primary: #145a32;
+      --secondary: #27ae60;
+      --accent: #f39c12;
+      --light: #f0f9f4;
+      --text: #1c1c1c;
+      --muted: #5a6e5a;
+      --border: #a9dfbf;
+      --red: #922b21;
+      --blue: #1a4c7e;
+      --danger: #e74c3c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 16px;
+      line-height: 1.85;
+      color: var(--text);
+      background: #fff;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 30px;
+    }
+    h1 { font-size: 2.2rem; color: var(--primary); border-bottom: 4px solid var(--accent); padding-bottom: 12px; margin-bottom: 8px; }
+    h2 { font-size: 1.6rem; color: var(--primary); border-left: 5px solid var(--secondary); padding-left: 14px; margin: 36px 0 16px; }
+    h3 { font-size: 1.25rem; color: var(--secondary); margin: 24px 0 10px; }
+    h4 { font-size: 1.05rem; color: var(--primary); margin: 18px 0 8px; font-style: italic; }
+    p { margin-bottom: 14px; }
+    ul, ol { margin: 10px 0 14px 24px; }
+    li { margin-bottom: 7px; }
+    strong { color: var(--primary); }
+    em { color: var(--muted); }
+
+    .header-block {
+      background: linear-gradient(135deg, #145a32, #27ae60);
+      color: white;
+      padding: 32px 36px;
+      border-radius: 10px;
+      margin-bottom: 36px;
+    }
+    .header-block h1 { color: white; border-bottom-color: rgba(255,255,255,0.4); }
+    .header-block .subtitle { font-size: 1.05rem; opacity: 0.9; margin-top: 8px; }
+    .header-block .meta { font-size: 0.9rem; opacity: 0.75; margin-top: 6px; }
+
+    .section-card {
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 26px 30px;
+      margin-bottom: 28px;
+    }
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary);
+      border-bottom: 2px solid var(--secondary);
+      padding-bottom: 8px;
+      margin-bottom: 18px;
+    }
+
+    .quote-box {
+      background: #fff;
+      border-left: 5px solid var(--secondary);
+      padding: 18px 22px;
+      margin: 18px 0;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      font-size: 1.05rem;
+    }
+    .quote-box cite { display: block; margin-top: 10px; font-style: normal; font-size: 0.9rem; color: var(--muted); }
+
+    /* Power vs Empowerment comparison */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 80px 1fr;
+      gap: 0;
+      margin: 20px 0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .compare-header {
+      padding: 14px 18px;
+      font-weight: bold;
+      font-size: 1.05rem;
+      text-align: center;
+    }
+    .power-header { background: #922b21; color: white; }
+    .vs-header { background: #2c3e50; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+    .emp-header { background: var(--primary); color: white; }
+    .compare-row-power { background: #fdecea; padding: 10px 18px; border-top: 1px solid #f5b7b1; font-size: 0.93rem; }
+    .compare-row-vs { background: #f2f3f4; padding: 10px 8px; border-top: 1px solid #d0d3d4; text-align: center; color: #555; font-size: 0.8rem; }
+    .compare-row-emp { background: #d5f5e3; padding: 10px 18px; border-top: 1px solid #a9dfbf; font-size: 0.93rem; }
+
+    /* 5 Dimensions of Empowerment */
+    .dimensions-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin: 18px 0;
+    }
+    .dim-card {
+      background: #fff;
+      border-top: 4px solid var(--secondary);
+      border-radius: 8px;
+      padding: 16px 12px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .dim-sense { font-size: 0.78rem; color: var(--muted); margin-bottom: 4px; }
+    .dim-name { font-weight: bold; color: var(--primary); font-size: 0.95rem; }
+    .dim-desc { font-size: 0.8rem; margin-top: 6px; color: #555; }
+
+    /* Dirty Dozen */
+    .dirty-dozen {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .dd-item {
+      background: #fdecea;
+      border: 1px solid #f5b7b1;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 0.88rem;
+      font-weight: bold;
+      color: var(--red);
+      text-align: center;
+    }
+
+    /* Developing Empowerment strategies */
+    .dev-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .dev-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .dev-card h4 {
+      font-style: normal;
+      color: var(--primary);
+      font-size: 0.95rem;
+      margin: 0 0 10px 0;
+      border-bottom: 2px solid var(--secondary);
+      padding-bottom: 6px;
+    }
+    .dev-card ul { margin: 0; padding: 0 0 0 16px; }
+    .dev-card li { font-size: 0.85rem; margin-bottom: 4px; }
+
+    /* SMART Goals */
+    .smart-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin: 18px 0;
+    }
+    .smart-cell {
+      background: #fff;
+      border: 2px solid var(--secondary);
+      border-radius: 8px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+    .smart-letter { font-size: 2.2rem; font-weight: bold; color: var(--secondary); line-height: 1; }
+    .smart-word { font-weight: bold; color: var(--primary); font-size: 0.88rem; margin-top: 4px; }
+    .smart-note { font-size: 0.78rem; color: #555; margin-top: 6px; }
+
+    /* Confidence factors */
+    .conf-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin: 18px 0;
+    }
+    .conf-card {
+      background: var(--light);
+      border-top: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+    .conf-num { font-size: 1.6rem; font-weight: bold; color: var(--accent); }
+    .conf-name { font-weight: bold; color: var(--primary); font-size: 0.9rem; }
+
+    /* Delegation guidelines numbered list */
+    .deleg-list { list-style: none; margin: 0; padding: 0; }
+    .deleg-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .deleg-list li:last-child { border-bottom: none; }
+    .deleg-num {
+      background: var(--primary);
+      color: white;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+    .deleg-content strong { color: var(--primary); display: block; }
+    .deleg-content { font-size: 0.93rem; }
+
+    /* Inhibitors */
+    .inhibitor-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .inhibitor-card {
+      background: #fef9e7;
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    .inhibitor-card .inh-icon { font-size: 2rem; }
+    .inhibitor-card .inh-name { font-weight: bold; color: var(--primary); margin-top: 8px; }
+    .inhibitor-card .inh-desc { font-size: 0.85rem; color: #555; margin-top: 6px; }
+
+    /* Delegation considerations */
+    .deleg-consider {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .dc-item {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+    .dc-item strong { display: block; color: var(--primary); margin-bottom: 4px; }
+
+    /* Advantages of delegation */
+    .adv-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .adv-card {
+      background: #d5f5e3;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+      font-size: 0.88rem;
+    }
+    .adv-card .adv-icon { font-size: 1.6rem; margin-bottom: 6px; }
+    .adv-card strong { color: var(--primary); display: block; }
+
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      font-size: 0.92rem;
+    }
+    .summary-table th { background: var(--primary); color: white; padding: 10px 14px; text-align: left; }
+    .summary-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .summary-table tr:nth-child(even) td { background: var(--light); }
+
+    .tip-box {
+      background: #d5f5e3;
+      border-left: 5px solid var(--secondary);
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 14px 0;
+    }
+    .pitfall-box {
+      background: #fdecea;
+      border-left: 5px solid var(--danger);
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 14px 0;
+    }
+    .tip-box strong, .pitfall-box strong { display: block; margin-bottom: 4px; }
+    .tip-box strong { color: #145a32; }
+    .pitfall-box strong { color: var(--red); }
+
+    /* Pull vs Push */
+    .pull-push {
+      display: grid;
+      grid-template-columns: 1fr 60px 1fr;
+      gap: 0;
+      margin: 20px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 0.95rem;
+    }
+    .pull-cell { background: #d5f5e3; padding: 20px; text-align: center; }
+    .push-cell { background: #fdecea; padding: 20px; text-align: center; }
+    .vs-cell { background: #2c3e50; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    .pull-cell strong { color: var(--primary); font-size: 1.1rem; display: block; margin-bottom: 8px; }
+    .push-cell strong { color: var(--red); font-size: 1.1rem; display: block; margin-bottom: 8px; }
+
+    footer {
+      margin-top: 60px;
+      border-top: 2px solid var(--border);
+      padding-top: 20px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header-block">
+  <h1>Whetten Ch08: Empowering and Delegating</h1>
+  <div class="subtitle">Trao quyền và Ủy quyền — Quản lý kỹ năng cá nhân</div>
+  <div class="meta">Whetten &amp; Cameron — Developing Management Skills, 7th Ed. (2007) — Chapter 8 &nbsp;|&nbsp; GK5009 Quản lý và Lãnh đạo</div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-card">
+  <div class="section-title">I. Tổng quan (Overview)</div>
+
+  <h3>Mục tiêu học tập (Learning Objectives)</h3>
+  <ol>
+    <li><strong>Phát triển và thực hiện kế hoạch trao quyền cho người khác</strong> — hiểu các chiến lược cụ thể để xây dựng sự trao quyền trong tổ chức</li>
+    <li><strong>Chủ động áp dụng các nguyên tắc trao quyền cá nhân</strong> — từ góc độ cá nhân: phát triển self-empowerment và tạo điều kiện cho người khác làm điều tương tự</li>
+    <li><strong>Vận dụng các nguyên tắc ủy quyền hiệu quả</strong> — biết khi nào nên ủy quyền, ủy quyền cho ai, và làm thế nào để ủy quyền đúng cách</li>
+  </ol>
+
+  <h3>Định nghĩa Cốt lõi — Pull vs. Push</h3>
+
+  <div class="pull-push">
+    <div class="pull-cell">
+      <strong>Empowerment (Pull)</strong>
+      Cung cấp sự tự do cho người khác để họ làm những gì <em>họ muốn làm</em>. Động lực xuất phát từ bên trong — người được trao quyền tự nguyện hành động vì họ thấy giá trị và ý nghĩa.
+    </div>
+    <div class="vs-cell">VS</div>
+    <div class="push-cell">
+      <strong>Controlling (Push)</strong>
+      Buộc người khác làm những gì <em>bạn muốn họ làm</em>. Sự phục tùng là do áp lực bên ngoài — quyền lực vị trí, sợ hãi, kiểm soát. Chỉ hoạt động khi có mặt người giám sát.
+    </div>
+  </div>
+
+  <p>Sự phân biệt Pull vs. Push là trái tim của chương. Empowerment không phải là từ bỏ quyền kiểm soát — đó là việc <strong>xây dựng năng lực và ý chí</strong> trong người khác để họ thực sự không cần kiểm soát nữa.</p>
+
+  <h3>Kết quả của Empowerment</h3>
+  <ul>
+    <li>Nhân viên được trao quyền <strong>năng suất hơn và hạnh phúc hơn</strong></li>
+    <li>Tổ chức duy trì được <strong>tính linh hoạt</strong> và khả năng thích nghi với thay đổi</li>
+    <li>Giảm phụ thuộc vào sự giám sát liên tục — nhà quản lý được giải phóng để tập trung vào công việc chiến lược</li>
+    <li>Tăng commitment và ownership — nhân viên cảm thấy công việc là "của mình" không phải "của sếp"</li>
+  </ul>
+
+  <h3>Nghịch lý của Empowerment</h3>
+  <div class="pitfall-box">
+    <strong>Điểm mâu thuẫn: Mặc dù empowerment được nhìn nhận tích cực, nhà quản lý thường cảm thấy bị đe dọa bởi sự mất quyền lực và trở nên cứng nhắc hơn.</strong>
+    Đây là rào cản tâm lý phổ biến nhất ngăn cản việc thực hiện empowerment. Nhà quản lý lo sợ: mất kiểm soát, mất địa vị, nhân viên trở nên "không cần thiết" quản lý. Thực tế ngược lại: nhà quản lý biết trao quyền hiệu quả được đánh giá cao hơn vì họ có thể đảm nhận trách nhiệm lớn hơn.
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-card">
+  <div class="section-title">II. Phân tích chuyên sâu (In-depth Analysis)</div>
+
+  <!-- Part A: Dirty Dozen -->
+  <h2>A. "Dirty Dozen" — 12 Hậu quả của Thiếu Empowerment</h2>
+  <p>Khi tổ chức thiếu empowerment (thường là trong khủng hoảng hoặc dưới áp lực), 12 triệu chứng này xuất hiện — được gọi là "Dirty Dozen of Stress":</p>
+
+  <div class="dirty-dozen">
+    <div class="dd-item">Centralization<br><span style="font-weight:normal; font-size:0.8rem;">Tập trung quyền quyết định</span></div>
+    <div class="dd-item">Threat-rigidity<br><span style="font-weight:normal; font-size:0.8rem;">Cứng nhắc khi bị đe dọa</span></div>
+    <div class="dd-item">Loss of Innovation<br><span style="font-weight:normal; font-size:0.8rem;">Mất đi sáng tạo</span></div>
+    <div class="dd-item">Decreasing Morale<br><span style="font-weight:normal; font-size:0.8rem;">Tinh thần giảm sút</span></div>
+    <div class="dd-item">Politicized Environment<br><span style="font-weight:normal; font-size:0.8rem;">Môi trường chính trị hóa</span></div>
+    <div class="dd-item">Loss of Trust<br><span style="font-weight:normal; font-size:0.8rem;">Mất lòng tin</span></div>
+    <div class="dd-item">Increased Conflict<br><span style="font-weight:normal; font-size:0.8rem;">Xung đột gia tăng</span></div>
+    <div class="dd-item">Restricted Communication<br><span style="font-weight:normal; font-size:0.8rem;">Hạn chế giao tiếp</span></div>
+    <div class="dd-item">Lack of Teamwork<br><span style="font-weight:normal; font-size:0.8rem;">Thiếu tinh thần đồng đội</span></div>
+    <div class="dd-item">Loss of Loyalty<br><span style="font-weight:normal; font-size:0.8rem;">Mất lòng trung thành</span></div>
+    <div class="dd-item">Scapegoat Leaders<br><span style="font-weight:normal; font-size:0.8rem;">Đổ lỗi cho lãnh đạo</span></div>
+    <div class="dd-item">Short-term Perspective<br><span style="font-weight:normal; font-size:0.8rem;">Tư duy ngắn hạn</span></div>
+  </div>
+
+  <p>Những triệu chứng này tạo ra vòng lặp tiêu cực: tổ chức gặp khủng hoảng → trở nên cứng nhắc và tập trung quyền → mất sáng tạo và lòng tin → hiệu suất giảm → khủng hoảng sâu hơn.</p>
+
+  <!-- Part B: Effects of Empowerment vs Lack -->
+  <h2>B. Tác động của Empowerment và Thiếu Empowerment</h2>
+
+  <table class="summary-table">
+    <tr>
+      <th>Empowerment (Có trao quyền)</th>
+      <th>Lack of Empowerment (Thiếu trao quyền)</th>
+    </tr>
+    <tr>
+      <td>Phát triển sự tự tin (self-confidence)</td>
+      <td>Powerlessness — cảm giác bất lực</td>
+    </tr>
+    <tr>
+      <td>Vượt qua cảm giác bất lực</td>
+      <td>Helplessness — không thể tự giải quyết vấn đề</td>
+    </tr>
+    <tr>
+      <td>Khơi dậy hành động (energizes to act)</td>
+      <td>Alienation — xa cách, tách biệt khỏi tổ chức</td>
+    </tr>
+    <tr>
+      <td>Tạo Intrinsic Motivation bền vững</td>
+      <td>Phụ thuộc vào kiểm soát bên ngoài</td>
+    </tr>
+  </table>
+
+  <!-- Part C: Power vs Empowerment -->
+  <h2>C. Sự Khác biệt Căn bản — Power vs. Empowerment</h2>
+
+  <div class="compare-grid">
+    <div class="compare-header power-header">Power (Quyền lực truyền thống)</div>
+    <div class="compare-header vs-header">↔</div>
+    <div class="compare-header emp-header">Empowerment (Trao quyền)</div>
+
+    <div class="compare-row-power"><strong>Nguồn gốc bên ngoài</strong> (External Source) — quyền lực được trao bởi chức vụ, cấp bậc, hệ thống</div>
+    <div class="compare-row-vs">vs</div>
+    <div class="compare-row-emp"><strong>Nguồn gốc bên trong</strong> (Internal Source) — xuất phát từ năng lực, kiến thức, và tính cách cá nhân</div>
+
+    <div class="compare-row-power"><strong>Ít người có</strong> — quyền lực tập trung ở đỉnh kim tự tháp</div>
+    <div class="compare-row-vs">vs</div>
+    <div class="compare-row-emp"><strong>Mọi người đều có thể có</strong> — không giới hạn số lượng</div>
+
+    <div class="compare-row-power"><strong>Mục đích:</strong> Khiến người khác làm điều <em>bạn</em> muốn</div>
+    <div class="compare-row-vs">vs</div>
+    <div class="compare-row-emp"><strong>Mục đích:</strong> Giúp người khác làm điều <em>họ</em> muốn</div>
+
+    <div class="compare-row-power"><strong>Zero-sum:</strong> Để có thêm, phải lấy bớt từ người khác</div>
+    <div class="compare-row-vs">vs</div>
+    <div class="compare-row-emp"><strong>Non-zero-sum:</strong> Trao quyền cho người khác không làm giảm quyền của mình</div>
+
+    <div class="compare-row-power"><strong>Dẫn đến:</strong> Cạnh tranh (competition) — ai cũng muốn tranh giành quyền lực</div>
+    <div class="compare-row-vs">vs</div>
+    <div class="compare-row-emp"><strong>Dẫn đến:</strong> Hợp tác (cooperation) — tất cả cùng có lợi</div>
+  </div>
+
+  <!-- Part D: 5 Dimensions of Empowerment -->
+  <h2>D. Năm Chiều kích của Empowerment</h2>
+  <p>Thomas &amp; Velthouse (1990) xác định 5 chiều kích tâm lý cốt lõi của sự trao quyền — một cá nhân cảm thấy được trao quyền khi trải nghiệm cả 5:</p>
+
+  <div class="dimensions-grid">
+    <div class="dim-card">
+      <div class="dim-sense">a sense of</div>
+      <div class="dim-name">Self-efficacy</div>
+      <div class="dim-desc">Cảm giác năng lực — "Tôi có thể làm được điều này"</div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-sense">a sense of</div>
+      <div class="dim-name">Self-determination</div>
+      <div class="dim-desc">Cảm giác lựa chọn — "Tôi quyết định cách làm"</div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-sense">a sense of</div>
+      <div class="dim-name">Personal Consequences</div>
+      <div class="dim-desc">Cảm giác tác động — "Việc tôi làm thực sự có ảnh hưởng"</div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-sense">a sense of</div>
+      <div class="dim-name">Meaning</div>
+      <div class="dim-desc">Cảm giác giá trị — "Công việc này quan trọng với tôi"</div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-sense">a sense of</div>
+      <div class="dim-name">Trust</div>
+      <div class="dim-desc">Cảm giác an toàn — "Tôi tin tưởng vào người quản lý và hệ thống"</div>
+    </div>
+  </div>
+
+  <p><strong>Ứng dụng:</strong> Khi muốn đánh giá mức độ empowerment của nhân viên, nhà quản lý có thể tự hỏi: "Nhân viên của tôi có cảm thấy đủ 5 chiều kích này không?" Nếu thiếu bất kỳ một chiều nào, cần có biện pháp can thiệp cụ thể.</p>
+
+  <!-- Part E: Developing Empowerment Strategies -->
+  <h2>E. Các Chiến lược Phát triển Empowerment</h2>
+  <p>Để xây dựng empowerment một cách có hệ thống, nhà quản lý cần triển khai đồng thời nhiều chiến lược:</p>
+
+  <div class="dev-grid">
+    <div class="dev-card">
+      <h4>1. Articulate a Clear Vision &amp; Goals</h4>
+      <ul>
+        <li>Tạo ra hình ảnh rõ ràng về tương lai mong muốn</li>
+        <li>Dùng ngôn ngữ hình ảnh và cảm xúc để mô tả tầm nhìn</li>
+        <li>Xác định các hành động dẫn đến tầm nhìn</li>
+        <li>Thiết lập SMART Goals</li>
+        <li>Liên kết tầm nhìn với giá trị cá nhân của nhân viên</li>
+      </ul>
+    </div>
+    <div class="dev-card">
+      <h4>2. Foster Personal Mastery Experiences</h4>
+      <ul>
+        <li>Chia nhỏ nhiệm vụ lớn và giao từng phần một</li>
+        <li>Giao nhiệm vụ đơn giản trước, khó sau</li>
+        <li>Làm nổi bật và ăn mừng những chiến thắng nhỏ</li>
+        <li>Mở rộng trách nhiệm dần dần</li>
+        <li>Trao quyền giải quyết vấn đề ngày càng phức tạp hơn</li>
+      </ul>
+    </div>
+    <div class="dev-card">
+      <h4>3. Model Successful Behaviors</h4>
+      <ul>
+        <li>Tự mình làm mẫu hoàn thành nhiệm vụ thành công</li>
+        <li>Chỉ ra những người khác đã thành công</li>
+        <li>Tạo điều kiện tương tác với các role models</li>
+        <li>Tìm người huấn luyện (coach) phù hợp</li>
+        <li>Thiết lập mối quan hệ mentoring</li>
+      </ul>
+    </div>
+    <div class="dev-card">
+      <h4>4. Provide Support</h4>
+      <ul>
+        <li>Khen ngợi, động viên, bày tỏ sự tán thành và trấn an</li>
+        <li>Gửi thư/ghi chú khen ngợi cho gia đình hoặc đồng nghiệp</li>
+        <li>Thúc đẩy các hoạt động xã hội không chính thức để xây dựng sự gắn kết</li>
+        <li>Giám sát ít chặt hơn và cho thêm thời gian (time-slack)</li>
+        <li>Tổ chức lễ công nhận thành tích</li>
+      </ul>
+    </div>
+    <div class="dev-card">
+      <h4>5. Arouse Positive Emotions</h4>
+      <ul>
+        <li>Thúc đẩy các hoạt động xây dựng tình bạn</li>
+        <li>Gửi thông điệp vui vẻ định kỳ</li>
+        <li>Dùng superlatives khi cho phản hồi ("xuất sắc", "ấn tượng")</li>
+        <li>Làm nổi bật sự tương đồng giữa giá trị cá nhân và mục tiêu tổ chức</li>
+        <li>Làm rõ tác động cuối cùng với khách hàng</li>
+        <li>Đưa yếu tố giải trí vào công việc</li>
+      </ul>
+    </div>
+    <div class="dev-card">
+      <h4>6. Provide Information</h4>
+      <ul>
+        <li>Cung cấp tất cả thông tin liên quan đến nhiệm vụ</li>
+        <li>Liên tục cung cấp thông tin kỹ thuật cập nhật</li>
+        <li>Chuyển thông tin xuyên chức năng (cross-functional)</li>
+        <li>Tạo quyền tiếp cận người có thẩm quyền cao hơn</li>
+        <li>Cung cấp thông tin từ nguồn gốc, không lọc</li>
+        <li>Làm rõ tác động của hành động lên khách hàng</li>
+      </ul>
+    </div>
+    <div class="dev-card">
+      <h4>7. Provide Resources</h4>
+      <ul>
+        <li>Cung cấp trải nghiệm đào tạo và phát triển</li>
+        <li>Cung cấp hỗ trợ kỹ thuật cần thiết</li>
+        <li>Đảm bảo đủ thời gian, không gian và thiết bị</li>
+        <li>Đảm bảo quyền tiếp cận mạng lưới thông tin</li>
+        <li>Trao thêm quyền quyết định sử dụng nguồn lực</li>
+      </ul>
+    </div>
+    <div class="dev-card">
+      <h4>8. Connect to Outcomes</h4>
+      <ul>
+        <li>Cho cơ hội tương tác trực tiếp với người nhận dịch vụ</li>
+        <li>Cấp thẩm quyền giải quyết vấn đề ngay tại chỗ</li>
+        <li>Cung cấp phản hồi tức thời, không lọc, trực tiếp</li>
+        <li>Tạo task identity (công việc có đầu có đuôi)</li>
+        <li>Làm rõ và đo lường tác động</li>
+      </ul>
+    </div>
+    <div class="dev-card">
+      <h4>9. Create Confidence</h4>
+      <ul>
+        <li>Thể hiện sự đáng tin cậy và nhất quán (Reliability)</li>
+        <li>Thể hiện sự công bằng và bình đẳng (Fairness)</li>
+        <li>Thể hiện sự quan tâm cá nhân (Caring)</li>
+        <li>Thể hiện sự cởi mở và trung thực (Openness)</li>
+        <li>Thể hiện năng lực và chuyên môn (Competence)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Part F: SMART Goals -->
+  <h2>F. SMART Goals trong Empowerment</h2>
+  <p>Khi trao quyền, việc thiết lập mục tiêu rõ ràng là bước then chốt (Chiến lược 1). Mục tiêu SMART cung cấp hướng đi rõ ràng mà không cần giám sát chi tiết:</p>
+
+  <div class="smart-grid">
+    <div class="smart-cell">
+      <div class="smart-letter">S</div>
+      <div class="smart-word">Specific</div>
+      <div class="smart-note">Cụ thể, không mơ hồ</div>
+    </div>
+    <div class="smart-cell">
+      <div class="smart-letter">M</div>
+      <div class="smart-word">Measurable</div>
+      <div class="smart-note">Có thể đo lường được</div>
+    </div>
+    <div class="smart-cell">
+      <div class="smart-letter">A</div>
+      <div class="smart-word">Aligned</div>
+      <div class="smart-note">Gắn kết với chiến lược tổ chức</div>
+    </div>
+    <div class="smart-cell">
+      <div class="smart-letter">R</div>
+      <div class="smart-word">Realistic</div>
+      <div class="smart-note">Thực tế, có thể đạt được</div>
+    </div>
+    <div class="smart-cell">
+      <div class="smart-letter">T</div>
+      <div class="smart-word">Time-bound</div>
+      <div class="smart-note">Có thời hạn rõ ràng</div>
+    </div>
+  </div>
+
+  <p><em>Lưu ý: Whetten dùng "Aligned" thay vì "Aggressive" (như Carpenter Ch06). Điều này nhấn mạnh khía cạnh alignment — mục tiêu cá nhân phải gắn kết với mục tiêu tổ chức, đây là điều kiện quan trọng để empowerment thực sự hoạt động.</em></p>
+
+  <!-- Part G: 5 Factors for Confidence -->
+  <h2>G. Năm Yếu tố Tạo Sự Tin tưởng (Create Confidence)</h2>
+  <p>Để nhân viên cảm thấy đủ an toàn (chiều kích Trust) để hành động tự chủ, nhà quản lý cần xây dựng 5 yếu tố tạo niềm tin:</p>
+
+  <div class="conf-grid">
+    <div class="conf-card">
+      <div class="conf-num">1</div>
+      <div class="conf-name">Reliability</div>
+      <p style="font-size:0.82rem; margin-top:6px;">Đáng tin cậy và nhất quán — làm đúng những gì đã hứa, hành vi dự đoán được</p>
+    </div>
+    <div class="conf-card">
+      <div class="conf-num">2</div>
+      <div class="conf-name">Fairness</div>
+      <p style="font-size:0.82rem; margin-top:6px;">Công bằng và bình đẳng — áp dụng tiêu chuẩn nhất quán cho tất cả</p>
+    </div>
+    <div class="conf-card">
+      <div class="conf-num">3</div>
+      <div class="conf-name">Caring</div>
+      <p style="font-size:0.82rem; margin-top:6px;">Quan tâm và lo lắng cá nhân — thực sự muốn điều tốt nhất cho nhân viên</p>
+    </div>
+    <div class="conf-card">
+      <div class="conf-num">4</div>
+      <div class="conf-name">Openness</div>
+      <p style="font-size:0.82rem; margin-top:6px;">Cởi mở và trung thực — chia sẻ thông tin, không che giấu sự thật</p>
+    </div>
+    <div class="conf-card">
+      <div class="conf-num">5</div>
+      <div class="conf-name">Competence</div>
+      <p style="font-size:0.82rem; margin-top:6px;">Năng lực và chuyên môn — nhân viên tin rằng lãnh đạo biết mình đang làm gì</p>
+    </div>
+  </div>
+
+  <!-- Part H: Inhibitors to Empowerment -->
+  <h2>H. Rào cản đối với Empowerment (Inhibitors)</h2>
+
+  <div class="inhibitor-grid">
+    <div class="inhibitor-card">
+      <div class="inh-icon">🚧</div>
+      <div class="inh-name">Attitudes about Subordinates</div>
+      <div class="inh-desc">Quan điểm tiêu cực về cấp dưới — tin rằng nhân viên không đủ năng lực, không đáng tin, hoặc không muốn gánh thêm trách nhiệm. Thường bắt nguồn từ Theory X mindset (McGregor).</div>
+    </div>
+    <div class="inhibitor-card">
+      <div class="inh-icon">😰</div>
+      <div class="inh-name">Personal Insecurities</div>
+      <div class="inh-desc">Bất an cá nhân — lo sợ mất đi sự không thể thiếu, lo rằng nhân viên sẽ vượt qua mình hoặc thay thế mình. Nhà quản lý cảm thấy giá trị của họ gắn với sự kiểm soát độc quyền.</div>
+    </div>
+    <div class="inhibitor-card">
+      <div class="inh-icon">🔒</div>
+      <div class="inh-name">Need for Control</div>
+      <div class="inh-desc">Nhu cầu kiểm soát — không thoải mái khi không biết mọi việc đang diễn ra như thế nào. Micromanagement là biểu hiện cực đoan của rào cản này — không thể buông bỏ dù đã ủy quyền.</div>
+    </div>
+  </div>
+
+  <!-- Part I: Delegation -->
+  <h2>I. Ủy quyền (Delegation) — Công cụ Thực thi Empowerment</h2>
+
+  <p>Delegation là hành động cụ thể và thực tiễn của empowerment — chuyển giao công việc, quyền hạn, và trách nhiệm từ nhà quản lý sang nhân viên. Empowerment là triết lý; Delegation là kỹ thuật triển khai.</p>
+
+  <h3>7 Lợi ích của Delegation</h3>
+  <div class="adv-grid">
+    <div class="adv-card">
+      <div class="adv-icon">⏰</div>
+      <strong>Tăng Thời gian Tự quyết</strong>
+      Nhà quản lý được giải phóng khỏi công việc tác nghiệp để tập trung vào chiến lược và lãnh đạo
+    </div>
+    <div class="adv-card">
+      <div class="adv-icon">📚</div>
+      <strong>Phát triển Kiến thức Nhân viên</strong>
+      Nhân viên học qua thực hành khi được giao trách nhiệm thực sự
+    </div>
+    <div class="adv-card">
+      <div class="adv-icon">🤝</div>
+      <strong>Thể hiện Sự Tin tưởng</strong>
+      Delegation gửi tín hiệu rõ ràng: "Tôi tin bạn đủ năng lực để làm điều này"
+    </div>
+    <div class="adv-card">
+      <div class="adv-icon">💪</div>
+      <strong>Tăng Commitment</strong>
+      Nhân viên gắn bó hơn với công việc khi họ có quyền làm chủ kết quả
+    </div>
+    <div class="adv-card">
+      <div class="adv-icon">🎯</div>
+      <strong>Cải thiện Ra Quyết định</strong>
+      Người gần nhất với thực tế thường có thông tin tốt nhất để quyết định
+    </div>
+    <div class="adv-card">
+      <div class="adv-icon">⚡</div>
+      <strong>Tăng Hiệu quả Quyết định</strong>
+      Quyết định được đưa ra nhanh hơn khi không cần leo qua nhiều tầng phê duyệt
+    </div>
+    <div class="adv-card">
+      <div class="adv-icon">🔗</div>
+      <strong>Thúc đẩy Tích hợp Công việc</strong>
+      Nhà quản lý điều phối tốt hơn khi không bị sa vào chi tiết vận hành
+    </div>
+    <div class="adv-card" style="background:#fff3cd; border-color:#ffc107;">
+      <div class="adv-icon">⚠️</div>
+      <strong>Lưu ý quan trọng</strong>
+      Delegation không thể thành công nếu thiếu empowerment — nhân viên cần đủ năng lực, thông tin, và thẩm quyền để thực hiện nhiệm vụ được giao
+    </div>
+  </div>
+
+  <!-- Part J: When to Delegate -->
+  <h2>J. Khi nào Nên Ủy quyền — 5 Điều kiện Cần Xem xét</h2>
+
+  <div class="deleg-consider">
+    <div class="dc-item">
+      <strong>Qualifications</strong>
+      Người được giao có đủ trình độ để hoàn thành nhiệm vụ không?
+    </div>
+    <div class="dc-item">
+      <strong>Commitment</strong>
+      Nhiệm vụ có yêu cầu sự cam kết và ownership thực sự của nhân viên không?
+    </div>
+    <div class="dc-item">
+      <strong>Capability Expansion</strong>
+      Việc ủy quyền có giúp phát triển năng lực của nhân viên không?
+    </div>
+    <div class="dc-item">
+      <strong>Shared Values</strong>
+      Nhân viên có đủ hiểu biết về giá trị và ưu tiên của tổ chức để quyết định độc lập không?
+    </div>
+    <div class="dc-item">
+      <strong>Sufficient Time</strong>
+      Có đủ thời gian để giải thích nhiệm vụ, trả lời câu hỏi, và nhận kết quả không?
+    </div>
+  </div>
+
+  <!-- Part K: 10 Guidelines for Effective Delegation -->
+  <h2>K. 10 Nguyên tắc Ủy quyền Hiệu quả</h2>
+
+  <ul class="deleg-list">
+    <li>
+      <div class="deleg-num">1</div>
+      <div class="deleg-content">
+        <strong>Begin with the end in mind (Bắt đầu bằng kết quả cuối cùng)</strong>
+        Xác định rõ kết quả mong muốn trước khi ủy quyền — không chỉ mô tả nhiệm vụ mà còn mô tả thành công trông như thế nào. Nhân viên cần biết đang hướng đến đâu, không chỉ cần làm gì.
+      </div>
+    </li>
+    <li>
+      <div class="deleg-num">2</div>
+      <div class="deleg-content">
+        <strong>Delegate completely (Ủy quyền hoàn chỉnh)</strong>
+        Khi ủy quyền, hãy ủy quyền cả trách nhiệm lẫn quyền hạn. Ủy quyền nửa vời (giao trách nhiệm nhưng giữ lại quyền quyết định) là nguyên nhân thất bại phổ biến nhất.
+      </div>
+    </li>
+    <li>
+      <div class="deleg-num">3</div>
+      <div class="deleg-content">
+        <strong>Allow participation (Cho phép tham gia)</strong>
+        Để nhân viên tham gia vào quyết định về cách thực hiện nhiệm vụ — họ có thể có ý tưởng tốt hơn, và sự tham gia tăng commitment.
+      </div>
+    </li>
+    <li>
+      <div class="deleg-num">4</div>
+      <div class="deleg-content">
+        <strong>Establish parity between authority and responsibility (Cân bằng giữa thẩm quyền và trách nhiệm)</strong>
+        Không thể yêu cầu nhân viên chịu trách nhiệm nếu không trao cho họ đủ thẩm quyền. Đây là nguyên tắc cơ bản của thiết kế tổ chức: authority phải đi kèm responsibility.
+      </div>
+    </li>
+    <li>
+      <div class="deleg-num">5</div>
+      <div class="deleg-content">
+        <strong>Work with the organizational structure (Phù hợp với cơ cấu tổ chức)</strong>
+        Ủy quyền qua kênh chính thức, không nhảy cấp. Việc ủy quyền trực tiếp cho nhân viên cấp 3 bỏ qua cấp 2 tạo ra hỗn loạn và undermines authority của cấp 2.
+      </div>
+    </li>
+    <li>
+      <div class="deleg-num">6</div>
+      <div class="deleg-content">
+        <strong>Provide adequate support (Cung cấp hỗ trợ đầy đủ)</strong>
+        Đảm bảo nhân viên có đủ thông tin, nguồn lực, và hỗ trợ để thành công — sau đó đứng ra ngoài, không can thiệp liên tục.
+      </div>
+    </li>
+    <li>
+      <div class="deleg-num">7</div>
+      <div class="deleg-content">
+        <strong>Focus accountability on results (Tập trung trách nhiệm vào kết quả)</strong>
+        Đánh giá nhân viên dựa trên kết quả đầu ra, không phải quá trình. Trao quyền tự do về cách làm nhưng rõ ràng về kết quả cần đạt.
+      </div>
+    </li>
+    <li>
+      <div class="deleg-num">8</div>
+      <div class="deleg-content">
+        <strong>Delegate consistently (Ủy quyền nhất quán)</strong>
+        Không ủy quyền khi thuận lợi rồi lấy lại khi khó khăn. Sự nhất quán xây dựng niềm tin — nhân viên cần biết quyền hạn của họ là ổn định.
+      </div>
+    </li>
+    <li>
+      <div class="deleg-num">9</div>
+      <div class="deleg-content">
+        <strong>Avoid upward delegation (Tránh ủy quyền ngược chiều)</strong>
+        Khi nhân viên gặp vấn đề và mang về cho quản lý để giải quyết thay — đây là "upward delegation." Đừng chấp nhận. Thay vào đó: "Bạn nghĩ nên làm gì? Hãy đề xuất và chúng ta thảo luận." Quản lý không được trở thành người giải quyết mọi vấn đề.
+      </div>
+    </li>
+    <li>
+      <div class="deleg-num">10</div>
+      <div class="deleg-content">
+        <strong>Clarify consequences (Làm rõ hậu quả)</strong>
+        Nhân viên cần hiểu: nếu thành công, điều gì xảy ra? Nếu thất bại, điều gì xảy ra? Sự rõ ràng về hậu quả thúc đẩy hành động có trách nhiệm.
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-card">
+  <div class="section-title">III. Mô hình &amp; Công thức (Models &amp; Formulas)</div>
+
+  <h2>Mô hình Phát triển Empowerment — 9 Chiến lược</h2>
+  <table class="summary-table">
+    <tr>
+      <th>#</th>
+      <th>Chiến lược</th>
+      <th>5 Chiều kích được củng cố</th>
+      <th>Công cụ chính</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Articulate a Clear Vision &amp; Goals</td>
+      <td>Meaning, Self-determination</td>
+      <td>SMART Goals, storytelling, value alignment</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Foster Personal Mastery Experiences</td>
+      <td>Self-efficacy, Personal Consequences</td>
+      <td>Task decomposition, small wins, incremental responsibility</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Model Successful Behaviors</td>
+      <td>Self-efficacy</td>
+      <td>Role models, coaching, mentoring</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Provide Support</td>
+      <td>Trust, Self-efficacy</td>
+      <td>Praise, recognition, reduced supervision</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Arouse Positive Emotions</td>
+      <td>Meaning, Trust</td>
+      <td>Team building, celebration, impact stories</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Provide Information</td>
+      <td>Self-determination, Personal Consequences</td>
+      <td>Transparent communication, access to data</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Provide Resources</td>
+      <td>Self-efficacy, Self-determination</td>
+      <td>Training, tools, budget, time</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>Connect to Outcomes</td>
+      <td>Meaning, Personal Consequences</td>
+      <td>Customer contact, feedback loops, task identity</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>Create Confidence</td>
+      <td>Trust</td>
+      <td>5 yếu tố: Reliability, Fairness, Caring, Openness, Competence</td>
+    </tr>
+  </table>
+
+  <h2>Power vs. Empowerment — Bảng So sánh Đầy đủ</h2>
+  <table class="summary-table">
+    <tr>
+      <th>Chiều kích</th>
+      <th>Power (Truyền thống)</th>
+      <th>Empowerment</th>
+    </tr>
+    <tr>
+      <td>Nguồn gốc</td>
+      <td>Bên ngoài (External) — vị trí, cấp bậc</td>
+      <td>Bên trong (Internal) — năng lực, kiến thức</td>
+    </tr>
+    <tr>
+      <td>Phân phối</td>
+      <td>Ít người có (scarce)</td>
+      <td>Mọi người có thể có (abundant)</td>
+    </tr>
+    <tr>
+      <td>Mục đích</td>
+      <td>Người khác làm điều TÔI muốn</td>
+      <td>Người khác làm điều HỌ muốn</td>
+    </tr>
+    <tr>
+      <td>Tính chất</td>
+      <td>Zero-sum — ai được người khác mất</td>
+      <td>Non-zero-sum — cùng có lợi</td>
+    </tr>
+    <tr>
+      <td>Hệ quả</td>
+      <td>Cạnh tranh (Competition)</td>
+      <td>Hợp tác (Cooperation)</td>
+    </tr>
+    <tr>
+      <td>Tính bền vững</td>
+      <td>Chỉ hiệu quả khi có sự hiện diện</td>
+      <td>Hoạt động ngay cả khi lãnh đạo vắng mặt</td>
+    </tr>
+  </table>
+
+  <h2>10 Nguyên tắc Ủy quyền — Checklist</h2>
+  <table class="summary-table">
+    <tr>
+      <th>#</th>
+      <th>Nguyên tắc</th>
+      <th>Sai lầm Ngược lại</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Begin with the end in mind</td>
+      <td>Mô tả nhiệm vụ nhưng không rõ kết quả mong đợi</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Delegate completely</td>
+      <td>Giao trách nhiệm nhưng giữ lại quyền quyết định</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Allow participation</td>
+      <td>Ra lệnh một chiều về cách thực hiện</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Establish authority-responsibility parity</td>
+      <td>Yêu cầu trách nhiệm mà không trao thẩm quyền</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Work with organizational structure</td>
+      <td>Bỏ qua cấp trung gian, gây ra hỗn loạn</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Provide adequate support</td>
+      <td>Giao việc rồi bỏ mặc không hỗ trợ</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Focus accountability on results</td>
+      <td>Kiểm soát từng bước nhỏ trong quy trình</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>Delegate consistently</td>
+      <td>Lấy lại quyền hạn khi có khủng hoảng</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>Avoid upward delegation</td>
+      <td>Giải quyết vấn đề thay cho nhân viên khi họ hỏi</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>Clarify consequences</td>
+      <td>Không rõ ràng về khen thưởng hay hậu quả</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-card">
+  <div class="section-title">IV. Ví dụ thực tiễn (Practical Examples)</div>
+
+  <h2>Upward Delegation — Ví dụ thực tế</h2>
+  <p>Một nhân viên gặp tình huống: khách hàng phàn nàn về chất lượng sản phẩm. Anh ta mang vấn đề lên cho quản lý: "Sếp ơi, khách hàng X phàn nàn, sếp xử lý thế nào?" — Đây là upward delegation điển hình.</p>
+  <p><strong>Phản hồi đúng của quản lý (tránh upward delegation):</strong> "Bạn đã gặp tình huống này trước chưa? Bạn có ý tưởng gì không? Đề xuất 2-3 phương án và ta thảo luận." Qua đó, nhân viên học cách giải quyết vấn đề thay vì phụ thuộc vào quản lý.</p>
+
+  <h2>Small Wins — Ví dụ từ Phil Jackson (Tiếp nối Whetten Ch06)</h2>
+  <p>Khi cầu thủ trẻ Kobe Bryant gia nhập Los Angeles Lakers, Jackson không giao ngay vai trò người ghi điểm chính. Ông bắt đầu với những nhiệm vụ nhỏ: chơi phòng thủ tốt, tạo cơ hội cho đồng đội. Từng bước nhỏ → Kobe tích lũy self-efficacy → cuối cùng trở thành một trong những cầu thủ vĩ đại nhất lịch sử NBA. Đây là Personal Mastery Experiences trong thực tế.</p>
+
+  <h2>Trao quyền trong Ngành Dịch vụ — Ví dụ Nordstrom</h2>
+  <p>Nordstrom (chuỗi bán lẻ thời trang cao cấp Mỹ) trao quyền tuyệt đối cho nhân viên bán hàng: mỗi nhân viên có thể quyết định chính sách hoàn trả, điều chỉnh giá, và giải quyết khiếu nại ngay tại chỗ — không cần xin phép quản lý. Kết quả: Nordstrom có dịch vụ khách hàng nổi tiếng nhất ngành bán lẻ Mỹ. Đây là ví dụ hoàn hảo của "Connect to Outcomes + Provide Authority to Resolve Problems on the Spot."</p>
+
+  <h2>Ví dụ Dirty Dozen trong Khủng hoảng COVID-19</h2>
+  <p>Nhiều tổ chức khi đối mặt với bất ổn của đại dịch đã rơi vào vòng lặp Dirty Dozen: Centralization (CEO quyết định mọi thứ) → Restricted Communication (chỉ thị từ trên xuống, không có phản hồi) → Loss of Innovation (mọi người sợ đề xuất ý tưởng mới) → Decreasing Morale (nhân viên cảm thấy không có tiếng nói) → Scapegoat Leaders (khi mọi thứ sai, lãnh đạo trung gian bị đổ lỗi). Những tổ chức vượt qua khủng hoảng tốt là những tổ chức đã xây dựng culture of empowerment trước khi khủng hoảng xảy ra.</p>
+
+  <h2>Authority-Responsibility Parity — Ví dụ Thực tế</h2>
+  <p>Một trưởng phòng marketing được yêu cầu tổ chức sự kiện nhưng không có ngân sách riêng, không được ký hợp đồng với vendor, và mọi quyết định phải qua CFO. Đây là ví dụ vi phạm nghiêm trọng Nguyên tắc 4 — authority và responsibility không tương xứng. Trưởng phòng chịu trách nhiệm về kết quả nhưng không có công cụ để thực hiện. Hệ quả: stress cao, kết quả kém, và cuối cùng là xin thôi việc.</p>
+</div>
+
+<!-- ============================================================ -->
+<div class="section-card">
+  <div class="section-title">V. Ghi chú Ôn tập &amp; Bẫy Nhận thức (Study Notes &amp; Common Pitfalls)</div>
+
+  <h2>Tóm tắt Nhanh — Các Khái niệm Cốt lõi</h2>
+  <table class="summary-table">
+    <tr>
+      <th>Khái niệm</th>
+      <th>Định nghĩa ngắn gọn</th>
+      <th>Từ khóa nhớ</th>
+    </tr>
+    <tr>
+      <td>Empowerment (Pull)</td>
+      <td>Tự do cho người làm điều HỌ muốn; Internal Source; Non-zero-sum; dẫn đến Cooperation</td>
+      <td>Pull ↔ Push; Internal; Everyone can have it</td>
+    </tr>
+    <tr>
+      <td>Dirty Dozen</td>
+      <td>12 hậu quả của thiếu empowerment: Centralization, Threat-rigidity, Loss of Innovation…</td>
+      <td>12 triệu chứng stress tổ chức</td>
+    </tr>
+    <tr>
+      <td>5 Chiều kích Empowerment</td>
+      <td>Self-efficacy, Self-determination, Personal Consequences, Meaning, Trust</td>
+      <td>Sense of: Competence, Choice, Impact, Value, Security</td>
+    </tr>
+    <tr>
+      <td>9 Chiến lược Phát triển</td>
+      <td>Vision + Mastery + Model + Support + Emotions + Information + Resources + Outcomes + Confidence</td>
+      <td>9 strategies — nhớ theo nhóm 3: Vision/Mastery/Model; Support/Emotions/Info; Resources/Outcomes/Confidence</td>
+    </tr>
+    <tr>
+      <td>5 Yếu tố Tạo Tin tưởng</td>
+      <td>Reliability, Fairness, Caring, Openness, Competence</td>
+      <td>RFCOC — Reliable, Fair, Care, Open, Competent</td>
+    </tr>
+    <tr>
+      <td>3 Rào cản Empowerment</td>
+      <td>Attitudes about subordinates, Personal insecurities, Need for control</td>
+      <td>Theory X mindset; Fear of loss; Micromanagement</td>
+    </tr>
+    <tr>
+      <td>7 Lợi ích Delegation</td>
+      <td>Discretionary time + Employee development + Trust + Commitment + Better decisions + Efficiency + Integration</td>
+      <td>Quản lý được giải phóng; nhân viên phát triển</td>
+    </tr>
+    <tr>
+      <td>10 Nguyên tắc Delegation</td>
+      <td>End in mind → Complete → Participate → Parity → Structure → Support → Results → Consistent → No Upward → Consequences</td>
+      <td>Số 9 — "Avoid upward delegation" hay bị hỏi thi</td>
+    </tr>
+    <tr>
+      <td>SMART (Whetten)</td>
+      <td>Specific + Measurable + <strong>Aligned</strong> + Realistic + Time-bound</td>
+      <td>A = Aligned (khác Carpenter: Aggressive)</td>
+    </tr>
+  </table>
+
+  <h2>Bẫy Nhận thức Phổ biến</h2>
+
+  <div class="pitfall-box">
+    <strong>Bẫy 1: "Trao quyền = Mất kiểm soát"</strong>
+    Sai — Empowerment không phải là không quản lý. Đó là quản lý theo cách khác: thiết lập kỳ vọng rõ ràng, trao đủ nguồn lực và thẩm quyền, sau đó giám sát kết quả thay vì từng bước quá trình. Sự kiểm soát được chuyển từ Process Control sang Outcome Control.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Bẫy 2: Nhầm Delegation với Abdication (từ bỏ trách nhiệm)</strong>
+    Delegation không có nghĩa là giao việc xong rồi biến mất. Nhà quản lý vẫn chịu trách nhiệm cuối cùng về kết quả — chỉ là cách thức thực hiện được chuyển giao. Cần duy trì hỗ trợ, phản hồi, và điều chỉnh khi cần.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Bẫy 3: Trao quyền mà không trao đủ thẩm quyền</strong>
+    Vi phạm Nguyên tắc 4 (Authority-Responsibility Parity) là sai lầm phổ biến và tàn phá nhất. Nhân viên bị trói tay nhưng vẫn bị đánh giá về kết quả — đây là công thức của stress, bất mãn, và burnout.
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Bẫy 4: Chấp nhận Upward Delegation</strong>
+    Khi quản lý giải quyết vấn đề thay cho nhân viên, họ vô tình dạy nhân viên rằng "khi gặp khó, hãy đưa cho sếp." Điều này làm tăng phụ thuộc và giảm khả năng giải quyết vấn đề độc lập. Phản hồi đúng: "Bạn nghĩ sao? Hãy đề xuất."
+  </div>
+
+  <div class="pitfall-box">
+    <strong>Bẫy 5: Nhầm lẫn Power và Empowerment</strong>
+    Một câu hỏi thi phổ biến: phân biệt Power và Empowerment. Key points: Power là External/Zero-sum/Leads to Competition; Empowerment là Internal/Non-zero-sum/Leads to Cooperation. Trao quyền cho người khác KHÔNG làm giảm quyền của mình.
+  </div>
+
+  <h2>Mẹo Ôn thi</h2>
+
+  <div class="tip-box">
+    <strong>Khi được hỏi về 5 chiều kích của Empowerment:</strong>
+    Nhớ 5 cụm từ "sense of": Self-efficacy (competence), Self-determination (choice), Personal Consequences (impact), Meaning (value), Trust (security). Liên kết mỗi chiều kích với chiến lược phát triển tương ứng.
+  </div>
+
+  <div class="tip-box">
+    <strong>Khi được hỏi về sự khác biệt Power vs. Empowerment:</strong>
+    Trả lời theo 5 chiều kích trong bảng so sánh: Nguồn gốc (External vs Internal), Phân phối (Scarce vs Abundant), Mục đích (Others do what I want vs what THEY want), Tính chất (Zero-sum vs Non-zero-sum), Hệ quả (Competition vs Cooperation).
+  </div>
+
+  <div class="tip-box">
+    <strong>Khi được hỏi về 10 nguyên tắc delegation:</strong>
+    Đặc biệt chú ý Nguyên tắc 4 (Parity) và Nguyên tắc 9 (Avoid Upward Delegation) — đây là 2 nguyên tắc hay bị bỏ qua nhất trong thực tế và hay xuất hiện trong câu hỏi tình huống.
+  </div>
+
+  <div class="tip-box">
+    <strong>SMART — phiên bản Whetten vs. Carpenter:</strong>
+    Whetten: S-M-<strong>A</strong>ligned-R-T &nbsp;|&nbsp; Carpenter: S-M-<strong>A</strong>ggressive-R-T. Cùng viết tắt nhưng "A" khác nhau. Trong bài thi GK5009, cần xác định đang được hỏi theo tác giả nào.
+  </div>
+
+  <div class="tip-box">
+    <strong>Câu hỏi liên kết Ch06 và Ch08 (Whetten):</strong>
+    Empowerment (Ch08) và Motivation (Ch06) liên quan chặt chẽ: Empowerment tạo ra Intrinsic Outcomes → tăng Intrinsic Motivation → Satisfaction lâu dài. Delegation hiệu quả = thiết lập Goals rõ ràng (Ch06) + trao quyền thực hiện (Ch08).
+  </div>
+</div>
+
+<footer>
+  <p>Tài liệu học tập GK5009 — Quản lý và Lãnh đạo</p>
+  <p>Nguồn: Whetten &amp; Cameron, <em>Developing Management Skills</em>, 7th Ed. (2007) — Chapter 8: Empowering and Delegating</p>
+  <p>Whetten group: Ch06 ✓ Ch08 ✓ &nbsp;|&nbsp; Carpenter group: Ch01 ✓ Ch04 ✓ Ch05 ✓ Ch06 ✓</p>
+</footer>
+
+</body>
+</html>

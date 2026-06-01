@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carpenter Ch04 – Developing Mission, Vision, and Values</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #2c3e50; line-height: 1.75; font-size: 15px; }
+
+  header { background: linear-gradient(135deg, #6c3483, #9b59b6); color: white; padding: 40px 48px; }
+  header .badge { display: inline-block; background: rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 16px; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+  header h1 { font-size: 2.2em; font-weight: 700; margin-bottom: 8px; }
+  header p.subtitle { font-size: 1.05em; opacity: 0.88; }
+
+  nav { background: #6c3483; display: flex; gap: 0; overflow-x: auto; }
+  nav a { color: rgba(255,255,255,0.8); text-decoration: none; padding: 12px 20px; font-size: 13px; white-space: nowrap; transition: all 0.2s; border-bottom: 3px solid transparent; }
+  nav a:hover { background: rgba(255,255,255,0.1); color: white; border-bottom-color: #f39c12; }
+
+  main { max-width: 1100px; margin: 32px auto; padding: 0 24px 60px; }
+
+  section { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 32px; overflow: hidden; }
+  .section-header { padding: 20px 32px; display: flex; align-items: center; gap: 14px; }
+  .section-header .icon { font-size: 1.6em; }
+  .section-header h2 { font-size: 1.25em; font-weight: 700; }
+  .section-body { padding: 8px 32px 32px; }
+
+  .s1 .section-header { background: #f5eef8; border-left: 5px solid #8e44ad; }
+  .s2 .section-header { background: #e9f7ef; border-left: 5px solid #27ae60; }
+  .s3 .section-header { background: #fef9e7; border-left: 5px solid #f39c12; }
+  .s4 .section-header { background: #eaf4fb; border-left: 5px solid #2980b9; }
+  .s5 .section-header { background: #fdedec; border-left: 5px solid #e74c3c; }
+
+  h3 { font-size: 1.08em; font-weight: 700; color: #6c3483; margin: 24px 0 10px; padding-bottom: 5px; border-bottom: 2px solid #f5eef8; }
+  h4 { font-size: 0.98em; font-weight: 700; color: #2c3e50; margin: 16px 0 8px; }
+  p { margin-bottom: 10px; }
+  ul, ol { margin: 8px 0 12px 20px; }
+  li { margin-bottom: 6px; }
+  strong { color: #6c3483; }
+  em { color: #7f8c8d; font-style: normal; font-size: 0.92em; }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th { background: #6c3483; color: white; padding: 10px 14px; text-align: left; font-size: 13px; }
+  td { padding: 9px 14px; border-bottom: 1px solid #ecf0f1; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f9fa; }
+  tr:hover td { background: #f5eef8; }
+
+  .definition-box { background: linear-gradient(135deg, #f5eef8, #e8daef); border-left: 5px solid #8e44ad; border-radius: 8px; padding: 16px 20px; margin: 16px 0; }
+  .definition-box .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #7f8c8d; margin-bottom: 6px; font-weight: 600; }
+  .definition-box .content { font-size: 1.05em; color: #6c3483; font-weight: 500; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 16px 0; }
+  .card { border-radius: 10px; padding: 16px 18px; }
+  .card .card-title { font-weight: 700; font-size: 0.95em; margin-bottom: 6px; }
+  .card .card-body { font-size: 0.88em; line-height: 1.6; }
+  .card-purple { background: #f5eef8; border-left: 4px solid #8e44ad; }
+  .card-blue { background: #eaf4fb; border-left: 4px solid #2980b9; }
+  .card-green { background: #e9f7ef; border-left: 4px solid #27ae60; }
+  .card-orange { background: #fef9e7; border-left: 4px solid #f39c12; }
+  .card-red { background: #fdedec; border-left: 4px solid #e74c3c; }
+  .card-teal { background: #e8f8f5; border-left: 4px solid #1abc9c; }
+
+  .compare-mv { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .mv-box { border-radius: 10px; overflow: hidden; }
+  .mv-head { padding: 14px 18px; font-weight: 700; font-size: 1em; color: white; }
+  .mv-body { padding: 14px 18px; font-size: 0.88em; }
+  .mv-body li { margin-bottom: 7px; }
+  .mission-box .mv-head { background: #c0392b; }
+  .mission-box .mv-body { background: #fdedec; }
+  .vision-box .mv-head { background: #2980b9; }
+  .vision-box .mv-body { background: #eaf4fb; }
+
+  .pyramid { text-align: center; margin: 20px auto; max-width: 500px; }
+  .pyr-level { margin: 2px auto; padding: 14px 20px; color: white; font-weight: 700; font-size: 0.9em; }
+  .pyr1 { background: #e74c3c; width: 40%; border-radius: 6px; }
+  .pyr2 { background: #f39c12; width: 65%; border-radius: 6px; }
+  .pyr3 { background: #27ae60; width: 100%; border-radius: 6px; }
+  .pyr-label { font-size: 0.78em; color: #666; margin: 4px 0; font-style: italic; }
+
+  .roles-flow { display: flex; gap: 0; margin: 16px 0; }
+  .role-step { flex: 1; background: #2980b9; color: white; padding: 14px 16px; font-size: 0.88em; font-weight: 700; text-align: center; position: relative; }
+  .role-step:not(:last-child)::after { content: '→'; position: absolute; right: -12px; top: 50%; transform: translateY(-50%); font-size: 1.2em; color: #2980b9; z-index: 1; }
+  .role-step:nth-child(1) { background: #2980b9; border-radius: 8px 0 0 8px; }
+  .role-step:nth-child(2) { background: #8e44ad; }
+  .role-step:nth-child(3) { background: #c0392b; border-radius: 0 8px 8px 0; }
+
+  .control-steps { display: flex; gap: 12px; margin: 16px 0; }
+  .ctrl-step { flex: 1; background: #2980b9; color: white; border-radius: 10px; padding: 16px; text-align: center; font-size: 0.88em; font-weight: 700; }
+  .ctrl-step .step-num { font-size: 1.5em; display: block; margin-bottom: 6px; }
+
+  .creativity-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; margin: 16px 0; }
+  .cr-cell { border-radius: 10px; padding: 16px 18px; }
+  .cr-cell .cr-title { font-weight: 700; font-size: 0.95em; margin-bottom: 4px; }
+  .cr-cell .cr-goal { font-size: 0.82em; color: #666; margin-bottom: 8px; font-style: italic; }
+  .cr-cell .cr-features { font-size: 0.82em; line-height: 1.5; }
+  .investment { background: #eaf4fb; border: 2px solid #2980b9; }
+  .improvement { background: #e9f7ef; border: 2px solid #27ae60; }
+  .imagination { background: #fef9e7; border: 2px solid #f39c12; }
+  .incubation { background: #f5eef8; border: 2px solid #8e44ad; }
+
+  .scamper-table td:first-child { font-weight: 700; color: #6c3483; width: 120px; }
+  .scamper-table td:nth-child(2) { color: #555; width: 40%; }
+
+  .stakeholder-matrix { margin: 16px 0; border: 2px solid #f39c12; border-radius: 10px; overflow: hidden; }
+  .sm-header { background: #f39c12; color: white; padding: 12px 16px; font-weight: 700; text-align: center; font-size: 0.95em; }
+  .sm-body { display: grid; grid-template-columns: auto 1fr 1fr 1fr 1fr; font-size: 0.82em; }
+  .sm-body .sm-cell { padding: 8px 10px; border: 1px solid #f0f0f0; text-align: center; }
+  .sm-body .sm-label { background: #fef9e7; font-weight: 700; color: #7d6608; }
+  .sm-body .sm-corner { background: #f39c12; color: white; font-weight: 700; }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 12px; margin: 16px 0; }
+  .stat-card { background: #fdedec; border-radius: 10px; padding: 16px; text-align: center; border-top: 4px solid #e74c3c; }
+  .stat-card .stat-num { font-size: 2em; font-weight: 700; color: #e74c3c; }
+  .stat-card .stat-desc { font-size: 0.82em; color: #555; margin-top: 4px; }
+
+  .mission-samples { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 16px 0; }
+  .mission-sample { display: flex; gap: 14px; align-items: flex-start; padding: 12px 16px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #6c3483; }
+  .mission-sample .org-name { font-weight: 700; font-size: 0.88em; color: #6c3483; min-width: 140px; }
+  .mission-sample .org-mission { font-size: 0.88em; color: #333; font-style: italic; }
+
+  .personal-steps { list-style: none; margin: 16px 0; }
+  .personal-steps li { display: flex; gap: 14px; margin-bottom: 12px; align-items: flex-start; padding: 12px 16px; background: #f5eef8; border-radius: 8px; }
+  .personal-steps li .step-n { background: #6c3483; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 0.82em; font-weight: 700; flex-shrink: 0; }
+  .personal-steps li .step-content strong { display: block; font-size: 0.93em; margin-bottom: 3px; }
+  .personal-steps li .step-content span { font-size: 0.85em; color: #555; }
+
+  .trap-list { counter-reset: trap; list-style: none; margin: 0; }
+  .trap-list li { counter-increment: trap; display: flex; gap: 12px; margin-bottom: 12px; padding: 12px 16px; background: #fff8f8; border-radius: 8px; border-left: 4px solid #e74c3c; }
+  .trap-list li::before { content: counter(trap); background: #e74c3c; color: white; border-radius: 50%; width: 24px; height: 24px; font-size: 0.8em; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+  .review-list { list-style: none; margin: 0; }
+  .review-list li { padding: 10px 14px; margin-bottom: 8px; background: #e9f7ef; border-radius: 8px; padding-left: 36px; position: relative; font-size: 0.93em; }
+  .review-list li::before { content: "?"; position: absolute; left: 12px; color: #27ae60; font-weight: 700; }
+
+  .highlight { background: #fffde7; border-left: 4px solid #f39c12; padding: 12px 16px; border-radius: 6px; margin: 12px 0; font-size: 0.93em; }
+
+  .starbucks-values { list-style: none; margin: 12px 0; }
+  .starbucks-values li { display: flex; gap: 12px; margin-bottom: 8px; padding: 10px 14px; background: #e8f5e9; border-radius: 7px; border-left: 3px solid #4caf50; font-size: 0.88em; }
+  .starbucks-values li .val-num { background: #4caf50; color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.75em; font-weight: 700; flex-shrink: 0; }
+
+  .ngt-steps { list-style: none; counter-reset: ngt; margin: 12px 0; }
+  .ngt-steps li { counter-increment: ngt; display: flex; gap: 10px; margin-bottom: 6px; padding: 8px 12px; background: #eaf4fb; border-radius: 6px; font-size: 0.85em; }
+  .ngt-steps li::before { content: counter(ngt); background: #2980b9; color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.75em; font-weight: 700; flex-shrink: 0; }
+
+  @media (max-width: 700px) {
+    .compare-mv { grid-template-columns: 1fr; }
+    .creativity-grid { grid-template-columns: 1fr; }
+    .control-steps { flex-direction: column; }
+    header h1 { font-size: 1.5em; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">Carpenter – Principles of Management 2.0 | Ch. 4</div>
+  <h1>Developing Mission, Vision, and Values</h1>
+  <p class="subtitle">Mission vs. Vision · Planning Pyramid · Creativity & SCAMPER · Stakeholder Analysis · Controlling Process</p>
+</header>
+
+<nav>
+  <a href="#overview">1. Tổng quan</a>
+  <a href="#analysis">2. Phân tích chuyên sâu</a>
+  <a href="#models">3. Mô hình & Công cụ</a>
+  <a href="#examples">4. Ví dụ thực tiễn</a>
+  <a href="#notes">5. Ôn tập & Bẫy nhận thức</a>
+</nav>
+
+<main>
+
+<!-- ============================================================ SECTION 1 -->
+<section class="s1" id="overview">
+  <div class="section-header">
+    <span class="icon">🎯</span>
+    <div>
+      <h2>Phần 1 – Tổng quan chương</h2>
+      <em>Mission, Vision, Values — Why they matter</em>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>1.1 Tầm quan trọng của Mission, Vision, và Values</h3>
+    <div class="highlight">
+      <strong>Số liệu thực tế (Bain &amp; Company):</strong> 63% trong hơn 1,000 doanh nghiệp được khảo sát toàn cầu báo cáo đang sử dụng <em>mission statements</em> và <em>value statements</em> như một công cụ quản lý. Các công ty có mission và vision được truyền đạt rõ ràng, được hiểu rộng rãi và chia sẻ tập thể đã được chứng minh là có hiệu suất tốt hơn những công ty không có.
+    </div>
+
+    <h3>1.2 Vị trí trong P-O-L-C Framework</h3>
+    <p>Mission và Vision là thành phần đầu tiên của phần <strong>Planning</strong> trong P-O-L-C, nhưng ảnh hưởng đến toàn bộ bốn chức năng quản lý:</p>
+    <div class="card-grid">
+      <div class="card card-blue">
+        <div class="card-title">Planning — Mission &amp; Vision nằm ở đây</div>
+        <div class="card-body">1. Vision &amp; Mission → 2. Strategizing → 3. Goals &amp; Objectives. Ba yếu tố trong Planning là một chuỗi nhân quả từ trên xuống.</div>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">Organizing — Bị định hình bởi Mission</div>
+        <div class="card-body">Mission ảnh hưởng đến cơ cấu tổ chức (Organization Design), văn hóa (Culture), và mạng lưới xã hội (Social Networks).</div>
+      </div>
+      <div class="card card-orange">
+        <div class="card-title">Leading — Dẫn dắt bởi Vision</div>
+        <div class="card-body">Leading involves influencing others toward the attainment of organizational objectives. Vision truyền cảm hứng và định hướng lãnh đạo.</div>
+      </div>
+      <div class="card card-purple">
+        <div class="card-title">Controlling — Đo bằng Mission/Vision</div>
+        <div class="card-body">3 bước: (1) Establish standards based on mission, (2) Compare actual performance, (3) Take corrective action.</div>
+      </div>
+    </div>
+
+    <h3>1.3 Mục tiêu học tập chương 4</h3>
+    <ul>
+      <li>Hiểu vai trò của mission, vision, values trong quá trình hoạch định</li>
+      <li>Hiểu cách mission &amp; vision phù hợp với khung P-O-L-C</li>
+      <li>Thấy vai trò của <strong>creativity</strong> và <strong>passion</strong> trong việc xây dựng vision</li>
+      <li>Tích hợp lợi ích <strong>stakeholders</strong> vào mission và vision</li>
+      <li>Phát triển bản tuyên bố mission và vision</li>
+      <li>Áp dụng mission, vision, values vào sự nghiệp cá nhân</li>
+    </ul>
+
+  </div>
+</section>
+
+<!-- ============================================================ SECTION 2 -->
+<section class="s2" id="analysis">
+  <div class="section-header">
+    <span class="icon">🔬</span>
+    <div>
+      <h2>Phần 2 – Phân tích chuyên sâu</h2>
+      <em>Mission vs. Vision · Planning Pyramid · Roles · Creativity · Passion · Stakeholders</em>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>2.1 Mission Statement vs. Vision Statement — Sự khác biệt</h3>
+    <div class="compare-mv">
+      <div class="mv-box mission-box">
+        <div class="mv-head">Mission Statement — Sứ mệnh</div>
+        <div class="mv-body">
+          <ul>
+            <li>Truyền đạt <strong>lý do tồn tại</strong> của tổ chức và cách phục vụ các stakeholder chính</li>
+            <li>Thường tích hợp tóm tắt <strong>values (giá trị)</strong> của tổ chức</li>
+            <li>Có xu hướng <strong>dài hơn</strong> vision statement</li>
+            <li>Hướng về <strong>hiện tại</strong> — "Chúng ta là ai?" và "Chúng ta làm gì?"</li>
+            <li>Trả lời câu hỏi "WHO ARE WE?" cho stakeholders</li>
+          </ul>
+        </div>
+      </div>
+      <div class="mv-box vision-box">
+        <div class="mv-head">Vision Statement — Tầm nhìn</div>
+        <div class="mv-body">
+          <ul>
+            <li>Tuyên bố <strong>hướng về tương lai</strong> về mục đích và khát vọng của tổ chức</li>
+            <li>Đề cập đến <strong>tổ chức muốn trở thành gì</strong> trong tương lai</li>
+            <li>Có xu hướng <strong>ngắn gọn</strong> hơn mission statement</li>
+            <li>Highlights values và aspirations — truyền cảm hứng</li>
+            <li>Tốt hơn khi có "vision statements are relatively rare, and good visions are even rarer"</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <thead><tr><th>Tiêu chí</th><th>Mission</th><th>Vision</th></tr></thead>
+      <tbody>
+        <tr><td>Câu hỏi trả lời</td><td>"Chúng ta là ai và tại sao chúng ta tồn tại?"</td><td>"Chúng ta muốn trở thành gì?"</td></tr>
+        <tr><td>Thời gian</td><td>Hiện tại — grounded in past &amp; present</td><td>Tương lai — future-oriented declaration</td></tr>
+        <tr><td>Độ dài</td><td>Dài hơn — bao gồm values</td><td>Ngắn, súc tích, dễ nhớ</td></tr>
+        <tr><td>Nội dung</td><td>Reason for being + stakeholders + values</td><td>Purpose + aspirations</td></tr>
+        <tr><td>Ví dụ</td><td>Starbucks: "To inspire and nurture the human spirit – one person, one cup and one neighborhood at a time."</td><td>Google: "To develop a perfect search engine."</td></tr>
+      </tbody>
+    </table>
+
+    <h3>2.2 Kim tự tháp Hoạch định — Planning Pyramid</h3>
+    <p>Carpenter sử dụng mô hình kim tự tháp ngược để mô tả mối quan hệ giữa ba yếu tố trong Planning:</p>
+
+    <div class="pyramid">
+      <div class="pyr1">Mission &amp; Vision</div>
+      <div class="pyr-label">↓ "The strategy is how the firm aims to realize its mission and vision"</div>
+      <div class="pyr2">Strategy</div>
+      <div class="pyr-label">↓ "Goals and objectives are indicators of how well the strategy is succeeding"</div>
+      <div class="pyr3">Goals &amp; Objectives</div>
+    </div>
+
+    <p>Logic của tháp: Mission &amp; Vision xác định <em>lý do tồn tại</em> → Strategy là <em>cách</em> thực hiện → Goals &amp; Objectives là <em>thước đo</em> chiến lược có thành công không. Ba yếu tố có <strong>vòng phản hồi song chiều</strong> — kết quả Goals có thể dẫn đến điều chỉnh Strategy, và thay đổi môi trường có thể yêu cầu cập nhật lại Mission.</p>
+
+    <h3>2.3 Ba vai trò của Mission và Vision</h3>
+    <div class="control-steps">
+      <div class="ctrl-step">
+        <span class="step-num">1</span>
+        Communicate the purpose of the organization to <strong>stakeholders</strong>
+      </div>
+      <div class="ctrl-step" style="background: #8e44ad;">
+        <span class="step-num">2</span>
+        <strong>Inform</strong> strategy development
+      </div>
+      <div class="ctrl-step" style="background: #c0392b;">
+        <span class="step-num">3</span>
+        Develop <strong>measurable goals &amp; objectives</strong> to gauge strategy success
+      </div>
+    </div>
+
+    <h3>2.4 Mission &amp; Vision trong từng chức năng P-O-L-C</h3>
+    <h4>Mission &amp; Vision → Planning</h4>
+    <p>Mission &amp; Vision là điểm khởi đầu của toàn bộ quá trình hoạch định. Không có mission rõ ràng, tổ chức không biết mình đang hướng tới đâu và strategy không có nền tảng để xây dựng.</p>
+
+    <h4>Mission &amp; Vision → Organizing</h4>
+    <p>Mission ảnh hưởng đến cách tổ chức thiết kế cơ cấu (Organization Design). Ví dụ: Mission nhấn mạnh innovation → cơ cấu flat, cross-functional. Mission nhấn mạnh efficiency → cơ cấu phân cấp, chuyên biệt hóa cao. Sơ đồ slide: Mission → Vision → Organizing (như một mũi tên hướng về phía trước).</p>
+
+    <h4>Mission &amp; Vision → Leading</h4>
+    <p><strong>Leading involves influencing others toward the attainment of organizational objectives.</strong> Vision đặc biệt quan trọng cho Leading — một tầm nhìn thuyết phục tạo ra "passion" trong nhân viên, khiến họ tự nguyện làm việc hướng tới mục tiêu chung mà không cần liên tục giám sát.</p>
+
+    <h4>Mission &amp; Vision → Controlling</h4>
+    <p>Controlling gồm 3 bước — cả ba đều bắt nguồn từ Mission &amp; Vision:</p>
+    <div class="control-steps">
+      <div class="ctrl-step" style="background: #1abc9c; font-size: 0.82em;">
+        <span class="step-num">1</span>
+        Establish <strong>performance standards</strong> (based on mission)
+      </div>
+      <div class="ctrl-step" style="background: #e67e22; font-size: 0.82em;">
+        <span class="step-num">2</span>
+        Compare <strong>actual performance</strong> against standards
+      </div>
+      <div class="ctrl-step" style="background: #c0392b; font-size: 0.82em;">
+        <span class="step-num">3</span>
+        Take <strong>corrective action</strong> when necessary
+      </div>
+    </div>
+
+    <h3>2.5 Values — Giá trị cốt lõi</h3>
+    <p><strong>Values</strong> (giá trị) là niềm tin và nguyên tắc nền tảng hướng dẫn hành vi của tổ chức. Values thường được tích hợp vào Mission Statement. Ví dụ Starbucks — 6 guiding principles vừa là mission vừa là values:</p>
+    <ul class="starbucks-values">
+      <li><span class="val-num">1</span>Provide a great work environment and treat each other with respect and dignity.</li>
+      <li><span class="val-num">2</span>Embrace diversity as an essential component in the way we do business.</li>
+      <li><span class="val-num">3</span>Apply the highest standards of excellence to the purchasing, roasting, and fresh delivery of our coffee.</li>
+      <li><span class="val-num">4</span>Develop enthusiastically satisfied customers all of the time.</li>
+      <li><span class="val-num">5</span>Contribute positively to our communities and our environment.</li>
+      <li><span class="val-num">6</span>Recognize that profitability is essential to our future success.</li>
+    </ul>
+    <p>Nhận xét: Starbucks cân bằng <em>người (nhân viên, khách hàng, cộng đồng)</em>, <em>môi trường</em>, và <em>lợi nhuận</em> — Triple Bottom Line trong action.</p>
+
+    <h3>2.6 Creativity — Sáng tạo và vai trò trong Vision</h3>
+    <div class="card-grid">
+      <div class="card card-purple">
+        <div class="card-title">Creativity — Sáng tạo</div>
+        <div class="card-body">Creativity is the power or ability to invent. Tư duy sáng tạo cần thiết để phát triển vision mang tính đột phá thay vì chỉ mô tả hiện trạng.</div>
+      </div>
+      <div class="card card-orange">
+        <div class="card-title">Passion — Đam mê</div>
+        <div class="card-body">Passion is an intense emotion compelling action. Passion không chỉ cần cho người sáng lập mà cần được lan toa đến toàn bộ nhân viên thông qua vision rõ ràng và truyền cảm hứng.</div>
+      </div>
+    </div>
+
+    <div class="highlight">
+      <strong>Công thức Carpenter:</strong> Creativity + Passion → Mission &amp; Vision mạnh mẽ. Một Vision không có passion chỉ là tuyên bố chữ trên giấy. Một Vision không có creativity chỉ mô tả những điều đã biết.
+    </div>
+
+    <h4>Dữ liệu về Employee Disengagement — Vấn đề passion trong tổ chức</h4>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-num">75–80%</div>
+        <div class="stat-desc">nhân viên ở trạng thái "disengaged" hoặc "actively disengaged"</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">20%</div>
+        <div class="stat-desc">cảm thấy rất đam mê (passionate) với công việc của họ</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">&lt;15%</div>
+        <div class="stat-desc">đồng ý rằng họ cảm thấy năng lượng mạnh mẽ (strongly energized) từ công việc</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">31%</div>
+        <div class="stat-desc">tin rằng employer của họ truyền cảm hứng để họ làm tốt nhất</div>
+      </div>
+    </div>
+    <p><em>Nguồn: Employee Engagement Report 2008</em></p>
+    <p>Số liệu này giải thích tại sao một Vision mạnh mẽ — được truyền đạt và chia sẻ thực sự — tạo ra lợi thế cạnh tranh đáng kể so với đối thủ.</p>
+
+    <h3>2.7 Stakeholder Analysis — Phân tích các bên liên quan</h3>
+    <p><strong>Stakeholders</strong> là tất cả các cá nhân, nhóm, và tổ chức có quyền lợi liên quan đến hoạt động của tổ chức. Bao gồm: nhân viên, khách hàng, nhà cung cấp, cổ đông, cộng đồng, chính phủ, đối thủ cạnh tranh, NGOs, và media.</p>
+    <p>Ví dụ từ slide: <strong>AFL-CIO</strong> (American Federation of Labor and Congress of Industrial Organizations) — liên đoàn gồm hơn 11 triệu công nhân vào năm 2012 — là một powerful stakeholder với influence cực lớn.</p>
+
+    <h4>3 Bước Xác định Stakeholders</h4>
+    <div class="card-grid">
+      <div class="card card-blue">
+        <div class="card-title">Bước 1</div>
+        <div class="card-body">Determining Influences on Mission, Vision, and Strategy Formulation — Xác định ai đang và sẽ ảnh hưởng đến việc xây dựng mission, vision, và chiến lược.</div>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">Bước 2</div>
+        <div class="card-body">Determining the Effects of Key Decisions on the Stakeholder — Xác định các quyết định quan trọng sẽ tác động đến stakeholders như thế nào.</div>
+      </div>
+      <div class="card card-orange">
+        <div class="card-title">Bước 3</div>
+        <div class="card-body">Determining Stakeholders' Power and Influence over Decisions — Đánh giá mức độ quyền lực và ảnh hưởng của từng stakeholder lên các quyết định của tổ chức.</div>
+      </div>
+    </div>
+
+    <h3>2.8 Phát triển Personal Vision &amp; Mission — 5 bước</h3>
+    <p>Carpenter áp dụng khung mission/vision không chỉ cho tổ chức mà còn cho cá nhân — "Survivor's Guide" cho sự nghiệp:</p>
+    <ul class="personal-steps">
+      <li>
+        <div class="step-n">1</div>
+        <div class="step-content">
+          <strong>Identify Past Successes — Nhận diện thành công trong quá khứ</strong>
+          <span>Ghi lại 4–5 trải nghiệm thành công trong cuộc sống (cá nhân &amp; nghề nghiệp). Tìm chủ đề chung — đây là manh mối về năng lực và passion của bạn.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-n">2</div>
+        <div class="step-content">
+          <strong>Identify Core Values — Xác định giá trị cốt lõi</strong>
+          <span>Những điều bạn tin tưởng sâu sắc? Integrity, creativity, impact, freedom, ...? Values định hướng hành vi khi không ai nhìn.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-n">3</div>
+        <div class="step-content">
+          <strong>Identify Contributions — Xác định đóng góp</strong>
+          <span>Bạn muốn tạo ra sự khác biệt như thế nào? Cho cá nhân, gia đình, tổ chức, cộng đồng, hay xã hội?</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-n">4</div>
+        <div class="step-content">
+          <strong>Identify Goals — Xác định mục tiêu</strong>
+          <span>Mục tiêu cá nhân và nghề nghiệp cụ thể — cả ngắn hạn (1–2 năm) lẫn dài hạn (5–10 năm).</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-n">5</div>
+        <div class="step-content">
+          <strong>Write Mission and Vision Statements — Viết tuyên bố</strong>
+          <span>Tổng hợp bốn bước trên thành hai tuyên bố: Mission (tôi là ai và tôi làm gì hôm nay) và Vision (tôi muốn trở thành ai và đạt được gì).</span>
+        </div>
+      </li>
+    </ul>
+
+  </div>
+</section>
+
+<!-- ============================================================ SECTION 3 -->
+<section class="s3" id="models">
+  <div class="section-header">
+    <span class="icon">🏗️</span>
+    <div>
+      <h2>Phần 3 – Mô hình & Công cụ</h2>
+      <em>Four Creativity Types · SCAMPER · Nominal Group Technique · Stakeholder Mapping</em>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>3.1 Four Creativity Types — Bốn kiểu sáng tạo</h3>
+    <p>Carpenter trình bày ma trận 2×2 phân loại bốn loại sáng tạo theo hai trục: <strong>Control ↔ Flexibility</strong> (Kiểm soát ↔ Linh hoạt) và <strong>External ↔ Internal</strong> (Hướng ngoại ↔ Hướng nội):</p>
+
+    <div class="creativity-grid">
+      <div class="cr-cell investment">
+        <div class="cr-title">Investment Creativity</div>
+        <div class="cr-goal">Goal: First Mover — Đi đầu thị trường</div>
+        <div class="cr-features">
+          <strong>Vị trí:</strong> Control (cao) + External (hướng ngoại)<br><br>
+          <strong>Đặc điểm:</strong> Vision về việc trở thành người đầu tiên hoặc nhanh nhất; cạnh tranh cao độ; tấn công trực tiếp vào vấn đề; ưu tiên tốc độ thị trường.
+        </div>
+      </div>
+      <div class="cr-cell improvement">
+        <div class="cr-title">Improvement Creativity</div>
+        <div class="cr-goal">Goal: Get Better — Cải tiến liên tục</div>
+        <div class="cr-features">
+          <strong>Vị trí:</strong> Control (cao) + Internal (hướng nội)<br><br>
+          <strong>Đặc điểm:</strong> Vision về cải thiện có hệ thống; làm rõ vấn đề; quality control; process control; incremental improvement. Kaizen mindset.
+        </div>
+      </div>
+      <div class="cr-cell imagination">
+        <div class="cr-title">Imagination Creativity</div>
+        <div class="cr-goal">Goal: Novelty — Sáng tạo mới lạ</div>
+        <div class="cr-features">
+          <strong>Vị trí:</strong> Flexibility (cao) + External (hướng ngoại)<br><br>
+          <strong>Đặc điểm:</strong> Vision độc đáo và cách mạng; exploration; experimentation; risk-taking; transformational ideas. "Moonshot" thinking.
+        </div>
+      </div>
+      <div class="cr-cell incubation">
+        <div class="cr-title">Incubation Creativity</div>
+        <div class="cr-goal">Goal: Sustainability — Bền vững</div>
+        <div class="cr-features">
+          <strong>Vị trí:</strong> Flexibility (cao) + Internal (hướng nội)<br><br>
+          <strong>Đặc điểm:</strong> Vision dựa trên empowerment; trust building; teamwork; involvement; cohesion and coordination. Xây dựng từ bên trong.
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight">
+      <strong>Ứng dụng:</strong> Doanh nghiệp startup thường cần <em>Imagination Creativity</em> để tạo ra ý tưởng đột phá, sau đó chuyển sang <em>Improvement Creativity</em> khi scale up. Tổ chức lớn thiên về <em>Improvement</em> và <em>Incubation</em>, nhưng cần thêm <em>Investment</em> khi đối mặt với disruptive competition.
+    </div>
+
+    <h3>3.2 Creativity Tool: SCAMPER</h3>
+    <p>SCAMPER là công cụ kích thích <strong>lateral thinking</strong> (tư duy ngang/sáng tạo) thay vì programmed thinking (tư duy theo khuôn mẫu). Dùng kiểu đặt câu hỏi reflective và probing để phá vỡ tư duy thông thường:</p>
+
+    <table class="scamper-table">
+      <thead><tr><th>Chữ cái</th><th>Câu hỏi</th><th>Ví dụ từ slide</th></tr></thead>
+      <tbody>
+        <tr><td>S — Substitute</td><td>Có thể dùng nguyên liệu, vật liệu, thời gian, địa điểm nào khác để tạo ra giá trị?</td><td>Soy versions of bacon cheese-burgers → cho người ăn chay thưởng thức mà không tội lỗi</td></tr>
+        <tr><td>C — Combine</td><td>Sản phẩm, dịch vụ, quy trình nào có thể kết hợp tạo bố cục mới?</td><td>Sweets &amp; Spurs boutique tại Oklahoma: bán cupcakes VÀ cowboy boots vì founder có hai sở thích</td></tr>
+        <tr><td>A — Adapt</td><td>Hàng hóa, dịch vụ có thể điều chỉnh để đáp ứng nhu cầu mới?</td><td>E.L. James: fan fiction Twilight → rework thành tiểu thuyết Fifty Shades of Grey — best-seller toàn cầu</td></tr>
+        <tr><td>M — Modify</td><td>Sản phẩm có thể phóng to, thu nhỏ, hoặc thay đổi hình dạng khác không?</td><td>M&amp;Ms miniature — ít tan trong tay hơn cả kẹo lớn, tìm thị trường mới</td></tr>
+        <tr><td>P — Put to other uses</td><td>Sản phẩm tạo ra cho mục đích này có thể tái sử dụng cho mục đích khác?</td><td>Lego blocks: từ đồ chơi trẻ em → được nghệ sĩ dùng như phương tiện sáng tạo</td></tr>
+        <tr><td>E — Eliminate</td><td>Cái gì có thể bỏ đi, xóa, hay giảm thiểu để thêm giá trị?</td><td>Cordless phone (1980s): dù không có apps, music, YouTube — vẫn là đổi mới ấn tượng khi loại bỏ dây</td></tr>
+        <tr><td>R — Rearrange</td><td>Bố cục, trình tự, hoặc mẫu khác có thể tạo ra giá trị?</td><td>McDonald's Drive-Thru: ý tưởng trả tiền trước, ăn sau — từng bị xem là kỳ lạ</td></tr>
+      </tbody>
+    </table>
+
+    <h3>3.3 Creativity Tool: Nominal Group Technique (NGT)</h3>
+    <p>NGT là phương pháp thu thập ý kiến sáng tạo của nhóm một cách có cấu trúc, đặc biệt hiệu quả khi:</p>
+    <div class="card-grid">
+      <div class="card card-green">
+        <div class="card-title">Ưu điểm NGT</div>
+        <div class="card-body">
+          <ul>
+            <li>Tạo ra <strong>nhiều ý tưởng sáng tạo</strong> đa dạng</li>
+            <li>Đảm bảo <strong>mọi người đều được lắng nghe</strong></li>
+            <li>Hiệu quả khi lo ngại một số người không <strong>lên tiếng</strong></li>
+            <li><strong>Xây dựng đồng thuận</strong> (builds consensus)</li>
+            <li>Được khuyến nghị khi có <strong>tranh cãi hoặc xung đột</strong></li>
+          </ul>
+        </div>
+      </div>
+      <div class="card card-blue">
+        <div class="card-title">14 bước NGT</div>
+        <div class="card-body" style="font-size: 0.82em;">
+          1. Giới thiệu mục đích buổi họp<br>
+          2. Trình bày câu hỏi cần giải quyết<br>
+          3. Mỗi người tự suy nghĩ &amp; viết ý tưởng (5-10 phút)<br>
+          4. Lần lượt mỗi người đọc một ý tưởng ghi lên bảng<br>
+          5. Tiếp tục đến khi tất cả ý tưởng được ghi<br>
+          6. Không thảo luận, không hỏi clarification<br>
+          7. Khuyến khích "hitchhiking" — mở rộng ý tưởng người khác<br>
+          8. Người có thể pass một lượt, add ý sau<br>
+          9. Không gộp ý tưởng trừ khi hoàn toàn giống nhau<br>
+          10. Sau khi ghi xong: thảo luận nhóm để giải thích<br>
+          11. Có thể gộp các ý trùng lặp<br>
+          12. Có thể thay đổi cách diễn đạt nếu người đề xuất đồng ý<br>
+          13. Chỉ xóa ý khi có đồng thuận nhất trí<br>
+          14. Không thảo luận giá trị/ưu nhược của ý tưởng — chỉ làm rõ ý nghĩa
+        </div>
+      </div>
+    </div>
+
+    <h3>3.4 Stakeholder Mapping — Ma trận phân tích bên liên quan</h3>
+    <p>Công cụ ma trận 4×4 đánh giá stakeholders theo hai chiều: <strong>Influence of Stakeholder</strong> (ảnh hưởng lên tổ chức) và <strong>Importance of Stakeholder</strong> (tầm quan trọng với tổ chức):</p>
+
+    <div class="stakeholder-matrix">
+      <div class="sm-header">Stakeholder Mapping Matrix</div>
+      <div class="sm-body">
+        <div class="sm-cell sm-corner"></div>
+        <div class="sm-cell sm-label">Unknown Importance</div>
+        <div class="sm-cell sm-label">Little/No Importance</div>
+        <div class="sm-cell sm-label">Moderate Importance</div>
+        <div class="sm-cell sm-label">Significant Importance</div>
+
+        <div class="sm-cell sm-label">Unknown Influence</div>
+        <div class="sm-cell">Cần nghiên cứu thêm</div>
+        <div class="sm-cell">Monitor thụ động</div>
+        <div class="sm-cell">Cần thu thập thêm thông tin</div>
+        <div class="sm-cell">Ưu tiên xác định influence</div>
+
+        <div class="sm-cell sm-label">Little/No Influence</div>
+        <div class="sm-cell">Có thể bỏ qua tạm thời</div>
+        <div class="sm-cell" style="background:#f5f5f5;">Minimal attention</div>
+        <div class="sm-cell">Giữ thông tin</div>
+        <div class="sm-cell">Tư vấn khi cần</div>
+
+        <div class="sm-cell sm-label">Moderate Influence</div>
+        <div class="sm-cell">Nghiên cứu thêm</div>
+        <div class="sm-cell">Inform định kỳ</div>
+        <div class="sm-cell" style="background:#fff9c4;">Engage thường xuyên</div>
+        <div class="sm-cell" style="background:#fff9c4;">Collaborate chủ động</div>
+
+        <div class="sm-cell sm-label">Significant Influence</div>
+        <div class="sm-cell">Cần nghiên cứu khẩn</div>
+        <div class="sm-cell">Monitor chặt chẽ</div>
+        <div class="sm-cell" style="background:#fff3e0;">Manage carefully</div>
+        <div class="sm-cell" style="background:#ffccbc;"><strong>KEY PLAYERS — Tập trung toàn lực</strong></div>
+      </div>
+    </div>
+
+    <p><strong>Chiến lược ưu tiên:</strong> Stakeholders ở góc <em>Significant Influence + Significant Importance</em> (góc phải dưới) là KEY PLAYERS — cần được engage sâu nhất trong quá trình xây dựng mission và vision. Ví dụ: AFL-CIO với 11 triệu thành viên có cả significant influence lẫn importance với nhiều doanh nghiệp lớn.</p>
+
+  </div>
+</section>
+
+<!-- ============================================================ SECTION 4 -->
+<section class="s4" id="examples">
+  <div class="section-header">
+    <span class="icon">🌍</span>
+    <div>
+      <h2>Phần 4 – Ví dụ thực tiễn</h2>
+      <em>Sample Missions · Sample Visions · Starbucks · Personal Mission</em>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>4.1 Sample Mission Statements — Ví dụ thực tế</h3>
+    <p>Mission grounded in <em>past and present</em> — "Who are we?" — phục vụ stakeholders:</p>
+    <div class="mission-samples">
+      <div class="mission-sample">
+        <span class="org-name">Harley Davidson</span>
+        <span class="org-mission">"We ride with our customers and apply this deep connection in every market we serve to create superior value for all of our stakeholders."</span>
+      </div>
+      <div class="mission-sample">
+        <span class="org-name">IRS (Internal Revenue Service)</span>
+        <span class="org-mission">"Provide America's taxpayers top-quality service by helping them understand and meet their tax responsibilities and enforce the law with integrity and fairness to all."</span>
+      </div>
+      <div class="mission-sample">
+        <span class="org-name">Starbucks</span>
+        <span class="org-mission">"To inspire and nurture the human spirit – one person, one cup and one neighborhood at a time."</span>
+      </div>
+      <div class="mission-sample">
+        <span class="org-name">The Estée Lauder Company</span>
+        <span class="org-mission">"Bringing the best to everyone we touch and being the best in everything we do."</span>
+      </div>
+      <div class="mission-sample">
+        <span class="org-name">Limited Brands</span>
+        <span class="org-mission">"Limited Brands is committed to building a family of the world's best fashion brands offering captivating customer experiences that drive long-term loyalty and deliver sustained growth for our shareholders."</span>
+      </div>
+      <div class="mission-sample">
+        <span class="org-name">Fender Musical Instruments</span>
+        <span class="org-mission">"We will exceed the expectations of music enthusiasts worldwide and create a community for individual expression by focusing on our people, products, and business excellence."</span>
+      </div>
+    </div>
+
+    <h3>4.2 Sample Vision Statements — Ví dụ tầm nhìn</h3>
+    <p>Vision là tuyên bố ngắn, súc tích về tương lai — "Chúng ta muốn trở thành gì?":</p>
+    <table>
+      <thead><tr><th>Công ty</th><th>Vision Statement</th><th>Phân tích</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Alcoa</strong></td><td>"To be the best company in the world—in the eyes of our customers, shareholders, communities and people."</td><td>Multi-stakeholder vision; bao gồm cả communities (social dimension)</td></tr>
+        <tr><td><strong>Avon</strong></td><td>"To be the company that best understands and satisfies the product, service and self-fulfillment needs of women—globally."</td><td>Rõ ràng định nghĩa target stakeholder (women globally)</td></tr>
+        <tr><td><strong>Chevron</strong></td><td>"To be the global energy company most admired for its people, partnership and performance."</td><td>3Ps: People, Partnership, Performance — dễ nhớ</td></tr>
+        <tr><td><strong>Google</strong></td><td>"To develop a perfect search engine."</td><td>Ngắn gọn, rõ ràng, aspirational, inspiring — classic good vision</td></tr>
+        <tr><td><strong>Kraft Foods</strong></td><td>"Helping people around the world eat and live better."</td><td>Purpose-driven; beyond product — focus on outcome for people</td></tr>
+        <tr><td><strong>Procter &amp; Gamble</strong></td><td>"Be, and be recognized as, the best consumer products and services company in the world."</td><td>Nhấn mạnh cả internal (be) và external recognition (be recognized)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>4.3 Phân tích Creativity Types trong thực tế</h3>
+    <div class="card-grid">
+      <div class="card card-blue">
+        <div class="card-title">Investment — Amazon</div>
+        <div class="card-body">Amazon liên tục ra mắt sản phẩm mới (Kindle, AWS, Alexa) với mục tiêu First Mover. Jeff Bezos: "Nếu bạn muốn là người đầu tiên, bạn phải chấp nhận rủi ro và thất bại."</div>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">Improvement — Toyota</div>
+        <div class="card-body">Kaizen — triết lý cải tiến liên tục. Toyota Production System (TPS) là ví dụ điển hình của Improvement Creativity: incremental, systematic, process-focused.</div>
+      </div>
+      <div class="card card-orange">
+        <div class="card-title">Imagination — SpaceX</div>
+        <div class="card-body">Vision: "Make humanity multiplanetary." Exploration, experimentation, risk-taking cực đoan. Imagination Creativity cho phép SpaceX phá vỡ toàn bộ mô hình ngành aerospace.</div>
+      </div>
+      <div class="card card-purple">
+        <div class="card-title">Incubation — Patagonia</div>
+        <div class="card-body">Vision dựa trên sustainability — empowerment nhân viên, trust building, teamwork, environmental cohesion. Từ chối tăng trưởng nhanh để giữ values.</div>
+      </div>
+    </div>
+
+    <h3>4.4 Ứng dụng SCAMPER trong phát triển Vision — Vinamilk case</h3>
+    <p>Áp dụng SCAMPER để brainstorm vision của Vinamilk trong bối cảnh thị trường thay đổi:</p>
+    <ul>
+      <li><strong>Substitute:</strong> Thay sữa bò bằng sữa thực vật (plant-based) → mở rộng tệp khách hàng lactose intolerance</li>
+      <li><strong>Combine:</strong> Kết hợp dairy + wellness supplements → "functional dairy" category</li>
+      <li><strong>Adapt:</strong> Mô hình D2C (direct-to-consumer) subscription như Dano Coffee → milk delivery trực tiếp</li>
+      <li><strong>Eliminate:</strong> Loại bỏ packaging nhựa → sustainability vision phù hợp Gen Z</li>
+      <li><strong>Put to other uses:</strong> Nhà máy Vinamilk → tourism destination (factory tours như IKEA)</li>
+    </ul>
+
+  </div>
+</section>
+
+<!-- ============================================================ SECTION 5 -->
+<section class="s5" id="notes">
+  <div class="section-header">
+    <span class="icon">⚠️</span>
+    <div>
+      <h2>Phần 5 – Ghi chú ôn tập &amp; Bẫy nhận thức</h2>
+      <em>Common Pitfalls · Review Questions · Key Vocabulary</em>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>5.1 Bẫy nhận thức thường gặp</h3>
+    <ul class="trap-list">
+      <li>
+        <strong>Nhầm Mission và Vision:</strong> Mission = hiện tại ("chúng ta là ai"). Vision = tương lai ("chúng ta muốn trở thành gì"). Starbucks: Mission là "To inspire and nurture the human spirit..." — đây là hiện tại. Google: "To develop a perfect search engine" — đây là Vision (chưa đạt được). Nhiều tổ chức gọi nhầm tên.
+      </li>
+      <li>
+        <strong>Tưởng Mission đủ để dẫn dắt chiến lược:</strong> Mission chỉ trả lời "tại sao tồn tại." Cần thêm Vision (muốn trở thành gì) → Strategy (làm thế nào) → Goals (đo lường ra sao). Ba lớp này không thể thiếu một.
+      </li>
+      <li>
+        <strong>Nhầm Values là phần phụ của Mission:</strong> Values là nền tảng của cả Mission lẫn Vision. Khi values bị vi phạm, cả Mission lẫn Vision đều mất ý nghĩa. Ví dụ Enron: mission đẹp, nhưng không có values thực sự → sụp đổ.
+      </li>
+      <li>
+        <strong>SCAMPER không phải chỉ để "sửa" sản phẩm:</strong> SCAMPER có thể áp dụng để phát triển Vision mới, tái cơ cấu quy trình, hoặc định nghĩa lại cách phục vụ stakeholders — không chỉ dùng cho product innovation.
+      </li>
+      <li>
+        <strong>Stakeholder analysis không chỉ quan trọng cho Mission:</strong> Stakeholders liên quan đến toàn bộ P-O-L-C — từ hoạch định đến tổ chức, lãnh đạo, kiểm soát. Nhận biết stakeholder KEY PLAYERS sớm giúp tránh những quyết định chiến lược gây tranh cãi.
+      </li>
+      <li>
+        <strong>Nhầm Employee Engagement với Employee Satisfaction:</strong> Engagement (theo Employee Engagement Report 2008) cao hơn satisfaction — nhân viên engaged có "line-of-sight" trên mission &amp; goals, họ "enthused" và dùng discretionary effort. Satisfaction chỉ là không bất mãn.
+      </li>
+      <li>
+        <strong>Four Creativity Types không có loại "tốt nhất":</strong> Bốn loại sáng tạo phù hợp với các giai đoạn và bối cảnh khác nhau. Startup cần Imagination; tập đoàn cần Improvement; industry disruptor cần Investment; culture-driven firm cần Incubation.
+      </li>
+    </ul>
+
+    <h3>5.2 Câu hỏi ôn tập</h3>
+    <ul class="review-list">
+      <li>Mission Statement và Vision Statement khác nhau thế nào? Cho ví dụ thực tế minh họa từng loại.</li>
+      <li>Tại sao Bain &amp; Company kết luận rằng các công ty có mission được chia sẻ rộng rãi thực hiện tốt hơn?</li>
+      <li>Planning Pyramid của Carpenter gồm ba cấp độ nào? Mối quan hệ nhân quả giữa chúng là gì?</li>
+      <li>Mission và Vision đóng ba vai trò nào trong tổ chức? Hãy giải thích từng vai trò.</li>
+      <li>Kiểm soát (Controlling) gồm mấy bước? Mission và Vision ảnh hưởng đến Controlling như thế nào?</li>
+      <li>Bốn kiểu sáng tạo (Four Creativity Types) nằm trên ma trận hai trục nào? Mô tả từng ô.</li>
+      <li>SCAMPER là gì? Giải thích ý nghĩa từng chữ cái với ví dụ.</li>
+      <li>Nominal Group Technique có ưu điểm gì so với brainstorming thông thường? Khi nào dùng NGT?</li>
+      <li>Ba bước xác định stakeholders là gì? Stakeholder Mapping Matrix có hai trục nào?</li>
+      <li>Năm bước phát triển Personal Mission và Vision là gì?</li>
+    </ul>
+
+    <h3>5.3 Bảng từ khóa trọng tâm</h3>
+    <table>
+      <thead><tr><th>Thuật ngữ</th><th>Định nghĩa ngắn</th><th>Phân biệt/Ghi chú</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Mission Statement</strong></td><td>Truyền đạt lý do tồn tại của tổ chức và cách phục vụ stakeholders</td><td>Hiện tại; dài hơn vision; tích hợp values</td></tr>
+        <tr><td><strong>Vision Statement</strong></td><td>Tuyên bố hướng tương lai về mục đích và khát vọng</td><td>Tương lai; ngắn gọn; aspirational</td></tr>
+        <tr><td><strong>Values</strong></td><td>Niềm tin và nguyên tắc nền tảng hướng dẫn hành vi tổ chức</td><td>Thường tích hợp vào Mission</td></tr>
+        <tr><td><strong>Planning Pyramid</strong></td><td>Mission/Vision → Strategy → Goals &amp; Objectives</td><td>Carpenter's framework cho P trong P-O-L-C</td></tr>
+        <tr><td><strong>Creativity</strong></td><td>The power or ability to invent</td><td>Kích thích bằng SCAMPER, NGT</td></tr>
+        <tr><td><strong>Passion</strong></td><td>An intense emotion compelling action</td><td>Kết hợp Creativity → Mission &amp; Vision mạnh</td></tr>
+        <tr><td><strong>Employee Engagement</strong></td><td>Nhân viên có "line-of-sight" trên mission, dùng discretionary effort</td><td>Cao hơn satisfaction; gắn với passion về vision</td></tr>
+        <tr><td><strong>SCAMPER</strong></td><td>Substitute, Combine, Adapt, Modify, Put to other uses, Eliminate, Rearrange</td><td>Lateral thinking tool</td></tr>
+        <tr><td><strong>NGT (Nominal Group Technique)</strong></td><td>Phương pháp thu thập ý tưởng nhóm 14 bước, đảm bảo mọi người được nghe</td><td>Dùng khi có conflict hoặc lo ai đó im lặng</td></tr>
+        <tr><td><strong>Stakeholder</strong></td><td>Cá nhân/nhóm có quyền lợi liên quan đến hoạt động tổ chức</td><td>Cần phân tích influence × importance</td></tr>
+        <tr><td><strong>Stakeholder Mapping</strong></td><td>Ma trận 4×4: Influence of Stakeholder × Importance of Stakeholder</td><td>Xác định KEY PLAYERS để ưu tiên</td></tr>
+        <tr><td><strong>Four Creativity Types</strong></td><td>Investment, Improvement, Imagination, Incubation — 2×2 matrix</td><td>Trục: Control/Flexibility × External/Internal</td></tr>
+      </tbody>
+    </table>
+
+    <h3>5.4 So sánh tổng hợp: Mission vs. Vision vs. Values</h3>
+    <table>
+      <thead><tr><th>Tiêu chí</th><th>Mission</th><th>Vision</th><th>Values</th></tr></thead>
+      <tbody>
+        <tr><td>Câu hỏi</td><td>Chúng ta là ai? Chúng ta làm gì?</td><td>Chúng ta muốn trở thành gì?</td><td>Chúng ta tin vào điều gì?</td></tr>
+        <tr><td>Thời gian</td><td>Hiện tại</td><td>Tương lai</td><td>Bất biến (timeless)</td></tr>
+        <tr><td>Độ dài</td><td>Dài hơn</td><td>Ngắn, súc tích</td><td>Danh sách 3-7 từ/cụm</td></tr>
+        <tr><td>Audience</td><td>Tất cả stakeholders</td><td>Inspiring for employees &amp; stakeholders</td><td>Internal culture guide</td></tr>
+        <tr><td>Thay đổi bao lâu?</td><td>Hiếm khi thay đổi (5–10 năm)</td><td>Có thể điều chỉnh khi đạt được</td><td>Rất hiếm — core identity</td></tr>
+        <tr><td>Ví dụ Starbucks</td><td>"To inspire and nurture the human spirit..."</td><td>(Starbucks không public Vision riêng — Mission kiêm cả hai)</td><td>6 guiding principles</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</section>
+
+</main>
+
+<footer style="text-align:center; padding: 24px; color: #7f8c8d; font-size: 13px; border-top: 1px solid #ecf0f1; margin-top: 16px;">
+  GK5009 — Quản lý và Lãnh đạo | Carpenter et al., <em>Principles of Management 2.0</em> (2013) | Chapter 4: Developing Mission, Vision, and Values
+</footer>
+
+</body>
+</html>

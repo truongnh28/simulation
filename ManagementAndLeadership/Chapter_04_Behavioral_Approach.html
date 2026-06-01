@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GK5009 – Chương 4: Tiếp cận Hành vi (Behavioral Approach)</title>
+  <style>
+    :root {
+      --primary: #1a3c6e;
+      --secondary: #2e6da4;
+      --accent: #e8a020;
+      --light: #f4f7fb;
+      --text: #1c1c1c;
+      --muted: #5a6a7a;
+      --border: #d0daea;
+      --green: #1a6e3c;
+      --red: #8b1a1a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text);
+      background: #fff;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 30px;
+    }
+    h1 { font-size: 2.2rem; color: var(--primary); border-bottom: 4px solid var(--accent); padding-bottom: 12px; margin-bottom: 8px; }
+    h2 { font-size: 1.6rem; color: var(--primary); margin-top: 48px; margin-bottom: 16px; border-left: 6px solid var(--accent); padding-left: 14px; }
+    h3 { font-size: 1.25rem; color: var(--secondary); margin-top: 32px; margin-bottom: 12px; }
+    h4 { font-size: 1.05rem; color: var(--primary); margin-top: 20px; margin-bottom: 8px; font-style: italic; }
+    p { margin-bottom: 14px; }
+    ul, ol { margin: 10px 0 14px 28px; }
+    li { margin-bottom: 7px; }
+    .term { font-weight: bold; color: var(--primary); }
+    .definition { background: var(--light); border-left: 4px solid var(--secondary); padding: 12px 16px; margin: 14px 0; border-radius: 4px; }
+    .callout { background: #eaf4ff; border: 1px solid var(--secondary); padding: 14px 18px; margin: 18px 0; border-radius: 6px; }
+    .callout.warning { background: #fff4e0; border-color: var(--accent); }
+    .callout.important { background: #fdecea; border-color: var(--red); }
+    .callout.success { background: #e8f5ee; border-color: var(--green); }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95rem; }
+    th { background: var(--primary); color: #fff; padding: 10px 14px; text-align: left; }
+    td { border: 1px solid var(--border); padding: 9px 14px; vertical-align: top; }
+    tr:nth-child(even) td { background: var(--light); }
+    .section-label {
+      display: inline-block; background: var(--primary); color: #fff;
+      font-size: 0.78rem; font-weight: bold; letter-spacing: 1px;
+      padding: 3px 10px; border-radius: 3px; margin-bottom: 6px; text-transform: uppercase;
+    }
+    .toc { background: var(--light); border: 1px solid var(--border); padding: 18px 24px; margin: 24px 0 40px; border-radius: 6px; }
+    .toc h3 { color: var(--primary); margin-top: 0; margin-bottom: 10px; }
+    .toc a { color: var(--secondary); text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+    .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 30px; }
+    .highlight { background: #fffbcc; padding: 2px 4px; border-radius: 2px; }
+    hr { border: none; border-top: 2px solid var(--border); margin: 36px 0; }
+    /* Leadership Grid */
+    .grid-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+    .grid-table {
+      border-collapse: collapse;
+      width: 100%;
+      table-layout: fixed;
+    }
+    .grid-table td {
+      border: 1px solid #aaa;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 0.82rem;
+      padding: 8px 4px;
+      height: 80px;
+    }
+    .grid-y-label {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      font-weight: bold;
+      color: var(--primary);
+      font-size: 0.9rem;
+      text-align: center;
+      vertical-align: middle;
+      padding: 0 6px;
+    }
+    .style-card {
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 14px 0;
+      background: var(--light);
+    }
+    .style-card.cc { border-left: 6px solid #27ae60; }
+    .style-card.team { border-left: 6px solid #1a3c6e; }
+    .style-card.mid { border-left: 6px solid #e8a020; }
+    .style-card.ac { border-left: 6px solid #c0392b; }
+    .style-card.imp { border-left: 6px solid #888; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.82rem; font-weight: bold; }
+    .badge-red { background: #fde4e4; color: var(--red); }
+    .badge-green { background: #d4f0e0; color: var(--green); }
+    .badge-blue { background: #daeeff; color: var(--primary); }
+    .badge-yellow { background: #fff3cd; color: #856404; }
+    .badge-gray { background: #e9ecef; color: #495057; }
+  </style>
+</head>
+<body>
+
+<div class="section-label">GK5009 – Quản lý và Lãnh đạo | HK252</div>
+<h1>Chương 4: Tiếp cận Hành vi<br><small style="font-size:1rem;color:var(--muted);">The Behavioral Approach (Style Approach) to Leadership</small></h1>
+<p class="meta">Nguồn: Northouse, P. G. (2021). <em>Leadership: Theory and Practice</em> (7th ed.). SAGE Publications. — Chapter 4 | Ohio State Studies (1950s); Michigan Studies (1950s); Blake & Mouton (1964); Blake & McCanse (1991)</p>
+
+<div class="toc">
+  <h3>Mục lục</h3>
+  <ol>
+    <li><a href="#s1">Tổng quan chương & Chuyển dịch sang Hành vi</a></li>
+    <li><a href="#s2">Phân tích chuyên sâu: Ba nghiên cứu nền tảng</a></li>
+    <li><a href="#s3">Mô hình & Khung lý thuyết: The Leadership Grid</a></li>
+    <li><a href="#s4">Ví dụ thực tiễn</a></li>
+    <li><a href="#s5">Lưu ý học tập & Bẫy nhận thức phổ biến</a></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s1">1. Tổng quan chương & Chuyển dịch sang Hành vi</h2>
+<!-- ============================================================ -->
+
+<div class="section-label">Section 1 – Overview</div>
+
+<p>Behavioral Approach (còn gọi là Style Approach) là câu trả lời của các nhà nghiên cứu thập niên 1950 cho câu hỏi: nếu không thể xác định được một tập hợp đặc điểm lãnh đạo phổ quát (kết luận của Stogdill 1948 về Trait Approach), thì có thể xác định được một tập hợp <strong>hành vi lãnh đạo hiệu quả</strong> không?</p>
+
+<div class="callout">
+  <strong>Chuyển dịch tư duy trong lịch sử lý thuyết lãnh đạo:</strong>
+  <ul>
+    <li><strong>Trait Approach (Ch2):</strong> Lãnh đạo "LÀ" gì? → Tập trung vào đặc điểm, phẩm chất cá nhân</li>
+    <li><strong>Skills Approach (Ch3):</strong> Lãnh đạo "CÓ" gì? → Tập trung vào năng lực và kỹ năng</li>
+    <li><strong>Behavioral Approach (Ch4):</strong> Lãnh đạo "LÀM" gì? → Tập trung vào hành vi cụ thể, quan sát được</li>
+  </ul>
+</div>
+
+<p>Behavioral Approach có hàm ý tích cực quan trọng: nếu lãnh đạo là về <em>hành vi</em>, thì con người có thể <em>học cách hành xử như lãnh đạo hiệu quả</em>. Đây là cơ sở lý luận cho các chương trình đào tạo lãnh đạo dựa trên phát triển kỹ năng hành vi cụ thể.</p>
+
+<p>Chương 4 bao gồm ba công trình nghiên cứu nền tảng:</p>
+<ol>
+  <li><strong>Ohio State Studies (thập niên 1950):</strong> Hai chiều hành vi lãnh đạo — Initiating Structure và Consideration</li>
+  <li><strong>University of Michigan Studies (thập niên 1950):</strong> Hai định hướng — Production-oriented và Employee-oriented</li>
+  <li><strong>Blake & Mouton's Managerial Grid (1964) / Leadership Grid (Blake & McCanse, 1991):</strong> Kết hợp hai chiều thành ma trận 81 ô, xác định 5 phong cách lãnh đạo cụ thể</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="s2">2. Phân tích chuyên sâu: Ba nghiên cứu nền tảng</h2>
+<!-- ============================================================ -->
+
+<div class="section-label">Section 2 – In-depth Analysis</div>
+
+<h3>2.1 Ohio State Studies (Thập niên 1950)</h3>
+
+<p>Vào cuối thập niên 1940 và trong thập niên 1950, một nhóm nghiên cứu tại <strong>Đại học Ohio State</strong> (Hemphill, Coons, Fleishman, Harris, Burtt, và các cộng sự) phát triển một công cụ đo lường hành vi lãnh đạo gọi là <em>Leader Behavior Description Questionnaire</em> (LBDQ). Từ một danh sách ban đầu gồm hơn 1,800 mô tả hành vi lãnh đạo, qua phân tích nhân tố (factor analysis), họ xác định được hai nhân tố (chiều) chính của hành vi lãnh đạo:</p>
+
+<div class="definition">
+  <strong>Chiều 1: Initiating Structure (Khởi tạo Cấu trúc)</strong><br>
+  Mức độ mà lãnh đạo xác định vai trò của mình và của nhân viên theo hướng đạt được mục tiêu. Bao gồm việc: tổ chức công việc, thiết lập mối quan hệ công việc, và xác định mục tiêu rõ ràng.<br><br>
+  <strong>Hành vi cụ thể bao gồm:</strong>
+  <ul>
+    <li>Phân công nhiệm vụ cụ thể cho từng người trong nhóm</li>
+    <li>Đặt ra tiêu chuẩn hiệu suất và deadline rõ ràng</li>
+    <li>Lên lịch công việc và phối hợp hoạt động của nhóm</li>
+    <li>Yêu cầu người theo tuân theo quy trình và quy tắc nhất định</li>
+    <li>Thông báo rõ ràng những gì cần làm và cách làm</li>
+  </ul>
+  Nói cách khác: lãnh đạo thiên về <em>nhiệm vụ</em> (task-focused) — rõ ràng về mục tiêu, cấu trúc, và kỳ vọng.
+</div>
+
+<div class="definition">
+  <strong>Chiều 2: Consideration (Quan tâm/Thấu cảm)</strong><br>
+  Mức độ mà lãnh đạo có mối quan hệ dựa trên sự tin tưởng, tôn trọng ý tưởng của nhân viên, và quan tâm đến cảm xúc của họ.<br><br>
+  <strong>Hành vi cụ thể bao gồm:</strong>
+  <ul>
+    <li>Làm những việc nhỏ để làm người theo cảm thấy được coi trọng</li>
+    <li>Luôn sẵn sàng giải thích lý do cho quyết định của mình</li>
+    <li>Đối xử với tất cả mọi người bình đẳng và công bằng</li>
+    <li>Thân thiện và dễ gần với nhân viên</li>
+    <li>Trước khi đưa ra hành động quan trọng, hỏi ý kiến những người bị ảnh hưởng</li>
+    <li>Thực hiện những thay đổi theo đề nghị của nhân viên</li>
+  </ul>
+  Nói cách khác: lãnh đạo thiên về <em>mối quan hệ</em> (relationship-focused) — quan tâm đến con người, không chỉ đến nhiệm vụ.
+</div>
+
+<h4>Điểm quan trọng: Hai chiều ĐỘC LẬP, không phải hai đầu một thước</h4>
+
+<p>Đây là điểm thường bị hiểu nhầm nhất trong Ohio State Studies. Initiating Structure và Consideration <span class="highlight">không phải là hai đầu của một thang đo</span> (tức là không phải "càng nhiều Initiating Structure → càng ít Consideration"). Chúng là <strong>hai chiều độc lập</strong>. Một lãnh đạo có thể:</p>
+
+<ul>
+  <li>Cao cả hai (High Structure + High Consideration) — có thể tốt nhất</li>
+  <li>Thấp cả hai (Low Structure + Low Consideration) — thường kém hiệu quả nhất</li>
+  <li>Cao một, thấp một — phụ thuộc vào tình huống</li>
+</ul>
+
+<p>Nghiên cứu Ohio State ban đầu gợi ý rằng phong cách "Cao Structure + Cao Consideration" dẫn đến kết quả tốt nhất (nhân viên có năng suất cao và hài lòng). Nhưng các nghiên cứu sau đó cho thấy kết quả không nhất quán — phong cách tốt nhất phụ thuộc vào tình huống cụ thể (hàm ý cho Situational Approach ở các chương sau).</p>
+
+<hr/>
+
+<h3>2.2 University of Michigan Studies (Thập niên 1950)</h3>
+
+<p>Gần như đồng thời với Ohio State, nhóm nghiên cứu tại <strong>Đại học Michigan</strong> (Rensis Likert và các cộng sự), thực hiện trong <em>Survey Research Center</em>, cũng tìm cách xác định hành vi lãnh đạo liên quan đến hiệu suất nhóm.</p>
+
+<p>Nghiên cứu Michigan so sánh hành vi của những người giám sát dẫn dắt các nhóm hiệu quả cao với hành vi của những người giám sát dẫn dắt các nhóm hiệu quả thấp. Kết quả xác định hai định hướng hành vi quan trọng:</p>
+
+<div class="definition">
+  <strong>Định hướng 1: Employee-Oriented (Hướng về Nhân viên)</strong><br>
+  Lãnh đạo nhấn mạnh vào mối quan hệ giữa các cá nhân; họ quan tâm thực sự đến nhu cầu của nhân viên và chấp nhận sự khác biệt giữa các thành viên trong nhóm. Phong cách này tạo ra niềm tin, tôn trọng, và cảm giác được coi trọng ở nhân viên.
+</div>
+
+<div class="definition">
+  <strong>Định hướng 2: Production-Oriented (Hướng về Sản xuất/Nhiệm vụ)</strong><br>
+  Lãnh đạo nhấn mạnh vào các khía cạnh kỹ thuật và nhiệm vụ của công việc. Nhân viên được coi là phương tiện để hoàn thành mục tiêu của nhóm. Lãnh đạo quan tâm đến kết quả và hiệu suất, ít quan tâm đến nhu cầu và cảm xúc cá nhân.
+</div>
+
+<div class="callout warning">
+  <strong>Sự khác biệt quan trọng giữa Michigan và Ohio State:</strong><br>
+  Michigan Studies ban đầu trình bày hai định hướng như hai đầu của <em>một thang đo</em> — lãnh đạo càng Employee-Oriented thì càng ít Production-Oriented. Đây là sự khác biệt về cách nhìn so với Ohio State (hai chiều độc lập). Tuy nhiên, về sau, nhiều nhà nghiên cứu xử lý hai chiều của Michigan giống như Ohio State — như hai chiều độc lập để linh hoạt hơn trong phân tích.
+</div>
+
+<p><strong>Kết luận của Michigan Studies:</strong> Lãnh đạo employee-oriented thường có kết quả tốt hơn (nhân viên hài lòng cao hơn, năng suất tốt hơn) so với lãnh đạo thuần production-oriented. Tuy nhiên, sự khác biệt không phải lúc nào cũng rõ ràng — và phụ thuộc nhiều vào bối cảnh.</p>
+
+<hr/>
+
+<h3>2.3 So sánh Ohio State và Michigan Studies</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tiêu chí</th>
+      <th>Ohio State Studies</th>
+      <th>Michigan Studies</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Tên chiều 1 (Task)</strong></td>
+      <td>Initiating Structure</td>
+      <td>Production-Oriented</td>
+    </tr>
+    <tr>
+      <td><strong>Tên chiều 2 (People)</strong></td>
+      <td>Consideration</td>
+      <td>Employee-Oriented</td>
+    </tr>
+    <tr>
+      <td><strong>Quan hệ giữa 2 chiều</strong></td>
+      <td>Hai chiều ĐỘC LẬP — có thể cao cả hai</td>
+      <td>Ban đầu: hai đầu một thang — ngược chiều nhau</td>
+    </tr>
+    <tr>
+      <td><strong>Phương pháp</strong></td>
+      <td>LBDQ — bảng hỏi mô tả hành vi lãnh đạo, phân tích nhân tố</td>
+      <td>So sánh giám sát hiệu quả cao vs. thấp</td>
+    </tr>
+    <tr>
+      <td><strong>Kết luận chính</strong></td>
+      <td>Cả Initiating Structure và Consideration đều quan trọng; kết hợp cao cả hai có thể tốt nhất</td>
+      <td>Employee-Oriented thường dẫn đến kết quả tốt hơn, nhưng phụ thuộc bối cảnh</td>
+    </tr>
+    <tr>
+      <td><strong>Đóng góp chung</strong></td>
+      <td colspan="2">Cả hai đều xác định hai chiều lãnh đạo cơ bản (task-oriented vs. relationship-oriented) — nền tảng cho hầu hết các lý thuyết lãnh đạo phía sau</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr/>
+
+<h3>2.4 Blake & Mouton's Managerial Grid (1964) — Leadership Grid (Blake & McCanse, 1991)</h3>
+
+<p>Robert Blake và Jane Mouton (1964) tổng hợp và phát triển ý tưởng từ Ohio State và Michigan Studies thành một mô hình có tính ứng dụng cao hơn. Họ xây dựng <strong>Managerial Grid</strong> — một ma trận hai chiều biểu diễn năm phong cách lãnh đạo dựa trên sự kết hợp của hai chiều:</p>
+
+<ul>
+  <li><strong>Concern for Production (Quan tâm đến Sản xuất/Nhiệm vụ):</strong> Trục hoành (X), thang 1–9. Mức độ lãnh đạo quan tâm đến việc hoàn thành mục tiêu, nhiệm vụ, và kết quả tổ chức.</li>
+  <li><strong>Concern for People (Quan tâm đến Con người):</strong> Trục tung (Y), thang 1–9. Mức độ lãnh đạo quan tâm đến nhu cầu, cảm xúc, và mối quan hệ với nhân viên.</li>
+</ul>
+
+<p>Năm 1991, Blake và McCanse đổi tên thành <strong>Leadership Grid</strong> và cập nhật một số chi tiết, nhưng cấu trúc cơ bản giữ nguyên.</p>
+
+<div class="callout">
+  <strong>Lưu ý quan trọng về thang điểm:</strong> Mỗi chiều đi từ 1 (thấp nhất) đến 9 (cao nhất), tạo ra 81 ô có thể trên ma trận. Northouse tập trung vào 5 phong cách tại các vị trí đặc trưng nhất.
+</div>
+
+<h4>Năm Phong cách Lãnh đạo trong Leadership Grid</h4>
+
+<div class="style-card imp">
+  <h4 style="font-style:normal; color:#555;">(1,1) — Impoverished Management (Lãnh đạo Nghèo nàn)</h4>
+  <p><strong>Vị trí trên Grid:</strong> Concern for Production = 1 (thấp), Concern for People = 1 (thấp)</p>
+  <p><strong>Mô tả:</strong> Nỗ lực tối thiểu để thực hiện công việc. Lãnh đạo ở phong cách này đầu tư ít nhất có thể vào cả nhiệm vụ lẫn mối quan hệ với người. Họ làm đủ để duy trì vị trí trong tổ chức nhưng không thực sự cam kết với bất kỳ điều gì.</p>
+  <p><strong>Hậu quả:</strong> Tổ chức không đạt mục tiêu và tinh thần nhóm thấp. Đây là phong cách lãnh đạo tệ nhất. Tuy nhiên, Northouse lưu ý: đôi khi lãnh đạo rơi vào phong cách này do kiệt sức (burnout), thiếu hỗ trợ, hoặc đang chờ nghỉ hưu/chuyển công tác.</p>
+  <p><strong>Ví dụ biểu hiện:</strong> "Đó không phải việc của tôi"; không chủ động; để mọi thứ trôi; không theo dõi tiến độ hay kết quả.</p>
+</div>
+
+<div class="style-card cc">
+  <h4 style="font-style:normal; color:var(--green);">(1,9) — Country Club Management (Lãnh đạo Câu lạc bộ Nông thôn)</h4>
+  <p><strong>Vị trí trên Grid:</strong> Concern for Production = 1 (thấp), Concern for People = 9 (cao)</p>
+  <p><strong>Mô tả:</strong> Chú ý đặc biệt đến nhu cầu của nhân viên để tạo ra mối quan hệ tốt đẹp, thoải mái, và bầu không khí thân thiện. Lãnh đạo hy sinh kết quả để đổi lấy sự hòa thuận và hài lòng của nhân viên.</p>
+  <p><strong>Nguồn gốc tên gọi:</strong> "Country Club" gợi ý một môi trường dễ chịu, xã hội, thoải mái — nơi mọi người thưởng thức sự có mặt của nhau nhưng ít công việc thực sự được hoàn thành.</p>
+  <p><strong>Hậu quả:</strong> Nhân viên hài lòng và thoải mái, nhưng tổ chức không đạt mục tiêu. Về lâu dài, thiếu thành tích có thể dẫn đến vấn đề kinh tế và thậm chí cũng ảnh hưởng tiêu cực đến tinh thần nhân viên khi họ nhận ra tổ chức không thành công.</p>
+  <p><strong>Ví dụ biểu hiện:</strong> Lãnh đạo không bao giờ đặt ra deadline cứng; luôn ủng hộ nhân viên kể cả khi họ sai; tránh mọi xung đột; không phê bình hay kỷ luật.</p>
+</div>
+
+<div class="style-card ac">
+  <h4 style="font-style:normal; color:#c0392b;">(9,1) — Authority-Compliance Management (Lãnh đạo Tuân thủ Quyền lực)</h4>
+  <p><strong>Vị trí trên Grid:</strong> Concern for Production = 9 (cao), Concern for People = 1 (thấp)</p>
+  <p><strong>Mô tả:</strong> Hiệu quả hoạt động là kết quả của việc tổ chức điều kiện làm việc sao cho yếu tố con người can thiệp ít nhất có thể. Lãnh đạo quan tâm hoàn toàn đến kết quả và coi nhân viên như phương tiện để đạt mục tiêu — không quan tâm đến nhu cầu hay cảm xúc của họ.</p>
+  <p><strong>Cũng được gọi là:</strong> "Task Management" hoặc "Dictatorial Style." Northouse lưu ý rằng phong cách này có thể tạo ra kết quả ngắn hạn nhưng thường dẫn đến tỷ lệ nghỉ việc cao, căng thẳng nhân viên, và thiếu sáng tạo.</p>
+  <p><strong>Hậu quả:</strong> Hiệu suất tốt ngắn hạn trong môi trường đơn giản và cấu trúc cao, nhưng tinh thần nhân viên thấp, thiếu cam kết, và thiếu bền vững dài hạn.</p>
+  <p><strong>Ví dụ biểu hiện:</strong> "Làm đúng theo quy trình, không cần giải thích tại sao"; không lắng nghe ý kiến nhân viên; chú trọng năng suất hơn an toàn tâm lý; thưởng/phạt hoàn toàn dựa trên kết quả số liệu.</p>
+</div>
+
+<div class="style-card mid">
+  <h4 style="font-style:normal; color:#856404;">(5,5) — Middle-of-the-Road Management (Lãnh đạo Trung dung)</h4>
+  <p><strong>Vị trí trên Grid:</strong> Concern for Production = 5 (trung bình), Concern for People = 5 (trung bình)</p>
+  <p><strong>Mô tả:</strong> Hiệu suất tổ chức phù hợp được duy trì bằng cách cân bằng giữa nhu cầu hoàn thành công việc và duy trì tinh thần nhân viên ở mức chấp nhận được. Lãnh đạo tìm kiếm điểm cân bằng thực tế — không xuất sắc ở cả hai chiều, nhưng cũng không bỏ bê chiều nào.</p>
+  <p><strong>Đây có phải phong cách tốt không?</strong> Northouse lập luận rằng (5,5) không phải là giải pháp lý tưởng. Tư duy "đủ tốt" (good enough) ở mức 5 không tạo ra sự xuất sắc. Phong cách này thường dẫn đến sự trì trệ — tổ chức không thất bại nhưng cũng không phát triển mạnh.</p>
+  <p><strong>Ví dụ biểu hiện:</strong> Đặt mục tiêu vừa phải; không đòi hỏi quá cao nhưng cũng không quá thấp; lắng nghe nhân viên nhưng không thực sự thay đổi gì nhiều; cân bằng "an toàn."</p>
+</div>
+
+<div class="style-card team">
+  <h4 style="font-style:normal; color:var(--primary);">(9,9) — Team Management (Lãnh đạo Nhóm) — PHONG CÁCH LÝ TƯỞNG</h4>
+  <p><strong>Vị trí trên Grid:</strong> Concern for Production = 9 (cao), Concern for People = 9 (cao)</p>
+  <p><strong>Mô tả:</strong> Công việc được hoàn thành bởi những con người cam kết. Sự phụ thuộc lẫn nhau vào "cổ phần chung" trong mục tiêu tổ chức dẫn đến mối quan hệ dựa trên tin tưởng và tôn trọng. Lãnh đạo đạt được cả kết quả cao lẫn sự hài lòng của nhân viên.</p>
+  <p><strong>Nền tảng của phong cách (9,9):</strong></p>
+  <ul>
+    <li><strong>Shared goals (Mục tiêu chung):</strong> Lãnh đạo và nhân viên cùng hiểu và cam kết với mục tiêu tổ chức — không chỉ đơn thuần làm theo lệnh hay làm vừa lòng sếp.</li>
+    <li><strong>Trust and respect (Tin tưởng và tôn trọng):</strong> Mối quan hệ được xây dựng trên tin tưởng thực sự, không phải sự thân thiện giả tạo.</li>
+    <li><strong>High expectations (Kỳ vọng cao):</strong> Lãnh đạo đặt ra tiêu chuẩn cao và hỗ trợ nhân viên đạt tiêu chuẩn đó — không giảm tiêu chuẩn để dễ chịu với nhân viên (Country Club) và cũng không áp đặt tiêu chuẩn mà không quan tâm đến con người (Authority-Compliance).</li>
+    <li><strong>Participation (Tham gia):</strong> Nhân viên được tham gia vào quá trình ra quyết định một cách thực chất.</li>
+  </ul>
+  <p><strong>Hậu quả:</strong> Hiệu suất cao nhất bền vững dài hạn, kết hợp với tinh thần nhân viên và sự gắn kết cao. Blake & Mouton lập luận đây là phong cách lãnh đạo tốt nhất trong mọi tình huống.</p>
+  <div class="callout important" style="margin-top: 10px;">
+    <strong>Phê bình về tuyên bố (9,9) là "tốt nhất trong mọi tình huống":</strong><br>
+    Blake & Mouton tuyên bố (9,9) Team Management là phong cách tốt nhất phổ quát. Đây là điểm bị phê bình nhiều nhất của Leadership Grid — vì nhiều nghiên cứu thực tiễn cho thấy phong cách tốt nhất phụ thuộc vào tình huống. Ví dụ: trong khủng hoảng cần hành động nhanh, (9,1) có thể tạm thời hiệu quả hơn. Đây là hạn chế chính của Behavioral Approach — và là lý do để nghiên cứu chuyển sang Situational Approach (Ch5).
+  </div>
+</div>
+
+<hr/>
+
+<h3>2.5 Điểm mạnh và Phê bình của Behavioral Approach</h3>
+
+<h4>Điểm mạnh:</h4>
+<ol>
+  <li><strong>Chuyển trọng tâm sang hành vi có thể quan sát:</strong> Behavioral Approach cho phép đo lường và nghiên cứu lãnh đạo một cách khoa học hơn — thay vì phỏng đoán về đặc điểm hay kỹ năng tiềm ẩn, có thể quan sát và đo lường hành vi cụ thể.</li>
+  <li><strong>Mở ra hướng phát triển lãnh đạo có thể đào tạo:</strong> Nếu lãnh đạo là về hành vi, thì có thể dạy người ta hành xử theo cách lãnh đạo hiệu quả. Đây là cơ sở lý luận cho các chương trình đào tạo lãnh đạo hiện đại.</li>
+  <li><strong>Xác định hai chiều nền tảng:</strong> Việc xác định hai chiều task-oriented và people-oriented đã trở thành nền tảng cho hầu hết các lý thuyết lãnh đạo sau này. Situational Leadership (Ch5), Path-Goal Theory (Ch6), và nhiều mô hình khác đều xây dựng dựa trên hai chiều này.</li>
+  <li><strong>Leadership Grid cụ thể và thực hành:</strong> Ma trận 9x9 với 5 phong cách rõ ràng rất dễ hiểu và áp dụng trong thực tế. Nó trở thành công cụ phổ biến trong đào tạo doanh nghiệp.</li>
+  <li><strong>Nhấn mạnh hai chiều không loại trừ nhau:</strong> Đóng góp quan trọng của Ohio State Studies — task-oriented và relationship-oriented không phải đối lập, mà lãnh đạo có thể cao cả hai.</li>
+</ol>
+
+<h4>Phê bình/Hạn chế:</h4>
+<ol>
+  <li><strong>Không tính đến tình huống:</strong> Phê bình lớn nhất. Behavioral Approach không giải thích tại sao cùng một phong cách hành vi có thể hiệu quả trong tình huống này nhưng thất bại trong tình huống khác. Câu hỏi "Khi nào nên dùng phong cách nào?" không được trả lời — và đây là động lực cho sự xuất hiện của Situational Approach.</li>
+  <li><strong>Tuyên bố phong cách "tốt nhất" không đủ bằng chứng:</strong> Blake & Mouton tuyên bố (9,9) Team Management là tốt nhất trong mọi tình huống — nhưng nghiên cứu thực nghiệm không xác nhận điều này một cách nhất quán. Phong cách tốt nhất thay đổi theo tình huống.</li>
+  <li><strong>Thiếu bằng chứng nhất quán về mối liên hệ phong cách-kết quả:</strong> Dù nhiều nghiên cứu tìm thấy mối liên hệ giữa High Consideration/High Structure và kết quả tốt, kết quả không nhất quán. Một số nghiên cứu không tìm thấy mối liên hệ rõ ràng.</li>
+  <li><strong>Bỏ qua vai trò của người theo:</strong> Giống các approach trước, Behavioral Approach tập trung vào người lãnh đạo mà bỏ qua đặc điểm, nhu cầu, và mức độ trưởng thành của người theo — yếu tố quan trọng sẽ được đề cập trong Situational Approach.</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="s3">3. Mô hình & Khung lý thuyết: The Leadership Grid</h2>
+<!-- ============================================================ -->
+
+<div class="section-label">Section 3 – Models & Frameworks</div>
+
+<h3>3.1 Leadership Grid — Biểu đồ Ma trận</h3>
+
+<div class="grid-container">
+  <table style="width:100%; border-collapse:collapse;">
+    <tr>
+      <td style="width:30px; vertical-align:middle; border:none; text-align:center;">
+        <div class="grid-y-label">CONCERN FOR PEOPLE (Quan tâm Con người)</div>
+      </td>
+      <td>
+        <table class="grid-table">
+          <tr>
+            <td style="background:#d4f0e0; border:2px solid #27ae60; font-weight:bold;">
+              <strong style="color:#27ae60;">(1,9)</strong><br>
+              COUNTRY CLUB<br>
+              <small>Quan tâm cao người, ít nhiệm vụ</small>
+            </td>
+            <td style="background:#f5f5f5;border:1px solid #ccc;color:#999; font-size:0.75rem;"></td>
+            <td style="background:#daeeff; border:2px solid #1a3c6e; font-weight:bold;">
+              <strong style="color:#1a3c6e;">(9,9)</strong><br>
+              TEAM MANAGEMENT<br>
+              <small>Cao cả hai — Lý tưởng</small>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#f5f5f5;border:1px solid #ccc;color:#999; font-size:0.75rem;"></td>
+            <td style="background:#fff3cd; border:2px solid #e8a020; font-weight:bold;">
+              <strong style="color:#856404;">(5,5)</strong><br>
+              MIDDLE-OF-ROAD<br>
+              <small>Trung dung — Cân bằng</small>
+            </td>
+            <td style="background:#f5f5f5;border:1px solid #ccc;color:#999; font-size:0.75rem;"></td>
+          </tr>
+          <tr>
+            <td style="background:#e9ecef; border:2px solid #888; font-weight:bold;">
+              <strong style="color:#555;">(1,1)</strong><br>
+              IMPOVERISHED<br>
+              <small>Thấp cả hai — Tệ nhất</small>
+            </td>
+            <td style="background:#f5f5f5;border:1px solid #ccc;color:#999; font-size:0.75rem;"></td>
+            <td style="background:#fde4e4; border:2px solid #c0392b; font-weight:bold;">
+              <strong style="color:#c0392b;">(9,1)</strong><br>
+              AUTHORITY-COMPLIANCE<br>
+              <small>Cao nhiệm vụ, ít quan tâm người</small>
+            </td>
+          </tr>
+        </table>
+        <div style="text-align:center; margin-top:8px; font-weight:bold; color:var(--primary); font-size:0.9rem;">
+          CONCERN FOR PRODUCTION (Quan tâm Nhiệm vụ) →<br>
+          <small style="color:var(--muted);">1 (Thấp) ←→ 9 (Cao)</small>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h3>3.2 Tổng hợp 5 Phong cách — Bảng so sánh</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Phong cách</th>
+      <th>Tọa độ</th>
+      <th>Concern for People</th>
+      <th>Concern for Production</th>
+      <th>Tinh thần nhân viên</th>
+      <th>Hiệu suất công việc</th>
+      <th>Thích hợp khi nào?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Impoverished</strong></td>
+      <td>(1,1)</td>
+      <td><span class="badge badge-red">Thấp</span></td>
+      <td><span class="badge badge-red">Thấp</span></td>
+      <td>Rất thấp</td>
+      <td>Rất thấp</td>
+      <td>Không bao giờ lý tưởng</td>
+    </tr>
+    <tr>
+      <td><strong>Country Club</strong></td>
+      <td>(1,9)</td>
+      <td><span class="badge badge-green">Cao</span></td>
+      <td><span class="badge badge-red">Thấp</span></td>
+      <td>Cao ngắn hạn</td>
+      <td>Thấp</td>
+      <td>Giai đoạn phục hồi tinh thần; tổ chức phi lợi nhuận xã hội</td>
+    </tr>
+    <tr>
+      <td><strong>Authority-Compliance</strong></td>
+      <td>(9,1)</td>
+      <td><span class="badge badge-red">Thấp</span></td>
+      <td><span class="badge badge-green">Cao</span></td>
+      <td>Thấp</td>
+      <td>Cao ngắn hạn</td>
+      <td>Khủng hoảng cấp bách; công việc lặp lại đơn giản</td>
+    </tr>
+    <tr>
+      <td><strong>Middle-of-the-Road</strong></td>
+      <td>(5,5)</td>
+      <td><span class="badge badge-yellow">Trung bình</span></td>
+      <td><span class="badge badge-yellow">Trung bình</span></td>
+      <td>Trung bình</td>
+      <td>Trung bình</td>
+      <td>Môi trường ổn định; khi không có áp lực thay đổi</td>
+    </tr>
+    <tr>
+      <td><strong>Team Management</strong></td>
+      <td>(9,9)</td>
+      <td><span class="badge badge-green">Cao</span></td>
+      <td><span class="badge badge-green">Cao</span></td>
+      <td>Cao bền vững</td>
+      <td>Cao bền vững</td>
+      <td>Blake & Mouton: lý tưởng trong mọi tình huống (tuy nhiên, xem phê bình)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>3.3 Tiến trình lịch sử: Từ Ohio State/Michigan đến Leadership Grid</h3>
+
+<div class="callout">
+  <pre style="font-family: monospace; font-size: 0.88rem;">
+Ohio State Studies (1940s-1950s)
+  → Xác định 2 chiều ĐỘC LẬP:
+     Initiating Structure (Task)
+     Consideration (People)
+
+Michigan Studies (1950s)
+  → Xác định 2 định hướng:
+     Production-Oriented (Task)
+     Employee-Oriented (People)
+
+         ↓ TỔNG HỢP
+
+Blake & Mouton (1964) — Managerial Grid
+  → Kết hợp 2 chiều thành ma trận 9x9
+  → 5 phong cách điển hình
+
+Blake & McCanse (1991) — Leadership Grid
+  → Đổi tên, cập nhật, tiếp tục sử dụng
+  </pre>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s4">4. Ví dụ thực tiễn</h2>
+<!-- ============================================================ -->
+
+<div class="section-label">Section 4 – Practical Examples</div>
+
+<h3>4.1 Case: Phân tích phong cách lãnh đạo thực tế</h3>
+
+<p><strong>Tình huống 1 — Giám đốc nhà máy (Authority-Compliance, 9,1):</strong> Trưởng ca sản xuất trong nhà máy điện tử. Mỗi buổi sáng phân công ca rõ ràng, đặt chỉ tiêu sản lượng cụ thể, giám sát liên tục, và phạt ngay khi không đạt. Không bao giờ hỏi thăm cá nhân, không quan tâm đến lý do. Kết quả: sản lượng đạt chỉ tiêu ngắn hạn, nhưng tỷ lệ nghỉ việc 40% mỗi năm, và công nhân không báo cáo lỗi sản xuất sớm vì sợ bị phạt.</p>
+
+<p><strong>Tình huống 2 — Trưởng phòng sáng tạo (Country Club, 1,9):</strong> Trưởng nhóm thiết kế của agency quảng cáo. Luôn bảo vệ team trước khách hàng khó tính, không bao giờ phê bình ý tưởng, tạo không khí cực kỳ thoải mái. Kết quả: team yêu quý trưởng nhóm, nhưng deadline liên tục bị trễ, chất lượng công việc không đều, và agency mất 2 khách hàng lớn.</p>
+
+<p><strong>Tình huống 3 — CEO startup (Team Management, 9,9):</strong> CEO của công ty SaaS B2B. Đặt mục tiêu tham vọng (OKR quý), hàng tuần review tiến độ nghiêm túc, nhưng đồng thời: tổ chức 1:1 monthly với từng quản lý để hiểu khó khăn cá nhân, cho phép remote work linh hoạt, và chia sẻ equity cho team. Khi miss target, cùng phân tích nguyên nhân thay vì đổ lỗi. Kết quả: retention 90% sau 2 năm, tăng trưởng doanh thu 150% YoY.</p>
+
+<h3>4.2 Ứng dụng Leadership Grid trong Phát triển Lãnh đạo</h3>
+
+<p><strong>Bài tập tự đánh giá:</strong> Nhiều chương trình đào tạo lãnh đạo sử dụng Leadership Grid như công cụ self-assessment:</p>
+<ol>
+  <li>Hoàn thành bảng hỏi đo lường mức độ Concern for Production và Concern for People trong hành vi lãnh đạo của mình</li>
+  <li>Vẽ vị trí của mình trên Grid</li>
+  <li>So sánh với tự nhận xét của mình trước đó — thường có khoảng cách (blind spots)</li>
+  <li>Nhận phản hồi từ đồng nghiệp và cấp dưới (360 feedback) về họ thấy phong cách của mình như thế nào</li>
+  <li>Lập kế hoạch phát triển để tiến về phía (9,9)</li>
+</ol>
+
+<h3>4.3 Ohio State LBDQ trong Nghiên cứu Hiện đại</h3>
+
+<p>Leader Behavior Description Questionnaire (LBDQ) phát triển từ Ohio State Studies vẫn được sử dụng rộng rãi trong nghiên cứu lãnh đạo đến ngày nay. Phiên bản hiện đại (LBDQ-XII) bao gồm 12 thang đo phụ nhưng vẫn dựa trên hai chiều Initiating Structure và Consideration.</p>
+
+<p>Trong các nghiên cứu thực nghiệm hiện đại tại Việt Nam về lãnh đạo trong doanh nghiệp, thường sử dụng hai chiều này để so sánh phong cách lãnh đạo của các nhà quản lý Việt Nam vs. quản lý nước ngoài trong các công ty đa quốc gia. Kết quả phổ biến: quản lý Việt Nam truyền thống thường có Initiating Structure thấp hơn và Consideration cao hơn do ảnh hưởng của văn hóa Á Đông (collectivism, face-saving).</p>
+
+<!-- ============================================================ -->
+<h2 id="s5">5. Lưu ý học tập & Bẫy nhận thức phổ biến</h2>
+<!-- ============================================================ -->
+
+<div class="section-label">Section 5 – Study Notes & Common Pitfalls</div>
+
+<h3>5.1 Những điểm HAY bị nhầm lẫn</h3>
+
+<div class="callout warning">
+  <strong>Bẫy 1: Nhầm Initiating Structure (Ohio State) với Production-Oriented (Michigan)</strong><br>
+  Về bản chất giống nhau (task-focused), nhưng khác nhau về tên gọi và nguồn gốc nghiên cứu. Initiating Structure = Ohio State; Production-Oriented = Michigan. Tương tự: Consideration (Ohio State) ≈ Employee-Oriented (Michigan). Trong bài thi, hãy dùng đúng tên gọi với đúng nghiên cứu.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 2: Nghĩ Ohio State và Michigan có cùng cấu trúc hai chiều</strong><br>
+  Ohio State: hai chiều ĐỘC LẬP — có thể cao cả hai. Michigan (ban đầu): hai đầu một thang — ngược chiều. Đây là sự khác biệt lý thuyết quan trọng. Northouse lưu ý rằng về sau nhiều nhà nghiên cứu xử lý Michigan như hai chiều độc lập giống Ohio State, nhưng nguyên bản ban đầu là khác nhau.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 3: Cho rằng (9,9) luôn là tốt nhất trong mọi tình huống</strong><br>
+  Blake & Mouton tuyên bố điều này — nhưng đây là điểm bị phê bình nhiều nhất. Trong bài thi, khi nói về điểm yếu của Behavioral Approach, hãy đề cập rằng tuyên bố "phong cách tốt nhất phổ quát" không được xác nhận bởi nghiên cứu thực nghiệm, và đây là lý do dẫn đến sự phát triển của Situational Approach.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 4: Nhầm (1,9) Country Club với lãnh đạo tốt</strong><br>
+  Nhiều sinh viên nhầm rằng "quan tâm nhiều đến người" = lãnh đạo tốt. Không phải. (1,9) là phong cách yếu kém vì hy sinh kết quả để đổi lấy sự dễ chịu. Lãnh đạo thực sự quan tâm đến người lẫn nhiệm vụ — đó là (9,9), không phải (1,9).
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 5: Quên rằng (5,5) Middle-of-the-Road không phải lý tưởng</strong><br>
+  "Cân bằng 50-50" nghe có vẻ hợp lý, nhưng Blake & Mouton cho rằng đây là phong cách thỏa hiệp — dẫn đến sự trì trệ. Lý tưởng là (9,9) — cao cả hai — không phải dung hòa ở mức trung bình.
+</div>
+
+<div class="callout warning">
+  <strong>Bẫy 6: Nhầm "Behavioral Approach" với "Behavioral Theories of Learning" (Skinner)</strong><br>
+  Trong GK5009, "Behavioral Approach" chỉ phong cách/hành vi của lãnh đạo (leadership style). Không liên quan đến Behavioral Psychology hay thuyết điều kiện hóa của Skinner (mặc dù tên gọi tương tự trong tiếng Anh).
+</div>
+
+<h3>5.2 Câu hỏi ôn tập quan trọng</h3>
+
+<ol>
+  <li>Tại sao Behavioral Approach được xem là bước tiến quan trọng so với Trait Approach và Skills Approach trong lịch sử lý thuyết lãnh đạo? Câu hỏi trọng tâm của nó là gì?</li>
+  <li>Mô tả Ohio State Studies. Hai chiều Initiating Structure và Consideration khác nhau như thế nào? Tại sao điều quan trọng là chúng là hai chiều độc lập, không phải hai đầu một thang?</li>
+  <li>So sánh Ohio State Studies và Michigan Studies — điểm giống và khác nhau về hai chiều hành vi lãnh đạo.</li>
+  <li>Mô tả Leadership Grid (Blake & McCanse, 1991). Giải thích 5 phong cách lãnh đạo với tọa độ, đặc điểm, và hệ quả của từng phong cách.</li>
+  <li>Tại sao tuyên bố rằng (9,9) Team Management là phong cách tốt nhất trong mọi tình huống bị phê bình? Điều này dẫn đến sự xuất hiện của lý thuyết nào sau đó?</li>
+</ol>
+
+<h3>5.3 Từ khóa & Thuật ngữ quan trọng</h3>
+
+<table>
+  <thead>
+    <tr><th>Thuật ngữ</th><th>Định nghĩa ngắn gọn</th><th>Nguồn</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Behavioral Approach / Style Approach</strong></td><td>Tiếp cận lãnh đạo tập trung vào hành vi quan sát được của lãnh đạo</td><td>Tổng quát</td></tr>
+    <tr><td><strong>Initiating Structure</strong></td><td>Hành vi tổ chức công việc, đặt mục tiêu, và xác định vai trò (task-focused)</td><td>Ohio State</td></tr>
+    <tr><td><strong>Consideration</strong></td><td>Hành vi xây dựng quan hệ tin tưởng, tôn trọng, và quan tâm người (people-focused)</td><td>Ohio State</td></tr>
+    <tr><td><strong>LBDQ</strong></td><td>Leader Behavior Description Questionnaire — công cụ đo lường hành vi lãnh đạo của Ohio State</td><td>Ohio State</td></tr>
+    <tr><td><strong>Production-Oriented</strong></td><td>Định hướng về kết quả và nhiệm vụ (task-focused)</td><td>Michigan</td></tr>
+    <tr><td><strong>Employee-Oriented</strong></td><td>Định hướng về nhu cầu và mối quan hệ với nhân viên (people-focused)</td><td>Michigan</td></tr>
+    <tr><td><strong>Managerial Grid / Leadership Grid</strong></td><td>Ma trận 9x9 biểu diễn 5 phong cách lãnh đạo theo 2 chiều</td><td>Blake & Mouton (1964); Blake & McCanse (1991)</td></tr>
+    <tr><td><strong>Concern for Production</strong></td><td>Trục X của Grid — mức độ quan tâm đến nhiệm vụ và kết quả</td><td>Blake & Mouton</td></tr>
+    <tr><td><strong>Concern for People</strong></td><td>Trục Y của Grid — mức độ quan tâm đến nhu cầu và mối quan hệ nhân viên</td><td>Blake & Mouton</td></tr>
+    <tr><td><strong>(1,1) Impoverished</strong></td><td>Thấp cả hai chiều — nỗ lực tối thiểu</td><td>Blake & Mouton</td></tr>
+    <tr><td><strong>(1,9) Country Club</strong></td><td>Cao People, thấp Production — hy sinh kết quả vì sự dễ chịu</td><td>Blake & Mouton</td></tr>
+    <tr><td><strong>(9,1) Authority-Compliance</strong></td><td>Cao Production, thấp People — kết quả trên hết, không quan tâm người</td><td>Blake & Mouton</td></tr>
+    <tr><td><strong>(5,5) Middle-of-the-Road</strong></td><td>Trung bình cả hai — thỏa hiệp, không xuất sắc</td><td>Blake & Mouton</td></tr>
+    <tr><td><strong>(9,9) Team Management</strong></td><td>Cao cả hai — lý tưởng; cam kết chung, tin tưởng, kết quả cao</td><td>Blake & Mouton</td></tr>
+  </tbody>
+</table>
+
+<hr/>
+<p style="text-align:center; color:var(--muted); font-size:0.85rem;">GK5009 – Quản lý và Lãnh đạo | HK252 | Tài liệu học tập tổng hợp | Nguồn: Northouse (2021), 7th ed., Chapter 4; Ohio State Studies; Michigan Studies; Blake & Mouton (1964); Blake & McCanse (1991)</p>
+
+</body>
+</html>

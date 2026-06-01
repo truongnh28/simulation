@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MLA HK252 · Protocol Lab</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;min-height:100vh}
+
+/* ── Tab bar ── */
+.tab-bar{background:#0f172a;display:flex;justify-content:center;gap:0;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.tab-btn{padding:.9rem 2.2rem;font-size:.88rem;font-weight:700;color:#64748b;background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;transition:color .15s,border-color .15s;margin-bottom:-1px;display:flex;align-items:center;gap:.5rem;letter-spacing:.02em}
+.tab-btn.active{color:#fff;border-bottom-color:#38bdf8}
+.tab-btn:hover:not(.active){color:#94a3b8}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ════════════════════════════════
+   MLA panel styles
+════════════════════════════════ */
+#panel-mla header{background:linear-gradient(135deg,#0a1f10,#14532d);color:#fff;padding:3rem 2rem;text-align:center}
+#panel-mla header h1{font-size:2rem;font-weight:800;color:#86efac;margin-bottom:.5rem}
+#panel-mla header p{color:#d1fae5;font-size:1rem}
+#panel-mla .grid-wrap{max-width:1100px;margin:2.5rem auto;padding:0 1.5rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
+#panel-mla .card{background:#fff;border-radius:10px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:transform .15s,box-shadow .15s;text-decoration:none;color:inherit;display:flex;flex-direction:column}
+#panel-mla .card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+#panel-mla .card-top{padding:1.2rem 1.4rem;display:flex;align-items:center;gap:.85rem}
+#panel-mla .card-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+#panel-mla .card-tag{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;opacity:.7;margin-bottom:.15rem}
+#panel-mla .card-title{font-size:1rem;font-weight:700;line-height:1.3}
+#panel-mla .card-desc{padding:.1rem 1.4rem 1.2rem;font-size:.8rem;color:#64748b;line-height:1.5;flex:1}
+#panel-mla .card-footer{padding:.6rem 1.4rem;border-top:1px solid #f1f5f9;font-size:.75rem;color:#94a3b8;display:flex;align-items:center;gap:.35rem}
+.ic-green{background:#dcfce7;color:#15803d}
+.ic-blue{background:#dbeafe;color:#1d4ed8}
+.ic-purple{background:#f3e8ff;color:#7e22ce}
+.ic-orange{background:#ffedd5;color:#c2410c}
+.ic-teal{background:#ccfbf1;color:#0f766e}
+.ic-red{background:#fee2e2;color:#b91c1c}
+.ic-yellow{background:#fef9c3;color:#a16207}
+.ic-indigo{background:#e0e7ff;color:#4338ca}
+#panel-mla .section-label{max-width:1100px;margin:2rem auto 0;padding:0 1.5rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;font-weight:800;color:#64748b}
+#panel-mla footer{text-align:center;padding:2rem;color:#94a3b8;font-size:.8rem;margin-top:2rem}
+
+/* ════════════════════════════════
+   Protocol Lab panel styles
+════════════════════════════════ */
+#panel-proto{
+  --bg:#ffffff;--bg2:#f8fafc;--bg3:#f1f5f9;--border:#e2e8f0;
+  --text:#1e293b;--text2:#475569;--text3:#94a3b8;--dark:#0f172a;
+  --blue:#0369a1;--purple:#7c3aed;--teal:#0d9488;
+  --orange:#c2410c;--green:#15803d;--indigo:#4338ca;
+  background:var(--bg);color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.7;
+}
+#panel-proto .hero{
+  background:var(--dark);
+  background-image:
+    radial-gradient(ellipse at 20% 60%,rgba(14,165,233,.2) 0%,transparent 55%),
+    radial-gradient(ellipse at 78% 28%,rgba(124,58,237,.16) 0%,transparent 55%),
+    radial-gradient(ellipse at 55% 95%,rgba(21,128,61,.1) 0%,transparent 50%);
+  padding:5.5rem 2rem 4.5rem;text-align:center;
+}
+#panel-proto .eyebrow{
+  display:inline-block;background:rgba(14,165,233,.14);border:1px solid rgba(14,165,233,.3);
+  color:#38bdf8;font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  padding:.32rem .85rem;border-radius:999px;margin-bottom:1.5rem;
+}
+#panel-proto .hero h1{font-size:clamp(2.4rem,5.5vw,3.8rem);font-weight:900;color:#fff;line-height:1.08;margin-bottom:1.25rem;letter-spacing:-.025em}
+#panel-proto .hero h1 em{color:#38bdf8;font-style:normal}
+#panel-proto .hero-sub{font-size:1.05rem;color:#94a3b8;max-width:530px;margin:0 auto 3.25rem;line-height:1.8}
+#panel-proto .hero-stats{display:flex;justify-content:center;gap:3.5rem;flex-wrap:wrap}
+#panel-proto .stat{text-align:center}
+#panel-proto .stat-num{font-size:2.1rem;font-weight:900;color:#fff;line-height:1}
+#panel-proto .stat-label{font-size:.7rem;color:#475569;margin-top:.35rem;text-transform:uppercase;letter-spacing:.1em}
+#panel-proto .container{max-width:1100px;margin:0 auto;padding:0 2rem}
+#panel-proto .section{padding:4rem 0}
+#panel-proto .section+.section{border-top:1px solid var(--border)}
+#panel-proto .sec-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:var(--text3);margin-bottom:.4rem}
+#panel-proto .sec-title{font-size:1.65rem;font-weight:800;color:var(--dark);margin-bottom:.5rem}
+#panel-proto .sec-sub{font-size:.93rem;color:var(--text2);margin-bottom:2.5rem}
+#panel-proto .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+@media(max-width:880px){#panel-proto .grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:540px){#panel-proto .grid{grid-template-columns:1fr}}
+#panel-proto .card{background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:box-shadow .2s,transform .2s}
+#panel-proto .card:hover{box-shadow:0 10px 36px rgba(0,0,0,.1);transform:translateY(-3px)}
+#panel-proto .card-bar{height:5px}
+#panel-proto .card-inner{padding:1.5rem;flex:1;display:flex;flex-direction:column}
+#panel-proto .card-badge{display:inline-block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;padding:.22rem .6rem;border-radius:6px;margin-bottom:1rem}
+#panel-proto .card-title{font-size:1.2rem;font-weight:800;color:var(--dark);margin-bottom:.55rem;line-height:1.2}
+#panel-proto .card-desc{font-size:.875rem;color:var(--text2);line-height:1.65;flex:1;margin-bottom:1.25rem}
+#panel-proto .card-desc code{background:rgba(0,0,0,.06);padding:.1em .35em;border-radius:3px;font-size:.88em;font-family:'JetBrains Mono',monospace}
+#panel-proto .card-meta{display:flex;gap:.55rem;flex-wrap:wrap;margin-bottom:1.1rem}
+#panel-proto .chip{font-size:.71rem;color:var(--text3);background:var(--bg3);padding:.18rem .55rem;border-radius:999px}
+#panel-proto .card-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1.5rem}
+#panel-proto .tag{font-size:.69rem;font-weight:600;padding:.18rem .5rem;border-radius:4px}
+#panel-proto .btn{display:inline-flex;align-items:center;gap:.35rem;font-size:.82rem;font-weight:700;padding:.5rem 1rem;border-radius:8px;text-decoration:none;transition:opacity .15s;align-self:flex-start;color:white}
+#panel-proto .btn:hover{opacity:.85}
+/* Protocol color schemes */
+#panel-proto .c-http .card-bar{background:linear-gradient(90deg,#0369a1,#0ea5e9)}
+#panel-proto .c-http .card-badge{background:#e0f2fe;color:#0369a1}
+#panel-proto .c-http .tag{background:#e0f2fe;color:#0369a1}
+#panel-proto .c-http .btn{background:#0369a1}
+#panel-proto .c-grpc .card-bar{background:linear-gradient(90deg,#7c3aed,#a855f7)}
+#panel-proto .c-grpc .card-badge{background:#faf5ff;color:#7c3aed}
+#panel-proto .c-grpc .tag{background:#faf5ff;color:#7c3aed}
+#panel-proto .c-grpc .btn{background:#7c3aed}
+#panel-proto .c-ws .card-bar{background:linear-gradient(90deg,#0d9488,#14b8a6)}
+#panel-proto .c-ws .card-badge{background:#f0fdfa;color:#0d9488}
+#panel-proto .c-ws .tag{background:#f0fdfa;color:#0d9488}
+#panel-proto .c-ws .btn{background:#0d9488}
+#panel-proto .c-webrtc .card-bar{background:linear-gradient(90deg,#c2410c,#f97316)}
+#panel-proto .c-webrtc .card-badge{background:#fff7ed;color:#c2410c}
+#panel-proto .c-webrtc .tag{background:#fff7ed;color:#c2410c}
+#panel-proto .c-webrtc .btn{background:#c2410c}
+#panel-proto .c-mqtt .card-bar{background:linear-gradient(90deg,#15803d,#22c55e)}
+#panel-proto .c-mqtt .card-badge{background:#dcfce7;color:#15803d}
+#panel-proto .c-mqtt .tag{background:#dcfce7;color:#15803d}
+#panel-proto .c-mqtt .btn{background:#15803d}
+#panel-proto .c-chat .card-bar{background:linear-gradient(90deg,#0d9488,#14b8a6)}
+#panel-proto .c-chat .card-badge{background:#f0fdfa;color:#0d9488}
+#panel-proto .c-chat .tag{background:#f0fdfa;color:#0d9488}
+#panel-proto .c-chat .btn{background:#0d9488}
+#panel-proto .c-lab .card-bar{background:linear-gradient(90deg,#4338ca,#6366f1)}
+#panel-proto .c-lab .card-badge{background:#eef2ff;color:#4338ca}
+#panel-proto .c-lab .tag{background:#eef2ff;color:#4338ca}
+#panel-proto .c-lab .btn{background:#4338ca}
+#panel-proto .c-loopback .card-bar{background:linear-gradient(90deg,#c2410c,#f97316)}
+#panel-proto .c-loopback .card-badge{background:#fff7ed;color:#c2410c}
+#panel-proto .c-loopback .tag{background:#fff7ed;color:#c2410c}
+#panel-proto .c-loopback .btn{background:#c2410c}
+#panel-proto .c-viterbi .card-bar{background:linear-gradient(90deg,#475569,#64748b)}
+#panel-proto .c-viterbi .card-badge{background:var(--bg3);color:var(--text3)}
+#panel-proto .c-viterbi .tag{background:var(--bg3);color:var(--text3)}
+#panel-proto .c-viterbi .btn{background:#475569}
+#panel-proto .status{display:inline-flex;align-items:center;gap:.3rem;font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:999px;margin-bottom:1rem}
+#panel-proto .status-static{background:#dcfce7;color:#15803d}
+#panel-proto .status-server{background:#fef3c7;color:#92400e}
+#panel-proto .status-soon{background:var(--bg3);color:var(--text3)}
+#panel-proto .status-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+#panel-proto .tip-box{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:1rem 1.25rem;margin-top:2rem;font-size:.9rem;color:#92400e;display:flex;gap:.75rem;align-items:flex-start}
+#panel-proto .tip-icon{font-size:1.1rem;flex-shrink:0;margin-top:.1rem}
+#panel-proto .tip-box p{color:#92400e;margin:0;line-height:1.65}
+#panel-proto .tip-box strong{color:#78350f}
+#panel-proto .compare{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:2rem;margin-top:3rem}
+#panel-proto .compare h3{font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:1.5rem}
+#panel-proto table{width:100%;border-collapse:collapse;font-size:.84rem}
+#panel-proto th{padding:.6rem .9rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;border-bottom:2px solid var(--border);text-align:center;white-space:nowrap}
+#panel-proto th:first-child{text-align:left;color:var(--text3)}
+#panel-proto .th-http{color:var(--blue)}
+#panel-proto .th-grpc{color:var(--purple)}
+#panel-proto .th-ws{color:var(--teal)}
+#panel-proto .th-webrtc{color:var(--orange)}
+#panel-proto .th-mqtt{color:var(--green)}
+#panel-proto td{padding:.52rem .9rem;border-bottom:1px solid var(--bg3);color:var(--text2);text-align:center;vertical-align:top;font-size:.82rem}
+#panel-proto td:first-child{font-weight:700;color:var(--dark);text-align:left}
+#panel-proto tr:last-child td{border-bottom:none}
+#panel-proto tr:hover td{background:var(--bg3)}
+@media(max-width:760px){#panel-proto .compare{overflow-x:auto}#panel-proto table{min-width:620px}}
+#panel-proto footer{background:var(--dark);color:#475569;text-align:center;padding:2.5rem 2rem;font-size:.82rem;line-height:1.9}
+#panel-proto footer a{color:#64748b;text-decoration:none;transition:color .15s}
+#panel-proto footer a:hover{color:#94a3b8}
+#panel-proto .footer-links{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin-top:.75rem;font-size:.79rem}
+#panel-proto .footer-divider{color:#334155}
+</style>
+</head>
+<body>
+
+<!-- ── Tab bar ── -->
+<nav class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('mla',this)">
+    <i class="fas fa-brain"></i> Học Máy &amp; Ứng Dụng
+  </button>
+  <button class="tab-btn" onclick="switchTab('proto',this)">
+    <i class="fas fa-network-wired"></i> Protocol Lab
+  </button>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     TAB 1 · MLA
+══════════════════════════════════════════ -->
+<div id="panel-mla" class="tab-panel active">
+
+<header>
+  <h1><i class="fas fa-brain"></i> Học Máy &amp; Ứng Dụng</h1>
+  <p>Ôn thi Cuối Kỳ — HK252 | CO5175 / CO5241 &nbsp;·&nbsp; HCMUT</p>
+  <p style="margin-top:.5rem;font-size:.85rem;color:#a7f3d0">Chọn chương để mở tài liệu chi tiết</p>
+</header>
+
+<div class="section-label">Phân loại có giám sát</div>
+<div class="grid-wrap">
+
+  <a href="knn.html" class="card">
+    <div class="card-top">
+      <div class="card-icon ic-green"><i class="fas fa-map-marker-alt"></i></div>
+      <div><div class="card-tag">Chương 3</div><div class="card-title">K-Nearest Neighbors</div></div>
+    </div>
+    <div class="card-desc">Lazy learning, khoảng cách Euclidean/Manhattan/Minkowski, chuẩn hóa Min-Max/Z-score, KD-Tree, ảnh hưởng của K.</div>
+    <div class="card-footer"><i class="fas fa-book-open"></i> knn.html</div>
+  </a>
+
+  <a href="bayes.html" class="card">
+    <div class="card-top">
+      <div class="card-icon ic-blue"><i class="fas fa-calculator"></i></div>
+      <div><div class="card-tag">Chương 4</div><div class="card-title">Naive Bayes</div></div>
+    </div>
+    <div class="card-desc">Định lý Bayes, giả định độc lập có điều kiện, Gaussian NB, Multinomial NB, Laplace smoothing, overconfident posterior.</div>
+    <div class="card-footer"><i class="fas fa-book-open"></i> bayes.html</div>
+  </a>
+
+  <a href="dtree.html" class="card">
+    <div class="card-top">
+      <div class="card-icon ic-teal"><i class="fas fa-tree"></i></div>
+      <div><div class="card-tag">Chương 5</div><div class="card-title">Decision Trees</div></div>
+    </div>
+    <div class="card-desc">Information Gain, Entropy, Gini Index, CART, pruning, overfitting.</div>
+    <div class="card-footer"><i class="fas fa-book-open"></i> dtree.html</div>
+  </a>
+
+  <a href="nn.html" class="card">
+    <div class="card-top">
+      <div class="card-icon ic-purple"><i class="fas fa-network-wired"></i></div>
+      <div><div class="card-tag">Chương 7</div><div class="card-title">Neural Networks</div></div>
+    </div>
+    <div class="card-desc">Perceptron, feedforward network, backpropagation, activation functions, cross-entropy vs MSE.</div>
+    <div class="card-footer"><i class="fas fa-book-open"></i> nn.html</div>
+  </a>
+
+  <a href="svm.html" class="card">
+    <div class="card-top">
+      <div class="card-icon ic-orange"><i class="fas fa-compress-arrows-alt"></i></div>
+      <div><div class="card-tag">Chương 8</div><div class="card-title">Support Vector Machines</div></div>
+    </div>
+    <div class="card-desc">Maximum margin hyperplane, hard/soft-margin, Kernel trick (RBF), Gram matrix, Hinge Loss, tham số C và γ.</div>
+    <div class="card-footer"><i class="fas fa-book-open"></i> svm.html</div>
+  </a>
+
+  <a href="ensemble.html" class="card">
+    <div class="card-top">
+      <div class="card-icon ic-indigo"><i class="fas fa-layer-group"></i></div>
+      <div><div class="card-tag">Chương 9</div><div class="card-title">Ensemble Methods</div></div>
+    </div>
+    <div class="card-desc">Bagging, Random Forest, Boosting (AdaBoost, Gradient Boosting), voting classifiers.</div>
+    <div class="card-footer"><i class="fas fa-book-open"></i> ensemble.html</div>
+  </a>
+
+  <a href="deep.html" class="card">
+    <div class="card-top">
+      <div class="card-icon ic-red"><i class="fas fa-microchip"></i></div>
+      <div><div class="card-tag">Chương 12</div><div class="card-title">Deep Learning</div></div>
+    </div>
+    <div class="card-desc">CNN, RNN, LSTM, batch normalization, dropout, transfer learning, attention mechanism.</div>
+    <div class="card-footer"><i class="fas fa-book-open"></i> deep.html</div>
+  </a>
+
+</div>
+
+<div class="section-label" style="margin-top:1.5rem">Chuyên đề ôn thi (theo sum.md)</div>
+<div class="grid-wrap">
+
+  <a href="hmm.html" class="card">
+    <div class="card-top">
+      <div class="card-icon ic-purple"><i class="fas fa-random"></i></div>
+      <div><div class="card-tag">Chuyên đề</div><div class="card-title">Hidden Markov Models</div></div>
+    </div>
+    <div class="card-desc">λ=(A,B,π), Markov bậc 1/2, Forward, Viterbi (Bellman + log-space), Forward-Backward, Baum-Welch EM. Ví dụ số đầy đủ.</div>
+    <div class="card-footer"><i class="fas fa-book-open"></i> hmm.html</div>
+  </a>
+
+  <a href="kmeans.html" class="card">
+    <div class="card-top">
+      <div class="card-icon ic-teal"><i class="fas fa-object-group"></i></div>
+      <div><div class="card-tag">Chuyên đề</div><div class="card-title">K-Means Clustering</div></div>
+    </div>
+    <div class="card-desc">WCSS, Lloyd's algorithm, hội tụ hữu hạn, local minima, K-Medians (L1 → Median). Ví dụ số WCSS 17→10.33.</div>
+    <div class="card-footer"><i class="fas fa-book-open"></i> kmeans.html</div>
+  </a>
+
+  <a href="logreg.html" class="card">
+    <div class="card-top">
+      <div class="card-icon ic-blue"><i class="fas fa-chart-line"></i></div>
+      <div><div class="card-tag">Chuyên đề</div><div class="card-title">Logistic Regression</div></div>
+    </div>
+    <div class="card-desc">Logit, Odds Ratio, sigmoid, Cross-Entropy (gradient triệt tiêu), MSE+sigmoid vanishing, L2 regularization.</div>
+    <div class="card-footer"><i class="fas fa-book-open"></i> logreg.html</div>
+  </a>
+
+</div>
+
+<div class="section-label" style="margin-top:1.5rem">Đề thi</div>
+<div class="grid-wrap">
+
+  <a href="mock.html" class="card">
+    <div class="card-top">
+      <div class="card-icon ic-yellow"><i class="fas fa-file-alt"></i></div>
+      <div><div class="card-tag">Thi thử</div><div class="card-title">Đề Thi Thử 2026 — Mã 5231</div></div>
+    </div>
+    <div class="card-desc">25 câu MCQ có đáp án và giải thích chi tiết. Dataset CustomerChurn. Đáp án: 1.B 2.C 3.B 4.B 5.B …</div>
+    <div class="card-footer"><i class="fas fa-book-open"></i> mock.html</div>
+  </a>
+
+  <a href="exam2025.html" class="card">
+    <div class="card-top">
+      <div class="card-icon ic-red"><i class="fas fa-graduation-cap"></i></div>
+      <div><div class="card-tag">Đề thật</div><div class="card-title">Đề Cuối Kỳ 2025 — Mã 4218</div></div>
+    </div>
+    <div class="card-desc">25 câu MCQ kỳ thi thật HK242. Dataset CustomerChurn (TR01–TR10, TS01–TS04). Đáp án: 1.A 2.C 3.B …</div>
+    <div class="card-footer"><i class="fas fa-book-open"></i> exam2025.html</div>
+  </a>
+
+</div>
+
+<footer>MLA HK252 · CO5175 / CO5241 · HCMUT &nbsp;|&nbsp; Tài liệu ôn thi tổng hợp</footer>
+
+</div><!-- /panel-mla -->
+
+
+<!-- ══════════════════════════════════════════
+     TAB 2 · Protocol Lab
+══════════════════════════════════════════ -->
+<div id="panel-proto" class="tab-panel">
+
+<!-- Hero -->
+<header class="hero">
+  <div class="eyebrow">Network Protocols · Tiếng Việt</div>
+  <h1>Protocol <em>Lab</em></h1>
+  <p class="hero-sub">
+    Tài liệu deep-dive và live demos về các network protocol.<br>
+    Từ wire format đến production patterns — không chỉ "nó làm gì" mà "tại sao".
+  </p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">5</div><div class="stat-label">Deep Dives</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Live Demos</div></div>
+    <div class="stat"><div class="stat-num">83</div><div class="stat-label">Sections</div></div>
+    <div class="stat"><div class="stat-num">100+</div><div class="stat-label">Code Examples</div></div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Docs -->
+  <section class="section">
+    <p class="sec-label">Tài liệu</p>
+    <h2 class="sec-title">Protocol Deep Dives</h2>
+    <p class="sec-sub">Mỗi bài viết theo hướng bottom-up — wire format trước, abstractions sau. Có diagram SVG, bảng so sánh, và code ví dụ cho mỗi concept.</p>
+
+    <div class="grid">
+
+      <a class="card c-http" href="../docs/http-deep-dive.html">
+        <div class="card-bar"></div>
+        <div class="card-inner">
+          <span class="card-badge">HTTP</span>
+          <div class="card-title">HTTP Deep Dive</div>
+          <p class="card-desc">HTTP/1.0 → HTTP/1.1 → HTTPS → HTTP/2 → HTTP/3 — từng bước tiến hóa. Từ <code>GET / HTTP/1.0</code> đến QUIC streams trên UDP.</p>
+          <div class="card-meta"><span class="chip">19 sections</span><span class="chip">RFC 9114</span></div>
+          <div class="card-tags">
+            <span class="tag">TLS 1.3</span><span class="tag">HTTP/2 Framing</span><span class="tag">QUIC</span><span class="tag">Caching</span><span class="tag">CORS</span>
+          </div>
+          <span class="btn">Đọc bài →</span>
+        </div>
+      </a>
+
+      <a class="card c-grpc" href="../docs/grpc-deep-dive.html">
+        <div class="card-bar"></div>
+        <div class="card-inner">
+          <span class="card-badge">gRPC</span>
+          <div class="card-title">gRPC Deep Dive</div>
+          <p class="card-desc">Từ Protobuf wire format đến 4 streaming patterns, interceptors và production deployment. HTTP/2 + Protocol Buffers + code generation.</p>
+          <div class="card-meta"><span class="chip">17 sections</span><span class="chip">Protobuf 3</span></div>
+          <div class="card-tags">
+            <span class="tag">Protobuf</span><span class="tag">Bidirectional Stream</span><span class="tag">Interceptors</span><span class="tag">Load Balancing</span>
+          </div>
+          <span class="btn">Đọc bài →</span>
+        </div>
+      </a>
+
+      <a class="card c-ws" href="../docs/websocket-deep-dive.html">
+        <div class="card-bar"></div>
+        <div class="card-inner">
+          <span class="card-badge">WebSocket</span>
+          <div class="card-title">WebSocket Deep Dive</div>
+          <p class="card-desc">HTTP Upgrade handshake → frame masking → backpressure → Redis pub/sub scaling. Full-duplex persistent connection trên một TCP duy nhất.</p>
+          <div class="card-meta"><span class="chip">15 sections</span><span class="chip">RFC 6455</span></div>
+          <div class="card-tags">
+            <span class="tag">Frame Masking</span><span class="tag">Reconnect</span><span class="tag">Redis pub/sub</span><span class="tag">SSE</span>
+          </div>
+          <span class="btn">Đọc bài →</span>
+        </div>
+      </a>
+
+      <a class="card c-webrtc" href="../docs/webrtc-deep-dive.html">
+        <div class="card-bar"></div>
+        <div class="card-inner">
+          <span class="card-badge">WebRTC</span>
+          <div class="card-title">WebRTC Deep Dive</div>
+          <p class="card-desc">NAT traversal → ICE/STUN/TURN → SDP negotiation → DTLS-SRTP → DataChannel. P2P video/audio trực tiếp giữa browser, không qua server.</p>
+          <div class="card-meta"><span class="chip">13 sections</span><span class="chip">RFC 8829</span></div>
+          <div class="card-tags">
+            <span class="tag">ICE / STUN / TURN</span><span class="tag">SDP</span><span class="tag">DTLS-SRTP</span><span class="tag">DataChannel</span>
+          </div>
+          <span class="btn">Đọc bài →</span>
+        </div>
+      </a>
+
+      <a class="card c-mqtt" href="../docs/mqtt-deep-dive.html">
+        <div class="card-bar"></div>
+        <div class="card-inner">
+          <span class="card-badge">MQTT</span>
+          <div class="card-title">MQTT Deep Dive</div>
+          <p class="card-desc">Wire format 2-byte → QoS 0/1/2 state machines → persistent sessions → drone fleet IoT patterns. Pub/sub sinh ra cho IoT từ năm 1999.</p>
+          <div class="card-meta"><span class="chip">19 sections</span><span class="chip">MQTT 5.0</span></div>
+          <div class="card-tags">
+            <span class="tag">QoS 0/1/2</span><span class="tag">LWT</span><span class="tag">Retained Messages</span><span class="tag">IoT / Drone</span>
+          </div>
+          <span class="btn">Đọc bài →</span>
+        </div>
+      </a>
+
+    </div>
+
+    <div class="tip-box">
+      <span class="tip-icon">💡</span>
+      <p>
+        <strong>Gợi ý thứ tự học:</strong>
+        Mỗi bài độc lập, nhưng nếu mới bắt đầu hãy đọc theo thứ tự
+        <strong>HTTP → gRPC → WebSocket → WebRTC → MQTT</strong>.
+        Hiểu TCP và HTTP/1.1 trước giúp mọi bài sau dễ hơn rất nhiều.
+      </p>
+    </div>
+  </section>
+
+  <!-- Demos -->
+  <section class="section">
+    <p class="sec-label">Live Demos</p>
+    <h2 class="sec-title">Demo Apps</h2>
+    <p class="sec-sub">Ứng dụng thực tế minh hoạ các protocol trong action. Static demos chạy trực tiếp trên GitHub Pages; Node.js demos cần chạy server riêng.</p>
+
+    <div class="grid">
+
+      <a class="card c-chat" href="../chat-room/index.html">
+        <div class="card-bar"></div>
+        <div class="card-inner">
+          <span class="card-badge">WebSocket</span>
+          <div class="status status-server"><span class="status-dot"></span>Requires Node.js server</div>
+          <div class="card-title">Chat Room</div>
+          <p class="card-desc">Multi-room real-time chat với file transfer, typing indicators, DMs, và presence. Full-stack: Node.js WS server + browser client.</p>
+          <div class="card-meta"><span class="chip">ws ^8.18</span><span class="chip">npm start</span></div>
+          <div class="card-tags">
+            <span class="tag">Multi-room</span><span class="tag">File Transfer</span><span class="tag">Presence</span><span class="tag">DMs</span>
+          </div>
+          <span class="btn">Mở demo →</span>
+        </div>
+      </a>
+
+      <a class="card c-lab" href="../protocol-lab/index.html">
+        <div class="card-bar"></div>
+        <div class="card-inner">
+          <span class="card-badge">WebSocket</span>
+          <div class="status status-server"><span class="status-dot"></span>Requires Node.js server</div>
+          <div class="card-title">Protocol Lab</div>
+          <p class="card-desc">Frame inspector, throughput benchmarks, và latency histograms. Visualize RFC 6455 frames ở bit level với real-time metrics.</p>
+          <div class="card-meta"><span class="chip">ws ^8.18</span><span class="chip">npm start</span></div>
+          <div class="card-tags">
+            <span class="tag">Frame Inspector</span><span class="tag">Throughput</span><span class="tag">Latency P95/P99</span><span class="tag">Benchmark</span>
+          </div>
+          <span class="btn">Mở demo →</span>
+        </div>
+      </a>
+
+      <a class="card c-loopback" href="../phase1-loopback/index.html">
+        <div class="card-bar"></div>
+        <div class="card-inner">
+          <span class="card-badge">WebRTC</span>
+          <div class="status status-static"><span class="status-dot"></span>Static · GitHub Pages ready</div>
+          <div class="card-title">WebRTC Loopback</div>
+          <p class="card-desc">7-step P2P connection flow trong browser: getUserMedia → SDP offer/answer → ICE → DTLS → SRTP. Không cần server — in-browser signaling.</p>
+          <div class="card-meta"><span class="chip">Pure HTML/JS</span><span class="chip">No server</span></div>
+          <div class="card-tags">
+            <span class="tag">getUserMedia</span><span class="tag">SDP Inspector</span><span class="tag">ICE Candidates</span><span class="tag">DataChannel</span>
+          </div>
+          <span class="btn">Mở demo →</span>
+        </div>
+      </a>
+
+      <div class="card c-viterbi" style="opacity:.6;cursor:default">
+        <div class="card-bar"></div>
+        <div class="card-inner">
+          <span class="card-badge">Algorithm</span>
+          <div class="status status-soon"><span class="status-dot"></span>Needs build step</div>
+          <div class="card-title">Viterbi Algorithm</div>
+          <p class="card-desc">Interactive HMM simulator: configure trạng thái (Khỏe/Sốt), observation sequences, và xem từng bước Viterbi decoding với visualization.</p>
+          <div class="card-meta"><span class="chip">React + TypeScript</span></div>
+          <div class="card-tags">
+            <span class="tag">HMM</span><span class="tag">Viterbi Decoding</span><span class="tag">Interactive</span>
+          </div>
+          <span class="btn" style="background:#475569">Coming soon</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Compare -->
+  <section class="section">
+    <p class="sec-label">So sánh</p>
+    <h2 class="sec-title">Chọn protocol phù hợp</h2>
+    <p class="sec-sub">Tổng quan nhanh — khi nào dùng cái nào.</p>
+
+    <div class="compare">
+      <h3>Protocol Comparison</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Tiêu chí</th>
+            <th class="th-http">HTTP</th>
+            <th class="th-grpc">gRPC</th>
+            <th class="th-ws">WebSocket</th>
+            <th class="th-webrtc">WebRTC</th>
+            <th class="th-mqtt">MQTT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Transport</td><td>TCP / QUIC</td><td>TCP (HTTP/2)</td><td>TCP</td><td>UDP (ICE)</td><td>TCP</td></tr>
+          <tr><td>Mô hình</td><td>Req / Resp</td><td>RPC + Stream</td><td>Full-duplex</td><td>P2P</td><td>Pub / Sub</td></tr>
+          <tr><td>Overhead</td><td>Medium</td><td>Thấp</td><td>Rất thấp</td><td>Cao (setup)</td><td>Tối thiểu</td></tr>
+          <tr><td>Binary?</td><td>H2/H3: Yes</td><td>Yes (Protobuf)</td><td>Tuỳ chọn</td><td>Yes (SRTP)</td><td>Yes</td></tr>
+          <tr><td>Server cần?</td><td>Origin server</td><td>gRPC server</td><td>WS server</td><td>Signaling only</td><td>MQTT broker</td></tr>
+          <tr><td>Dùng khi</td><td>REST API, CDN</td><td>Microservices</td><td>Chat, live UI</td><td>Video / P2P</td><td>IoT, drone</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div><!-- /container -->
+
+<footer>
+  <div>Protocol Lab &nbsp;·&nbsp; Viết bằng tiếng Việt &nbsp;·&nbsp; Static HTML, no framework</div>
+  <div class="footer-links">
+    <a href="../docs/http-deep-dive.html">HTTP</a>
+    <span class="footer-divider">·</span>
+    <a href="../docs/grpc-deep-dive.html">gRPC</a>
+    <span class="footer-divider">·</span>
+    <a href="../docs/websocket-deep-dive.html">WebSocket</a>
+    <span class="footer-divider">·</span>
+    <a href="../docs/webrtc-deep-dive.html">WebRTC</a>
+    <span class="footer-divider">·</span>
+    <a href="../docs/mqtt-deep-dive.html">MQTT</a>
+    <span class="footer-divider">·</span>
+    <a href="../chat-room/index.html">Chat Room</a>
+    <span class="footer-divider">·</span>
+    <a href="../protocol-lab/index.html">Protocol Lab</a>
+    <span class="footer-divider">·</span>
+    <a href="../phase1-loopback/index.html">WebRTC Demo</a>
+  </div>
+</footer>
+
+</div><!-- /panel-proto -->
+
+<script>
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>

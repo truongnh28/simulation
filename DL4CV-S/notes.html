@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Cheatsheet DL & CV Toàn tập (4 Pages)</title>
+    <script>
+        MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }, svg: { fontCache: 'global' } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @page { size: A4 landscape; margin: 5mm; }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-size: 4.3pt;
+            line-height: 1.1; margin: 0; padding: 0;
+            column-count: 3; column-gap: 2mm; column-rule: 0.5px solid #ccc;
+        }
+        h1 { font-size: 4.3pt; text-align: center; margin: 0 0 1px 0; background: #000; color: #fff; padding: 1px; column-span: all; text-transform: uppercase; letter-spacing: 1px;}
+        h2 { font-size: 4.3pt; color: #fff; background: #800000; margin: 1px 0 1px 0; padding: 1px; text-transform: uppercase; break-after: avoid; }
+        h3 { font-size: 4.3pt; color: #003366; margin: 1px 0 1px 0; border-bottom: 0.5px solid #ccc; font-weight: bold; break-after: avoid; text-transform: uppercase;}
+        p, ul { margin: 1px 0; padding-left: 8px; }
+        li { margin-bottom: 0.5px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 1px; font-size: 4.3pt; break-inside: avoid; }
+        th, td { border: 0.5px solid #444; padding: 1px; text-align: left; vertical-align: top; }
+        th { background-color: #e6e6e6; font-weight: bold; text-align: center;}
+        strong { color: #000; font-weight: 800; }
+        .box { border: 0.5px solid #000; padding: 1px; margin-bottom: 1px; background: #fdfdfd; break-inside: avoid; border-left: 2px solid #800000;}
+        .math { color: #000080; display: block; text-align: center; margin: 1px 0;}
+        .code { font-family: monospace; background: #eee; padding: 1px 2px; }
+        .highlight { background-color: #ffffcc; }
+    </style>
+</head>
+<body>
+
+    <!-- <h1>BÁCH KHOA TOÀN THƯ DEEP LEARNING & COMPUTER VISION (14 BÀI - BẢN FULL 4 TRANG)</h1> -->
+
+    <!-- PHẦN 1: CƠ SỞ MACHINE LEARNING VÀ DỮ LIỆU -->
+    <h2>1. CƠ SỞ MACHINE LEARNING & DỮ LIỆU (BÀI 1 & 2)</h2>
+    
+    <h3>1.1. Formulation & Notations</h3>
+    <ul>
+        <li><strong>Vectors & Matrices:</strong> $\mathbf{x} \in \mathbb{R}^{D \times 1}$ (vector cột). $\mathbf{X} \in \mathbb{R}^{B \times D}$ (Batch matrix, xếp $\mathbf{x}_i^T$ thành hàng).</li>
+        <li><strong>Dataset & Tối ưu:</strong> $\mathcal{D} = \{(\mathbf{x}_i, y_i)\}_{i=1}^N$. Học $f_\theta(\mathbf{x}) \approx y$ bằng cách Minimize <strong>Empirical Risk</strong> $\frac{1}{N} \sum \ell(f_\theta(\mathbf{x}_i), y_i)$ để xấp xỉ <strong>Expected Risk</strong> (trên distribution thật).</li>
+        <li><strong>DL Shapes:</strong> Tabular $(B, D)$; Image (PyTorch NCHW) $(B, C, H, W)$; Sequence $(B, T)$ hoặc $(B, T, D)$.</li>
+    </ul>
+
+    <h3>1.2. Phân chia & Tiền xử lý dữ liệu</h3>
+    <ul>
+        <li><strong>Splits:</strong> Train (Fit $\theta$) $\to$ Val (Tune hyperparams/Early stop) $\to$ Test (Đánh giá cuối, CHẠM 1 LẦN DUY NHẤT).</li>
+        <li><strong>Data Leakage (TỬ HUYỆT):</strong> Tính thống kê ($\mu, \sigma$) trên tập Test/Val hoặc Augment trước khi split. ĐÚNG: Fit Scaler CHỈ trên Train $\to$ Transform Val/Test.</li>
+        <li><strong>Chuẩn hóa (Z-Score):</strong> $x_{new} = (x - \mu)/\sigma$. Giúp hội tụ nhanh, gradient không bị dominate bởi feature scale lớn.</li>
+        <li><strong>Imbalanced Data:</strong> Đánh lừa Accuracy. Giải pháp: SMOTE (Data), Focal Loss/Class Weights (Thuật toán), Metric PR-AUC/F1.</li>
+    </ul>
+
+    <!-- PHẦN 2: MÔ HÌNH TUYẾN TÍNH & MLP -->
+    <h2>2. KIẾN TRÚC MẠNG CƠ BẢN (BÀI 3, 4, 7, 8)</h2>
+
+    <h3>2.1. Linear, Logistic & Softmax Regression</h3>
+    <table>
+        <tr><th>Mô hình</th><th>Đầu ra / Phương trình</th><th>Loss & Lời giải</th><th>Inductive Bias & Giới hạn</th></tr>
+        <tr><td><strong>Linear</strong></td><td>$\hat{\mathbf{Y}} = \mathbf{X}\mathbf{W} + \mathbf{b}$</td><td><strong>MSE</strong>. OLS: $W = (X^TX)^{-1}X^TY$. Chi phí $\mathcal{O}(D^3)$.</td><td>Hyperplane. Không học được phi tuyến.</td></tr>
+        <tr><td><strong>Ridge Reg</strong></td><td>Tương tự Linear</td><td>MSE + $\lambda||W||^2_2$. Lời giải: $W = (X^TX+\lambda I)^{-1}X^TY$.</td><td>Khắc phục ma trận không khả nghịch (Singular).</td></tr>
+        <tr><td><strong>Logistic</strong></td><td>$\hat{p} = \sigma(\mathbf{W}^T\mathbf{x}+b)$</td><td><strong>BCE</strong>. Chỉ giải bằng Gradient Descent (GD).</td><td>Phân loại nhị phân. Decision boundary tuyến tính.</td></tr>
+        <tr><td><strong>Softmax</strong></td><td>$\hat{p}_k = \frac{e^{z_k}}{\sum e^{z_j}}$</td><td><strong>CE</strong>. Giải bằng GD.</td><td>Đa lớp. Vùng lớp là các đa diện lồi.</td></tr>
+    </table>
+
+    <h3>2.2. Model Capacity, Bias-Variance Tradeoff</h3>
+    <ul>
+        <li><strong>Underfitting (Bias cao):</strong> Mô hình quá đơn giản (VD: Linear học đồ thị Sin). Train error & Val error đều cao.</li>
+        <li><strong>Overfitting (Variance cao):</strong> Mô hình quá phức tạp, học thuộc lòng nhiễu. Train error cực thấp, Val error cao.</li>
+        <li><strong>Bias-Variance Decomposition:</strong> $\mathbb{E}[(\hat{y}-y)^2] = \text{Bias}^2 + \text{Variance} + \sigma^2_{noise}$. Regularization (L2, Dropout) hy sinh Bias để giảm Variance.</li>
+        <li><strong>Feature Mapping $\Phi(x)$:</strong> Đưa data lên không gian chiều cao để phân tách tuyến tính (SVM Kernel, Polynomial). DL tự động học $\Phi(x)$ qua các hidden layers.</li>
+    </ul>
+
+    <h3>2.3. Multi-Layer Perceptron (MLP) & Activations</h3>
+    <ul>
+        <li><strong>Universal Approximation Theorem:</strong> MLP 1 hidden layer (đủ rộng) + phi tuyến có thể xấp xỉ mọi hàm liên tục. Tuy nhiên, Deep > Wide do Hierarchical Learning.</li>
+        <li><strong>Params 1 FC Layer:</strong> $M_{out} \times (N_{in} + 1_{bias})$. (Xếp nhiều FC liên tiếp không có Activation $\to$ Sụp đổ thành 1 FC tuyến tính $\to$ Vô nghĩa).</li>
+    </ul>
+    <table>
+        <tr><th>Activation</th><th>Công thức</th><th>Đạo hàm (Gradient)</th><th>Đặc điểm & Ứng dụng</th></tr>
+        <tr><td><strong>Sigmoid</strong></td><td>$\sigma(z) = 1/(1+e^{-z})$</td><td>$\sigma(z)(1-\sigma(z))$</td><td>Output Binary. $\max grad = 0.25$ $\to$ <strong>Vanishing Grad</strong>. Không zero-centered.</td></tr>
+        <tr><td><strong>Tanh</strong></td><td>$\frac{e^z-e^{-z}}{e^z+e^{-z}}$</td><td>$1 - \tanh^2(z)$</td><td>Zero-centered. $\max grad = 1$. Vẫn bị Vanishing Grad khi $|z|$ lớn.</td></tr>
+        <tr><td><strong>ReLU</strong></td><td>$\max(0,z)$</td><td>1 nếu $z>0$, 0 nếu $z<0$</td><td>Nhanh, mặc định hidden layer. Vấn đề: <strong>Dead Neurons</strong> ($z<0$ vĩnh viễn).</td></tr>
+        <tr><td><strong>L. ReLU</strong></td><td>$\max(\alpha z, z)$</td><td>1 nếu $z>0$, $\alpha$ nếu $z<0$</td><td>Sửa lỗi Dead Neuron. $\alpha$ thường bằng 0.01.</td></tr>
+        <tr><td><strong>SiLU</strong></td><td>$z \cdot \sigma(z)$</td><td>$\sigma(z) + z\sigma(z)(1-\sigma(z))$</td><td>Mượt, không đơn điệu (tốt cho LLM, Vision Transformer).</td></tr>
+    </table>
+
+    <!-- PHẦN 3: LOSS & METRICS -->
+    <h2>3. LOSS FUNCTIONS & METRICS (BÀI 5 & 6)</h2>
+
+    <h3>3.1. Loss Functions (Hàm mất mát - Tối ưu)</h3>
+    <ul>
+        <li><strong>MSE vs MAE:</strong> MSE ($\frac{1}{n}\sum(y-\hat{y})^2$) phạt nặng outlier. MAE ($\frac{1}{n}\sum|y-\hat{y}|$) bền vững với outlier nhưng đạo hàm gãy tại 0.</li>
+        <li><strong>Huber Loss:</strong> Lai giữa MSE (vùng $|e| \le \delta$) và MAE (vùng $|e| > \delta$). Mượt và ít nhạy cảm với outlier.</li>
+        <li><strong>BCE (Binary Cross Entropy):</strong> $L = -[y\log\hat{p} + (1-y)\log(1-\hat{p})]$. Tối đa Likelihood Bernoulli.</li>
+        <li><strong>CE (Categorical Cross Entropy):</strong> $L = -\sum_k y_k \log\hat{p}_k = \mathbf{-\log(\hat{p}_{đúng})}$. Đo ngạc nhiên: Mô hình tự tin sai $\to$ phạt cực nặng ($+\infty$).</li>
+        <li><strong>Label Smoothing:</strong> $y_{đúng} = 1-\epsilon$, $y_{sai} = \epsilon/(K-1)$. (VD: K=3, $\epsilon=0.1 \to y = [0.9, 0.05, 0.05]$). Tránh overconfident.</li>
+        <li><strong>Focal Loss:</strong> $L = -\alpha(1-\hat{p})^\gamma \log\hat{p}$. Nếu mẫu dễ ($\hat{p}=0.9, \gamma=2$) $\to$ phạt $\approx 0$. Tự động ép mạng học Hard Examples (RetinaNet).</li>
+        <li><em>Trick PyTorch:</em> <code>BCEWithLogitsLoss</code> (BCE+Sigmoid) và <code>CrossEntropyLoss</code> (CE+Softmax) nhận <strong>LOGITS</strong>, ổn định số học (log-sum-exp trick). Đừng truyền prob vào!</li>
+    </ul>
+
+    <h3>3.2. Metrics (Độ đo - Đánh giá)</h3>
+    <div class="box">
+        <strong>Confusion Matrix:</strong> TP (Trúng đích), FP (Báo động giả/Type I), TN (Đúng âm), FN (Bỏ sót/Type II).<br>
+        <strong>Threshold ($\tau$):</strong> Tăng $\tau \to$ Tăng Precision, Giảm Recall (Trade-off). Vẽ PR-Curve, tính PR-AUC.
+    </div>
+    <table>
+        <tr><th>Metric</th><th>Công thức</th><th>Phân tích & Ứng dụng</th></tr>
+        <tr><td><strong>Accuracy</strong></td><td>$(TP+TN) / N_{total}$</td><td>Tỉ lệ đoán đúng. <strong>Cấm kỵ</strong> dùng khi data mất cân bằng lớp.</td></tr>
+        <tr><td><strong>Precision</strong></td><td>$TP / (TP+FP)$</td><td>"Đoán là (+) thì đúng bao nhiêu?". Dùng khi <strong>FP nguy hiểm</strong> (VD: Chặn nhầm email sếp).</td></tr>
+        <tr><td><strong>Recall</strong></td><td>$TP / (TP+FN)$</td><td>"Bao phủ được bao nhiêu (+) thật?". Dùng khi <strong>FN nguy hiểm</strong> (VD: Bỏ lọt ung thư).</td></tr>
+        <tr><td><strong>F1 Score</strong></td><td>$2 \cdot P \cdot R / (P + R)$</td><td>Trung bình điều hòa. Nếu P hoặc R gần 0 $\to$ F1 $\to$ 0. Metric chuẩn cho Imbalanced.</td></tr>
+        <tr><td><strong>Macro F1</strong></td><td>$\frac{1}{K}\sum F1_k$</td><td>Tính F1 từng lớp $\to$ Trung bình. Lớp thiểu số có tiếng nói ngang lớp đa số.</td></tr>
+        <tr><td><strong>Micro F1</strong></td><td>Tính Global TP,FP,FN</td><td>Lớp đông mẫu sẽ dominate kết quả.</td></tr>
+        <tr><td><strong>IoU (Jaccard)</strong></td><td>$S_{giao} / S_{hợp}$</td><td>Metric vàng cho Object Detection & Segmentation.</td></tr>
+        <tr><td><strong>Dice Coeff</strong></td><td>$2 \cdot TP / (2TP+FP+FN)$</td><td>Tương đương F1. Dùng trong Y tế. <em>Dice Loss = 1 - Dice</em>.</td></tr>
+    </table>
+
+    <!-- PHẦN 4: TRAINING & OPTIMIZATION -->
+    <h2>4. THUẬT TOÁN HUẤN LUYỆN & TỐI ƯU (BÀI 9)</h2>
+    
+    <h3>4.1. Vòng lặp & Backpropagation</h3>
+    <ul>
+        <li><strong>Quy tắc dây chuyền (Chain Rule):</strong> $\frac{\partial L}{\partial w} = \frac{\partial L}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial z} \cdots \frac{\partial z}{\partial w}$. Forward pass lưu Cache $\to$ Backward pass tính Gradients.</li>
+        <li><strong>Vanishing Gradient:</strong> Gradient nhân dồn các số $< 1$ $\to$ Về 0 ở các layer đầu. Khắc phục: ReLU, ResNet (Skip connection), BatchNorm.</li>
+        <li><strong>Exploding Gradient:</strong> Gradient nhân dồn các số $> 1$ $\to$ Vô cực. Khắc phục: <strong>Gradient Clipping</strong> ($g \leftarrow g \cdot \tau/\max(||g||, \tau)$ - Giữ nguyên hướng, giảm độ lớn).</li>
+    </ul>
+
+    <h3>4.1b. Regularization (Chống Overfit)</h3>
+    <ul>
+        <li><strong>L2 (Weight Decay):</strong> $L_{total} = L + \frac{\lambda}{2}||\theta||^2_2$. Update SGD: $\theta \leftarrow (1-\eta\lambda)\theta - \eta\nabla L$. Đẩy $\theta$ về 0, giảm Variance. $\lambda \in [10^{-4}, 10^{-2}]$.</li>
+        <li><strong>L1 (Lasso):</strong> $L_{total} = L + \lambda||\theta||_1$. Đẩy nhiều $\theta$ về <strong>đúng 0</strong> (Sparsity) $\to$ Feature selection. Ít dùng trong DL.</li>
+        <li><strong>Dropout:</strong> Train: tắt neuron xác suất $p$. Test: dùng tất cả, scale output $\times(1-p)$. PyTorch: scale $\times 1/(1-p)$ lúc train (Inverted Dropout). Chống co-adaptation, ensemble ngầm.</li>
+        <li><strong>Early Stopping:</strong> Dừng khi Val loss không giảm sau $p$ epochs (patience). Lưu checkpoint best. Implicit regularization đơn giản nhất.</li>
+    </ul>
+
+    <h3>4.2. Khởi tạo & Normalization</h3>
+    <ul>
+        <li><strong>Weight Init:</strong> Khởi tạo Zero $\to$ Đối xứng $\to$ Mạng không học được. Phải khởi tạo Random.
+            <br> - <strong>Xavier/Glorot:</strong> $\sim \mathcal{U}[-\sqrt{6/(n_{in}+n_{out})}, \dots]$. Dùng cho Sigmoid/Tanh. Giữ Variance ổn định.
+            <br> - <strong>He/Kaiming:</strong> $\sim \mathcal{N}(0, 2/n_{in})$. Dùng cho ReLU (bù lại việc ReLU triệt tiêu một nửa data).
+        </li>
+        <li><strong>BatchNorm:</strong> $\hat{x} = (x-\mu_B)/\sigma_B \to y = \gamma\hat{x}+\beta$. Chuẩn hóa theo Batch $\to$ Ổn định training, cho phép LR lớn.</li>
+        <li><strong>LayerNorm:</strong> Chuẩn hóa theo Feature dimension của TỪNG mẫu. Không phụ thuộc Batch Size $\to$ Dùng cho RNN, Transformer.</li>
+    </ul>
+
+    <h3>4.3. Optimizers & LR Schedulers</h3>
+    <table>
+        <tr><th>Optimizer</th><th>Cơ chế Toán học (Tóm tắt)</th><th>Đặc điểm / Khi nào dùng</th></tr>
+        <tr><td><strong>SGD+Mom</strong></td><td>$v_t = \mu v_{t-1} + g_t \to \theta = \theta - \eta v_t$</td><td>Quán tính giảm dao động khe hẹp. Generalize cực tốt (Tốt nhất cho CNN from scratch).</td></tr>
+        <tr><td><strong>AdaGrad</strong></td><td>$\theta = \theta - \frac{\eta}{\sqrt{G_t+\epsilon}} g_t$ ($G_t$: Tổng dồn $g^2$)</td><td>Auto giảm LR. Tốt cho Sparse data. Lỗi: LR giảm liên tục về 0 $\to$ mạng ngừng học.</td></tr>
+        <tr><td><strong>RMSProp</strong></td><td>Thay $G_t$ bằng EMA: $s_t = \rho s_{t-1} + (1-\rho)g_t^2$</td><td>Khắc phục AdaGrad (không về 0). Tốt cho RNN.</td></tr>
+        <tr><td><strong>Adam</strong></td><td>Mom ($\hat{m}_t$) + RMSProp ($\hat{v}_t$) + <strong>Bias Correction</strong></td><td>Bias correction ($/(1-\beta^t)$) chống update sai ở các step đầu. Mặc định cho nhiều tasks.</td></tr>
+        <tr><td><strong>AdamW</strong></td><td>Tách L2 WD: $\theta = (1-\eta\lambda)\theta - \eta \cdot Adam\_Update$</td><td>Adam cũ bị sai khi L2 bị chia cho $\sqrt{v_t}$. AdamW fix lỗi này $\to$ SOTA cho Transformer/ViT.</td></tr>
+    </table>
+    <ul>
+        <li><strong>Cosine Annealing:</strong> $\eta_t = \frac{1}{2}\eta_0(1+\cos(\frac{t}{T}\pi))$. Giảm mượt $\eta_0 \to 0$. <strong>Warmup:</strong> Tăng LR từ $0 \to \eta_0$ ở vài epoch đầu. Bắt buộc khi Batch Size lớn.</li>
+        <li><strong>Linear Scaling Rule:</strong> Batch size tăng K lần $\to$ LR tăng K lần. <strong>Batch nhỏ (8-64):</strong> Generalize tốt hơn. <strong>Batch lớn (1k+):</strong> GPU throughput cao, cần scale LR + warmup.</li>
+        <li><strong>Adam Bias Correction:</strong> $\hat{m}_t = m_t/(1-\beta_1^t)$, $\hat{v}_t = v_t/(1-\beta_2^t)$. Không có $\to$ step đầu update sai 3-10×. Default: $\beta_1=0.9, \beta_2=0.999, \epsilon=10^{-8}$.</li>
+    </ul>
+
+    <!-- PHẦN 5: CONVOLUTIONAL NEURAL NETWORKS (CNN) -->
+    <h2>5. CONVOLUTIONAL NEURAL NETWORKS - CNN (BÀI 10)</h2>
+
+    <h3>5.1. Nguyên lý & Các loại Conv</h3>
+    <ul>
+        <li><strong>Local Connectivity (Kết nối cục bộ):</strong> Neuron chỉ nhìn 1 vùng nhỏ (Receptive Field) $\to$ Tránh nổ tham số.</li>
+        <li><strong>Weight Sharing (Dùng chung trọng số):</strong> Cùng 1 filter quét toàn ảnh $\to$ Tìm đặc trưng bất kể vị trí (Translation Equivariance).</li>
+        <li><strong>Conv vs Cross-Correlation:</strong> Conv toán học = Flip Kernel 180° + Cross-Correlation. PyTorch tính Cross-Correlation trực tiếp. Không sao vì Kernel là tham số học được.</li>
+        <li><strong>Multi-Channel Conv:</strong> $Input (H,W,D_{in}) \circledast Filter (k,k,D_{in}) \to \mathbf{1\ Channel}$. Dot-product khối 3D. Muốn $K_{out}$ channels $\to$ Cần $K_{out}$ Filters độc lập ghép lại (Concat).</li>
+        <li><strong>Params Conv Layer:</strong> $K_{out} \times (k^2 \times D_{in} + 1_{bias})$. VD: Conv(3×3, 32→64) = $64 \times (9 \times 32 + 1) = 18496$. So FC cùng I/O: giảm ~68000×!</li>
+        <li><strong>1x1 Conv:</strong> Cross-channel mixing. $D_{in} \to K_{out}$, giữ nguyên H,W. Dùng làm Bottleneck giảm chiều channel.</li>
+        <li><strong>DW Separable Conv:</strong> DW ($k \times k$ riêng từng kênh) + PW ($1 \times 1$ gom kênh). Giảm số param khoảng $1/K_{out} + 1/k^2$ lần.</li>
+    </ul>
+
+    <h3>5.2. Pipeline CNN Kinh điển</h3>
+    <ul>
+        <li><strong>Conv $\to$ BatchNorm $\to$ ReLU:</strong> Trích xuất đặc trưng cục bộ. Càng sâu, feature map càng nhỏ (H,W giảm) nhưng số kênh (C) càng tăng $\to$ Đặc trưng trừu tượng (từ cạnh $\to$ hình học $\to$ khuôn mặt).</li>
+        <li><strong>MaxPool (Stride 2):</strong> Ép kích thước giảm một nửa. Giữ lại tín hiệu mạnh nhất (Translation Invariance cục bộ).</li>
+        <li><strong>Global Average Pooling (GAP) $\to$ FC:</strong> GAP ép $(H,W,C) \to (1,1,C)$ thay cho việc duỗi phẳng (Flatten) khổng lồ $\to$ Chống overfit mạnh trước khi vào Linear/FC cuối để phân loại.</li>
+    </ul>
+
+    <h3>5.3. Công thức Kích thước (Shape) & Padding/Stride</h3>
+    <div class="box">
+        <span class="math">$$Output\_Size = \lfloor \frac{Input + 2 \times Padding - Kernel}{Stride} \rfloor + 1$$</span>
+    </div>
+    <ul>
+        <li><strong>Same/Half Padding:</strong> Mục đích giữ nguyên kích thước spatial. $Padding = \lfloor Kernel/2 \rfloor$. Với $S=1 \Rightarrow Output = Input$.</li>
+        <li><strong>Full Padding:</strong> $P = K - 1 \Rightarrow Output = Input + K - 1$. Ít dùng.</li>
+        <li><strong>Stride (Bước trượt):</strong> $S=2 \to$ Output giảm một nửa. Dùng thay thế MaxPool trong các mạng hiện đại (ResNet).</li>
+        <li><strong>Pooling:</strong> KHÔNG có tham số. <strong>Max Pool</strong> giữ đặc trưng nổi bật (Translation invariance cục bộ). <strong>Global Avg Pool (GAP)</strong>: Ép $(H,W,C) \to (1,1,C)$ $\to$ Cực tốt để bỏ FC layer khổng lồ ở cuối mạng (Chống overfit mạnh).</li>
+        <li><strong>Receptive Field (RF):</strong> Vùng ảnh gốc ảnh hưởng đến 1 điểm Output. $RF_L = RF_{L-1} + (K_L - 1) \prod_{i=1}^{L-1} S_i$.</li>
+        <li><strong>Dilated Convolution:</strong> Mở rộng kernel với lỗ hổng để tăng RF, không tăng params. Kernel hiệu dụng: $K_{eff} = K + (K-1)(D-1)$.</li>
+    </ul>
+
+    <!-- PHẦN 6: TRANSFORMERS & ATTENTION -->
+    <h2>6. ATTENTION & TRANSFORMER (BÀI 12)</h2>
+    
+    <h3>6.1. Cơ chế Attention (Scaled Dot-Product)</h3>
+    <ul>
+        <li><strong>Động lực:</strong> Xử lý seq2seq song song (không bị tuần tự như RNN), trị dứt điểm Vanishing Gradient, Receptive field toàn cục.</li>
+        <li><strong>Q, K, V:</strong> Query (Câu hỏi), Key (Nhãn đánh chỉ mục), Value (Nội dung thực). Dịch: Truy vấn $Q$ so khớp với các khóa $K$ qua Dot-product để lấy tổng trọng số của $V$.</li>
+        <li><span class="math" style="background:#eef;">$Attention(Q, K, V) = Softmax\left(\frac{QK^T}{\sqrt{d_k}}\right)V$</span></li>
+        <li><strong>Tại sao chia $\sqrt{d_k}$?</strong> Nếu $d_k$ (dimension) lớn, Dot-product bùng nổ giá trị $\to$ Softmax bị đẩy vào vùng bão hòa (gradient $\approx 0$). Chia $\sqrt{d_k}$ đưa variance về 1.</li>
+        <li><strong>Masked Attention (Decoder):</strong> Set các token tương lai thành $-\infty$ (Softmax $\to 0$) để Auto-regressive model (GPT) không "nhìn trộm" tương lai.</li>
+    </ul>
+
+    <h3>6.2. Cấu trúc Transformer Block</h3>
+    <ul>
+        <li><strong>Multi-Head Attention:</strong> Tách $d_{model}$ thành $h$ heads ($d_k = d_{model}/h$). Mỗi head học một Subspace biểu diễn riêng (ngữ pháp, chủ ngữ, động từ...) $\to$ Concat lại $\to$ Linear. Trọng số = $3 d_{model}^2$.</li>
+        <li><strong>Positional Encoding:</strong> Attention KHÔNG biết thứ tự từ. Phải cộng thêm vector vị trí. $PE_{(pos, 2i)} = \sin(pos/10000^{2i/d_{model}})$, $PE_{(pos, 2i+1)} = \cos(...)$.</li>
+        <li><strong>Cấu trúc Encoder:</strong> <code>Input + PosEnc</code> $\to$ [<code>Self-Attention</code> $\to$ <code>Add & LayerNorm</code> $\to$ <code>FFN</code> $\to$ <code>Add & LayerNorm</code>].</li>
+    </ul>
+
+    <h3>6.3. Vision Transformer (ViT)</h3>
+    <ul>
+        <li><strong>Cách hoạt động:</strong> Cắt ảnh thành $N$ Patches ($16 \times 16$) $\to$ Flatten từng patch $\to$ Linear Projection thành embedding vector ($d_{model}$) $\to$ Thêm `[CLS]` token (để gom thông tin phân loại) và `Positional Embeddings` (1D có thể học được) $\to$ Đưa vào Transformer Encoder.</li>
+        <li><strong>Đặc điểm:</strong> Thiếu hoàn toàn Inductive Bias của CNN (Local connectivity, Translation equivariance). Bù lại: Nếu train trên Data cực khủng (JFT-300M), ViT bóp nát CNN.</li>
+    </ul>
+
+    <!-- PHẦN 7: OBJECT DETECTION -->
+    <h2>7. OBJECT DETECTION - YOLO & DETR (BÀI 13)</h2>
+
+    <h3>7.1. Tổng quan & Metrics</h3>
+    <ul>
+        <li><strong>Task:</strong> Classification + BBox Regression. Output: $\hat{Y} = \{(\hat{b}_i, \hat{c}_i, \hat{s}_i)\}$. BBox formats: <strong>xyxy</strong> (góc) vs <strong>cxcywh</strong> (tâm+kích thước, chuẩn hóa [0,1]).</li>
+        <li><strong>IoU:</strong> $|\hat{B} \cap B^{gt}| / |\hat{B} \cup B^{gt}|$. <strong>CIoU Loss</strong> = $1 - IoU + \rho^2/c^2 + \alpha v$ (IoU + khoảng cách tâm + aspect ratio).</li>
+        <li><strong>mAP:</strong> AP = AUC của PR-Curve (1 class, 1 IoU threshold). $mAP = \frac{1}{N_c}\sum AP_c$. <code>mAP@50</code>; <code>mAP@50:95</code> (avg 10 thresholds).</li>
+        <li><strong>Taxonomy:</strong> 2-Stage (Faster R-CNN) → 1-Stage (YOLO) → End-to-end NMS-free (DETR).</li>
+    </ul>
+
+    <h3>7.2. Kiến trúc YOLO (Anchor-Free, YOLOv8/v11)</h3>
+    <ul>
+        <li><strong>$N_a$ Anchor Points (640×640):</strong> P3: $80^2=6400$ + P4: $40^2=1600$ + P5: $20^2=400$ = <strong>8400</strong> điểm. <strong>Tâm anchor:</strong> $(x_c, y_c) = ((j+0.5)s, (i+0.5)s)$ với stride $s$.</li>
+        <li><strong>Backbone → Neck → Head:</strong> Backbone (C2f/C3k2+SPPF) sinh P3,P4,P5 → Neck (FPN↓ + PAN↑) merge đa tỷ lệ → Head dự đoán <strong>loc</strong> ($4 \times N_r$ DFL) + <strong>cls</strong> ($N_c$ sigmoid).</li>
+        <li><strong>DFL (Distribution Focal Loss):</strong> Mỗi cạnh box = phân phối trên $N_r$ bins. Offset = $\hat{d} = \sum_{k=0}^{N_r-1} k \cdot p_k$. Loss 1 cạnh: $L_{dfl} = -(w^- \log \hat{p}_{y^-} + w^+ \log \hat{p}_{y^+})$.</li>
+        <li><strong>TaskAlignedAssigner:</strong> $t_{ik} = \sigma(z_{i,c_k})^\alpha \cdot IoU(b_i, b_k^{gt})^\beta$. Top-r điểm cao nhất → positive. One-to-many.</li>
+        <li><strong>YOLO Loss:</strong> $L = w_{box}L_{CIoU} + w_{cls}L_{BCE} + w_{dfl}L_{DFL}$. BCE trên tất cả $N_a$; CIoU+DFL chỉ trên ô dương.</li>
+    </ul>
+
+    <h3>7.3. Các thành phần quan trọng khác</h3>
+    <ul>
+        <li><strong>NMS (Non-Maximum Suppression):</strong> Lọc Bbox trùng. Sắp xếp list Bbox theo Confidence giảm dần $\to$ Lấy Box đầu tiên $\to$ XÓA mọi Box khác cùng class có <strong>IoU > Threshold</strong> $\to$ Lặp lại.</li>
+        <li><strong>Loss BBox (CIoU / GIoU):</strong> MSE trực tiếp cho tọa độ rất tệ do scale invariant. <strong>CIoU Loss</strong> tối ưu 3 thứ: (1) Trùng lặp (IoU), (2) Khoảng cách tâm ($\rho^2/c^2$), (3) Tỉ lệ khung hình (Aspect ratio $v, \alpha$).</li>
+        <li><strong>DETR (DEtection TRansformer):</strong> Loại bỏ hoàn toàn NMS. Dùng CNN backbone + Transformer. Output $N$ fixed boxes. Dùng <strong>Hungarian Matching</strong> (Bipartite matching) gán nhãn 1-1 tối ưu cực trị bằng Hungarian algorithm.</li>
+    </ul>
+
+    <!-- PHẦN 8: IMAGE SEGMENTATION -->
+    <h2>8. IMAGE SEGMENTATION - UNET (BÀI 14)</h2>
+
+    <h3>8.1. Các dạng Segmentation</h3>
+    <ul>
+        <li><strong>Semantic:</strong> Mỗi pixel 1 class. (Không phân biệt chó 1, chó 2). Output tensor $Z \in \mathbb{R}^{B \times K \times H \times W}$. Softmax theo chiều $K$.</li>
+        <li><strong>Instance:</strong> Phân biệt từng cá thể, nhưng bỏ background. (Mask R-CNN).</li>
+        <li><strong>Panoptic:</strong> Semantic + Instance. Hiểu mọi pixel và phân biệt cá thể.</li>
+    </ul>
+
+    <h3>8.2. Kiến trúc UNet (Y khoa & Segmentation)</h3>
+    <ul>
+        <li>Thiết kế chữ U (Encoder - Bottleneck - Decoder). Trở thành chuẩn mực cho Dense Prediction.</li>
+        <li><strong>Encoder:</strong> Trích xuất đặc trưng (Conv) và giảm độ phân giải (MaxPool). Tăng receptive field, lấy Semantic context.</li>
+        <li><strong>Decoder:</strong> Khôi phục không gian (UpConv / Transposed Conv / Bilinear). Giảm Channels. Kích thước UpConv: $O = (I-1)S - 2P + K + OP_{padding}$.</li>
+        <li><strong>Skip Connections (Linh hồn UNet):</strong> Nối (<strong>Concatenate</strong>) Feature Map từ Encoder thẳng sang Decoder. Giúp Decoder lấy lại chi tiết Không gian, biên sắc nét bị mất lúc MaxPool. ResNet dùng Add, UNet dùng Concat.</li>
+    </ul>
+
+    <h3>8.3. Losses & Metrics (Segmentation)</h3>
+    <ul>
+        <li><strong>Pixel CE:</strong> $L_{CE} = -\frac{1}{|I|}\sum_i \log p_{i,y_i}$. Dùng <code>ignore_index=255</code>. Trị Imbalance bằng Weighted CE: $w_c = \frac{1}{f_c}$ (tỉ lệ nghịch tần suất, sau đó chuẩn hóa).</li>
+        <li><strong>Dice:</strong> $\frac{2\sum p_{i,k}g_{i,k}+\epsilon}{\sum p_{i,k}+\sum g_{i,k}+\epsilon}$. <strong>Loss $= 1 - Dice$</strong>. Mạnh với foreground nhỏ. Quan hệ: $Dice = \frac{2 \cdot IoU}{1+IoU}$.</li>
+        <li><strong>Tversky Loss:</strong> $T_k = TP/(TP+\alpha FP+\beta FN)$. $L=1-T_k$. $\alpha=\beta=0.5$ → Dice. $\beta>\alpha$ → penalize FN (bỏ sót) nhiều hơn (Y khoa).</li>
+        <li><strong>Hybrid:</strong> $L = \lambda_{CE}L_{CE} + \lambda_{Dice}L_{Dice}$. CE ổn định gradient + Dice kéo overlap.</li>
+        <li><strong>mIoU:</strong> $\frac{1}{K}\sum IoU_k$ (Macro avg, lớp hiếm ngang lớp phổ biến). <strong>HD95:</strong> 95th percentile khoảng cách biên. <strong>PQ:</strong> $SQ \times RQ$ (Panoptic).</li>
+        <li><strong>⚠️ KHÔNG bilinear resize mask</strong> (tạo class id giả). Mask phải dùng <code>nearest</code>. Resize logits OK.</li>
+    </ul>
+
+    <!-- PHẦN 9: GENERATIVE MODELS -->
+    <h2>9. GENERATIVE MODELS (BÀI 11)</h2>
+
+    <h3>9.1. Taxonomy & VAE (Variational Autoencoder)</h3>
+    <ul>
+        <li><strong>Discriminative</strong> (Học biên giới $P(y|x)$) vs <strong>Generative</strong> (Học phân phối $P(x)$ hoặc $P(x,y)$). Gen Model có thể sinh ra mẫu $x$ mới.</li>
+        <li><strong>VAE:</strong> Encoder → $(\mu, \log\sigma^2)$ → <strong>Reparameterization</strong> $z = \mu + \sigma \odot \epsilon$ ($\epsilon \sim \mathcal{N}(0,I)$) → Decoder → $\hat{x}$.
+            <br> - <strong>ELBO:</strong> $L = \underbrace{-\mathbb{E}[\log p_\theta(x|z)]}_{Recon} + \underbrace{KL(q_\phi(z|x) || p(z))}_{Regularize}$.
+            <br> - <strong>KL Gaussian đóng:</strong> $KL = \frac{1}{2}\sum_j(\mu_j^2 + \sigma_j^2 - \log\sigma_j^2 - 1)$. $\beta$-VAE: $\beta>1$ → latent có cấu trúc hơn, recon kém hơn.
+            <br> - Sinh: $z \sim \mathcal{N}(0,I) \to Decoder \to \hat{x}_{new}$ (không cần Encoder). Ảnh mờ do likelihood averaging.
+        </li>
+    </ul>
+
+    <h3>9.2. GAN (Generative Adversarial Networks)</h3>
+    <ul>
+        <li><strong>Cấu trúc:</strong> Generator ($G$) tạo ảnh giả từ nhiễu $z \sim \mathcal{N}(0,1)$. Discriminator ($D$) phân loại thật/giả.</li>
+        <li><strong>Minimax Game:</strong> $\min_G \max_D \mathbb{E}[\log D(x)] + \mathbb{E}[\log(1-D(G(z)))]$. Nash Equilibrium đạt được khi $p_{data} = p_{model}$ và $D(x) = 0.5$.</li>
+        <li><strong>Non-saturating G Loss:</strong> Loss chuẩn của G bị bão hòa (gradient $\approx 0$) khi D quá giỏi. Sửa bằng cách: Maximize $\log(D(G(z)))$ thay vì Minimize $\log(1-D)$.</li>
+        <li><strong>Vấn đề:</strong> <strong>Mode Collapse</strong> (G chỉ sinh 1 ảnh duy nhất lừa được D). Rất khó train, nhạy cảm hyperparams.</li>
+    </ul>
+
+    <h3>9.3. DDPM (Denoising Diffusion Probabilistic Models)</h3>
+    <ul>
+        <li>SOTA sinh ảnh (Midjourney, DALL-E). Quá trình Markov Chain 2 chiều.</li>
+        <li><strong>Forward Process ($q$):</strong> Phá hủy data. Từ từ thêm nhiễu Gaussian $T$ bước (thường 1000). Công thức đóng: $x_t = \sqrt{\bar{\alpha}_t}x_0 + \sqrt{1-\bar{\alpha}_t}\epsilon$. Tại $T$, data hoàn toàn là nhiễu trắng.</li>
+        <li><strong>Backward Process ($p_\theta$):</strong> Dùng UNet (thường có Time Embedding + Attention) học đoán Nhiễu $\epsilon_\theta(x_t, t)$ đã được thêm vào bước $t$.</li>
+        <li><strong>Loss DDPM:</strong> Cực kỳ đơn giản, chỉ là MSE giữa Nhiễu thật $\epsilon$ và Nhiễu đoán được $\epsilon_\theta$: $L = \mathbb{E}[||\epsilon - \epsilon_\theta(x_t, t)||^2]$.</li>
+        <li><strong>Đặc điểm:</strong> Sinh ảnh siêu nét, có nền tảng toán chặt chẽ (Variational inference). Nhược điểm: Sampling cực chậm (phải chạy qua UNet T lần lúc inference). Khắc phục bằng DDIM hoặc Latent Diffusion (Stable Diffusion).</li>
+    </ul>
+
+    <!-- PHẦN 10: SO SÁNH VAE/GAN/DDPM -->
+    <h3>9.4. So sánh VAE / GAN / DDPM</h3>
+    <table>
+        <tr><th>Tiêu chí</th><th>VAE</th><th>GAN</th><th>DDPM</th></tr>
+        <tr><td><strong>Train</strong></td><td>ELBO (ổn)</td><td>Minimax (khó)</td><td>MSE nhiễu (ổn)</td></tr>
+        <tr><td><strong>Inference</strong></td><td>1 forward (nhanh)</td><td>1 forward (nhanh)</td><td>T forwards (chậm)</td></tr>
+        <tr><td><strong>Chất lượng</strong></td><td>Mờ</td><td>Sắc, mode collapse</td><td>Sắc, đa dạng tốt</td></tr>
+        <tr><td><strong>Latent</strong></td><td>Có encoder</td><td>Không encoder</td><td>Noisy image</td></tr>
+    </table>
+
+    <!-- PHẦN 10: TỔNG HỢP CÔNG THỨC & DẠNG BÀI CHUYÊN SÂU -->
+    <h2>10. MASTER BẢNG CÔNG THỨC & TRICK BÀI TẬP</h2>
+
+    <div class="box">
+        🔹 <strong>[Toán Conv Mở Rộng: Padding H, W khác nhau]</strong><br>
+        $O_h = \lfloor (H_{in} + P_{top} + P_{bottom} - K_h) / S_h \rfloor + 1$. (Trick: P_top và P_bottom có thể bất đối xứng).
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Tính Output UNet UpConv / Transposed Conv]</strong><br>
+        <strong>Đề:</strong> Input $16 \times 16$, K=3, S=2, P=1, Out_P=1. Kích thước là bao nhiêu?<br>
+        <strong>Công thức UpConv:</strong> $O = (I - 1)S - 2P + K + Output\_Padding$<br>
+        <strong>Giải:</strong> $O = (16-1) \cdot 2 - 2(1) + 3 + 1 = 30 - 2 + 3 + 1 = 32$. Shape khôi phục $\to$ Nối Skip connection từ Encoder.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Tensor Trace YOLOv8]</strong><br>
+        <strong>Đề:</strong> Ảnh $640 \times 640 \times 3$. YOLO sinh Grid Grid $80 \times 80$, 80 classes. Output tensor cho Grid này shape gì?<br>
+        <strong>Giải:</strong> YOLO phân loại (80) + Bbox (4 tọa độ $x,y,w,h$). Tổng $84$ giá trị mỗi ô. Tensor shape: <strong>$(B, 84, 80, 80)$</strong> hoặc $(B, 84, 6400)$ nếu flatten.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: NMS Thuật Toán Lõi]</strong><br>
+        <strong>Bộ Box:</strong> A (0.9, Táo), B (0.8, Táo, IoU vs A=0.6), C (0.95, Chó, IoU vs A=0.8), D (0.7, Táo, IoU vs A=0.4). $\tau_{NMS} = 0.5$.<br>
+        <strong>Trace NMS:</strong> NMS chạy RIÊNG TỪNG CLASS.<br>
+        - Lớp Chó: Chỉ có C $\to$ Giữ C.<br>
+        - Lớp Táo (A, B, D): Sắp xếp A(0.9) > B(0.8) > D(0.7). <br>
+          * Giữ A. <br>
+          * Xét B: IoU(B,A)=0.6 > 0.5 $\to$ Trùng vật với A $\to$ XÓA B. <br>
+          * Xét D: IoU(D,A)=0.4 < 0.5 $\to$ Vật khác $\to$ GIỮ D.<br>
+        <strong>Kết quả:</strong> Giữ A, C, D.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Tính Attention Params & Shape]</strong><br>
+        <strong>Đề:</strong> BERT Base. Batch $B=32$, $T=512$, $d_{model}=768$, 12 Heads. Layer 1.<br>
+        <strong>Shape Trace:</strong><br>
+        - $W_q, W_k, W_v \in \mathbb{R}^{768 \times 768}$.<br>
+        - Output Q,K,V $\to$ Reshape thành MultiHead $\to (B, 12, 512, 64)$.<br>
+        - Attention Score $QK^T \to$ $(B, 12, 512, 512)$. $\to$ Lưu ý: Phí $O(T^2)$ bộ nhớ $\to$ Botteneck cho văn bản/ảnh dài.<br>
+        <strong>Params tính nhanh 1 Block:</strong> Attention ($4 \cdot 768^2$) + FFN ($2 \cdot 768 \cdot 3072$) $\approx 7$ triệu params / block.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Đánh giá RMSE, MAE, R² & Outlier]</strong><br>
+        <strong>Lý thuyết:</strong> $R^2 = 1 - SSE/SST$. $R^2 \approx 1$ là tốt, $0$ là bằng đoán mò trung bình, $<0$ là tệ hơn.<br>
+        <strong>Nhạy cảm Outlier:</strong> Có 1 outlier (chênh 35 điểm). RMSE tăng gấp 3.3 lần, MAE chỉ tăng 2.2 lần.<br>
+        <strong>Tại sao?</strong> Bình phương của RMSE khuếch đại sai lệch lớn ($35^2=1225$). Khi dữ liệu nhiễu nhiều outlier $\to$ MAE / Huber Loss an toàn hơn MSE!
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Dropout Inference Scaling]</strong><br>
+        <strong>Đề:</strong> Dropout $p=0.2$. Lúc Inference?<br>
+        <strong>Giải:</strong> Test: dùng tất cả neuron, scale weights × $(1-p)=0.8$. PyTorch: Inverted Dropout scale $1/(1-p)$ lúc train.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Tính Huber Loss]</strong><br>
+        <strong>Đề:</strong> $\delta=1$, $e_i = [-0.5, -2.0, -3.5]$. Tính Huber Loss trung bình.<br>
+        <strong>CT:</strong> $|e|\le\delta$: $\frac{1}{2}e^2$. $|e|>\delta$: $|e|-0.5$.<br>
+        <strong>Giải:</strong> $H = [0.125, 1.5, 3.0]$. TB $= 4.625/3 \approx 1.54$. So MSE=5.5 (outlier chiếm 74%), Huber ít nhạy hơn.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Tính Dice/IoU cho Segmentation]</strong><br>
+        <strong>Đề:</strong> GT mask 3×3, Pred mask 3×3. Đếm TP=2, FP=1, FN=1.<br>
+        <strong>Giải:</strong> $Dice = \frac{2 \times 2}{4+1+1} = 0.667$. $IoU = \frac{2}{2+1+1} = 0.5$. Kiểm tra: $Dice = 2 \times 0.5/(1+0.5) = 0.667$ ✓.<br>
+        $L_{Dice} = 1 - 0.667 = 0.333$. $L_{IoU} = 1 - 0.5 = 0.5$.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Adam Bias Correction]</strong><br>
+        <strong>Đề:</strong> $g_1=0.3$, $\beta_1=0.9$, $\beta_2=0.999$, $\eta=0.01$, $\theta_0=0.5$.<br>
+        <strong>Giải:</strong> $m_1 = 0.1 \times 0.3 = 0.03$. $\hat{m}_1 = 0.03/0.1 = 0.3$.<br>
+        $v_1 = 0.001 \times 0.09 = 9 \times 10^{-5}$. $\hat{v}_1 = 9 \times 10^{-5}/0.001 = 0.09$.<br>
+        $\theta_1 = 0.5 - 0.01 \times 0.3/\sqrt{0.09} = 0.5 - 0.01 = 0.49$. Không BC: update sai 3.2×!
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Conv Params + Pipeline CNN]</strong><br>
+        <strong>Đề:</strong> Input 64×64×3 → Conv1(k=3,p=1,s=1,K=32) → Conv2(k=3,p=0,s=2,K=64) → Conv3(k=5,p=2,s=1,K=128).<br>
+        <strong>Shapes:</strong> 64×64×32 → 31×31×64 → 31×31×128.<br>
+        <strong>Params:</strong> $32(27+1) + 64(288+1) + 128(1600+1) = 896 + 18496 + 204928 = \mathbf{224320}$. Conv3 chiếm 91%!
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Accuracy vs Balanced Acc & F1]</strong><br>
+        <strong>Đề:</strong> Dữ liệu lệch (Imbalanced): 950 âm, 50 dương. Mô hình lười đoán âm 100%.<br>
+        <strong>Giải:</strong> $\text{Accuracy} = 950/1000 = \mathbf{95\%}$ (Quá cao nhưng vô dụng!).<br>
+        $\text{Recall} = 0, \text{Precision} = \text{undef} \to \mathbf{F1 = 0}$.<br>
+        $\text{Balanced Acc} = (\text{Recall} + \text{Specificity})/2 = (0+1)/2 = \mathbf{0.5}$.<br>
+        <strong>Nhận xét:</strong> Accuracy dễ dàng lừa đảo trên tập mất cân bằng. F1 và Balanced Accuracy bóc trần sự kém cỏi đó.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Tính Receptive Field]</strong><br>
+        <strong>Đề:</strong> Conv1(K=3, S=1) → Pool1(K=2, S=2) → Conv2(K=3, S=1). Tính RF sau Conv2.<br>
+        <strong>Giải:</strong> $RF_0=1, S_0=1$. Conv1: $RF_1 = 1 + (3-1)*1 = 3$.<br>
+        Pool1: $RF_2 = 3 + (2-1)*1 = 4$. Tổng $S_{1..2} = 1*2 = 2$.<br>
+        Conv2: $RF_3 = 4 + (3-1)*2 = 8$. (Mỗi pixel Conv2 nhìn thấy vùng 8x8 ở ảnh gốc).
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Tính Focal Loss]</strong><br>
+        <strong>Đề:</strong> Focal Loss $\gamma=2, \alpha=0.25$. Mẫu Positive ($y=1$), dự đoán $p=0.2$.<br>
+        <strong>Giải:</strong> $FL = -\alpha (1-p)^\gamma \log(p) = -0.25 \times (1-0.2)^2 \log(0.2) = -0.25 \times 0.64 \times (-1.609) \approx 0.257$.<br>
+        Nếu mô hình đoán đúng $p=0.9 \to FL = -0.25 \times 0.01 \times (-0.105) \approx 0.00026$ (phạt gần bằng 0).
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Tính Output Dilated Conv]</strong><br>
+        <strong>Đề:</strong> Input 28x28, Conv(K=3, S=1, Dilation=2). Padding=0.<br>
+        <strong>Giải:</strong> Kernel hiệu dụng $K_{eff} = 3 + (3-1)*(2-1) = 5$. Output size = $\lfloor(28 - 5)/1\rfloor + 1 = 24 \times 24$.
+    </div>
+    <div class="box">
+        🔹 <strong>[Dạng: Tính Softmax & CE từ Logits]</strong><br>
+        <strong>Đề:</strong> Logits $z = [2.0, 1.0, 0.5]$, lớp đúng là 0 ($y = [1,0,0]$).<br>
+        <strong>Giải:</strong> Tổng exp $= e^{2} + e^{1} + e^{0.5} \approx 7.389 + 2.718 + 1.649 = 11.756$.<br>
+        $\hat{p}_0 = 7.389 / 11.756 \approx 0.628$. CE Loss $= -\log(\hat{p}_0) = -\log(0.628) \approx 0.465$.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Truy vết Xác suất từ BCE Loss]</strong><br>
+        <strong>Đề:</strong> Biết nhãn $y=1$ (Positive), thu được $L_{BCE} = 1.204$. Tính $\hat{p}$?<br>
+        <strong>Giải:</strong> Với $y=1$, $L_{BCE} = -\log(\hat{p}) \to \hat{p} = e^{-L} = e^{-1.204} \approx 0.30$. Mô hình dự đoán rất kém (chỉ 30% tự tin).
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Phân biệt MacroF1 và MicroF1]</strong><br>
+        <strong>Đề:</strong> Khi dữ liệu mất cân bằng (Imbalanced), 1 lớp 1000 mẫu, 1 lớp 10 mẫu.<br>
+        <strong>Giải:</strong> <strong>MacroF1</strong> tính F1 từng lớp rồi lấy trung bình (lớp 10 mẫu có trọng số ngang lớp 1000 mẫu → dùng khi lớp hiếm quan trọng). <strong>MicroF1</strong> gộp chung TP, FP, FN rồi mới tính (lớp đông sẽ thống trị).
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Convolution vs Cross-Correlation]</strong><br>
+        <strong>Đề:</strong> Tính tay phép chập qua ma trận.<br>
+        <strong>Lý thuyết:</strong> Framework như PyTorch (<code>Conv2d</code>) thực chất tính <strong>Cross-Correlation</strong> (trượt thẳng kernel $W$ lên input rồi nhân). Tích chập toán học (Convolution) xịn yêu cầu phải <strong>xoay kernel $W$ 180 độ</strong> trước khi nhân.
+    </div>
+    <div class="box">
+        🔹 <strong>[Dạng: Tính Kích thước Output CNN]</strong><br>
+        <strong>Đề:</strong> Input $7\times7$, Kernel $3\times3$, Padding $p=1$, Stride $s=2$.<br>
+        <strong>Công thức:</strong> $O = \lfloor(I + 2p - K)/s\rfloor + 1$.<br>
+        <strong>Giải:</strong> $O = \lfloor(7 + 2(1) - 3)/2\rfloor + 1 = \lfloor 6/2 \rfloor + 1 = 4$. Output: $\mathbf{4\times4}$.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Đếm Tham số Conv Layer vs FC]</strong><br>
+        <strong>Đề:</strong> Input $28\times28\times32$. Conv(K=3, P=1, S=1, Filters=64). Có Bias.<br>
+        <strong>Giải:</strong> Mỗi filter có $3\times3\times32 + 1_{bias} = 289$ params. Tổng $64$ filters: $64 \times 289 = \mathbf{18,496}$.<br>
+        <em>So với FC:</em> Đầu ra là $28\times28\times64$. Lớp FC tương đương sẽ cần $(28\times28\times32) \times (28\times28\times64) \approx 1.25$ tỷ params. Conv tiết kiệm 68,000 lần nhờ Weight Sharing!
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Tính Toán Backprop & Chain Rule]</strong><br>
+        <strong>Đề:</strong> Đầu ra $y = \sigma(wx+b)$. Tính $\frac{\partial y}{\partial w}$.<br>
+        <strong>CT Đạo hàm Sigmoid:</strong> $\sigma'(z) = \sigma(z)(1-\sigma(z))$.<br>
+        <strong>Giải:</strong> Đặt $z = wx+b \to \frac{\partial z}{\partial w} = x$. Chain rule: $\frac{\partial y}{\partial w} = \frac{\partial y}{\partial z} \cdot \frac{\partial z}{\partial w} = \sigma(z)(1-\sigma(z)) \cdot x$.
+    </div>
+
+
+    <div class="box">
+        🔹 <strong>[Dạng: Mạng ResNet - Sức mạnh Bottleneck 1x1 Conv]</strong><br>
+        <strong>Đề:</strong> Input $256C$. So sánh 1 lớp Conv(3x3, 256$\to$256) vs Khối Bottleneck: 1x1(256$\to$64) $\to$ 3x3(64$\to$64) $\to$ 1x1(64$\to$256). Bỏ qua bias.<br>
+        <strong>Giải:</strong> <em>Basic Conv:</em> $3^2 \times 256 \times 256 = 589,824$ params.<br>
+        <em>Bottleneck:</em> $(1^2\times256\times64) + (3^2\times64\times64) + (1^2\times64\times256) = 16,384 + 36,864 + 16,384 = \mathbf{69,632}$.<br>
+        <strong>Kết luận:</strong> Bottleneck giảm ~8.5 lần số tham số nhưng vẫn giữ độ sâu mạng!
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Lý Thuyết: Transformer Positional Encoding (PE)]</strong><br>
+        <strong>Công thức:</strong> $PE(pos, 2i) = \sin(pos/10000^{2i/d})$, $PE(pos, 2i+1) = \cos(pos/10000^{2i/d})$.<br>
+        <strong>Mục đích:</strong> 1. Giữ giá trị $[-1, 1]$ không làm bùng nổ weights. 2. $PE(pos+k)$ là hàm tuyến tính của $PE(pos) \to$ giúp Self-Attention tự động học được khoảng cách tương đối (relative position).
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Hard Label vs Soft Label (Label Smoothing)]</strong><br>
+        <strong>Đề:</strong> Label $\mathbf{y}_{hard}=[1,0,0]$, $\mathbf{y}_{soft}=[0.85, 0.05, 0.10]$. Dự đoán hoàn hảo $\hat{\mathbf{p}}=[1,0,0]$.<br>
+        <strong>Giải:</strong> Soft CE Loss $= -[0.85\log(1) + 0.05\log(0) + \dots] \to +\infty$. Hard Loss $= 0$.<br>
+        <strong>Ý nghĩa:</strong> Soft label KHÔNG cho phép mạng đạt loss=0 $\to$ cấm đẩy logits lên $\infty$ (cấm overconfident), giúp chống Overfit.<br>
+        <strong>Mẹo PT:</strong> <code>CrossEntropyLoss</code> nhận Logits. Nếu truyền Softmax $\to$ Double Softmax Bug! Random Init K lớp $\to Loss \approx \log(K)$.
+    </div>
+    <div class="box">
+        🔹 <strong>[Dạng: Tích chập Multi-Channel (Ảnh RGB)]</strong><br>
+        <strong>Đề:</strong> Input $5\times5\times3$. Kernel $3\times3\times3$: $W_R$ là Sobel dọc, $W_G, W_B = 0$. Vùng ảnh Input $3\times3$ góc trái $X_R$ có chênh lệch sáng tối.<br>
+        <strong>Giải:</strong> $Y = \text{dot}(X_R, W_R) + \text{dot}(X_G, W_G) + \text{dot}(X_B, W_B)$. Do kênh G, B của filter bằng 0 $\to Y = \text{dot}(X_R, W_R)$.<br>
+        <strong>Bản chất:</strong> Filter này đóng vai trò "chỉ tìm cạnh dọc trên kênh màu Đỏ". Dot-product 3D tổng hợp mọi kênh thành 1 scalar.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Tính Pooling (Max vs Avg)]</strong><br>
+        <strong>Đề:</strong> Cho vùng $2\times2$: $[2, 8; 6, 4]$. Áp dụng Pooling $2\times2$, Stride 2.<br>
+        <strong>Giải:</strong> <em>Max Pool:</em> $\max(2,8,6,4) = 8$ (Giữ lại tín hiệu/đặc trưng nổi bật nhất). <em>Avg Pool:</em> $(2+8+6+4)/4 = 5.0$ (Làm mượt thông tin). Pooling KHÔNG có tham số để học.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Dạng: Tracing Shapes & GAP vs Flatten]</strong><br>
+        <strong>Đề:</strong> Sau chuỗi Conv+Pool, có Feature Map là $6\times6\times64$. Cần nối vào FC(10) để phân loại 10 classes.<br>
+        <strong>Giải:</strong> <em>Nếu Flatten:</em> $6\times6\times64 = 2304$ nơ-ron. Số param FC = $2304 \times 10 + 10_{bias} = \mathbf{23,050}$.<br>
+        <em>Nếu dùng GAP:</em> Ép $(6,6,64) \to (1,1,64)$ bằng tính trung bình cộng mỗi kênh. Số param FC = $64 \times 10 + 10_{bias} = \mathbf{650}$. GAP giúp giảm 35 lần tham số FC, chống Overfit cực tốt (MobileNet, ResNet).
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Lý Thuyết: 2 Conv 3x3 thay vì 1 Conv 5x5]</strong><br>
+        <strong>Tại sao VGG dùng chuỗi Conv 3x3?</strong> Giả sử I/O là D channels.<br>
+        1. <strong>Receptive Field:</strong> Hai lớp 3x3 có RF tương đương một lớp 5x5 (cùng nhìn được vùng 5x5 trên ảnh gốc).<br>
+        2. <strong>Tham số:</strong> 1 Conv 5x5 tốn $25D^2$. 2 Conv 3x3 tốn $2 \times 9D^2 = 18D^2$ $\to$ Tiết kiệm 28% tham số.<br>
+        3. <strong>Tính phi tuyến:</strong> 2 lớp Conv 3x3 đi qua 2 hàm kích hoạt ReLU (thay vì 1 của 5x5) $\to$ Hàm phức tạp hơn, học tốt hơn.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Lý Thuyết: DETR & Hungarian Matching]</strong><br>
+        <strong>Cơ chế DETR:</strong> Dùng CNN backbone + Transformer, loại bỏ hoàn toàn Anchor và NMS. Luôn trả ra số lượng box cố định.<br>
+        <strong>Hungarian Matching:</strong> Giải bài toán Bipartite Matching $O(N^3)$. Ép mô hình gán 1-1 (1 Ground Truth chỉ khớp đúng 1 Prediction tốt nhất dựa trên Cost Matrix). Query nào thừa thì gán vào lớp "no-object".
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Lý Thuyết: Các dạng Image Segmentation]</strong><br>
+        <strong>Semantic:</strong> Phân loại từng pixel thuộc class nào. Không phân biệt các cá thể cùng class (chó 1 = chó 2).<br>
+        <strong>Instance:</strong> Phân biệt rõ từng cá thể (VD: chó 1 khác chó 2 bằng Mask R-CNN), nhưng lờ đi các pixel background.<br>
+        <strong>Panoptic:</strong> Semantic + Instance. (Vừa phân biệt background, vừa phân biệt từng cá thể foreground).
+    </div>
+    <h2>11. LÝ THUYẾT TRẮC NGHIỆM TỔNG HỢP</h2>
+    <ul>
+        <li><strong>Softmax Regression & Phân loại:</strong> 100% bài toán phân loại DL dùng Softmax (quan hệ vào/ra tuyến tính). Đầu ra là phân phối xác suất: tổng = 1, giá trị $\in (0,1)$. Số tham số cần học: $N_{in} \times K + K_{bias}$ ($K$: số lớp). Với Binary Classification, dùng Sigmoid $\to$ đầu ra xác suất (0,1), định ngưỡng (thường là 0.5) để ra quyết định nhiều nhãn (Multi-label).</li>
+        <li><strong>Biến đổi tuyến tính & Phi tuyến:</strong> Có 2 lớp tuyến tính chính: FC (Linear) và Conv. MLP = FC + Non-Linear. 100% mạng phân loại đều có FC ở cuối. Lớp phi tuyến thường dùng: ReLU (Gần như bắt buộc để tránh Vanishing/Exploding Gradient - đạo hàm mất dần về 0 hoặc bùng nổ ra vô cùng).</li>
+        <li><strong>CNN vs FC:</strong> Cả 2 đều biến đổi tuyến tính để trích xuất đặc trưng. CNN vượt trội nhờ: <strong>Local Connectivity</strong> (phụ thuộc cục bộ/toàn cục rõ) và <strong>Weight Sharing</strong> $\to$ Ít tham số cần học hơn rất nhiều. Đa số tham số mạng nằm ở lớp FC. Stride = số bước trượt (Non-unit stride = trượt > 1).</li>
+        <li><strong>Tensor Shapes & Phép toán:</strong> Tensor <code>(B, C, H, W)</code> $\to$ B: Batch size (số ảnh trong 1 batch), C: Channels (như chồng 512 tờ giấy $28 \times 28$), H/W: Kích thước. <strong>Phép Cộng (+):</strong> Bắt buộc CÙNG shape <code>B,C,H,W</code>. <strong>Phép Nối (Concat):</strong> Nối theo chiều C $\to$ Bắt buộc cùng <code>B,H,W</code>. PCA $\to$ Giảm chiều. Padding & Resize $\to$ Giữ đúng shape input cho Pre-trained model.</li>
+        <li><strong>Huấn luyện & Tối ưu:</strong> Mỗi điểm trong không gian tham số = 1 mô hình. Gradient: Vector chỉ hướng hàm tăng nhanh nhất $\to$ Đi <strong>NGƯỢC</strong> hướng đạo hàm để tìm Cực tiểu (Cục bộ/Toàn cục). LR: Bước nhảy. LR quá lớn $\to$ Loss không giảm (tà tà). <code>loss.backward()</code>: Tính đạo hàm. <code>optimizer.step()</code>: Tối ưu/Cập nhật trọng số.</li>
+        <li><strong>Dữ liệu (i.i.d):</strong> Independent & Identically Distributed (Lấy mẫu cùng nguyên tắc, độc lập). Chia Train/Val/Test để tránh Overfitting. Validation dùng để Early Stopping ($e_1 \to Val \to e_2 \to Val...$). Batch Size: Kích thước tập nhỏ chia ra để train. Epoch: Lặp qua toàn bộ Data.</li>
+        <li><strong>Kiến thức khác:</strong> Hồi quy (Regression) $\to$ Đầu ra thuộc tập số thực $\mathbb{R}$ (VD: học đồ thị hình Sin). Inductive Bias (Thiên kiến quy nạp): Áp đặt giả thuyết để mô hình học tốt hơn. Dùng Softmax cho biên phi tuyến $\to$ Biến đổi không gian lên nhiều chiều hơn để quy về tuyến tính ở không gian mới.</li>
+    </ul>
+
+    <!-- PHẦN 12: KIẾN TRÚC CNN KINH ĐIỂN -->
+    <h2>12. KIẾN TRÚC CNN KINH ĐIỂN: ALEXNET, VGG-16, RESNET-50</h2>
+
+    <h3>12.1. AlexNet (2012) — Đột phá DL với GPU</h3>
+    <ul>
+        <li><strong>Cấu trúc:</strong> 5 Conv + 3 FC. Tổng ~60M params. Input: $224 \times 224 \times 3$.</li>
+        <li><strong>4 đột phá:</strong> (1) <strong>ReLU</strong> thay Sigmoid/Tanh → nhanh hơn 6×. (2) <strong>Dropout</strong> ở FC (p=0.5). (3) <strong>Data Augmentation</strong> (flip, random crop). (4) Train trên 2 GPU song song.</li>
+        <li><strong>Conv đầu:</strong> $11 \times 11$, Stride=4 → giảm nhanh. Kernel lớn bắt đặc trưng thô. Các Conv sau: 5×5, 3×3.</li>
+        <li><strong>Tại sao quan trọng:</strong> Lỗi ImageNet 2012 giảm từ 26% → 15%. Mở kỷ nguyên Deep CNN cho CV.</li>
+    </ul>
+
+    <h3>12.2. VGG-16 (2014) — Đơn giản & Sâu</h3>
+    <ul>
+        <li><strong>Cấu trúc:</strong> 13 Conv + 3 FC = 16 layer có tham số. <strong>Tất cả Conv đều 3×3</strong>, Stride=1, Same Padding. MaxPool $2 \times 2$, Stride=2.</li>
+        <li><strong>Non-unit Stride:</strong> Stride > 1 = non-unit stride. MaxPool Stride=2 giảm spatial một nửa. Công thức output: $\lfloor (I + 2P - K)/S \rfloor + 1$ (làm tròn xuống — floor).</li>
+        <li><strong>Triết lý Conv 3×3:</strong> 2 Conv 3×3 liên tiếp = RF của 1 Conv 5×5, ít params hơn 28% ($18D^2$ vs $25D^2$) và thêm 1 ReLU (phi tuyến mạnh hơn).</li>
+        <li><strong>Kiến trúc:</strong> 2×Conv(64) → Pool → 2×Conv(128) → Pool → 3×Conv(256) → Pool → 3×Conv(512) → Pool → 3×Conv(512) → Pool → FC(4096) → FC(4096) → FC(1000).</li>
+        <li><strong>Vấn đề:</strong> 3 lớp FC cuối chiếm ~122M/138M ≈ 88% tổng params. Thứ tự params nhiều nhất: <strong>FC → Conv</strong>. Rất nặng, chậm inference.</li>
+    </ul>
+
+    <h3>12.3. ResNet-50 (2015) — Skip Connection & Bottleneck</h3>
+    <ul>
+        <li><strong>Vấn đề cần giải:</strong> Mạng sâu hơn → Accuracy tệ hơn (<strong>Degradation Problem</strong>, không phải Overfit). Gradient vanish không về được lớp đầu.</li>
+        <li><strong>Skip Connection:</strong> $\text{Output} = \mathcal{F}(\mathbf{x}) + \mathbf{x}$. Học phần dư (residual). Gradient đi thẳng về qua identity path → Triệt tiêu Vanishing Gradient.</li>
+        <li><strong>Bottleneck Block (ResNet-50):</strong> $1 \times 1$ (C→C/4, giảm kênh) → $3 \times 3$ (C/4→C/4, học đặc trưng) → $1 \times 1$ (C/4→C, phục hồi kênh). Giảm ~8.5× params so với 1 Conv $3 \times 3$ cùng I/O.</li>
+        <li><strong>50 layers:</strong> 1 Conv đầu + 4 stage (3+4+6+3 blocks × 3 conv/block = 48 conv) + 1 FC = 50. Tổng ~25M params, nhẹ hơn VGG-16 nhiều.</li>
+        <li><strong>ResNet vs UNet Skip:</strong> ResNet dùng <strong>Add (+)</strong> → phải cùng shape $(B, C, H, W)$. UNet dùng <strong>Concat</strong> theo chiều C → chỉ cần cùng $(B, H, W)$.</li>
+    </ul>
+
+    <h3>12.4. ViT — Input Shape & So sánh CNN</h3>
+    <ul>
+        <li><strong>Input shape CNN:</strong> $(B, C, H, W)$ — $B$: batch, $C$: channels (chồng $C$ tờ giấy kích thước $H \times W$).</li>
+        <li><strong>Input shape Transformer/ViT:</strong> $(B, L, D)$ — $B$: batch, $L$: số token/patch (sequence length), $D$: số chiều đặc trưng mỗi token.</li>
+        <li><strong>VD Tensor $(B, 512, 28, 28)$:</strong> Mỗi ảnh là chồng 512 tờ giấy $28 \times 28$ (512 feature maps).</li>
+        <li><strong>ViT chuyển đổi:</strong> Ảnh $(H,W,C)$ → Cắt patch $16 \times 16$ → Flatten → Linear Projection → $(B, L, D)$ → Transformer Encoder.</li>
+        <li><strong>Khi nào ViT tốt hơn CNN:</strong> Dataset cực lớn (JFT-300M+). Dataset vừa → Pretrain ViT trên ImageNet-21k rồi fine-tune. Ít inductive bias nên cần nhiều data hơn CNN.</li>
+    </ul>
+
+    <!-- PHẦN 13: BỔ SUNG LÝ THUYẾT & GHI CHÚ THỰC HÀNH -->
+    <h2>13. BỔ SUNG LÝ THUYẾT & GHI CHÚ THỰC HÀNH</h2>
+
+    <div class="box">
+        🔹 <strong>[Tham số Softmax Regression & Tính chất Output]</strong><br>
+        <strong>Số tham số:</strong> $n \times K + K$ (bias). $n$: số đặc trưng đầu vào, $K$: số lớp.<br>
+        VD: $n=784$, $K=10$ (MNIST) → $784 \times 10 + 10 = 7850$ params.<br>
+        Binary ($K=2$): Dùng Sigmoid → chỉ cần $n \times 1 + 1$ params.<br>
+        <strong>Trước Softmax (Logits):</strong> $z_k \in \mathbb{R}$, không bị giới hạn. <strong>Sau Softmax:</strong> Tổng $= 1$, mỗi $\hat{p}_k \in (0,1)$ → Phân phối xác suất hợp lệ.<br>
+        100% bài toán phân loại DL dùng Softmax. Không có mô hình phân loại nào thiếu FC ở cuối.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Quyết định đầu ra: Multi-class vs Multi-label]</strong><br>
+        <strong>Multi-class Single-label</strong> (chó/mèo/gà): Softmax + $\text{argmax}(\hat{\mathbf{p}})$. Từ 3 lớp trở lên dùng Softmax.<br>
+        <strong>Binary Single-label</strong> (có/không): Sigmoid → 1 scalar $\in (0,1)$ → Threshold 0.5.<br>
+        <strong>Multi-class Multi-label</strong> (1 ảnh nhiều tag): Mỗi class dùng Sigmoid riêng → Threshold 0.5 độc lập từng class.<br>
+        Random init $K$ lớp → Loss khởi đầu $\approx \ln(K)$ (Softmax đều → CE $= -\log(1/K)$).
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Chỉ 2 lớp tuyến tính: FC và Convolution]</strong><br>
+        <strong>Giống:</strong> Cả FC và Conv đều thực hiện biến đổi tuyến tính $z = W \cdot x + b$.<br>
+        <strong>FC:</strong> Kết nối toàn phần, phụ thuộc global. $X$ = vector đặc trưng toàn ảnh.<br>
+        <strong>Conv:</strong> Kết nối cục bộ (local connectivity), phụ thuộc local/global rõ. <strong>Share W</strong> → ít tham số hơn rất nhiều.<br>
+        Phi tuyến thứ 1: FC + ReLU. Phi tuyến thứ 2: Conv + ReLU.<br>
+        Thứ tự params nhiều nhất: <strong>FC → Conv</strong>. Conv dùng để trích xuất đặc trưng. FC để tổng hợp → quyết định.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Phép toán Tensor: Cộng vs Nối (Concat)]</strong><br>
+        <strong>Cộng (+) (ResNet Skip):</strong> Bắt buộc cùng shape $(B, C, H, W)$. Số channels không đổi.<br>
+        <strong>Concat theo chiều C (UNet Skip):</strong> Chỉ cần cùng $(B, H, W)$, C không cần giống. $C_{out} = C_1 + C_2$.<br>
+        <strong>PCA:</strong> Giảm số chiều $D$ bằng biến đổi tuyến tính. Dùng trước DL để tiền xử lý.<br>
+        <strong>Padding & Resize:</strong> Đảm bảo shape đúng cho pre-trained model (VD: resize về $224 \times 224$). Resize mask segmentation phải dùng <code>nearest</code>, không dùng bilinear.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Training Loop & i.i.d chi tiết]</strong><br>
+        <strong>i.i.d:</strong> Independent & Identically Distributed. Cùng phân phối (cùng điều kiện: ánh sáng, camera...) và độc lập nhau.<br>
+        <strong>Batch:</strong> Mini-batch = subset của toàn dữ liệu. 1 step = 1 batch forward + backward.<br>
+        <strong>Epoch:</strong> Đi qua toàn bộ dataset 1 lần = $\lceil N/\text{bs} \rceil$ steps.<br>
+        <strong>Shuffle:</strong> Trộn data mỗi epoch → đảm bảo i.i.d, tránh mô hình học thứ tự.<br>
+        <strong>Validation:</strong> $e_1 \to Val \to e_2 \to Val \to \ldots$ Early Stopping khi Val loss không giảm sau $p$ epochs (patience).<br>
+        <strong>LR quá lớn:</strong> Loss dao động (tà tà, không hội tụ). LR quá nhỏ: Hội tụ chậm, tốn epoch.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Gradient Descent: Ý nghĩa & Code]</strong><br>
+        Mỗi điểm trong không gian tham số $\theta$ = 1 mô hình cụ thể.<br>
+        <strong>Global minimum:</strong> Thấp nhất toàn hàm. <strong>Local minimum:</strong> Thấp nhất xung quanh nó.<br>
+        <strong>Gradient:</strong> Vector chỉ hướng hàm <em>tăng</em> nhanh nhất → Đi ngược gradient để giảm loss.<br>
+        <strong>Learning Rate:</strong> Bước nhảy. Nhỏ → ổn định, chậm. Lớn → nhanh nhưng có thể bỏ qua minimum.<br>
+        <code>loss.backward()</code>: Tính đạo hàm (populate <code>.grad</code>). <code>optimizer.step()</code>: Cập nhật $\theta$ theo gradient.<br>
+        Mọi thứ phải convert về Tensor để GPU xử lý (ảnh, văn bản, đồ thị...).
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Vanishing vs Exploding Gradient — Tại sao ReLU gần như bắt buộc]</strong><br>
+        Backprop qua $L$ lớp = nhân dồn $L$ đạo hàm:<br>
+        - Sigmoid: max đạo hàm $= 0.25 < 1$ → $0.25^L \to 0$ (<strong>Vanishing</strong>). Lớp đầu không học được.<br>
+        - Đạo hàm $> 1$ (VD: 1.1): $1.1^L \to \infty$ (<strong>Exploding</strong>). Loss = NaN.<br>
+        <strong>ReLU:</strong> Đạo hàm $= 1$ khi $z > 0$ → Gradient truyền thẳng, không suy giảm. Gần như bắt buộc cho hidden layers.<br>
+        <strong>Khắc phục Vanishing:</strong> ReLU, Skip Connection (ResNet), BatchNorm. <strong>Exploding:</strong> Gradient Clipping.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Inductive Bias & Tăng năng lực Mô hình]</strong><br>
+        <strong>Inductive Bias (Thiên kiến quy nạp):</strong> Giả thiết mô hình áp đặt lên data để tổng quát hóa tốt hơn.<br>
+        - Softmax Regression: Bias = Decision boundary tuyến tính (yếu nhất).<br>
+        - CNN: Local connectivity + Translation invariance (phù hợp ảnh).<br>
+        - Transformer/ViT: Bias rất ít → cần nhiều data hơn để học từ đầu.<br>
+        <strong>Tăng năng lực Softmax:</strong> Feature mapping $\Phi(x)$: đưa data lên không gian chiều cao → boundary tuyến tính ở không gian mới = phi tuyến ở không gian gốc (2D). DL tự học $\Phi(x)$ qua hidden layers.<br>
+        <strong>Hồi quy hình Sin:</strong> Input $x$, label $y = \sin(x)$, đầu ra $\in \mathbb{R}$ (Regression, MSE Loss).
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Transfer Learning & Fine-tuning]</strong><br>
+        <strong>Khái niệm:</strong> Dùng model pretrain (VD: ResNet-50 trên ImageNet) làm khởi điểm thay vì train từ đầu.<br>
+        <strong>Feature Extractor:</strong> Freeze toàn bộ backbone, chỉ train FC cuối. Dùng khi dataset nhỏ, domain gần ImageNet.<br>
+        <strong>Fine-tuning:</strong> Unfreeze toàn bộ (hoặc một phần cuối) backbone, train với LR rất nhỏ. Dùng khi dataset lớn hơn hoặc domain khác.<br>
+        <strong>Tại sao hiệu quả:</strong> Lớp đầu CNN học đặc trưng chung (cạnh, texture) → Transferable. Lớp cuối học đặc trưng riêng task → Cần fine-tune.<br>
+        <strong>LR phân tầng:</strong> Backbone LR nhỏ ($10^{-5}$), head LR lớn ($10^{-3}$) khi fine-tune.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[UNet++ vs UNet — Tại sao cần Decoder]</strong><br>
+        <strong>Tại sao cần Decoder:</strong> Encoder + Pooling giảm spatial resolution để lấy semantic context (hiểu "cái gì"). Decoder khôi phục resolution để dự đoán từng pixel (dense prediction — hiểu "ở đâu"). Cả hai cần thiết cho segmentation.<br>
+        <strong>UNet:</strong> Skip connection thẳng Encoder → Decoder cùng cấp. Có khoảng cách semantic (Encoder học low-level, Decoder cần high-level).<br>
+        <strong>UNet++:</strong> Dense skip connections + nút trung gian giữa Encoder/Decoder, được tính qua convolution trước khi nối → Thu hẹp semantic gap. Tốt hơn khi không biết depth tối ưu.
+    </div>
+
+    <div class="box">
+        🔹 <strong>[Đề thi: Thể lệ & Công thức cần nhớ nhanh]</strong><br>
+        <strong>Hình thức:</strong> 90 phút, 60 câu trắc nghiệm. Tài liệu: 1 tờ A4. Nội dung: CNN, Transformer, Foundation Models.<br>
+        <strong>Công thức hay gặp:</strong><br>
+        Conv output: $\lfloor(I + 2P - K)/S\rfloor + 1$ (luôn làm tròn xuống).<br>
+        Params Conv: $K_{out} \times (k^2 \times C_{in} + 1_{bias})$.<br>
+        Params Softmax: $n \times K + K$. Loss khởi đầu random: $\approx \ln(K)$.<br>
+        Attention params / block: $4 d_{model}^2$ (Q,K,V,O projections). Score shape: $(B, h, T, T)$ → $O(T^2)$ memory.
+    </div>
+
+</body>
+</html>

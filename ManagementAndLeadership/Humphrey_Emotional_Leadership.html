@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GK5009 – Humphrey: The Many Faces of Emotional Leadership</title>
+  <style>
+    :root {
+      --primary: #2e4057;
+      --secondary: #048a81;
+      --accent: #f4a261;
+      --light: #f0f8f7;
+      --text: #1c1c1c;
+      --muted: #4a6570;
+      --border: #a8d5d0;
+      --red: #8b2500;
+      --purple: #5a2d82;
+      --green: #145a32;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      font-size: 15.5px;
+      line-height: 1.8;
+      color: var(--text);
+      background: #f6f9f9;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 0 60px;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      background: linear-gradient(135deg, #2e4057 0%, #048a81 60%, #26a99d 100%);
+      color: white;
+      padding: 44px 48px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 240px; height: 240px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+    .tag-pill {
+      display: inline-block;
+      background: rgba(244,162,97,0.25);
+      border: 1px solid rgba(244,162,97,0.6);
+      color: #ffd1a4;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 3px 12px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+    .page-header h1 { font-size: 2.3rem; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
+    .page-header .subtitle { font-size: 1.05rem; opacity: 0.88; margin-bottom: 10px; font-style: italic; }
+    .page-header .meta { font-size: 0.82rem; opacity: 0.68; }
+
+    /* ── Nav ── */
+    .page-nav {
+      background: var(--primary);
+      display: flex;
+      gap: 0;
+      padding: 0 48px;
+      border-bottom: 3px solid var(--accent);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .page-nav a {
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 500;
+      padding: 12px 18px;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -3px;
+      transition: color .2s, border-color .2s;
+    }
+    .page-nav a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* ── Content ── */
+    .content { padding: 0 48px; }
+
+    /* ── Section headers ── */
+    .section-header {
+      background: linear-gradient(135deg, #2e4057, #048a81);
+      color: white;
+      padding: 22px 30px;
+      border-radius: 10px 10px 0 0;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 52px;
+    }
+    .section-num {
+      width: 46px; height: 46px;
+      background: var(--accent);
+      color: var(--primary);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; font-weight: 800;
+      flex-shrink: 0;
+    }
+    .section-header .sec-title { font-size: 1.35rem; font-weight: 700; }
+    .section-header .sec-sub { font-size: 0.85rem; opacity: 0.8; margin-top: 2px; }
+    .section-body {
+      background: white;
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      padding: 32px 36px;
+    }
+
+    h3 { font-size: 1.18rem; color: var(--primary); font-weight: 700; margin: 28px 0 10px; border-left: 4px solid var(--accent); padding-left: 12px; }
+    h4 { font-size: 1.02rem; color: var(--secondary); font-weight: 600; margin: 18px 0 8px; }
+    p { margin-bottom: 14px; }
+    ul, ol { margin: 10px 0 14px 24px; }
+    li { margin-bottom: 8px; }
+    strong { color: var(--primary); }
+    em { color: var(--muted); }
+
+    /* ── Key quote ── */
+    .key-quote {
+      background: var(--primary);
+      color: var(--accent);
+      padding: 20px 28px;
+      border-radius: 8px;
+      margin: 20px 0;
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      text-align: center;
+    }
+    .key-quote cite { display: block; color: rgba(255,255,255,0.6); font-size: 0.82rem; margin-top: 8px; font-style: normal; }
+
+    /* ── Quote box ── */
+    .quote-box {
+      background: var(--light);
+      border-left: 5px solid var(--secondary);
+      padding: 18px 22px;
+      margin: 18px 0;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      font-size: 0.97rem;
+    }
+    .quote-box cite { display: block; margin-top: 10px; font-style: normal; font-size: 0.82rem; color: var(--muted); }
+
+    /* ── 4 Issues grid ── */
+    .issues-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .issue-card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px 16px;
+      text-align: center;
+      border-top: 5px solid;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .issue-card:nth-child(1) { border-top-color: #048a81; }
+    .issue-card:nth-child(2) { border-top-color: var(--accent); }
+    .issue-card:nth-child(3) { border-top-color: var(--purple); }
+    .issue-card:nth-child(4) { border-top-color: var(--primary); }
+    .issue-num { font-size: 2rem; font-weight: 800; }
+    .issue-card:nth-child(1) .issue-num { color: #048a81; }
+    .issue-card:nth-child(2) .issue-num { color: var(--accent); }
+    .issue-card:nth-child(3) .issue-num { color: var(--purple); }
+    .issue-card:nth-child(4) .issue-num { color: var(--primary); }
+    .issue-name { font-weight: 700; color: var(--primary); font-size: 0.92rem; margin: 6px 0 8px; }
+    .issue-vi { font-size: 0.8rem; color: var(--secondary); font-weight: 600; margin-bottom: 6px; }
+    .issue-desc { font-size: 0.8rem; color: #555; }
+
+    /* ── Propositions ── */
+    .prop-box {
+      background: var(--light);
+      border-left: 5px solid var(--secondary);
+      border-radius: 0 8px 8px 0;
+      padding: 18px 22px;
+      margin: 14px 0;
+    }
+    .prop-label { font-size: 0.78rem; font-weight: 700; color: var(--secondary); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 6px; }
+    .prop-text { font-style: italic; color: var(--primary); font-size: 0.97rem; line-height: 1.6; }
+
+    /* ── Empathy detail ── */
+    .empathy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .emp-card {
+      border-radius: 8px;
+      padding: 18px 20px;
+      border-left: 5px solid;
+    }
+    .emp-card.pos { background: #edf8f0; border-left-color: #27ae60; }
+    .emp-card.neg { background: #fef9ee; border-left-color: var(--accent); }
+    .emp-card h4 { margin-top: 0; border: none; padding: 0; }
+    .emp-card.pos h4 { color: var(--green); }
+    .emp-card.neg h4 { color: #7d4b00; }
+    .emp-card p { font-size: 0.88rem; margin-bottom: 6px; }
+    .emp-card p:last-child { margin-bottom: 0; }
+
+    /* ── EI components ── */
+    .ei-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .ei-card {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+    .ei-card .ei-num { font-size: 1.3rem; font-weight: 800; color: var(--secondary); margin-bottom: 6px; }
+    .ei-card .ei-name { font-weight: 700; color: var(--primary); font-size: 0.82rem; margin-bottom: 6px; }
+    .ei-card .ei-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.5; }
+
+    /* ── Emotions comparison ── */
+    .emotions-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .frus-card {
+      background: #fff3f0;
+      border: 2px solid #e74c3c;
+      border-radius: 8px;
+      padding: 20px 18px;
+    }
+    .frus-card h4 { color: var(--red); margin-top: 0; border: none; padding: 0; margin-bottom: 10px; }
+    .opti-card {
+      background: #edf8f0;
+      border: 2px solid #27ae60;
+      border-radius: 8px;
+      padding: 20px 18px;
+    }
+    .opti-card h4 { color: var(--green); margin-top: 0; border: none; padding: 0; margin-bottom: 10px; }
+    .frus-card p, .opti-card p { font-size: 0.88rem; margin-bottom: 8px; }
+    .frus-card p:last-child, .opti-card p:last-child { margin-bottom: 0; }
+
+    /* ── TF vs TX ── */
+    .leadership-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .tf-card {
+      background: #edf8f7;
+      border: 2px solid var(--secondary);
+      border-radius: 8px;
+      padding: 20px 18px;
+    }
+    .tx-card {
+      background: #f5f0ff;
+      border: 2px solid var(--purple);
+      border-radius: 8px;
+      padding: 20px 18px;
+    }
+    .tf-card h4 { color: var(--secondary); margin-top: 0; border: none; padding: 0; margin-bottom: 10px; }
+    .tx-card h4 { color: var(--purple); margin-top: 0; border: none; padding: 0; margin-bottom: 10px; }
+    .tf-card p, .tx-card p { font-size: 0.88rem; margin-bottom: 8px; }
+    .tf-card p:last-child, .tx-card p:last-child { margin-bottom: 0; }
+
+    /* ── True vs Pseudo ── */
+    .true-pseudo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .true-card {
+      background: #edf8f0;
+      border: 2px solid #27ae60;
+      border-radius: 8px;
+      padding: 20px 18px;
+    }
+    .pseudo-card {
+      background: #fdecea;
+      border: 2px solid #e74c3c;
+      border-radius: 8px;
+      padding: 20px 18px;
+    }
+    .true-card h4 { color: var(--green); margin-top: 0; border: none; padding: 0; margin-bottom: 10px; }
+    .pseudo-card h4 { color: var(--red); margin-top: 0; border: none; padding: 0; margin-bottom: 10px; }
+    .true-card p, .pseudo-card p { font-size: 0.88rem; margin-bottom: 6px; }
+    .true-card p:last-child, .pseudo-card p:last-child { margin-bottom: 0; }
+
+    /* ── Perception matrix ── */
+    .perception-matrix {
+      margin: 18px 0;
+      overflow-x: auto;
+    }
+    .perception-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .perception-table th {
+      background: var(--primary);
+      color: white;
+      padding: 12px 16px;
+      text-align: center;
+    }
+    .perception-table td {
+      padding: 16px;
+      border: 1px solid var(--border);
+      text-align: center;
+      vertical-align: top;
+    }
+    .cell-best { background: #d5f5e3; }
+    .cell-ok { background: #fef9e7; }
+    .cell-bad { background: #fdecea; }
+    .cell-worst { background: #7b241c; color: white; }
+    .cell-label { font-size: 1.2rem; margin-bottom: 6px; }
+    .cell-desc { font-size: 0.82rem; line-height: 1.5; }
+
+    /* ── AET box ── */
+    .aet-box {
+      background: white;
+      border: 2px dashed var(--secondary);
+      border-radius: 10px;
+      padding: 22px 26px;
+      margin: 18px 0;
+    }
+    .aet-title { font-weight: 700; color: var(--primary); font-size: 1.05rem; margin-bottom: 12px; }
+    .aet-flow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 12px 0;
+    }
+    .aet-node {
+      background: var(--primary);
+      color: white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+    .aet-arrow { color: var(--secondary); font-size: 1.4rem; font-weight: 700; }
+    .aet-result {
+      background: var(--secondary);
+      color: white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    /* ── Summary tables ── */
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+    .summary-table th { background: var(--primary); color: white; padding: 11px 16px; text-align: left; }
+    .summary-table td { padding: 11px 16px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .summary-table tr:nth-child(even) td { background: var(--light); }
+
+    /* ── Case blocks ── */
+    .case-block {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin: 20px 0;
+    }
+    .case-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--border);
+    }
+    .case-avatar {
+      width: 54px; height: 54px;
+      background: var(--primary);
+      color: var(--accent);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 800;
+      flex-shrink: 0;
+    }
+    .case-title { font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 2px; }
+    .case-sub { font-size: 0.85rem; color: var(--muted); }
+    .case-tag {
+      display: inline-block;
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--secondary);
+      padding: 2px 10px;
+      margin-left: 8px;
+    }
+    .case-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+    .cg-cell { background: var(--light); border-radius: 8px; padding: 14px 16px; }
+    .cg-cell h4 { margin-top: 0; border: none; padding: 0; font-size: 0.82rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-bottom: 6px; }
+    .cg-cell p { font-size: 0.88rem; margin-bottom: 0; }
+    .case-result {
+      background: linear-gradient(135deg, #edf8f0, #d5f5e3);
+      border-left: 4px solid #27ae60;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin-top: 14px;
+      font-size: 0.88rem;
+    }
+
+    /* ── Pitfall grid ── */
+    .pitfall-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .pitfall-card {
+      background: #fdecea;
+      border-left: 5px solid #e74c3c;
+      border-radius: 0 8px 8px 0;
+      padding: 16px 18px;
+    }
+    .pitfall-card .pc-title { font-weight: 700; color: var(--red); margin-bottom: 6px; font-size: 0.93rem; }
+    .pitfall-card p { font-size: 0.87rem; margin-bottom: 0; }
+
+    /* ── Tip box ── */
+    .tip-box {
+      background: #d5f5e3;
+      border-left: 5px solid #27ae60;
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 14px 0;
+    }
+    .tip-box .tb-title { font-weight: 700; color: var(--green); margin-bottom: 6px; }
+    .tip-box p, .tip-box ul { font-size: 0.88rem; margin-bottom: 0; }
+
+    /* ── Warning box ── */
+    .warn-box {
+      background: #fff3e0;
+      border-left: 5px solid var(--accent);
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 14px 0;
+    }
+    .warn-box .wb-title { font-weight: 700; color: #7d4b00; margin-bottom: 6px; }
+    .warn-box p { font-size: 0.88rem; margin-bottom: 0; }
+
+    /* ── Info box ── */
+    .info-box {
+      background: #edf8f7;
+      border-left: 5px solid var(--secondary);
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+    }
+    .info-box .ib-title { font-weight: 700; color: var(--secondary); margin-bottom: 6px; font-size: 0.9rem; }
+    .info-box p { font-size: 0.88rem; margin-bottom: 0; }
+
+    /* ── Review grid ── */
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .rq-card {
+      background: var(--light);
+      border-radius: 8px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--secondary);
+      font-size: 0.88rem;
+    }
+    .rq-num { font-weight: 800; color: var(--accent); margin-bottom: 4px; }
+
+    /* ── Cross-reference ── */
+    .cross-ref {
+      background: linear-gradient(135deg, #fff8e1, #fffbf0);
+      border: 2px dashed var(--accent);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+    .cross-ref h4 { color: #7a4f00; margin-top: 0; border: none; padding: 0; margin-bottom: 10px; }
+    .cross-ref p { font-size: 0.88rem; margin-bottom: 6px; }
+    .cross-ref p:last-child { margin-bottom: 0; }
+
+    footer {
+      margin-top: 60px;
+      border-top: 2px solid var(--border);
+      padding: 24px 48px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════ -->
+<div class="page-header">
+  <div class="tag-pill">GK5009 · Leadership Quarterly 2002</div>
+  <h1>The Many Faces of Emotional Leadership</h1>
+  <div class="subtitle">Nhiều Khuôn mặt của Lãnh đạo Cảm xúc — Tổng hợp 4 Vấn đề Trung tâm trong Nghiên cứu</div>
+  <div class="meta">Ronald H. Humphrey &nbsp;|&nbsp; The Leadership Quarterly, Vol. 13 (2002), pp. 493–504 &nbsp;|&nbsp; GK5009 Quản lý và Lãnh đạo</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     NAV
+══════════════════════════════════════════════ -->
+<nav class="page-nav">
+  <a href="#overview">I. Tổng quan</a>
+  <a href="#analysis">II. Phân tích</a>
+  <a href="#models">III. Mô hình</a>
+  <a href="#examples">IV. Thực tiễn</a>
+  <a href="#review">V. Ôn tập</a>
+</nav>
+
+<div class="content">
+
+<!-- ══════════════════════════════════════════════
+     SECTION I — OVERVIEW
+══════════════════════════════════════════════ -->
+<div id="overview">
+  <div class="section-header">
+    <div class="section-num">I</div>
+    <div>
+      <div class="sec-title">Tổng quan (Overview)</div>
+      <div class="sec-sub">Bản chất bài viết · Luận điểm trung tâm · 4 khuôn mặt của emotional leadership</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <div class="key-quote">
+      "It is important to realize that our view of leadership may vary considerably according to which face we are looking at."
+      <cite>— Humphrey (2002, p. 494)</cite>
+    </div>
+
+    <h3>Bản chất và Mục đích Bài viết</h3>
+    <p>Ronald H. Humphrey — Trưởng khoa Quản lý tại Virginia Commonwealth University — viết bài này với tư cách là <strong>biên tập viên khách mời (guest editor)</strong> cho số đặc biệt (special issue) của tạp chí <em>The Leadership Quarterly</em>, Vol. 13 (2002), tập trung vào chủ đề <em>cảm xúc và lãnh đạo</em>.</p>
+
+    <p>Số đặc biệt này tập hợp <strong>7 bài nghiên cứu độc lập</strong> từ các nhà khoa học khác nhau. Bài của Humphrey là bài mở đầu — đóng vai trò:</p>
+    <ul>
+      <li><strong>Tổng hợp (synthesis):</strong> Tổ chức 7 nghiên cứu theo 4 vấn đề trung tâm về emotional leadership</li>
+      <li><strong>Phân tích (analysis):</strong> Tìm ra mối quan hệ, điểm tương đồng và khác biệt giữa các nghiên cứu</li>
+      <li><strong>Định hướng nghiên cứu:</strong> Đề xuất các proposition (mệnh đề) cho nghiên cứu tương lai</li>
+    </ul>
+
+    <p>Đây <strong>không phải</strong> bài báo cáo dữ liệu mới — Humphrey không thu thập hay phân tích dữ liệu. Đây là bài tổng hợp học thuật (conceptual overview) — dạng quan trọng trong khoa học quản lý vì nó tạo ra framework để hiểu một lĩnh vực nghiên cứu phức tạp.</p>
+
+    <h3>Tại sao "Many Faces"?</h3>
+    <p>Metaphor "nhiều khuôn mặt" (many faces) phản ánh một thực tế quan trọng: <strong>cùng một nhà lãnh đạo có thể được nhìn nhận rất khác nhau tùy vào góc độ quan sát</strong>. Một CEO có thể:</p>
+    <ul>
+      <li>Có điểm mạnh về empathy → xuất sắc theo Face 1 (Traits)</li>
+      <li>Quản lý cảm xúc nhóm tốt → xuất sắc theo Face 2 (Process)</li>
+      <li>Nhưng có facial expressions lạnh lùng → bị đánh giá tiêu cực theo Face 3 (Perception)</li>
+      <li>Và kết quả nhóm trung bình do ít quan tâm optimism → kém theo Face 4 (Effectiveness)</li>
+    </ul>
+    <p>Không có một "true face" duy nhất — đó là lý do tại sao nghiên cứu về emotional leadership cần nhìn qua cả 4 góc độ.</p>
+
+    <h3>4 Vấn đề Trung tâm (The Four Faces)</h3>
+    <div class="issues-grid">
+      <div class="issue-card">
+        <div class="issue-num">1</div>
+        <div class="issue-name">Leadership Traits &amp; Emotions</div>
+        <div class="issue-vi">Đặc điểm Lãnh đạo và Cảm xúc</div>
+        <div class="issue-desc">Đặc điểm cảm xúc nào giúp emerge as leader? → Empathy (desire + ability) + Emotional Intelligence (Goleman) → Leadership emergence + impression management</div>
+      </div>
+      <div class="issue-card">
+        <div class="issue-num">2</div>
+        <div class="issue-name">Emotions &amp; Leadership Process</div>
+        <div class="issue-vi">Cảm xúc và Quá trình Lãnh đạo</div>
+        <div class="issue-desc">Quản lý cảm xúc là chức năng lãnh đạo chủ yếu → Frustration + Optimism là hai cảm xúc quan trọng nhất → Transformational vs Transactional</div>
+      </div>
+      <div class="issue-card">
+        <div class="issue-num">3</div>
+        <div class="issue-name">Emotions &amp; Perceptions of Leadership</div>
+        <div class="issue-vi">Cảm xúc và Nhận thức về Lãnh đạo</div>
+        <div class="issue-desc">Biểu hiện cảm xúc → nhận thức về lãnh đạo → True vs Pseudo-TL → Disconnect Effect → AET + Fundamental Attribution Error</div>
+      </div>
+      <div class="issue-card">
+        <div class="issue-num">4</div>
+        <div class="issue-name">Emotions &amp; Leadership Effectiveness</div>
+        <div class="issue-vi">Cảm xúc và Hiệu quả Lãnh đạo</div>
+        <div class="issue-desc">Emotional variables mediate leadership → performance → sales managers + R&D teams → Optimism dẫn đến nỗ lực → kết quả</div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="ib-title">Tại sao bài này quan trọng trong GK5009?</div>
+      <p>Humphrey cung cấp <em>bức tranh toàn cảnh</em> về mối quan hệ giữa cảm xúc và lãnh đạo — từ đặc điểm cá nhân (trait), đến quá trình nhóm (process), đến cách người khác nhìn nhận bạn (perception), đến kết quả cuối cùng (effectiveness). Đây là nền tảng học thuật cho các mô hình lãnh đạo thực tiễn trong Northouse (transformational, servant, authentic leadership) và bổ sung chiều cảm xúc cho tư duy quản lý của Drucker.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION II — IN-DEPTH ANALYSIS
+══════════════════════════════════════════════ -->
+<div id="analysis">
+  <div class="section-header">
+    <div class="section-num">II</div>
+    <div>
+      <div class="sec-title">Phân tích Chuyên sâu (In-depth Analysis)</div>
+      <div class="sec-sub">4 vấn đề · Propositions · Lý thuyết nền tảng · Nghiên cứu liên quan</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <!-- ISSUE 1 -->
+    <h3>A. Vấn đề 1: Leadership Traits &amp; Emotions</h3>
+
+    <p>Câu hỏi trung tâm của Issue 1: <em>Đặc điểm cảm xúc nào giúp một người nổi lên như lãnh đạo trong nhóm?</em> Hai biến số chính được Humphrey tổng hợp: <strong>Empathy</strong> và <strong>Emotional Intelligence (EI)</strong>.</p>
+
+    <h4>Empathy — Định nghĩa và Cơ chế</h4>
+    <div class="quote-box">
+      "Empathy, which is the desire to understand others' feelings and the ability to do so, would naturally contribute to both pattern recognition and problem solving."
+      <cite>— Humphrey (2002), tổng hợp từ Wolff et al.</cite>
+    </div>
+
+    <p>Empathy có <strong>hai thành phần</strong> phân biệt rõ ràng:</p>
+    <ul>
+      <li><strong>Desire (Mong muốn):</strong> Sự quan tâm chủ động đến cảm xúc của người khác — không phải ai cũng muốn hiểu cảm xúc người khác, dù có khả năng</li>
+      <li><strong>Ability (Khả năng):</strong> Năng lực thực sự để nhận biết, hiểu và phản ứng chính xác với cảm xúc của người khác — đây là kỹ năng có thể học được</li>
+    </ul>
+    <p>Cả hai phải cùng tồn tại để empathy hoạt động hiệu quả. Người có ability nhưng thiếu desire → không chủ động sử dụng khả năng đó. Người có desire nhưng thiếu ability → cố gắng nhưng đọc sai cảm xúc.</p>
+
+    <p>Empathy đóng hai vai trò riêng biệt trong lãnh đạo:</p>
+    <ul>
+      <li><strong>Pattern Recognition (Nhận diện mẫu):</strong> Hiểu cảm xúc của từng thành viên nhóm → nhận diện các vấn đề tiềm ẩn (conflict đang hình thành, bất mãn đang tích tụ) trước khi chúng trở thành khủng hoảng</li>
+      <li><strong>Problem Solving (Giải quyết vấn đề):</strong> Empathy cung cấp thông tin quan trọng về nhu cầu, lo lắng và kỳ vọng của từng người → giải pháp quan hệ con người hiệu quả hơn nhiều so với approach thuần kỹ thuật</li>
+    </ul>
+
+    <h4>Tác động Hai chiều của Empathy — Không phải lúc nào cũng tốt</h4>
+    <div class="empathy-grid">
+      <div class="emp-card pos">
+        <h4>Empathy → Relationship-Oriented Leadership (Tích cực)</h4>
+        <p><strong>Wolff et al.:</strong> Empathy có tác động rộng hơn nhiều so với chỉ relationship-oriented leadership — có thể ảnh hưởng đến nhận thức chiến lược và giải quyết vấn đề phức tạp. Empathy cao giúp nhà lãnh đạo hiểu "big picture" của nhóm tốt hơn.</p>
+        <p><strong>Pescosolido:</strong> Thành viên nhóm có empathy cao có xu hướng tham gia vào quản lý cảm xúc nhóm → tự nhiên nổi lên như lãnh đạo trong các tình huống nhóm tự quản lý (emergent leadership).</p>
+        <p><strong>Kết luận:</strong> Empathy là tiền đề quan trọng cho leadership emergence trong môi trường dựa trên mối quan hệ — đặc biệt khi nhóm cần người điều phối và giải quyết xung đột.</p>
+      </div>
+      <div class="emp-card neg">
+        <h4>Empathy → Complex Task Performance (Phức tạp hơn)</h4>
+        <p><strong>Kellet, Humphrey, và Sleeth:</strong> Empathy có tương quan <em>âm</em> với complex task performance — trong các nhiệm vụ kỹ thuật phức tạp đòi hỏi tập trung cao và phân tích logic chặt chẽ, empathy cao có thể gây xao nhãng.</p>
+        <p><strong>Fiedler's LPC Theory:</strong> Task-motivated leaders (LPC thấp — đánh giá thấp đồng nghiệp kém nhất) phù hợp hơn với môi trường đòi hỏi hiệu suất kỹ thuật cao. Relationship-motivated leaders (LPC cao, empathy cao) phù hợp hơn trong môi trường có structure trung bình.</p>
+        <p><strong>Hàm ý:</strong> Empathy không phải lúc nào cũng là đặc điểm tốt nhất — tùy thuộc vào loại nhiệm vụ và bối cảnh.</p>
+      </div>
+    </div>
+
+    <div class="warn-box">
+      <div class="wb-title">Điểm quan trọng: Empathy-Performance Trade-off</div>
+      <p>Không phải "empathy cao = lãnh đạo tốt" trong mọi trường hợp. Trong môi trường phức tạp về kỹ thuật (surgery, engineering, air traffic control), tập trung vào task có thể quan trọng hơn sensitivity về cảm xúc của nhóm trong ngắn hạn. Nhà lãnh đạo cần biết khi nào kích hoạt empathy và khi nào ưu tiên task focus.</p>
+    </div>
+
+    <h4>Emotional Intelligence (EI) — Nền tảng Lý thuyết</h4>
+    <p>Humphrey xây dựng trên nền tảng của Goleman (1995, 1998) và các nhà nghiên cứu khác. <strong>EI</strong> là khả năng nhận biết, hiểu, quản lý và ảnh hưởng đến cảm xúc — của bản thân và của người khác. Goleman (1998) đề xuất 5 thành phần:</p>
+
+    <div class="ei-grid">
+      <div class="ei-card">
+        <div class="ei-num">1</div>
+        <div class="ei-name">Self-Awareness</div>
+        <div class="ei-desc">Nhận biết cảm xúc của mình khi nó xảy ra; hiểu điểm mạnh và điểm yếu cảm xúc của bản thân</div>
+      </div>
+      <div class="ei-card">
+        <div class="ei-num">2</div>
+        <div class="ei-name">Self-Regulation</div>
+        <div class="ei-desc">Kiểm soát cảm xúc và hành động bốc đồng; kiên trì khi khó khăn; thích nghi với thay đổi</div>
+      </div>
+      <div class="ei-card">
+        <div class="ei-num">3</div>
+        <div class="ei-name">Motivation</div>
+        <div class="ei-desc">Driven by intrinsic rewards (thành tựu, học hỏi) hơn là tiền hay địa vị; duy trì optimism khi thất bại</div>
+      </div>
+      <div class="ei-card">
+        <div class="ei-num">4</div>
+        <div class="ei-name">Empathy</div>
+        <div class="ei-desc">Hiểu và nhận biết cảm xúc của người khác; sử dụng hiểu biết đó để định hướng quyết định</div>
+      </div>
+      <div class="ei-card">
+        <div class="ei-num">5</div>
+        <div class="ei-name">Social Skills</div>
+        <div class="ei-desc">Quản lý mối quan hệ hiệu quả; xây dựng network; tìm điểm chung; thuyết phục và truyền cảm hứng</div>
+      </div>
+    </div>
+
+    <p>Trong bối cảnh lãnh đạo, EI có ba vai trò đặc biệt quan trọng theo Humphrey:</p>
+    <ul>
+      <li><strong>Leadership emergence:</strong> EI cao → xuất hiện tự nhiên như lãnh đạo trong nhóm, đặc biệt trong môi trường không có cấu trúc rõ ràng</li>
+      <li><strong>Impression management:</strong> Nhà lãnh đạo EI cao có thể quản lý cách người khác nhận thức về mình một cách hiệu quả và chân thực hơn → được nhận thức là "true transformational leader"</li>
+      <li><strong>Deception detection:</strong> Follower EI cao có khả năng phát hiện ra khi lãnh đạo không chân thực (pseudo-transformational) → không bị manipulation bởi những người lãnh đạo giả tạo</li>
+    </ul>
+
+    <!-- ISSUE 2 -->
+    <h3>B. Vấn đề 2: Emotions &amp; the Leadership Process</h3>
+
+    <div class="prop-box">
+      <div class="prop-label">Proposition 2a</div>
+      <div class="prop-text">"The management of group members' emotions is a major leadership function."</div>
+    </div>
+
+    <div class="prop-box">
+      <div class="prop-label">Proposition 2b</div>
+      <div class="prop-text">"Feelings related to frustration and optimism are two of the most important emotions for leaders to manage."</div>
+    </div>
+
+    <p>Proposition 2a là tuyên bố mạnh mẽ nhất trong bài: quản lý cảm xúc không phải là kỹ năng phụ hay "nice to have" — nó là <strong>chức năng lãnh đạo chủ yếu (major function)</strong>, ngang tầm với lập kế hoạch, ra quyết định và phân bổ nguồn lực. Ba nghiên cứu trong số đặc biệt đều hỗ trợ kết luận này: Pescosolido; McColl-Kennedy &amp; Anderson; và Pirola-Merlo et al.</p>
+
+    <h4>Frustration &amp; Optimism — Hai Cảm xúc Quan trọng nhất</h4>
+    <div class="emotions-split">
+      <div class="frus-card">
+        <h4>Frustration (Thất vọng / Nản lòng)</h4>
+        <p><strong>Nguồn gốc (theo AET):</strong> Từ các work events bất thuận — khách hàng khó tính, mục tiêu không đạt, deadline bị tăng đột ngột, đồng nghiệp không hợp tác, hệ thống quan liêu cản trở. Frustration thường bắt đầu từ một sự kiện cụ thể (acute), sau đó trở thành trạng thái kéo dài (chronic) nếu không được xử lý.</p>
+        <p><strong>Tác động khi không được quản lý:</strong></p>
+        <ul style="font-size:0.86rem;">
+          <li>Giảm effort và năng suất ("Mình nỗ lực thêm cũng vô ích")</li>
+          <li>Giảm creativity và innovation</li>
+          <li>Tăng absenteeism và turnover</li>
+          <li>Lan truyền sang đồng nghiệp khác (emotional contagion)</li>
+        </ul>
+        <p><strong>Vai trò lãnh đạo:</strong> Không phải phủ nhận frustration ("Đừng nản lòng!") mà là cung cấp <em>context và meaning</em> — giúp thành viên hiểu tại sao thử thách tồn tại, rằng nó là tạm thời, và rằng vượt qua nó có ý nghĩa lớn hơn.</p>
+        <p><strong>Ví dụ từ McColl-Kennedy &amp; Anderson:</strong> Sales managers giúp nhân viên xử lý cảm xúc sau khi bị khách hàng từ chối thô lỗ — không phải bằng cách giả vờ nó không khó chịu, mà bằng cách đặt nó vào bối cảnh đúng.</p>
+      </div>
+      <div class="opti-card">
+        <h4>Optimism (Lạc quan)</h4>
+        <p><strong>Bằng chứng nghiên cứu:</strong> Spreitzer &amp; Quinn (1996): transformational leaders score <em>cao hơn</em> các loại lãnh đạo khác về optimism. McColl-Kennedy &amp; Anderson: structural equation model cho thấy correlation = <strong>.44</strong> giữa transformational leadership style và optimism — tương quan mạnh và có ý nghĩa thống kê.</p>
+        <p><strong>Cơ chế tác động:</strong> Optimism → followers tin rằng mục tiêu có thể đạt được → nỗ lực cao hơn → kết quả tốt hơn. Đây là vòng phản hồi tích cực (positive feedback loop). Nghiên cứu R&D: emotional climate tích cực (partly từ optimism) → sáng tạo và innovation → hiệu suất R&D cao hơn.</p>
+        <p><strong>Cơ chế lãnh đạo transformational:</strong> Berson, Shamir, Avolio, &amp; Popper (2001): transformational leaders <em>"instill optimism, confidence, and faith in their followers by suggesting that although their challenges appear formidable, they can be successful by working together to create a better future."</em></p>
+        <p><strong>Phân biệt quan trọng:</strong> Optimism được "instilled" không phải là optimism giả tạo hay unrealistic — nó được xây dựng trên nền tảng của vision rõ ràng và plan cụ thể. True transformational leaders không hứa hẹn kết quả dễ dàng; họ hứa hẹn rằng nỗ lực cùng nhau sẽ tạo ra kết quả.</p>
+      </div>
+    </div>
+
+    <h4>Transformational vs. Transactional Leadership — So sánh Toàn diện</h4>
+    <div class="leadership-compare">
+      <div class="tf-card">
+        <h4>Transformational Leadership (TL)</h4>
+        <p><strong>Cơ chế:</strong> Thay đổi tổ chức bằng cách phát triển tầm nhìn (vision) và kế hoạch cho tương lai. Không chỉ thực hiện task leadership mà còn thay đổi <em>values, attitudes, và beliefs</em> của followers — điều mà transactional leadership không làm.</p>
+        <p><strong>Bối cảnh:</strong> Thường xuất hiện trong khủng hoảng hoặc khi cần thay đổi lớn — khi hầu hết mọi người confused và uncertain. Nhà lãnh đạo TL scan môi trường, nhận diện yếu tố then chốt, phát triển vision, và truyền đạt với sức thuyết phục cao.</p>
+        <p><strong>Yêu cầu cảm xúc:</strong> Emotional self-management mạnh để kiên trì trong khó khăn và không dao động. Phải duy trì optimism trong khi đồng thời thực tế về thách thức.</p>
+        <p><strong>Chức năng đặc biệt:</strong> Ngoài task leadership (lên kế hoạch, tổ chức, ra quyết định), TL còn: truyền cảm hứng (inspirational motivation), kích thích tư duy mới (intellectual stimulation), quan tâm từng cá nhân (individual consideration), và đặt ra role model (idealized influence).</p>
+      </div>
+      <div class="tx-card">
+        <h4>Transactional Leadership (TX)</h4>
+        <p><strong>Cơ chế:</strong> Dựa trên trao đổi (exchange) — hiệu suất tốt được thưởng, sai lệch bị xử lý. Duy trì hệ thống hiện tại thay vì tạo ra thay đổi căn bản.</p>
+        <p><strong>Hai hình thức chính:</strong></p>
+        <ul style="font-size:0.85rem;">
+          <li><strong>Contingent reward:</strong> Thưởng có điều kiện khi đạt mục tiêu — rõ ràng về kỳ vọng và phần thưởng tương ứng</li>
+          <li><strong>Management by exception:</strong> Can thiệp chỉ khi có sai lệch so với chuẩn — "nếu không sai, không cần can thiệp"</li>
+        </ul>
+        <p><strong>Yêu cầu cảm xúc:</strong> Thấp hơn TL — chủ yếu dựa trên quyền lực vị trí và hệ thống reward/punishment được thể chế hóa.</p>
+        <p><strong>Bối cảnh phù hợp:</strong> Hiệu quả trong môi trường ổn định, nhiệm vụ rõ ràng, tiêu chuẩn đo lường được. Kém hiệu quả hơn khi cần sáng tạo, adaptation, hoặc thay đổi văn hóa.</p>
+      </div>
+    </div>
+
+    <h4>True vs. Pseudo-Transformational Leaders</h4>
+    <p>Không phải tất cả những người áp dụng ngôn ngữ và phong cách transformational đều là true transformational leaders. Humphrey phân biệt hai loại dựa trên <em>động cơ thực sự</em> và <em>tính chân thực của cảm xúc biểu hiện</em>:</p>
+    <div class="true-pseudo">
+      <div class="true-card">
+        <h4>True Transformational Leaders</h4>
+        <p><strong>Động cơ:</strong> Thực hiện thay đổi để mang lại lợi ích cho tổ chức, followers, và xã hội — không phải cho bản thân. Vision xuất phát từ niềm tin thực sự về tương lai tốt hơn.</p>
+        <p><strong>Cảm xúc biểu hiện:</strong> Chân thực và nhất quán với hành động — khi họ thể hiện quan tâm đến followers, đó là sự quan tâm thực sự. Followers cảm nhận được sự nhất quán này qua nhiều tương tác.</p>
+        <p><strong>Tác động của EI followers:</strong> Followers EI cao nhận ra tính chân thực và tin tưởng hoàn toàn. Followers EI thấp cũng tin tưởng nhưng qua thời gian (khi hành động nhất quán với lời nói tích lũy bằng chứng).</p>
+        <p><strong>Kết quả lâu dài:</strong> Gắn kết sâu (deeper commitment), hiệu suất cao bền vững, và sẵn sàng hy sinh ngắn hạn vì lợi ích lớn hơn.</p>
+      </div>
+      <div class="pseudo-card">
+        <h4>Pseudo-Transformational Leaders</h4>
+        <p><strong>Động cơ:</strong> Thao túng (manipulative) và phục vụ lợi ích cá nhân (self-serving). Áp dụng ngôn ngữ và kỹ thuật TL nhưng mục đích thực sự là quyền lực hoặc lợi ích cá nhân.</p>
+        <p><strong>Cảm xúc biểu hiện:</strong> Được tính toán và diễn xuất — không phản ánh quan tâm thực sự đến tổ chức hay followers. Khi sân khấu tắt, họ hành xử khác hoàn toàn.</p>
+        <p><strong>Tác động của EI followers:</strong> <strong>Followers EI cao sẽ phát hiện ra sự không chân thực</strong> — qua sự không nhất quán giữa lời nói và hành động, giữa cảm xúc biểu hiện và context. Followers EI thấp dễ bị manipulation hơn.</p>
+        <p><strong>Kết quả lâu dài:</strong> Mất lòng tin khi bị phát hiện, và thường bị phát hiện. Pseudo-TL tạo ra sự gắn kết giả tạo không bền vững.</p>
+      </div>
+    </div>
+
+    <!-- ISSUE 3 -->
+    <h3>C. Vấn đề 3: Emotions &amp; Perceptions of Leadership</h3>
+
+    <p>Issue 3 đặt câu hỏi: <em>Cảm xúc mà nhà lãnh đạo biểu hiện ra ngoài ảnh hưởng như thế nào đến cách followers và đồng nghiệp nhận thức về họ?</em> Ashkanasy và cộng sự cung cấp hai nghiên cứu quan trọng trong số đặc biệt này.</p>
+
+    <div class="prop-box">
+      <div class="prop-label">Proposition 3a</div>
+      <div class="prop-text">"Organizational members who display positive emotions will be rated higher on leadership than will those who display negative emotions."</div>
+    </div>
+
+    <h4>Ma trận 2×2: Nội dung Phản hồi × Biểu hiện Cảm xúc</h4>
+    <p>Newcombe và Ashkanasy thực hiện nghiên cứu thực nghiệm (experimental study) kiểm tra cách kết hợp giữa nội dung phản hồi (positive vs. negative) và biểu hiện cảm xúc (positive vs. negative) của nhà quản lý ảnh hưởng đến đánh giá leadership:</p>
+
+    <div class="perception-matrix">
+      <table class="perception-table">
+        <tr>
+          <th rowspan="2">Nội dung Phản hồi</th>
+          <th colspan="2">Biểu hiện Cảm xúc của Nhà quản lý</th>
+        </tr>
+        <tr>
+          <th>Positive Emotions (vui vẻ, ấm áp, quan tâm)</th>
+          <th>Negative Emotions (lạnh lùng, thờ ơ, khó chịu)</th>
+        </tr>
+        <tr>
+          <td><strong>Positive Feedback</strong><br/><small>Khen ngợi, công nhận thành tích</small></td>
+          <td class="cell-best">
+            <div class="cell-label">★★★★★</div>
+            <div class="cell-desc"><strong>Đánh giá CAO NHẤT</strong><br/>Nhất quán: nội dung tốt + thái độ tích cực = credibility cao. Followers cảm thấy được đánh giá chân thực.</div>
+          </td>
+          <td class="cell-worst">
+            <div class="cell-label">✗ TỆ NHẤT</div>
+            <div class="cell-desc"><strong>"Disconnect Effect"</strong><br/>Tệ hơn cả Negative+Negative! Sự không nhất quán giữa lời khen và thái độ lạnh lùng gây mất tin tưởng nghiêm trọng.</div>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Negative Feedback</strong><br/><small>Chỉ ra lỗi, yêu cầu cải thiện</small></td>
+          <td class="cell-ok">
+            <div class="cell-label">★★★☆☆</div>
+            <div class="cell-desc"><strong>Đánh giá Trung bình-Cao</strong><br/>Cảm xúc tích cực giảm bớt tác động tiêu cực của phản hồi. "Tôi nói điều này vì tôi quan tâm đến sự phát triển của bạn."</div>
+          </td>
+          <td class="cell-bad">
+            <div class="cell-label">★★☆☆☆</div>
+            <div class="cell-desc"><strong>Đánh giá Thấp</strong><br/>Nhất quán theo chiều tiêu cực — ít nhất không có sự disconnect. Followers biết đây là feedback thẳng thắn.</div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="warn-box">
+      <div class="wb-title">Phát hiện Nghịch lý — Disconnect Effect</div>
+      <p><strong>Positive Feedback + Negative Emotions = Tệ hơn cả Negative + Negative!</strong> Khi nhà quản lý khen ngợi bằng giọng thờ ơ, không giao tiếp bằng mắt, và có biểu hiện lạnh lùng — followers không tin rằng lời khen là chân thực. Họ kết luận: "Sếp chỉ nói vậy vì phải nói, chứ không thực sự nghĩ vậy." Sự không nhất quán (incongruence) phá hủy credibility hoàn toàn — tệ hơn cả việc thẳng thắn tiêu cực.</p>
+    </div>
+
+    <h4>Tại sao Disconnect Effect xảy ra?</h4>
+    <p>Con người là các "lie detectors" tự nhiên — chúng ta đã tiến hóa để phát hiện sự không nhất quán trong giao tiếp của đồng loại (vì trong lịch sử tiến hóa, phát hiện người không chân thực là vấn đề sống còn). Khi ngôn từ nói "tốt lắm" nhưng cơ thể và giọng nói nói "tôi không quan tâm":
+    <ul>
+      <li>Não limbic xử lý cảm xúc không ngôn ngữ nhanh hơn và có ưu tiên hơn</li>
+      <li>Cảm xúc biểu hiện bị coi là "thật" hơn lời nói</li>
+      <li>Kết quả: lời khen bị giải mã là "giả tạo" → mất hoàn toàn tác động</li>
+    </ul>
+
+    <h4>Affective Events Theory (AET) — Lý thuyết Nền tảng</h4>
+    <div class="aet-box">
+      <div class="aet-title">Affective Events Theory (Weiss &amp; Cropanzano, 1996)</div>
+      <p>AET giải thích cơ chế tại sao cảm xúc trong công việc không chỉ phụ thuộc vào tính cách mà còn bị gây ra bởi các sự kiện cụ thể:</p>
+      <div class="aet-flow">
+        <div class="aet-node">Work Environment<br/><small>(Job design, org structure)</small></div>
+        <div class="aet-arrow">→</div>
+        <div class="aet-node">Work Events<br/><small>(Cụ thể, hàng ngày)</small></div>
+        <div class="aet-arrow">→</div>
+        <div class="aet-node">Affective Reactions<br/><small>(Cảm xúc tức thời)</small></div>
+        <div class="aet-arrow">→</div>
+        <div class="aet-node">Moods<br/><small>(Kéo dài)</small></div>
+        <div class="aet-arrow">→</div>
+        <div class="aet-result">Attitudes &amp; Behaviors<br/><small>(Job satisfaction, performance)</small></div>
+      </div>
+      <p style="font-size:0.88rem; margin-top:14px;"><strong>Hàm ý quan trọng cho lãnh đạo:</strong> Biểu hiện cảm xúc của nhà lãnh đạo đôi khi <em>bị gây ra bởi work events</em>, không phải bởi thái độ thực sự của họ đối với followers. Một quản lý vừa giải quyết khủng hoảng 3 tiếng đồng hồ có thể biểu hiện cảm xúc tiêu cực trong cuộc họp tiếp theo — không phải vì họ không quan tâm đến nhân viên mà vì họ kiệt sức.</p>
+    </div>
+
+    <h4>Fundamental Attribution Error &amp; Secondary Work Behaviors</h4>
+    <p><strong>Fundamental Attribution Error (Lỗi Quy kết Căn bản)</strong>: Người quan sát (followers, đồng nghiệp) có xu hướng over-attribute hành vi được gây ra bởi tình huống/môi trường vào <em>đặc điểm tính cách</em> của người thực hiện — và under-attribute vai trò của tình huống.</p>
+
+    <div class="prop-box">
+      <div class="prop-label">Proposition 3c</div>
+      <div class="prop-text">"Leaders who perform intrinsically unpleasant tasks will display negative emotions that are caused by the work environment rather than by their own dispositions — and followers may mistakenly attribute these displays to the leader's character rather than to situational factors."</div>
+    </div>
+
+    <p><strong>Secondary Work Behaviors</strong> (Humphrey, 1985): Những biểu hiện cảm xúc đặc trưng được <em>gây ra bởi đặc điểm công việc (job characteristics)</em> — không phải task performance nhưng vẫn là hành vi điển hình trong môi trường đó. Ví dụ:</p>
+    <ul>
+      <li>Bác sĩ cấp cứu: biểu hiện căng thẳng cao sau nhiều giờ làm việc áp lực → không phải tính cách căng thẳng, mà là secondary work behavior của môi trường cấp cứu</li>
+      <li>Người giao dịch tài chính sau một phiên giao dịch tệ: biểu hiện thất vọng → không phải vì không quan tâm đến đồng nghiệp, mà là phản ứng với work events</li>
+      <li>Sales manager sau nhiều cuộc gọi bị từ chối: biểu hiện nản lòng → secondary work behavior, không phải đặc điểm tính cách</li>
+    </ul>
+
+    <!-- ISSUE 4 -->
+    <h3>D. Vấn đề 4: Emotions &amp; Leadership Effectiveness</h3>
+
+    <p>Issue 4 hỏi: <em>Cảm xúc điều tiết (mediate/moderate) mối quan hệ giữa phong cách lãnh đạo và năng suất nhóm như thế nào?</em></p>
+
+    <p>Tình huống đặc biệt trong quản lý: nhà quản lý chịu trách nhiệm về kết quả nhóm nhưng <strong>bản thân không trực tiếp thực hiện công việc</strong>. Trong trường hợp này, ảnh hưởng của nhà quản lý đến kết quả chủ yếu đi qua <em>các biến quá trình nhóm</em> — đặc biệt là optimism, frustration management, và emotional climate.</p>
+
+    <p><strong>McColl-Kennedy &amp; Anderson — Sales Managers:</strong></p>
+    <ul>
+      <li>Sales managers không thể tự mình bán hàng thay nhân viên</li>
+      <li>Nhưng có thể duy trì optimism khi nhân viên bị khách hàng từ chối</li>
+      <li>Giúp nhân viên đặt rejection vào bối cảnh đúng → duy trì nỗ lực</li>
+      <li>Kết quả: Optimism → nỗ lực cao hơn → sales performance tốt hơn (path r = .44)</li>
+    </ul>
+
+    <p><strong>Pirola-Merlo, Hartel, và Mann — R&amp;D Teams:</strong></p>
+    <ul>
+      <li>Thành viên R&amp;D là chuyên gia trong lĩnh vực kỹ thuật của họ — lãnh đạo thường không cần (và không thể) định hướng kỹ thuật cho họ</li>
+      <li>Nhưng lãnh đạo R&amp;D đóng vai trò thiết yếu trong việc duy trì <strong>emotional climate an toàn</strong>: khuyến khích thử nghiệm ý tưởng mới, chấp nhận thất bại như phần tất yếu của quá trình sáng tạo</li>
+      <li>Emotional climate tích cực → psychological safety → innovation → R&amp;D performance cao hơn</li>
+    </ul>
+
+    <div class="quote-box">
+      "Maintaining optimistic moods is crucial to this sense of success. Transformational leaders 'instill optimism, confidence, and faith in their followers by suggesting that although their challenges appear formidable, they can be successful by working together to create a better future.'"
+      <cite>— Berson, Shamir, Avolio, &amp; Popper (2001), trích trong Humphrey (2002)</cite>
+    </div>
+
+    <p>Tổng hợp từ cả hai nghiên cứu: vai trò quản lý cảm xúc (emotion management) quan trọng nhất khi:</p>
+    <ul>
+      <li>Nhà quản lý không thực hiện công việc kỹ thuật trực tiếp</li>
+      <li>Nhiệm vụ đòi hỏi động lực nội tại (không thể kiểm soát bằng external rewards)</li>
+      <li>Thành viên nhóm là chuyên gia tự chủ cần psychological safety</li>
+      <li>Công việc có nhiều rejection và thất bại trên đường đến thành công (sales, R&D, entrepreneurship)</li>
+    </ul>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION III — MODELS & FORMULAS
+══════════════════════════════════════════════ -->
+<div id="models">
+  <div class="section-header">
+    <div class="section-num">III</div>
+    <div>
+      <div class="sec-title">Mô hình &amp; Công thức (Models &amp; Formulas)</div>
+      <div class="sec-sub">Propositions · Bảng so sánh · Khung phân tích</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>Tất cả các Propositions của Humphrey</h3>
+    <table class="summary-table">
+      <tr>
+        <th>Mệnh đề</th>
+        <th>Nội dung đầy đủ</th>
+        <th>Bằng chứng / Nguồn</th>
+      </tr>
+      <tr>
+        <td><strong>P 2a</strong></td>
+        <td>Quản lý cảm xúc của thành viên nhóm là chức năng lãnh đạo chủ yếu</td>
+        <td>Pescosolido; McColl-Kennedy &amp; Anderson; Pirola-Merlo et al. — cả 3 nghiên cứu trong special issue đều ủng hộ</td>
+      </tr>
+      <tr>
+        <td><strong>P 2b</strong></td>
+        <td>Frustration và Optimism là hai cảm xúc quan trọng nhất cần quản lý</td>
+        <td>Spreitzer &amp; Quinn (1996) — TL score higher on optimism; McColl-Kennedy &amp; Anderson — structural correlation = .44</td>
+      </tr>
+      <tr>
+        <td><strong>P 3a</strong></td>
+        <td>Thành viên biểu hiện cảm xúc tích cực được đánh giá lãnh đạo cao hơn so với những người biểu hiện cảm xúc tiêu cực</td>
+        <td>Newcombe &amp; Ashkanasy — experimental study với matrix 2×2; kết quả nhất quán</td>
+      </tr>
+      <tr>
+        <td><strong>P 3b (implied)</strong></td>
+        <td>Biểu hiện cảm xúc ảnh hưởng đến nhận thức về sự chân thực → phân biệt True vs. Pseudo-TL</td>
+        <td>True vs. Pseudo-Transformational Leaders model; EI của followers làm trung gian</td>
+      </tr>
+      <tr>
+        <td><strong>P 3c</strong></td>
+        <td>Lãnh đạo thực hiện nhiệm vụ vốn không thú vị sẽ biểu hiện cảm xúc tiêu cực do môi trường — followers có thể sai lầm quy kết vào tính cách</td>
+        <td>AET (Weiss &amp; Cropanzano, 1996); Secondary Work Behaviors (Humphrey, 1985); Fundamental Attribution Error</td>
+      </tr>
+    </table>
+
+    <h3>Khung "Many Faces" — Tổng hợp 4 Góc nhìn</h3>
+    <table class="summary-table">
+      <tr>
+        <th>Face / Góc nhìn</th>
+        <th>Câu hỏi Trung tâm</th>
+        <th>Vai trò của Cảm xúc</th>
+        <th>Biến số Chính</th>
+        <th>Nghiên cứu Liên quan</th>
+      </tr>
+      <tr>
+        <td><strong>1. Traits</strong></td>
+        <td>Đặc điểm cảm xúc nào giúp emerge as leader?</td>
+        <td>Empathy → leadership emergence + pattern recognition; EI → impression management + deception detection</td>
+        <td>Empathy (desire + ability), EI (5 components), LPC (Fiedler)</td>
+        <td>Wolff et al.; Kellet, Humphrey &amp; Sleeth; Pescosolido</td>
+      </tr>
+      <tr>
+        <td><strong>2. Process</strong></td>
+        <td>Quản lý cảm xúc là chức năng lãnh đạo nào?</td>
+        <td>Quản lý cảm xúc nhóm = major function; Frustration + Optimism là trung tâm</td>
+        <td>Frustration, Optimism, TF vs TX, True vs Pseudo-TL</td>
+        <td>McColl-Kennedy &amp; Anderson; Pirola-Merlo et al.; Berson et al.</td>
+      </tr>
+      <tr>
+        <td><strong>3. Perception</strong></td>
+        <td>Biểu hiện cảm xúc ảnh hưởng đến nhận thức như thế nào?</td>
+        <td>Facial expressions → attributions về sincerity → True/Pseudo-TL phân loại</td>
+        <td>Disconnect Effect, AET, Fundamental Attribution Error, Secondary Work Behaviors</td>
+        <td>Newcombe &amp; Ashkanasy; Ashkanasy et al.</td>
+      </tr>
+      <tr>
+        <td><strong>4. Effectiveness</strong></td>
+        <td>Cảm xúc điều tiết leadership-performance như thế nào?</td>
+        <td>Emotional process variables mediate lãnh đạo → kết quả nhóm</td>
+        <td>Optimism, Frustration management, Emotional climate, Task characteristics</td>
+        <td>McColl-Kennedy &amp; Anderson; Pirola-Merlo et al.</td>
+      </tr>
+    </table>
+
+    <h3>True vs. Pseudo-Transformational — Ma trận So sánh Toàn diện</h3>
+    <table class="summary-table">
+      <tr>
+        <th>Chiều kích</th>
+        <th>True Transformational</th>
+        <th>Pseudo-Transformational</th>
+      </tr>
+      <tr>
+        <td><strong>Động cơ</strong></td>
+        <td>Lợi ích tổ chức + followers + xã hội; genuine concern</td>
+        <td>Lợi ích cá nhân (power, status, financial) — self-serving</td>
+      </tr>
+      <tr>
+        <td><strong>Cảm xúc biểu hiện</strong></td>
+        <td>Chân thực, nhất quán với hành động qua nhiều bối cảnh khác nhau</td>
+        <td>Được tính toán, diễn xuất — không nhất quán khi không "on stage"</td>
+      </tr>
+      <tr>
+        <td><strong>EI của followers (cao)</strong></td>
+        <td>Nhận ra tính chân thực → tin tưởng sâu sắc và tự nguyện theo</td>
+        <td>Phát hiện sự giả tạo → đánh giá là pseudo → mất tin tưởng</td>
+      </tr>
+      <tr>
+        <td><strong>EI của followers (thấp)</strong></td>
+        <td>Cũng tin tưởng, nhưng qua time lag (hành động nhất quán tích lũy)</td>
+        <td>Dễ bị manipulation hơn, khó nhận ra deception ngay</td>
+      </tr>
+      <tr>
+        <td><strong>Phương tiện</strong></td>
+        <td>Influence thông qua genuinely inspiring vision và care</td>
+        <td>Manipulation thông qua emotional displays được tính toán</td>
+      </tr>
+      <tr>
+        <td><strong>Kết quả ngắn hạn</strong></td>
+        <td>Gắn kết mạnh, sẵn sàng hy sinh ngắn hạn</td>
+        <td>Có thể tạo ra follower commitment ngắn hạn nếu chưa bị phát hiện</td>
+      </tr>
+      <tr>
+        <td><strong>Kết quả dài hạn</strong></td>
+        <td>Bền vững; tạo ra TL leaders tiếp theo trong tổ chức</td>
+        <td>Sụp đổ khi bị phát hiện; tổ chức bị tổn thương</td>
+      </tr>
+    </table>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION IV — PRACTICAL EXAMPLES
+══════════════════════════════════════════════ -->
+<div id="examples">
+  <div class="section-header">
+    <div class="section-num">IV</div>
+    <div>
+      <div class="sec-title">Ví dụ Thực tiễn (Practical Examples)</div>
+      <div class="sec-sub">Sales managers · R&D teams · Biểu hiện cảm xúc · Secondary work behaviors</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <!-- Case 1 -->
+    <div class="case-block">
+      <div class="case-header">
+        <div class="case-avatar">SM</div>
+        <div>
+          <div class="case-title">Sales Managers — Quản lý Frustration Thực tiễn <span class="case-tag">Issue 2 + Issue 4</span></div>
+          <div class="case-sub">Từ McColl-Kennedy &amp; Anderson trong special issue</div>
+        </div>
+      </div>
+      <p>Sales managers không thể trực tiếp bán hàng thay nhân viên — nhưng chịu trách nhiệm về doanh số của cả nhóm. Ảnh hưởng của họ đi qua <em>emotional process variables</em>, không phải kỹ thuật bán hàng trực tiếp.</p>
+      <div class="case-grid">
+        <div class="cg-cell">
+          <h4>Vấn đề thực tiễn</h4>
+          <p>Nhân viên sales bị khách hàng từ chối thô lỗ (rude clients) liên tiếp → frustration tích lũy → giảm effort, mất tự tin, và cuối cùng là bỏ cuộc hoặc nghỉ việc (turnover). Đây là "work event" điển hình trong AET gây ra emotional disruption.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Vai trò Emotional của Sales Manager</h4>
+          <p><strong>Quản lý Frustration:</strong> Đặt rejection vào context đúng ("khách hàng đó không phải target của chúng ta"); normalize rejection ("mọi sales rep giỏi đều bị từ chối nhiều"); focus vào next opportunity thay vì ruminate về rejection vừa rồi.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Duy trì Optimism</h4>
+          <p><strong>Transformational approach:</strong> "Chúng ta có thể đạt quota nếu điều chỉnh cách tiếp cận segment X." Không hứa hẹn dễ dàng nhưng cụ thể về con đường đến thành công. Kỷ niệm small wins định kỳ để counterbalance frustration từ rejections.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Kết quả đo lường</h4>
+          <p>Structural equation model: Transformational leadership style → Optimism (r = .44) → nỗ lực cao hơn → sales performance tốt hơn. Đây là chuỗi nhân quả qua emotional mediator, không phải tác động trực tiếp của phong cách lãnh đạo đến doanh số.</p>
+        </div>
+      </div>
+      <div class="case-result">
+        <strong>Bài học:</strong> Khi nhà quản lý không thực hiện công việc trực tiếp, ảnh hưởng của họ chủ yếu qua emotional management. Quản lý frustration và duy trì optimism không phải kỹ năng mềm tùy chọn — chúng là cơ chế chính để nhà quản lý tạo ra giá trị.
+      </div>
+    </div>
+
+    <!-- Case 2 -->
+    <div class="case-block">
+      <div class="case-header">
+        <div class="case-avatar">R&D</div>
+        <div>
+          <div class="case-title">R&amp;D Teams — Emotional Climate cho Innovation <span class="case-tag">Issue 4</span></div>
+          <div class="case-sub">Từ Pirola-Merlo, Hartel, và Mann trong special issue</div>
+        </div>
+      </div>
+      <div class="case-grid">
+        <div class="cg-cell">
+          <h4>Đặc điểm R&D Teams</h4>
+          <p>Các nhà nghiên cứu là chuyên gia trong lĩnh vực của họ — lãnh đạo R&D thường không có chuyên môn kỹ thuật sâu hơn hoặc ngang bằng nhân viên. Lãnh đạo không thể định hướng kỹ thuật cho họ. Vậy lãnh đạo R&D tạo ra giá trị như thế nào?</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Vai trò của Emotional Climate</h4>
+          <p>Lãnh đạo R&D xuất sắc tạo ra <strong>emotional climate an toàn</strong> — môi trường mà: thành viên có thể đề xuất ý tưởng mạo hiểm mà không sợ bị chế nhạo; thất bại được xem là phần tất yếu của quá trình R&D; disagreement được khuyến khích như dấu hiệu của tư duy độc lập.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Cơ chế nhân quả</h4>
+          <p>Emotional climate tích cực → <strong>psychological safety</strong> (Edmondson) → thành viên sẵn sàng take intellectual risks → nhiều ý tưởng mới được đề xuất → innovation rate cao hơn → R&D performance vượt trội.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Quản lý Frustration trong R&D</h4>
+          <p>Nghiên cứu R&D thường mất nhiều năm trước khi có kết quả. Lãnh đạo R&D phải duy trì optimism về giá trị dài hạn trong khi kết quả ngắn hạn không rõ ràng. Quản lý frustration khi dự án bị chặn bởi technical barriers hoặc thiếu funding là kỹ năng quan trọng nhất của lãnh đạo R&D giỏi.</p>
+        </div>
+      </div>
+      <div class="case-result">
+        <strong>Bài học:</strong> Với expert teams, emotional leadership quan trọng hơn task leadership. Tạo ra psychological safety và quản lý emotional climate là cơ chế chính tạo ra giá trị của lãnh đạo trong môi trường tri thức.
+      </div>
+    </div>
+
+    <!-- Case 3 -->
+    <div class="case-block">
+      <div class="case-header">
+        <div class="case-avatar">PF</div>
+        <div>
+          <div class="case-title">Nghịch lý Biểu hiện Cảm xúc — Disconnect Effect Thực tiễn <span class="case-tag">Issue 3</span></div>
+          <div class="case-sub">Từ Newcombe &amp; Ashkanasy trong special issue</div>
+        </div>
+      </div>
+      <p><strong>Tình huống:</strong> Một nhà quản lý thực hiện đánh giá hiệu suất tích cực với nhân viên xuất sắc.</p>
+      <div class="case-grid">
+        <div class="cg-cell">
+          <h4>Trường hợp A: Khen nhưng Lạnh lùng</h4>
+          <p>Quản lý nói: "Anh đã làm rất tốt trong quý này, tôi rất ấn tượng." Nhưng: liên tục kiểm tra điện thoại, không giao tiếp bằng mắt, giọng phẳng và thờ ơ, kết thúc cuộc họp nhanh. <strong>Kết quả theo Newcombe &amp; Ashkanasy: nhân viên đánh giá thấp nhất trong 4 điều kiện</strong> — tệ hơn cả Trường hợp D.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Trường hợp B: Khen và Quan tâm (Best)</h4>
+          <p>Quản lý nói đúng những lời đó nhưng: giao tiếp bằng mắt, giọng ấm áp và chân thành, đặt điện thoại xuống, hỏi thêm về những gì nhân viên cảm thấy tự hào. <strong>Đây là điều kiện được đánh giá cao nhất.</strong> Sự nhất quán giữa lời nói và cảm xúc tạo ra credibility hoàn toàn.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Trường hợp C: Chê nhưng Quan tâm</h4>
+          <p>Quản lý đưa ra phản hồi tiêu cực (cần cải thiện) nhưng với cảm xúc quan tâm: nhìn vào mắt, giọng ân cần, giải thích rõ lý do, đề xuất hỗ trợ. <strong>Đánh giá trung bình-cao</strong> — cảm xúc quan tâm giảm tác động tiêu cực của nội dung.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Trường hợp D: Chê và Lạnh lùng</h4>
+          <p>Phản hồi tiêu cực với biểu hiện lạnh lùng, thờ ơ. <strong>Đánh giá thấp</strong> — nhưng vẫn cao hơn Trường hợp A! Ít nhất không có sự disconnect — nhân viên biết đây là phản hồi thẳng thắn, dù không dễ nghe.</p>
+        </div>
+      </div>
+      <div class="case-result">
+        <strong>Bài học thiết thực:</strong> Congruence (sự nhất quán) giữa ngôn từ và cảm xúc quan trọng hơn chỉ nội dung phản hồi. Nếu bạn không thực sự nghĩ tốt về kết quả của nhân viên: đừng khen giả tạo — hãy đưa ra phản hồi xây dựng với thái độ chân thành. Positive feedback phải đi kèm với positive emotions — nếu không, tốt hơn là không khen.
+      </div>
+    </div>
+
+    <!-- Case 4 -->
+    <div class="case-block">
+      <div class="case-header">
+        <div class="case-avatar">ER</div>
+        <div>
+          <div class="case-title">Bác sĩ Cấp cứu — Secondary Work Behaviors <span class="case-tag">Issue 3 · AET · Attribution Error</span></div>
+          <div class="case-sub">Ví dụ từ Humphrey (1985) về Secondary Work Behaviors</div>
+        </div>
+      </div>
+      <div class="case-grid">
+        <div class="cg-cell">
+          <h4>Tình huống</h4>
+          <p>Bác sĩ ER (phòng cấp cứu) sau 8 giờ làm việc liên tục xử lý ca nặng: biểu hiện mệt mỏi rõ rệt, ít cảm thông hơn, trả lời ngắn gọn hơn bình thường, không dành nhiều thời gian giải thích cho bệnh nhân.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Nhận thức sai của người quan sát</h4>
+          <p>Bệnh nhân mới vào, đồng nghiệp ca sau, hoặc quản lý bệnh viện thấy hành vi này → áp dụng Fundamental Attribution Error → kết luận: "Bác sĩ này lạnh lùng, không có lòng trắc ẩn, không phù hợp với nghề y." Đây là quy kết tính cách, không phải quy kết tình huống.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Thực tế: Secondary Work Behavior</h4>
+          <p>Biểu hiện cảm xúc tiêu cực là <em>secondary work behavior</em> — được gây ra bởi đặc điểm công việc (8 tiếng áp lực cao, death/suffering exposure, liên tục quyết định quan trọng). Đây không phải đặc điểm tính cách của bác sĩ mà là phản ứng tự nhiên của con người trong môi trường đặc thù đó.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Hàm ý cho Leadership</h4>
+          <p>Lãnh đạo trong môi trường áp lực cao (ER, crisis management, investment banking) cần được đánh giá bằng cách tính đến secondary work behaviors. Người quản lý bệnh viện tốt hiểu context và không đưa ra đánh giá tính cách dựa trên behavior trong giờ cao điểm.</p>
+        </div>
+      </div>
+      <div class="case-result">
+        <strong>Bài học:</strong> Khi đánh giá leadership của người khác, hỏi: "Biểu hiện cảm xúc này là tính cách của họ hay là secondary work behavior của môi trường?" Tránh Fundamental Attribution Error — đặc biệt khi bạn quan sát hành vi chỉ trong bối cảnh áp lực cao.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION V — REVIEW & PITFALLS
+══════════════════════════════════════════════ -->
+<div id="review">
+  <div class="section-header">
+    <div class="section-num">V</div>
+    <div>
+      <div class="sec-title">Ghi chú Ôn tập &amp; Bẫy Nhận thức</div>
+      <div class="sec-sub">Pitfalls · Câu hỏi ôn tập · Liên kết GK5009</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>Tóm tắt Nhanh — Khái niệm then chốt</h3>
+    <table class="summary-table">
+      <tr>
+        <th>Khái niệm</th>
+        <th>Định nghĩa chính xác</th>
+        <th>Từ khóa nhớ / Citation</th>
+      </tr>
+      <tr>
+        <td><strong>Empathy</strong></td>
+        <td><em>Desire</em> (mong muốn) + <em>Ability</em> (khả năng) hiểu cảm xúc người khác. Đóng 2 vai trò: pattern recognition + problem solving</td>
+        <td>Wolff et al.; Kellet, Humphrey &amp; Sleeth; Pescosolido — dual effect</td>
+      </tr>
+      <tr>
+        <td><strong>EI (Goleman)</strong></td>
+        <td>5 components: self-awareness + self-regulation + motivation + empathy + social skills. Vai trò: leadership emergence, impression management, deception detection</td>
+        <td>Goleman 1995, 1998; followers EI cao → nhận ra pseudo-TL</td>
+      </tr>
+      <tr>
+        <td><strong>P 2a &amp; P 2b</strong></td>
+        <td>2a: emotion management = major leadership function. 2b: Frustration + Optimism là hai cảm xúc quan trọng nhất</td>
+        <td>Spreitzer &amp; Quinn 1996; McColl-Kennedy &amp; Anderson r=.44; Berson et al. 2001</td>
+      </tr>
+      <tr>
+        <td><strong>Transformational vs Transactional</strong></td>
+        <td>TF: vision + thay đổi values/attitudes, cần emotional self-management cao. TX: exchange-based (contingent reward + management by exception)</td>
+        <td>TF cần optimism + emotion management; TX dựa positional power</td>
+      </tr>
+      <tr>
+        <td><strong>True vs Pseudo-TL</strong></td>
+        <td>True: vì tổ chức, cảm xúc chân thực. Pseudo: self-serving, cảm xúc diễn xuất. Phân biệt qua EI của followers</td>
+        <td>EI cao → nhận ra pseudo; impression management ≠ manipulation</td>
+      </tr>
+      <tr>
+        <td><strong>Disconnect Effect</strong></td>
+        <td>Positive feedback + negative emotions = đánh giá TỆ NHẤT (tệ hơn negative+negative). Sự không nhất quán phá hủy credibility</td>
+        <td>Newcombe &amp; Ashkanasy; P 3a; congruence quan trọng hơn nội dung</td>
+      </tr>
+      <tr>
+        <td><strong>AET</strong></td>
+        <td>Work environment → work events → affective reactions → moods → attitudes &amp; behaviors. Cảm xúc bị gây ra bởi sự kiện cụ thể, không chỉ tính cách</td>
+        <td>Weiss &amp; Cropanzano 1996; explains why leaders display unexpected emotions</td>
+      </tr>
+      <tr>
+        <td><strong>Fundamental Attribution Error</strong></td>
+        <td>Quy kết hành vi do tình huống/môi trường vào tính cách người thực hiện — under-attribute situational causes</td>
+        <td>Ross (1977); áp dụng khi đánh giá leadership dựa trên secondary work behaviors</td>
+      </tr>
+      <tr>
+        <td><strong>Secondary Work Behaviors</strong></td>
+        <td>Biểu hiện cảm xúc đặc trưng được gây ra bởi job characteristics — không phải task performance và không phải tính cách</td>
+        <td>Humphrey 1985; ER doctor example; bị quy kết nhầm cho tính cách</td>
+      </tr>
+    </table>
+
+    <h3>Bẫy Nhận thức Phổ biến</h3>
+    <div class="pitfall-grid">
+      <div class="pitfall-card">
+        <div class="pc-title">Bẫy 1: "Empathy cao luôn tốt cho lãnh đạo"</div>
+        <p>Không đơn giản. Kellet, Humphrey, Sleeth: empathy có tương quan ÂM với complex task performance. Trong môi trường đòi hỏi task focus cao (surgery, air traffic control, military operations), empathy cao có thể là trade-off. Phải nêu cả hai chiều của empathy và context phụ thuộc.</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pc-title">Bẫy 2: "Khen ngợi nhân viên luôn tốt"</div>
+        <p>Positive feedback + negative emotional display = tệ nhất trong 4 điều kiện của Newcombe &amp; Ashkanasy — thậm chí tệ hơn negative feedback + negative emotions. Congruence (sự nhất quán giữa ngôn từ và cảm xúc) quan trọng hơn chỉ nội dung phản hồi.</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pc-title">Bẫy 3: "Nhầm Secondary Work Behaviors với tính cách"</div>
+        <p>Khi lãnh đạo biểu hiện cảm xúc tiêu cực trong môi trường áp lực cao → đừng vội kết luận về tính cách. Đây có thể là secondary work behaviors (AET). Fundamental Attribution Error rất phổ biến trong đánh giá hiệu suất — cần hỏi "đây là tính cách hay tình huống gây ra?"</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pc-title">Bẫy 4: "TL không thực hiện task leadership"</div>
+        <p>Sai — Transformational leaders thực hiện đầy đủ task leadership (planning, organizing, decision making). Điều khác biệt là họ CÒN thay đổi values, attitudes, và beliefs của followers — điều mà transactional leaders không làm. TL = TX + thay đổi người theo.</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pc-title">Bẫy 5: "True và Pseudo-TL có thể phân biệt dễ dàng"</div>
+        <p>Không phải lúc nào cũng dễ — đặc biệt ngắn hạn và khi EI của followers thấp. Pseudo-TL có thể rất thuyết phục trong ngắn hạn. Chỉ qua thời gian (hành động không nhất quán với lời nói tích lũy bằng chứng) và với EI cao mới phân biệt được rõ ràng.</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pc-title">Bẫy 6: "Quản lý cảm xúc là kỹ năng phụ"</div>
+        <p>Humphrey's Proposition 2a nói thẳng: emotion management is a "MAJOR leadership function" — ngang tầm với lập kế hoạch và ra quyết định, không phải kỹ năng phụ hay "nice to have." Bằng chứng từ 3 nghiên cứu độc lập ủng hộ kết luận này.</p>
+      </div>
+    </div>
+
+    <h3>Câu hỏi Ôn tập</h3>
+    <div class="review-grid">
+      <div class="rq-card">
+        <div class="rq-num">Q1</div>
+        Humphrey định nghĩa empathy gồm hai thành phần gì? Tại sao empathy có thể có tác động ÂM trong một số bối cảnh lãnh đạo? Cho ví dụ cụ thể.
+      </div>
+      <div class="rq-card">
+        <div class="rq-num">Q2</div>
+        Proposition 2a và 2b của Humphrey phát biểu điều gì? Tại sao frustration và optimism được chọn là hai cảm xúc "quan trọng nhất"? Bằng chứng từ nghiên cứu nào ủng hộ?
+      </div>
+      <div class="rq-card">
+        <div class="rq-num">Q3</div>
+        Mô tả ma trận 2×2 của Newcombe và Ashkanasy. Tại sao "positive feedback + negative emotions" lại là điều kiện được đánh giá TỆ NHẤT — tệ hơn cả "negative + negative"?
+      </div>
+      <div class="rq-card">
+        <div class="rq-num">Q4</div>
+        Affective Events Theory (AET) của Weiss &amp; Cropanzano giải thích điều gì? Liên quan như thế nào đến việc đánh giá lãnh đạo trong bối cảnh áp lực cao?
+      </div>
+      <div class="rq-card">
+        <div class="rq-num">Q5</div>
+        Phân biệt True Transformational Leader và Pseudo-Transformational Leader. Vai trò của EI (cả lãnh đạo lẫn followers) trong việc phân biệt hai loại này là gì?
+      </div>
+      <div class="rq-card">
+        <div class="rq-num">Q6</div>
+        "Secondary Work Behaviors" (Humphrey, 1985) là gì? Tại sao chúng dễ bị nhầm với đặc điểm tính cách? Liên quan đến Fundamental Attribution Error như thế nào?
+      </div>
+      <div class="rq-card">
+        <div class="rq-num">Q7</div>
+        Tại sao vai trò emotional leadership của sales managers quan trọng hơn (không kém hơn) kỹ năng kỹ thuật bán hàng của họ? Chuỗi nhân quả qua optimism diễn ra như thế nào?
+      </div>
+      <div class="rq-card">
+        <div class="rq-num">Q8</div>
+        Humphrey nói "it is important to realize that our view of leadership may vary considerably according to which face we are looking at." Giải thích điều này bằng cách dùng một nhà lãnh đạo giả định và đánh giá họ theo cả 4 faces.
+      </div>
+    </div>
+
+    <h3>Tips Ôn thi Nhanh</h3>
+    <div class="tip-box">
+      <div class="tb-title">Khi được hỏi về "Many Faces":</div>
+      <p>4 faces = 4 cách nhìn: (1) <strong>Traits</strong> — empathy (desire+ability) + EI (5 components của Goleman) → leadership emergence; (2) <strong>Process</strong> — emotion management = major function; Frustration + Optimism quan trọng nhất; TF vs TX; True vs Pseudo-TL; (3) <strong>Perception</strong> — Disconnect Effect (P+N = worst); AET; FAE; Secondary Work Behaviors; (4) <strong>Effectiveness</strong> — emotional variables mediate lãnh đạo → performance; sales managers; R&D teams.</p>
+    </div>
+    <div class="tip-box">
+      <div class="tb-title">Khi được hỏi về Propositions:</div>
+      <ul>
+        <li>P2a: Emotion management of group members = major leadership function</li>
+        <li>P2b: Frustration + Optimism = most important emotions (TL score higher on optimism; r=.44)</li>
+        <li>P3a: Positive emotion display → higher leadership rating (Newcombe &amp; Ashkanasy)</li>
+        <li>P3c: Intrinsically unpleasant tasks → negative emotions → misattributed to character (FAE)</li>
+      </ul>
+    </div>
+
+    <div class="cross-ref">
+      <h4>Kết nối với Các Tài liệu Khác trong GK5009</h4>
+      <p><strong>→ Northouse (Leadership: Theory and Practice):</strong> Humphrey cung cấp nền tảng nghiên cứu học thuật cho Northouse's transformational leadership (Bass &amp; Avolio), servant leadership (quan tâm followers), và authentic leadership (true vs. pseudo-TL). Goleman's EI trong Northouse được Humphrey phân tích sâu hơn trong context lãnh đạo.</p>
+      <p><strong>→ Drucker (Managing Oneself):</strong> Drucker đề cập Reader/Listener như personality traits — Humphrey mở rộng: EI và empathy cũng là traits ảnh hưởng đến leadership emergence. Cả hai đều nhấn mạnh self-awareness (Goleman) là nền tảng của effectiveness.</p>
+      <p><strong>→ Friedman (Total Leadership):</strong> Friedman yêu cầu "Be Whole" — quan tâm đến all four domains. Humphrey cung cấp lý thuyết cảm xúc giải thích tại sao: leader không quản lý cảm xúc của mình (frustration, disconnection) sẽ không thể "Be Whole" và sẽ thất bại trong "four-way wins."</p>
+      <p><strong>→ Carpenter (Whetten — Developing Management Skills):</strong> Whetten dạy kỹ năng giao tiếp và coaching cụ thể — Humphrey giải thích tại sao emotional congruence (P3a, Disconnect Effect) quan trọng hơn technique. Bạn có thể biết kỹ thuật nhưng nếu biểu hiện cảm xúc không chân thực, kỹ thuật không có tác dụng.</p>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<footer>
+  <p>Tài liệu học tập GK5009 — Quản lý và Lãnh đạo</p>
+  <p>Nguồn: Ronald H. Humphrey, "The Many Faces of Emotional Leadership," <em>The Leadership Quarterly</em>, 13 (2002), 493–504</p>
+  <p>HBR Group: Friedman ✓ &nbsp;|&nbsp; Drucker ✓ &nbsp;|&nbsp; Humphrey ✓ &nbsp;&nbsp;|&nbsp;&nbsp; Hoàn thành tất cả 3 tài liệu HBR/LQ được yêu cầu</p>
+</footer>
+
+</body>
+</html>

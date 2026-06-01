@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.4 — Naive Bayes | MLA HK252</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']], processEscapes: true },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:0;left:0;width:258px;height:100vh;background:#0a1f10;overflow-y:auto;z-index:100;flex-shrink:0}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:#2d6a4f;border-radius:2px}
+.sb-title{padding:1.25rem 1rem .75rem;border-bottom:1px solid #1a3a20}
+.sb-title h1{color:#86efac;font-size:.95rem;font-weight:700;line-height:1.4}
+.sb-title p{color:#6ee7b7;font-size:.7rem;margin-top:.2rem}
+.sb-group{padding:.6rem 1rem .15rem;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#4ade80}
+.sb-link{display:flex;align-items:center;gap:.45rem;padding:.35rem 1rem;color:#bbf7d0;font-size:.8rem;text-decoration:none;border-left:3px solid transparent;transition:all .15s}
+.sb-link:hover{background:rgba(74,222,128,.1);border-left-color:#4ade80;color:#fff}
+.sb-link i{width:14px;font-size:.7rem;color:#4ade80;flex-shrink:0}
+
+/* MAIN */
+#main{margin-left:258px;min-height:100vh;padding:2rem 2.5rem;max-width:calc(100% - 258px)}
+
+/* CHAPTER HEADER */
+.ch-hdr{background:linear-gradient(135deg,#14532d,#16a34a);color:#fff;padding:1.75rem 2rem;border-radius:10px;margin-bottom:1.75rem;box-shadow:0 4px 12px rgba(20,83,45,.3)}
+.ch-hdr .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#86efac;font-weight:700}
+.ch-hdr h2{font-size:1.75rem;font-weight:800;margin:.2rem 0 .4rem}
+.ch-hdr p{color:#d1fae5;font-size:.9rem}
+.ch-hdr-blue{background:linear-gradient(135deg,#1e3a5f,#1e4d8c)}
+.ch-hdr-blue .lbl{color:#93c5fd}
+.ch-hdr-blue p{color:#bfdbfe}
+
+/* SECTION TITLES */
+.s-title{font-size:1.2rem;font-weight:700;color:#14532d;border-left:4px solid #16a34a;padding-left:.7rem;margin:1.75rem 0 .9rem}
+.ss-title{font-size:1rem;font-weight:600;color:#166534;margin:1.25rem 0 .6rem}
+
+/* ALERTS */
+.alert{border-radius:0 8px 8px 0;padding:.85rem 1.1rem;margin:.85rem 0;font-size:.875rem}
+.alert-title{font-weight:700;margin-bottom:.3rem;font-size:.85rem}
+.al-blue{background:#eff6ff;border-left:4px solid #3b82f6}
+.al-blue .alert-title{color:#1d4ed8}
+.al-green{background:#f0fdf4;border-left:4px solid #22c55e}
+.al-green .alert-title{color:#15803d}
+.al-yellow{background:#fffbeb;border-left:4px solid #f59e0b}
+.al-yellow .alert-title{color:#b45309}
+.al-red{background:#fef2f2;border-left:4px solid #ef4444}
+.al-red .alert-title{color:#b91c1c}
+.al-purple{background:#faf5ff;border-left:4px solid #9333ea}
+.al-purple .alert-title{color:#7e22ce}
+
+/* FORMULA */
+.flabel{display:inline-block;background:#16a34a;color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .65rem;border-radius:6px 6px 0 0;margin-bottom:-1px}
+.fbox{background:#f8fafc;border:1px solid #cbd5e1;border-top:3px solid #16a34a;border-radius:0 8px 8px 8px;padding:1.1rem 1.5rem;margin:.25rem 0 .85rem;overflow-x:auto;text-align:center}
+.fbox.no-top-radius{border-radius:8px}
+
+/* DETAILS */
+details{border:1px solid #e2e8f0;border-radius:8px;margin:.65rem 0;overflow:hidden}
+details>summary{padding:.65rem 1.1rem;cursor:pointer;font-weight:600;font-size:.875rem;background:#f1f5f9;list-style:none;display:flex;align-items:center;gap:.45rem;user-select:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:'▶';font-size:.65rem;color:#64748b;transition:transform .2s;margin-right:.1rem}
+details[open]>summary::before{transform:rotate(90deg)}
+details[open]>summary{background:#e2e8f0}
+.dc{padding:1.1rem}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.85rem}
+.tbl th{background:#14532d;color:#fff;padding:.5rem .85rem;text-align:left}
+.tbl td{padding:.5rem .85rem;border:1px solid #e2e8f0}
+.tbl tr:nth-child(even){background:#f0fdf4}
+
+/* STEPS */
+.step{display:flex;gap:.85rem;margin:.6rem 0}
+.step-n{background:#16a34a;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.15rem}
+.step-c{flex:1;font-size:.875rem;line-height:1.6}
+
+/* QUIZ */
+.qcard{background:#fff;border:1px solid #e2e8f0;border-radius:8px;margin:1.1rem 0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.qhdr{background:#1e3a5f;color:#fff;padding:.55rem 1.1rem;font-size:.82rem;font-weight:600}
+.qbody{padding:1.1rem}
+.qq{font-size:.875rem;line-height:1.6;margin-bottom:.7rem;font-weight:500}
+.qopt{padding:.35rem .75rem;border-radius:5px;margin:.2rem 0;font-size:.855rem;line-height:1.5}
+.qok{background:#dcfce7;color:#14532d;font-weight:700;border-left:3px solid #16a34a}
+.qwrong{color:#64748b}
+.qexp{background:#fffbeb;border-left:3px solid #f59e0b;padding:.7rem 1rem;border-radius:0 6px 6px 0;margin-top:.7rem;font-size:.84rem;line-height:1.6}
+
+/* CODE */
+.code{background:#1e293b;color:#e2e8f0;padding:.9rem 1.1rem;border-radius:8px;font-family:'Courier New',monospace;font-size:.82rem;margin:.75rem 0;overflow-x:auto;line-height:1.7}
+.kw{color:#7dd3fc}
+.cmt{color:#64748b}
+
+.divider{border:none;border-top:1px solid #e2e8f0;margin:2.25rem 0}
+#back-top{position:fixed;bottom:1.5rem;right:1.5rem;background:#14532d;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.2);font-size:.85rem}
+#back-top:hover{background:#15803d}
+
+p{font-size:.9rem;line-height:1.65;margin:.5rem 0}
+li{font-size:.875rem;line-height:1.65}
+ul,ol{padding-left:1.4rem;margin:.4rem 0}
+strong{color:#1e293b}
+
+@media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+</style>
+</head>
+
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sb-title">
+    <h1><i class="fas fa-brain"></i> Học Máy &amp; Ứng Dụng</h1>
+    <p>Ôn thi Cuối Kỳ — HK252 | CO5175</p>
+  </div>
+  <div class="sb-group">Trang chủ</div>
+  <a href="index.html" class="sb-link"><i class="fas fa-home"></i>Tổng quan các chương</a>
+  <div class="sb-group">Phân loại có giám sát</div>
+  <a href="knn.html" class="sb-link"><i class="fas fa-map-marker-alt"></i>Ch.3 — K-Nearest Neighbors</a>
+  <a href="bayes.html" class="sb-link" style="background:rgba(74,222,128,.15);border-left-color:#4ade80;color:#fff"><i class="fas fa-calculator"></i>Ch.4 — Naive Bayes</a>
+  <a href="dtree.html" class="sb-link"><i class="fas fa-tree"></i>Ch.5 — Decision Trees</a>
+  <a href="nn.html" class="sb-link"><i class="fas fa-network-wired"></i>Ch.7 — Neural Networks</a>
+  <a href="svm.html" class="sb-link"><i class="fas fa-compress-arrows-alt"></i>Ch.8 — Support Vector Machines</a>
+  <a href="ensemble.html" class="sb-link"><i class="fas fa-layer-group"></i>Ch.9 — Ensemble Methods</a>
+  <a href="deep.html" class="sb-link"><i class="fas fa-microchip"></i>Ch.12 — Deep Learning</a>
+  <div class="sb-group">Chuyên đề ôn thi</div>
+  <a href="hmm.html" class="sb-link"><i class="fas fa-random"></i>Hidden Markov Models</a>
+  <a href="kmeans.html" class="sb-link"><i class="fas fa-object-group"></i>K-Means Clustering</a>
+  <a href="logreg.html" class="sb-link"><i class="fas fa-chart-line"></i>Logistic Regression</a>
+  <div class="sb-group">Thi thử</div>
+  <a href="mock.html" class="sb-link"><i class="fas fa-file-alt"></i>Đề Thi Thử 2026</a>
+  <a href="exam2025.html" class="sb-link"><i class="fas fa-graduation-cap"></i>Đề CK Thật 2025</a>
+</nav>
+
+<main id="main">
+
+<!-- ========== CH4: NAIVE BAYES ========== -->
+<section id="bayes">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-book-open"></i> Chương 4</div>
+  <h2>Naive Bayes Classifier</h2>
+  <p>Phân loại xác suất với giả định độc lập có điều kiện giữa các đặc trưng.</p>
+</div>
+
+<div class="s-title">1. Định lý Bayes</div>
+<div class="flabel">Bayes Theorem</div>
+<div class="fbox">\[ P(C|X) = \frac{P(X|C) \cdot P(C)}{P(X)} \]</div>
+<ul>
+  <li>\(P(C|X)\) — Posterior (hậu nghiệm)</li>
+  <li>\(P(X|C)\) — Likelihood</li>
+  <li>\(P(C)\) — Prior (tiên nghiệm)</li>
+  <li>\(P(X)\) — Evidence (hằng số chuẩn hóa, bỏ qua khi so sánh)</li>
+</ul>
+
+<div class="s-title">2. Giả định Naive & Quy tắc MAP</div>
+<p>Giả định các đặc trưng độc lập có điều kiện: \(P(X|C_i) = \prod_{k=1}^{n} P(x_k|C_i)\)</p>
+<div class="flabel">MAP Decision Rule</div>
+<div class="fbox">\[ \hat{C} = \arg\max_{C_i} \; P(C_i) \prod_{k=1}^{n} P(x_k|C_i) \]</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Ví dụ: Spam Filter (Câu 10 đề thi thử)</summary>
+<div class="dc">
+<p>P(Spam)=0.2, P(Ham)=0.8. P("KM"|Spam)=0.5, P("KM"|Ham)=0.05.</p>
+<div class="fbox no-top-radius">
+\[ P(Spam) \cdot P(\text{KM}|Spam) = 0.2 \times 0.5 = 0.10 \]
+\[ P(Ham) \cdot P(\text{KM}|Ham) = 0.8 \times 0.05 = 0.04 \]
+\[ P(Spam|\text{KM}) = \frac{0.10}{0.10 + 0.04} = \frac{0.10}{0.14} \approx \mathbf{71.4\%} \]
+</div>
+</div>
+</details>
+
+<div class="s-title">3. Gaussian Naive Bayes</div>
+<p>Cho đặc trưng liên tục, dùng phân phối chuẩn:</p>
+<div class="fbox no-top-radius">\[ P(x_k|C_i) = \frac{1}{\sqrt{2\pi\sigma_{ki}^2}} \exp\!\left(-\frac{(x_k-\mu_{ki})^2}{2\sigma_{ki}^2}\right) \]</div>
+
+<div class="s-title">4. Vấn đề và nhược điểm</div>
+<div class="alert al-red">
+  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> Zero Frequency — Xác suất bằng 0</div>
+  <p>Nếu đặc trưng chưa xuất hiện trong lớp nào đó, tích toàn bộ = 0. Giải pháp: <strong>Laplace Smoothing</strong> (cộng 1 vào mỗi count).</p>
+</div>
+<div class="alert al-yellow">
+  <div class="alert-title"><i class="fas fa-lightbulb"></i> Overconfident Posterior (Câu 11)</div>
+  <p>Vì các đặc trưng không thực sự độc lập trong thực tế, tích nhiều xác suất tương quan đẩy posterior cực đoan về 0 hoặc 1 → mô hình <strong>overconfident</strong>.</p>
+</div>
+
+<div class="s-title">5. Multinomial Naive Bayes — Phân loại văn bản (Text Classification)</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-file-alt"></i> Bag-of-Words Model</div>
+  <p>Văn bản được biểu diễn bởi vector đếm từ: \(\mathbf{x}=(x_1,\ldots,x_{|V|})\) trong đó \(x_k\) = số lần từ \(w_k\) xuất hiện. Bỏ qua vị trí, thứ tự — chỉ quan tâm tần suất.</p>
+</div>
+
+<div class="flabel">Xác suất phát sinh document d từ lớp c</div>
+<div class="fbox">
+\[ P(d \mid c) \propto \prod_{k=1}^{|V|} P(w_k \mid c)^{x_k} \]
+</div>
+
+<div class="flabel">Ước lượng MLE cho P(w_k | c)</div>
+<div class="fbox">
+\[ \hat{P}(w_k \mid c) = \frac{\text{count}(w_k, c)}{\displaystyle\sum_{w' \in V} \text{count}(w', c)} \]
+</div>
+
+<div class="alert al-yellow">
+  <div class="alert-title"><i class="fas fa-shield-alt"></i> Laplace Smoothing (Add-1) — Bắt buộc khi có từ chưa gặp</div>
+  <p>Nếu từ \(w_k\) chưa xuất hiện trong tài liệu lớp c → \(\hat{P}(w_k|c)=0\) → tích toàn bộ = 0 → mọi document chứa \(w_k\) đều bị loại khỏi lớp c dù mọi đặc trưng khác ủng hộ mạnh.</p>
+  <div class="fbox no-top-radius">
+  \[ \hat{P}(w_k \mid c) = \frac{\text{count}(w_k, c) + 1}{\displaystyle\sum_{w'} \text{count}(w', c) + |V|} \]
+  </div>
+  <p>Thêm 1 vào mỗi từ (tử số), thêm |V| vào tổng (mẫu số) để đảm bảo \(\sum_k \hat{P}(w_k|c)=1\).</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Ví dụ: Spam Filter với Multinomial NB</summary>
+<div class="dc">
+<p>Tập huấn luyện: 3 Spam, 7 Ham. V = {"khuyến mãi", "nhận ngay", "hoá đơn"}.</p>
+<table class="tbl" style="font-size:.82rem">
+<thead><tr><th>Từ</th><th>count(w, Spam)</th><th>count(w, Ham)</th></tr></thead>
+<tbody>
+<tr><td>khuyến mãi</td><td>8</td><td>1</td></tr>
+<tr><td>nhận ngay</td><td>6</td><td>0</td></tr>
+<tr><td>hoá đơn</td><td>1</td><td>9</td></tr>
+<tr><td><strong>Tổng</strong></td><td>15</td><td>10</td></tr>
+</tbody>
+</table>
+<p>Document mới: "khuyến mãi nhận ngay". Với Laplace smoothing (|V|=3):</p>
+<div class="fbox no-top-radius">
+\[ P(\text{km}|\text{Spam}) = \frac{8+1}{15+3}=\frac{9}{18}=0.5, \quad P(\text{nn}|\text{Spam})=\frac{6+1}{18}=\frac{7}{18} \]
+\[ P(\text{km}|\text{Ham}) = \frac{1+1}{10+3}=\frac{2}{13}, \quad P(\text{nn}|\text{Ham})=\frac{0+1}{13}=\frac{1}{13} \]
+\[ \text{Score(Spam)} \propto \frac{3}{10}\times 0.5 \times\frac{7}{18} \approx 0.0583 \]
+\[ \text{Score(Ham)} \propto \frac{7}{10}\times\frac{2}{13}\times\frac{1}{13} \approx 0.0083 \]
+</div>
+<p>→ Predict Spam. Nếu không có Laplace, P("nhận ngay"|Ham)=0 → Score(Ham)=0, mô hình overconfident.</p>
+</div>
+</details>
+
+<div class="s-title">6. Tại sao Naive Bayes Overconfident — Phân tích toán học</div>
+
+<div class="alert al-red">
+  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> Hệ quả của vi phạm giả định độc lập</div>
+  <p><strong>Giả định:</strong> \(P(X_1,X_2|c) = P(X_1|c)\cdot P(X_2|c)\). Trong thực tế, "khuyến mãi" và "giảm giá" tương quan cao trong Spam.</p>
+  <p><strong>Hệ quả:</strong> Naive Bayes tính tích hai xác suất cao, nhưng chúng mang cùng thông tin → <em>double-counting</em> → xác suất Spam bị tính thừa → posterior đẩy về 1.</p>
+  <p><strong>Minh họa số:</strong> P(Spam|"KM")=0.8. Với 3 từ đồng nghĩa cùng mang thông tin Spam: NB tính posterior \(\propto 0.8^3 = 0.512\), chuẩn hóa → P(Spam|3 từ)≈0.99. Thực tế có thể chỉ là 0.85 — mô hình overconfident.</p>
+  <p><strong>Bất lợi thực tế:</strong> Bộ phân loại NB thường cho predicted probabilities cực đoan (gần 0 hoặc 1), không phù hợp khi cần calibrated probabilities. Dùng tốt khi chỉ cần nhãn lớp, không cần confidence score.</p>
+</div>
+
+<div class="s-title">7. Ví dụ MAP Decision Rule đầy đủ — Chứng minh Overconfident</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-database"></i> Dataset — Phân loại Email</div>
+  <p>Feature X₁: Có từ "free" (1=có/0=không). Feature X₂: Có từ "meeting" (1=có/0=không).</p>
+  <table class="tbl" style="font-size:.83rem">
+  <thead><tr><th>X₁ (free)</th><th>X₂ (meeting)</th><th>Class</th></tr></thead>
+  <tbody>
+  <tr><td>1</td><td>0</td><td>Spam</td></tr>
+  <tr><td>1</td><td>1</td><td>Spam</td></tr>
+  <tr><td>1</td><td>0</td><td>Spam</td></tr>
+  <tr><td>0</td><td>0</td><td>Ham</td></tr>
+  <tr><td>0</td><td>1</td><td>Ham</td></tr>
+  </tbody>
+  </table>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Bước 1: Ước lượng tham số (MLE)</summary>
+<div class="dc">
+<div class="fbox no-top-radius">
+\[ P(\text{Spam}) = \frac{3}{5} = 0.6, \quad P(\text{Ham}) = \frac{2}{5} = 0.4 \]
+\[ P(X_1=1|\text{Spam}) = \frac{3}{3} = 1.0, \quad P(X_1=0|\text{Spam}) = \frac{0}{3} = 0 \]
+\[ P(X_1=1|\text{Ham}) = \frac{0}{2} = 0, \quad P(X_1=0|\text{Ham}) = \frac{2}{2} = 1.0 \]
+\[ P(X_2=0|\text{Spam}) = \frac{2}{3} \approx 0.667, \quad P(X_2=1|\text{Spam}) = \frac{1}{3} \approx 0.333 \]
+\[ P(X_2=0|\text{Ham}) = \frac{1}{2} = 0.5, \quad P(X_2=1|\text{Ham}) = \frac{1}{2} = 0.5 \]
+</div>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Bước 2: MAP Classification cho query X=[1,0] (has "free", no "meeting")</summary>
+<div class="dc">
+<p><strong>Không có Laplace Smoothing:</strong></p>
+<div class="fbox no-top-radius">
+\[ \text{Score(Spam)} \propto P(\text{Spam})\cdot P(X_1=1|\text{Spam})\cdot P(X_2=0|\text{Spam}) = 0.6\times 1.0\times 0.667 = \mathbf{0.400} \]
+\[ \text{Score(Ham)} \propto P(\text{Ham})\cdot P(X_1=1|\text{Ham})\cdot P(X_2=0|\text{Ham}) = 0.4\times \mathbf{0}\times 0.5 = \mathbf{0} \]
+\[ P(\text{Spam}|X) = \frac{0.400}{0.400+0} = \mathbf{1.00} \quad\leftarrow \text{Overconfident!} \]
+</div>
+<p><strong>Với Laplace Smoothing (Add-1, |V|=2 cho mỗi feature):</strong></p>
+<div class="fbox no-top-radius">
+\[ P(X_1=1|\text{Ham}) = \frac{0+1}{2+2} = \frac{1}{4} = 0.25 \]
+\[ \text{Score(Ham)} = 0.4\times 0.25\times 0.5 = \mathbf{0.050} \]
+\[ P(\text{Spam}|X) = \frac{0.400}{0.400+0.050} = \frac{0.400}{0.450} \approx \mathbf{0.889} \]
+</div>
+<div class="alert al-red" style="margin-top:.5rem">
+<div class="alert-title">So sánh: Có vs Không có Laplace Smoothing</div>
+<ul>
+<li>Không Laplace: P(Spam|X) = 1.00 (chắc chắn tuyệt đối — overconfident)</li>
+<li>Có Laplace: P(Spam|X) ≈ 0.889 (cao nhưng calibrated hơn)</li>
+</ul>
+Kết luận giống nhau (predict Spam) nhưng mức độ chắc chắn khác nhau hoàn toàn.
+</div>
+</div>
+</details>
+
+<details>
+<summary><i class="fas fa-calculator"></i> Bước 3: Minh họa Overconfident với 2 features tương quan</summary>
+<div class="dc">
+<p>Thêm feature X₃: "prize" — tương quan cao với X₁ ("free"). P(X₃=1|Spam)=0.9, P(X₃=1|Ham)=0.05.</p>
+<p>Query: X=[1,0,1] (có "free" và "prize", không có "meeting"):</p>
+<div class="fbox no-top-radius">
+\[ \text{Score(Spam)} \propto 0.6 \times 1.0 \times 0.667 \times 0.9 = 0.360 \]
+\[ \text{Score(Ham)} \propto 0.4 \times 0.25 \times 0.5 \times 0.05 = 0.0025 \]
+\[ P(\text{Spam}|X) = \frac{0.360}{0.360+0.0025} \approx 0.993 \]
+</div>
+<p>"free" và "prize" cùng mang thông tin Spam → NB nhân cả hai → posterior tăng từ 0.889 → 0.993 mặc dù thông tin mới (prize) gần như redundant với thông tin cũ (free). <strong>Double-counting → overconfident.</strong></p>
+</div>
+</details>
+</section>
+
+
+</main>
+
+<a href="#" id="back-top" title="Về đầu trang"><i class="fas fa-arrow-up"></i></a>
+
+<script>
+mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+</script>
+</body>
+</html>

@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GK5009 – Drucker: Managing Oneself</title>
+  <style>
+    :root {
+      --primary: #1a1a2e;
+      --secondary: #4a4e8c;
+      --accent: #d4a017;
+      --light: #f4f4fb;
+      --text: #1c1c1c;
+      --muted: #5a5a7a;
+      --border: #c8c8e8;
+      --green: #1a6e3c;
+      --red: #8b1a1a;
+      --teal: #1a6e6e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      font-size: 15.5px;
+      line-height: 1.8;
+      color: var(--text);
+      background: #f8f8fc;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 0 60px;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #4a4e8c 60%, #7a6cbf 100%);
+      color: white;
+      padding: 44px 48px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 260px; height: 260px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+    }
+    .tag-pill {
+      display: inline-block;
+      background: rgba(212,160,23,0.25);
+      border: 1px solid rgba(212,160,23,0.6);
+      color: #f5cc66;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 3px 12px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+    .page-header h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .page-header .subtitle {
+      font-size: 1.05rem;
+      opacity: 0.88;
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+    .page-header .meta {
+      font-size: 0.82rem;
+      opacity: 0.68;
+    }
+
+    /* ── Nav ── */
+    .page-nav {
+      background: var(--primary);
+      display: flex;
+      gap: 0;
+      padding: 0 48px;
+      border-bottom: 3px solid var(--accent);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .page-nav a {
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 500;
+      padding: 12px 18px;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -3px;
+      transition: color .2s, border-color .2s;
+    }
+    .page-nav a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* ── Content ── */
+    .content { padding: 0 48px; }
+
+    /* ── Section headers ── */
+    .section-header {
+      background: linear-gradient(135deg, #1a1a2e, #4a4e8c);
+      color: white;
+      padding: 22px 30px;
+      border-radius: 10px 10px 0 0;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 52px;
+    }
+    .section-num {
+      width: 46px; height: 46px;
+      background: var(--accent);
+      color: var(--primary);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; font-weight: 800;
+      flex-shrink: 0;
+    }
+    .section-header h2 {
+      font-size: 1.35rem; font-weight: 700;
+      border: none; margin: 0; padding: 0;
+    }
+    .section-header .sec-sub {
+      font-size: 0.85rem; opacity: 0.8; margin-top: 2px;
+    }
+    .section-body {
+      background: white;
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      padding: 32px 36px;
+    }
+
+    h3 { font-size: 1.18rem; color: var(--primary); font-weight: 700; margin: 28px 0 10px; border-left: 4px solid var(--accent); padding-left: 12px; }
+    h4 { font-size: 1.02rem; color: var(--secondary); font-weight: 600; margin: 18px 0 8px; }
+    p { margin-bottom: 14px; }
+    ul, ol { margin: 10px 0 14px 24px; }
+    li { margin-bottom: 8px; }
+    strong { color: var(--primary); }
+    em { color: var(--muted); }
+
+    /* ── Key quote ── */
+    .key-quote {
+      background: var(--primary);
+      color: var(--accent);
+      padding: 20px 28px;
+      border-radius: 8px;
+      margin: 20px 0;
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      text-align: center;
+    }
+    .key-quote cite { display: block; color: rgba(255,255,255,0.6); font-size: 0.82rem; margin-top: 8px; font-style: normal; }
+
+    /* ── Quote box ── */
+    .quote-box {
+      background: var(--light);
+      border-left: 5px solid var(--accent);
+      padding: 18px 22px;
+      margin: 18px 0;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      font-size: 0.97rem;
+    }
+    .quote-box cite { display: block; margin-top: 10px; font-style: normal; font-size: 0.82rem; color: var(--muted); }
+
+    /* ── 5 Questions ── */
+    .five-q { margin: 18px 0; border-radius: 10px; overflow: hidden; border: 2px solid var(--border); }
+    .fq-row {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+    .fq-row:last-child { border-bottom: none; }
+    .fq-num {
+      background: var(--primary);
+      color: var(--accent);
+      font-size: 1.55rem;
+      font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      border-right: 2px solid rgba(255,255,255,0.1);
+    }
+    .fq-body { background: white; padding: 16px 22px; }
+    .fq-q { font-weight: 700; color: var(--primary); font-size: 1.05rem; margin-bottom: 4px; }
+    .fq-vi { font-size: 0.88rem; color: var(--secondary); margin-bottom: 4px; font-weight: 600; }
+    .fq-desc { font-size: 0.86rem; color: var(--muted); }
+
+    /* ── Context grid ── */
+    .ctx-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .ctx-card {
+      background: var(--light);
+      border-radius: 8px;
+      padding: 20px 22px;
+      border-top: 4px solid;
+    }
+    .ctx-card.old { border-top-color: #999; }
+    .ctx-card.new { border-top-color: var(--secondary); }
+    .ctx-card h4 { font-size: 0.92rem; margin-top: 0; border: none; padding: 0; color: var(--primary); }
+
+    /* ── Feedback Analysis timeline ── */
+    .fb-timeline { margin: 20px 0; }
+    .fb-step-row {
+      display: grid;
+      grid-template-columns: 50px 1fr;
+      gap: 16px;
+      margin-bottom: 12px;
+      align-items: start;
+    }
+    .fb-circle {
+      width: 50px; height: 50px;
+      background: var(--primary);
+      color: var(--accent);
+      border-radius: 50%;
+      font-size: 1.35rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+    .fb-content { background: var(--light); border-radius: 8px; padding: 14px 18px; border-left: 4px solid var(--secondary); }
+    .fb-name { font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+    .fb-desc { font-size: 0.88rem; color: #444; }
+
+    /* ── History callout ── */
+    .history-box {
+      background: linear-gradient(135deg, #fffbf0, #fff8e1);
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      padding: 22px 26px;
+      margin: 18px 0;
+    }
+    .history-box h4 { color: #7a4f00; margin-top: 0; border: none; padding: 0; }
+    .hist-flow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .hist-node {
+      background: var(--primary);
+      color: var(--accent);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+    .hist-arrow { color: var(--accent); font-size: 1.2rem; font-weight: 700; }
+    .hist-result {
+      background: var(--accent);
+      color: var(--primary);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    /* ── 4 Implications grid ── */
+    .impl-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .impl-card {
+      background: var(--light);
+      border-top: 4px solid var(--secondary);
+      border-radius: 0 0 8px 8px;
+      padding: 16px 18px;
+    }
+    .impl-card .i-num { font-size: 1.3rem; font-weight: 800; color: var(--accent); margin-bottom: 4px; }
+    .impl-card .i-name { font-weight: 700; color: var(--primary); font-size: 0.95rem; margin-bottom: 8px; }
+    .impl-card p { font-size: 0.88rem; margin-bottom: 0; }
+
+    /* ── Reader vs Listener ── */
+    .presidents-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .pres-card {
+      border-radius: 8px;
+      padding: 18px 20px;
+      border-left: 5px solid;
+    }
+    .pres-card.reader { background: #eef6ff; border-left-color: #1a4c7e; }
+    .pres-card.listener { background: #fdf9e3; border-left-color: #7d6608; }
+    .pres-card.mistake { background: #fdecea; border-left-color: #8b1a1a; }
+    .pres-card h4 { margin-top: 0; border: none; padding: 0; }
+    .pres-card.reader h4 { color: #1a4c7e; }
+    .pres-card.listener h4 { color: #7d6608; }
+    .pres-card.mistake h4 { color: #8b1a1a; }
+    .pres-card p { font-size: 0.88rem; margin-bottom: 6px; }
+    .pres-card p:last-child { margin-bottom: 0; }
+
+    .rl-rule {
+      background: var(--primary);
+      color: white;
+      border-radius: 8px;
+      padding: 14px 20px;
+      margin: 16px 0;
+      font-size: 0.93rem;
+      text-align: center;
+    }
+
+    /* ── Learning styles ── */
+    .learn-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .learn-card {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 16px;
+      text-align: center;
+    }
+    .learn-card .l-icon { font-size: 2rem; margin-bottom: 8px; }
+    .learn-card .l-name { font-weight: 700; color: var(--primary); font-size: 0.95rem; margin-bottom: 8px; }
+    .learn-card .l-example { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
+    /* ── How do I perform table ── */
+    .perform-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+    .perform-table th {
+      background: var(--primary);
+      color: white;
+      padding: 11px 16px;
+      text-align: left;
+    }
+    .perform-table td { padding: 11px 16px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .perform-table tr:nth-child(even) td { background: var(--light); }
+
+    /* ── Mirror test ── */
+    .mirror-box {
+      background: linear-gradient(135deg, #fff, #fffbf0);
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      padding: 26px 30px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .mirror-box .mt-label { font-size: 0.82rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .mirror-box .mt-q { font-size: 1.2rem; font-style: italic; color: var(--primary); font-weight: 600; margin-bottom: 12px; line-height: 1.5; }
+    .mirror-box .mt-story { font-size: 0.88rem; color: #555; line-height: 1.7; }
+
+    /* ── Values examples ── */
+    .values-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .val-card {
+      background: var(--light);
+      border-radius: 8px;
+      padding: 18px 20px;
+      border-top: 4px solid var(--secondary);
+    }
+    .val-card h4 { margin-top: 0; border: none; padding: 0; color: var(--secondary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: .04em; }
+
+    /* ── Contribution framework ── */
+    .contrib-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .cq-card {
+      background: var(--light);
+      border-radius: 8px;
+      padding: 18px 16px;
+      border-top: 4px solid var(--secondary);
+    }
+    .cq-card .cq-num { font-size: 1.5rem; font-weight: 800; color: var(--accent); margin-bottom: 6px; }
+    .cq-card .cq-title { font-weight: 700; color: var(--primary); font-size: 0.9rem; margin-bottom: 8px; }
+    .cq-card p { font-size: 0.85rem; margin-bottom: 0; }
+
+    .contrib-criteria {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 14px 0;
+    }
+    .cc-card {
+      background: var(--primary);
+      color: white;
+      border-radius: 8px;
+      padding: 14px 12px;
+      text-align: center;
+    }
+    .cc-card .cc-icon { font-size: 1.5rem; margin-bottom: 6px; }
+    .cc-card .cc-name { font-size: 0.85rem; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+    .cc-card .cc-desc { font-size: 0.78rem; opacity: 0.8; }
+
+    /* ── Relationships ── */
+    .rel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .rel-card {
+      background: var(--light);
+      border-radius: 8px;
+      padding: 20px 22px;
+      border-left: 5px solid var(--secondary);
+    }
+    .rel-card h4 { margin-top: 0; border: none; padding: 0; color: var(--primary); }
+
+    /* ── Second Half grid ── */
+    .sh-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .sh-card {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 18px;
+    }
+    .sh-card .sh-num { font-size: 2rem; font-weight: 800; color: var(--accent); margin-bottom: 8px; }
+    .sh-card h4 { margin-top: 0; border: none; padding: 0; color: var(--primary); font-size: 0.95rem; margin-bottom: 10px; }
+    .sh-card p { font-size: 0.87rem; margin-bottom: 0; }
+
+    /* ── Summary framework ── */
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+    .summary-table th { background: var(--primary); color: white; padding: 11px 16px; text-align: left; }
+    .summary-table td { padding: 11px 16px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .summary-table tr:nth-child(even) td { background: var(--light); }
+
+    /* ── Case studies ── */
+    .case-block {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin: 20px 0;
+    }
+    .case-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--border);
+    }
+    .case-avatar {
+      width: 54px; height: 54px;
+      background: var(--primary);
+      color: var(--accent);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; font-weight: 800;
+      flex-shrink: 0;
+    }
+    .case-title { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 2px; }
+    .case-sub { font-size: 0.85rem; color: var(--muted); }
+    .case-tag {
+      display: inline-block;
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--secondary);
+      padding: 2px 10px;
+      margin-left: 8px;
+    }
+    .case-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+    .cg-cell { background: var(--light); border-radius: 8px; padding: 14px 16px; }
+    .cg-cell h4 { margin-top: 0; border: none; padding: 0; font-size: 0.82rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-bottom: 6px; }
+    .cg-cell p { font-size: 0.88rem; margin-bottom: 0; }
+    .case-result {
+      background: linear-gradient(135deg, #e8f8e8, #d5f5e3);
+      border-left: 4px solid #27ae60;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin-top: 14px;
+      font-size: 0.88rem;
+    }
+
+    /* ── Pitfall grid ── */
+    .pitfall-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .pitfall-card {
+      background: #fdecea;
+      border-left: 5px solid #e74c3c;
+      border-radius: 0 8px 8px 0;
+      padding: 16px 18px;
+    }
+    .pitfall-card .pc-title { font-weight: 700; color: #8b1a1a; margin-bottom: 6px; font-size: 0.93rem; }
+    .pitfall-card p { font-size: 0.87rem; margin-bottom: 0; }
+
+    /* ── Tip box ── */
+    .tip-box {
+      background: #d5f5e3;
+      border-left: 5px solid #27ae60;
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 14px 0;
+    }
+    .tip-box .tb-title { font-weight: 700; color: #145a32; margin-bottom: 6px; }
+    .tip-box p, .tip-box ul { font-size: 0.88rem; margin-bottom: 0; }
+
+    /* ── Info callout ── */
+    .info-box {
+      background: #eef4ff;
+      border-left: 5px solid var(--secondary);
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+    }
+    .info-box .ib-title { font-weight: 700; color: var(--secondary); margin-bottom: 6px; font-size: 0.9rem; }
+    .info-box p { font-size: 0.88rem; margin-bottom: 0; }
+
+    /* ── Cross-reference callout ── */
+    .cross-ref {
+      background: linear-gradient(135deg, #fff8e1, #fffbf0);
+      border: 2px dashed var(--accent);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+    .cross-ref h4 { color: #7a4f00; margin-top: 0; border: none; padding: 0; margin-bottom: 10px; }
+    .cross-ref p { font-size: 0.88rem; margin-bottom: 6px; }
+    .cross-ref p:last-child { margin-bottom: 0; }
+
+    /* ── Review questions ── */
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .rq-card {
+      background: var(--light);
+      border-radius: 8px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--secondary);
+      font-size: 0.88rem;
+    }
+    .rq-num { font-weight: 800; color: var(--accent); margin-bottom: 4px; }
+
+    footer {
+      margin-top: 60px;
+      border-top: 2px solid var(--border);
+      padding: 24px 48px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════ -->
+<div class="page-header">
+  <div class="tag-pill">GK5009 · HBR Classic 1999</div>
+  <h1>Managing Oneself</h1>
+  <div class="subtitle">Quản lý Bản thân — Nền tảng của Thành công trong Nền Kinh tế Tri thức</div>
+  <div class="meta">Peter F. Drucker &nbsp;|&nbsp; Harvard Business Review, Best of HBR 1999 (Published January 2005, Reprint R0501K) &nbsp;|&nbsp; GK5009 Quản lý và Lãnh đạo</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     NAV
+══════════════════════════════════════════════ -->
+<nav class="page-nav">
+  <a href="#overview">I. Tổng quan</a>
+  <a href="#analysis">II. Phân tích</a>
+  <a href="#models">III. Mô hình</a>
+  <a href="#examples">IV. Thực tiễn</a>
+  <a href="#review">V. Ôn tập</a>
+</nav>
+
+<div class="content">
+
+<!-- ══════════════════════════════════════════════
+     SECTION I — OVERVIEW
+══════════════════════════════════════════════ -->
+<div id="overview">
+  <div class="section-header">
+    <div class="section-num">I</div>
+    <div>
+      <div class="section-header h2" style="color:white; font-size:1.35rem; font-weight:700;">Tổng quan (Overview)</div>
+      <div class="sec-sub">Luận điểm trung tâm · Bối cảnh kinh tế tri thức · 5 câu hỏi cốt lõi</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <div class="key-quote">
+      "Success in the knowledge economy comes to those who know themselves — their strengths, their values, and how they best perform."
+      <cite>— Peter F. Drucker</cite>
+    </div>
+
+    <h3>Bối cảnh: Cách mạng Kinh tế Tri thức và Sự nghiệp 50 năm</h3>
+    <p>Peter F. Drucker — cha đẻ của quản trị hiện đại, Giáo sư Danh dự tại Claremont Graduate University — viết bài này vào cuối thế kỷ 20, khi thế giới đang trải qua một cuộc cách mạng kinh tế sâu sắc. Lần đầu tiên trong lịch sử, <strong>người lao động tri thức (knowledge workers)</strong> — những người làm việc bằng trí tuệ chứ không phải sức cơ bắp — trở thành lực lượng sản xuất chính.</p>
+
+    <div class="ctx-compare">
+      <div class="ctx-card old">
+        <h4>Xã hội nông nghiệp & công nghiệp truyền thống</h4>
+        <ul>
+          <li>Con người sinh vào một địa vị, nghề nghiệp cố định</li>
+          <li>Không có lựa chọn: nông dân con nhà nông; thợ thủ công con nhà thợ</li>
+          <li>Không cần biết điểm mạnh: việc đã được định sẵn</li>
+          <li>Tuổi thọ thấp → không cần lo "nửa sau cuộc đời"</li>
+          <li>Tổ chức quản lý sự nghiệp của nhân viên</li>
+        </ul>
+      </div>
+      <div class="ctx-card new">
+        <h4>Nền kinh tế tri thức (Knowledge Economy) — ngày nay</h4>
+        <ul>
+          <li>Cơ hội vươn lên đỉnh cao bất kể xuất phát điểm (lần đầu tiên trong lịch sử)</li>
+          <li>Nhưng: phải tự quản lý sự nghiệp, tổ chức không còn làm hộ</li>
+          <li>Sự nghiệp kéo dài <strong>50 năm</strong> (vs 25 năm thế hệ trước) → phải biết khi nào thay đổi hướng</li>
+          <li>Phải biết điểm mạnh, cách làm việc, và giá trị để tận dụng cơ hội</li>
+          <li>Tri thức có "shelf life" — phải học và đổi mới liên tục</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="quote-box">
+      "Companies today aren't managing their employees' careers; knowledge workers must, effectively, be their own chief executive officers. It's up to you to carve out your place, to know when to change course, and to keep yourself engaged and productive during a work life that may span some 50 years."
+      <cite>— Peter F. Drucker</cite>
+    </div>
+
+    <p>Drucker lấy cảm hứng lịch sử: Napoleon, da Vinci, Mozart — những "great achievers" đã tự quản lý bản thân mình. Đó là điều làm họ vĩ đại. Nhưng họ là ngoại lệ hiếm có vì thiên tài bẩm sinh. Ngày nay, <strong>hầu hết chúng ta — những người có tài năng bình thường — đều phải học cách làm điều đó</strong>.</p>
+
+    <h3>5 Câu hỏi Cốt lõi của Managing Oneself</h3>
+    <div class="five-q">
+      <div class="fq-row">
+        <div class="fq-num">1</div>
+        <div class="fq-body">
+          <div class="fq-q">What are my strengths?</div>
+          <div class="fq-vi">Điểm mạnh của tôi là gì?</div>
+          <div class="fq-desc">Công cụ: Feedback Analysis — ghi kỳ vọng → chờ 9-12 tháng → so sánh kết quả → tìm pattern điểm mạnh thực sự (không phải điểm mạnh tự nhận)</div>
+        </div>
+      </div>
+      <div class="fq-row">
+        <div class="fq-num">2</div>
+        <div class="fq-body">
+          <div class="fq-q">How do I perform?</div>
+          <div class="fq-vi">Tôi làm việc hiệu quả như thế nào?</div>
+          <div class="fq-desc">Bao gồm: Reader hay Listener? Cách học nào phù hợp? Làm việc nhóm hay một mình? Ra quyết định hay làm cố vấn? Cần stress hay cần dự đoán được? Tổ chức lớn hay nhỏ?</div>
+        </div>
+      </div>
+      <div class="fq-row">
+        <div class="fq-num">3</div>
+        <div class="fq-body">
+          <div class="fq-q">What are my values?</div>
+          <div class="fq-vi">Giá trị của tôi là gì?</div>
+          <div class="fq-desc">Công cụ: Mirror test — "What kind of person do I want to see in the mirror in the morning?" Values phải tương thích (không cần giống nhau) với giá trị tổ chức</div>
+        </div>
+      </div>
+      <div class="fq-row">
+        <div class="fq-num">4</div>
+        <div class="fq-body">
+          <div class="fq-q">Where do I belong?</div>
+          <div class="fq-vi">Tôi thuộc về đâu?</div>
+          <div class="fq-desc">Quan trọng hơn: biết nơi KHÔNG phù hợp. Tích hợp câu 1+2+3 → nói "có" và "không" một cách tự tin. Biết rõ bản thân biến người bình thường thành star performer</div>
+        </div>
+      </div>
+      <div class="fq-row">
+        <div class="fq-num">5</div>
+        <div class="fq-body">
+          <div class="fq-q">What should I contribute?</div>
+          <div class="fq-vi">Tôi nên đóng góp gì?</div>
+          <div class="fq-desc">3 yếu tố: Tình huống cần gì? Điểm mạnh và values của tôi hướng đến đâu? Kết quả cần đạt trong 18 tháng — phải meaningful + visible + measurable</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="ib-title">Tại sao bài này là kinh điển?</div>
+      <p>Drucker viết "Managing Oneself" năm 1999 — ông dự báo chính xác rằng knowledge workers sẽ phải quản lý bản thân như một CEO. Hai thập kỷ sau, trong thời đại "gig economy," AI và remote work, lời khuyên này càng trở nên cấp thiết hơn. Đây là lý do HBR xếp bài vào "Best of HBR" và tái xuất bản năm 2005.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION II — IN-DEPTH ANALYSIS
+══════════════════════════════════════════════ -->
+<div id="analysis">
+  <div class="section-header">
+    <div class="section-num">II</div>
+    <div>
+      <div class="section-header h2" style="color:white; font-size:1.35rem; font-weight:700;">Phân tích Chuyên sâu (In-depth Analysis)</div>
+      <div class="sec-sub">7 phần: 5 câu hỏi + Relationships + Second Half of Life</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <!-- A: What are my strengths -->
+    <h3>A. Câu hỏi 1: What Are My Strengths?</h3>
+
+    <div class="quote-box">
+      "Most people think they know what they are good at. They are usually wrong. More often, people know what they are not good at — and even then more people are wrong than right. And yet, a person can perform only from strength. One cannot build performance on weaknesses, let alone on something one cannot do at all."
+      <cite>— Drucker</cite>
+    </div>
+
+    <p>Nghịch lý trung tâm: con người tin rằng mình biết điểm mạnh của mình — nhưng thực tế hầu hết đều sai. Cách duy nhất đủ tin cậy để khám phá điểm mạnh thực sự là dựa trên kết quả thực tế, không phải tự đánh giá, không phải đánh giá của người khác, không phải test tâm lý. Đó là <strong>Feedback Analysis (Phân tích Phản hồi)</strong>.</p>
+
+    <h4>Feedback Analysis — Quy trình Chi tiết</h4>
+    <div class="fb-timeline">
+      <div class="fb-step-row">
+        <div class="fb-circle">1</div>
+        <div class="fb-content">
+          <div class="fb-name">Quyết định hoặc Hành động quan trọng → Ghi lại Kỳ vọng</div>
+          <div class="fb-desc">Mỗi khi ra một quyết định quan trọng hoặc thực hiện một hành động then chốt: GHI NGAY kết quả bạn dự kiến đạt được. Ghi cụ thể, có thể đo lường. Đây là bước mà hầu hết người bỏ qua — và đó chính là lý do họ không học được gì từ kết quả.</div>
+        </div>
+      </div>
+      <div class="fb-step-row">
+        <div class="fb-circle">2</div>
+        <div class="fb-content">
+          <div class="fb-name">Chờ 9 đến 12 Tháng</div>
+          <div class="fb-desc">Khoảng thời gian này cần đủ dài để kết quả thực tế biểu hiện và quan sát được. Không quá ngắn (chưa có kết quả rõ) cũng không quá dài (mất kết nối nhân quả). Drucker áp dụng phương pháp này liên tục trong 15-20 năm và mỗi lần vẫn ngạc nhiên trước những gì ông phát hiện về chính mình.</div>
+        </div>
+      </div>
+      <div class="fb-step-row">
+        <div class="fb-circle">3</div>
+        <div class="fb-content">
+          <div class="fb-name">So sánh Kết quả thực tế với Kỳ vọng ban đầu</div>
+          <div class="fb-desc">Không phải đánh giá tốt/xấu — mà là tìm kiếm <em>mẫu (patterns)</em>. Loại quyết định/hành động nào cho kết quả tốt hơn kỳ vọng? Loại nào cho kết quả kém hơn? Kỹ năng nào đang là điểm mạnh tiềm năng chưa được khai thác đúng mức?</div>
+        </div>
+      </div>
+      <div class="fb-step-row">
+        <div class="fb-circle">4</div>
+        <div class="fb-content">
+          <div class="fb-name">Nhận diện Pattern và Áp dụng 4 Hàm ý</div>
+          <div class="fb-desc">Từ pattern nhận ra được, áp dụng bốn hành động cụ thể: (1) Tập trung vào điểm mạnh, (2) Cải thiện điểm mạnh hiện có, (3) Xóa bỏ kiêu ngạo trí thức, (4) Sửa thói quen xấu cản trở hiệu quả.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="history-box">
+      <h4>Nguồn gốc Lịch sử của Feedback Analysis — Tại sao nó Thay đổi Châu Âu</h4>
+      <div class="hist-flow">
+        <div class="hist-node">Thế kỷ XIV<br/><small>Nhà thần học Đức vô danh</small></div>
+        <div class="hist-arrow">→</div>
+        <div class="hist-node">John Calvin<br/><small>Geneva, 1530s</small></div>
+        <div class="hist-arrow">+</div>
+        <div class="hist-node">Ignatius of Loyola<br/><small>Tây Ban Nha, 1540s</small></div>
+        <div class="hist-arrow">→</div>
+        <div class="hist-result">Giáo hội Calvin + Dòng Tên<br/>Thống trị Châu Âu trong 30 năm</div>
+      </div>
+      <p style="margin-top:14px; font-size:0.88rem;">Feedback Analysis không phải phát minh của Drucker — nó được một nhà thần học Đức vô danh phát minh vào thế kỷ 14. Hàng thế kỷ sau, Calvin và Loyola độc lập áp dụng phương pháp này — mỗi người đều yêu cầu tín đồ và linh mục của mình ghi lại kết quả mong đợi và sau đó so sánh với kết quả thực tế. Kết quả: trong vòng 30 năm, Giáo hội Calvin và Dòng Tên (Jesuit Order) đã chinh phục và kiểm soát phần lớn châu Âu — một thành tích ngoài sức tưởng tượng với các tổ chức tôn giáo ra đời từ không có gì. Drucker xem đây là bằng chứng mạnh mẽ nhất về sức mạnh của Feedback Analysis ở quy mô tổ chức.</p>
+    </div>
+
+    <h4>4 Hàm ý Hành động từ Feedback Analysis</h4>
+    <div class="impl-grid">
+      <div class="impl-card">
+        <div class="i-num">①</div>
+        <div class="i-name">Tập trung vào Điểm mạnh</div>
+        <p>Đặt bản thân vào những vị trí mà điểm mạnh của bạn có thể tạo ra kết quả. Đừng lãng phí thời gian ở nơi bạn không có năng lực — điều này không chỉ kém hiệu quả mà còn phản sản xuất. Drucker: "One should waste as little effort as possible on improving areas of low competence."</p>
+      </div>
+      <div class="impl-card">
+        <div class="i-num">②</div>
+        <div class="i-name">Cải thiện Điểm mạnh hiện có</div>
+        <p>Dễ hơn nhiều so với cải thiện điểm yếu. Tốn ít năng lượng hơn để từ giỏi đến xuất sắc hơn từ kém đến trung bình. Feedback Analysis sẽ cho thấy kỹ năng nào cần được hoàn thiện thêm — ví dụ: biết cần học thêm toán để trở thành kỹ sư hàng đầu.</p>
+      </div>
+      <div class="impl-card">
+        <div class="i-num">③</div>
+        <div class="i-name">Xóa bỏ Kiêu ngạo Trí thức</div>
+        <p>"Intellectual arrogance" là thói quen của những người giỏi một lĩnh vực nhưng khinh thường kiến thức ở lĩnh vực khác — ví dụ: kỹ sư tự hào về việc không biết gì về tâm lý con người; nhà nghiên cứu coi thường người làm marketing. Drucker gọi đây là "disabling ignorance" — vô tri làm tê liệt năng lực. Phải khắc phục.</p>
+      </div>
+      <div class="impl-card">
+        <div class="i-num">④</div>
+        <div class="i-name">Sửa Thói quen Xấu cản trở Hiệu quả</div>
+        <p>Feedback sẽ chỉ ra những thói quen xấu ảnh hưởng đến kết quả — không phải thiếu năng lực. Ví dụ điển hình: thiếu phép lịch sự trong giao tiếp. Drucker: <em>"Manners are the lubricating oil of an organization. It is a law of nature that two moving bodies in contact with each other create friction. This is as true for human beings as it is for inanimate objects. Manners — simple things like saying 'please' and 'thank you' — enable two people to work together whether they like each other or not."</em></p>
+      </div>
+    </div>
+
+    <div class="quote-box">
+      "It takes far more energy and work to improve from incompetence to mediocrity than it takes to improve from first-rate performance to excellence. Energy, resources, and time should go instead to making a competent person into a star performer."
+      <cite>— Drucker</cite>
+    </div>
+
+    <div class="info-box">
+      <div class="ib-title">Điều Feedback Analysis KHÔNG làm được</div>
+      <p>Feedback Analysis chỉ hoạt động nếu bạn ghi kỳ vọng TRƯỚC khi biết kết quả. Nếu bạn ghi sau, bạn sẽ vô thức điều chỉnh kỳ vọng cho khớp với kết quả — hiện tượng tâm lý gọi là "hindsight bias." Đây là lý do tại sao việc ghi ngay tại thời điểm ra quyết định là quan trọng tuyệt đối.</p>
+    </div>
+
+    <!-- B: How do I perform -->
+    <h3>B. Câu hỏi 2: How Do I Perform?</h3>
+
+    <p>Cách một người làm việc hiệu quả là <strong>tính cách (personality)</strong> — hình thành từ trước khi người đó đi làm, không thể thay đổi hoàn toàn. Câu hỏi không phải là "Tôi có muốn làm việc khác đi không?" mà là "Cách tôi làm việc tốt nhất là gì?"</p>
+
+    <div class="quote-box">
+      "Do not try to change yourself — you are unlikely to succeed. But work hard to improve the way you perform. And try not to take on work you cannot perform or will only perform poorly."
+      <cite>— Drucker</cite>
+    </div>
+
+    <h4>Am I a Reader or a Listener? — Phân tích Toàn diện Qua 5 Nhân vật Lịch sử</h4>
+    <div class="presidents-grid">
+      <div class="pres-card reader">
+        <h4>Dwight D. Eisenhower — Reader</h4>
+        <p><strong>Khi đúng môi trường (WWII):</strong> Khi là Tổng tư lệnh Đồng minh ở châu Âu, Eisenhower là "the darling of the press corps." Press conferences của ông nổi tiếng vì phong cách xuất sắc — bí mật là các trợ lý đảm bảo mọi câu hỏi được gửi bằng văn bản ít nhất 30 phút trước. Ông đọc, suy nghĩ, chuẩn bị — và trả lời hoàn hảo.</p>
+        <p><strong>Khi sai môi trường (Tổng thống):</strong> Ông cố bắt chước Roosevelt và Truman (cả hai đều là listeners). Cùng những nhà báo từng ngưỡng mộ ông nay khinh thường: "he never addressed the questions and always rambled on about something else." Eisenhower không nghe thấy những gì được hỏi vì ông chỉ xử lý tốt văn bản.</p>
+      </div>
+      <div class="pres-card reader">
+        <h4>John F. Kennedy — Reader</h4>
+        <p><strong>Chiến lược phù hợp với bản thân:</strong> Kennedy biết mình là Reader. Ông tập hợp xung quanh mình một nhóm người viết lách tài năng. Quan trọng hơn: ông yêu cầu tất cả nhân viên phải gửi báo cáo và đề xuất dưới dạng văn bản trước khi bất kỳ cuộc họp nào diễn ra. Nhờ đó ông có thể đọc, suy nghĩ, và đến cuộc họp với câu hỏi và ý kiến sắc sảo.</p>
+      </div>
+      <div class="pres-card listener">
+        <h4>Franklin D. Roosevelt &amp; Harry Truman — Listeners</h4>
+        <p><strong>Roosevelt:</strong> Nổi tiếng với "fireside chats" trên radio — học và xử lý thông tin tốt nhất qua hình thức nói và nghe. Press conferences tự do, không cần câu hỏi trước — ông thoải mái và xuất sắc.</p>
+        <p><strong>Truman:</strong> Tương tự Roosevelt — thích free-for-all press conferences, làm việc tốt nhất qua trao đổi trực tiếp, thuyết trình và thảo luận nhóm. Là Thượng nghị sĩ xuất sắc vì senatorial work đòi hỏi listening.</p>
+      </div>
+      <div class="pres-card mistake">
+        <h4>Lyndon B. Johnson — Listener Sai Môi trường</h4>
+        <p><strong>Thành công khi đúng môi trường:</strong> Johnson là Thượng nghị sĩ và sau đó là Senate Majority Leader xuất sắc — vì công việc Thượng viện đòi hỏi listening, thảo luận, đàm phán trực tiếp. Ông nổi tiếng là "manipulator" tài ba trong phòng họp.</p>
+        <p><strong>Thất bại khi sai môi trường (Tổng thống):</strong> Khi kế vị Kennedy, Johnson giữ lại staff của Kennedy — những người viết memo xuất sắc vì Kennedy là Reader. Johnson nhận đống memo nhưng không xử lý được chúng — ông là Listener, không phải Reader. "He did not seem to understand what they wrote." Đây là một trong những nguyên nhân dẫn đến thảm họa truyền thông của chính quyền Johnson.</p>
+      </div>
+    </div>
+
+    <div class="rl-rule">
+      Quy tắc Drucker: "Few listeners can be made into competent readers — and vice versa." | Nếu boss là Reader: gửi văn bản TRƯỚC cuộc họp. Nếu boss là Listener: thuyết trình trực tiếp TRƯỚC, rồi confirm bằng memo.
+    </div>
+
+    <h4>How Do I Learn? — 6 Phong cách Học tập</h4>
+    <p>Trường học giả định chỉ có một cách học — đọc và ghi nhớ — và áp dụng cho tất cả. Với học sinh học theo cách khác, đây là "sheer hell." Thực tế có ít nhất 6 phong cách học khác nhau:</p>
+
+    <div class="learn-grid">
+      <div class="learn-card">
+        <div class="l-icon">✍️</div>
+        <div class="l-name">By Writing (Viết để học)</div>
+        <div class="l-example"><strong>Churchill:</strong> học bằng cách viết — dù ông thường ít đọc lại những gì đã viết. Quá trình viết là quá trình tư duy và ghi nhớ của ông. Trở thành một trong những nhà văn và nhà hùng biện vĩ đại nhất thế kỷ 20 — mặc dù (hay chính vì) học kém ở trường.</div>
+      </div>
+      <div class="learn-card">
+        <div class="l-icon">📝</div>
+        <div class="l-name">By Taking Notes (Ghi chép để học)</div>
+        <div class="l-example"><strong>Beethoven:</strong> mang theo hàng chục cuốn sổ tay và ghi chép đầy đủ — nhưng khi được hỏi, ông nói ông không bao giờ thực sự nhìn lại chúng. <em>"If I don't write it down immediately, I forget it right away. If I put it into a sketchbook, I never forget it and I never have to look it up again."</em> Việc ghi là việc học — không phải việc đọc lại.</div>
+      </div>
+      <div class="learn-card">
+        <div class="l-icon">🛠️</div>
+        <div class="l-name">By Doing (Học qua thực hành)</div>
+        <div class="l-example">Học bằng cách làm thực tế, không phải qua lý thuyết. Các nghề thủ công truyền thống dạy theo phong cách này — apprenticeship. Nhiều kỹ sư, bác sĩ phẫu thuật, đầu bếp học tốt nhất khi được làm chứ không chỉ quan sát hay đọc.</div>
+      </div>
+      <div class="learn-card">
+        <div class="l-icon">🎤</div>
+        <div class="l-name">By Talking (Nói để hiểu)</div>
+        <div class="l-example"><strong>CEO huyền thoại:</strong> Ông họp staff mỗi tuần 2-3 giờ — không hỏi ý kiến mà nói liên tục. Ông cần nghe chính mình để hiểu những gì mình đang suy nghĩ. Sau đó ông ra quyết định xuất sắc. "He did not need an audience to talk to — he needed a sounding board to bounce ideas off." Những người học bằng cách nói cần nghe chính mình suy nghĩ.</div>
+      </div>
+      <div class="learn-card">
+        <div class="l-icon">👂</div>
+        <div class="l-name">By Listening (Nghe để học)</div>
+        <div class="l-example">Luật sư tòa án học pháp lý qua tranh luận; bác sĩ chẩn đoán học qua hỏi bệnh nhân. Một số nhà lãnh đạo tiếp thu thông tin tốt nhất khi được thuyết trình và có thể đặt câu hỏi. Đây là cách học của nhiều nhà quản lý "field-based" — họ cần tiếp xúc trực tiếp, không phải đọc báo cáo.</div>
+      </div>
+      <div class="learn-card">
+        <div class="l-icon">🏫</div>
+        <div class="l-name">By Teaching (Dạy để học)</div>
+        <div class="l-example">Nhiều người học sâu nhất khi phải giải thích cho người khác — "the best way to learn something is to teach it." Giáo sư, mentor, trainer thường hiểu chủ đề sâu hơn chuyên gia không dạy. Nếu bạn học tốt nhất khi dạy: tìm cơ hội trình bày, mentor, hoặc viết để giải thích — ngay cả nếu không có "học trò."</div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="ib-title">Tại sao biết cách học của mình quan trọng</div>
+      <p>Hầu hết người chưa bao giờ hỏi: "Tôi học theo cách nào?" Họ cứ dùng phương pháp mặc định của trường học (đọc + ghi nhớ) dù đó không phải cách học hiệu quả nhất với họ. Ví dụ: một luật sư học bằng writing cố gắng học luật chỉ bằng cách đọc sách — kém hiệu quả. Nếu cô viết ra các nguyên tắc pháp lý bằng lời của mình, cô học nhanh gấp đôi.</p>
+    </div>
+
+    <h4>Các Chiều khác của "How Do I Perform?"</h4>
+    <div class="perform-table">
+      <table class="perform-table">
+        <tr>
+          <th>Câu hỏi</th>
+          <th>Ý nghĩa và Ví dụ</th>
+          <th>Hàm ý thực tế</th>
+        </tr>
+        <tr>
+          <td><strong>Team member hay Loner?</strong></td>
+          <td>General Patton được Thống tướng Marshall đánh giá là "subordinate xuất sắc nhất trong lịch sử quân đội Mỹ" — nhưng sẽ là commander tệ nhất. Patton làm tốt nhất khi có người chỉ huy phía trên — đây là "How do I perform?", không phải thiếu năng lực.</td>
+          <td>Nếu bạn là team member xuất sắc: đừng để tham vọng thăng chức đẩy bạn vào vị trí independent commander mà bạn sẽ thất bại.</td>
+        </tr>
+        <tr>
+          <td><strong>Decision Maker hay Adviser?</strong></td>
+          <td>Nhiều người xuất sắc ở vị trí số 2 nhưng thất bại khi thăng lên số 1. Vị trí số 2 (chief of staff, adviser) đòi hỏi cung cấp phân tích và lựa chọn. Vị trí số 1 đòi hỏi ra quyết định cuối cùng và chịu trách nhiệm. Đây là hai kỹ năng khác nhau.</td>
+          <td>Adviser cần người khác để ra quyết định cuối. Decision maker cần adviser để tư duy toàn diện. Biết bạn là ai — và tìm vị trí phù hợp.</td>
+        </tr>
+        <tr>
+          <td><strong>Stress hay Predictability?</strong></td>
+          <td>Một số người (emergency room doctors, field commanders) làm việc xuất sắc nhất dưới áp lực cao và thay đổi liên tục. Số khác (analysts, researchers, planners) cần môi trường có cấu trúc, dự đoán được. Cả hai đều là năng lực — không có đúng hay sai.</td>
+          <td>Đừng cố tạo stress cho bản thân nếu bạn làm tốt trong ổn định; đừng cố vào môi trường "boring" nếu bạn cần thách thức để hoạt động tốt.</td>
+        </tr>
+        <tr>
+          <td><strong>Big org hay Small org?</strong></td>
+          <td>Drucker quan sát nhiều thập kỷ: "I have seen this again and again." Người thành công trong tổ chức lớn (General Motors, IBM) thường thất bại trong startup và ngược lại. Không phải vì năng lực — mà vì cấu trúc, quan liêu, tốc độ ra quyết định, và cách giao tiếp khác hoàn toàn.</td>
+          <td>Trước khi chuyển từ tập đoàn lớn sang startup (hay ngược lại): thử nghiệm qua dự án bên ngoài, consulting, hoặc làm part-time trước khi cam kết toàn thời gian.</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- C: What are my values -->
+    <h3>C. Câu hỏi 3: What Are My Values?</h3>
+
+    <div class="mirror-box">
+      <div class="mt-label">The Mirror Test — Bài kiểm tra Gương</div>
+      <div class="mt-q">"What kind of person do I want to see in the mirror in the morning?"</div>
+      <div class="mt-story"><strong>Nguồn gốc:</strong> Năm 1906, Đại sứ Đức danh giá nhất tại London đột ngột từ chức một đêm trước bữa tiệc ngoại giao lớn — khi biết bữa tiệc đó sẽ vinh danh vua Edward VII theo cách ông cho là xấu xa về mặt đạo đức. Từ chức đồng nghĩa với kết thúc sự nghiệp. Khi được hỏi tại sao, ông nói: <em>"I refuse to see a pimp in the mirror in the morning when I shave."</em> Đây là định nghĩa của Drucker về values: không phải gì cao xa — mà là loại người bạn muốn trở thành khi nhìn vào gương mỗi sáng.</div>
+    </div>
+
+    <p>Drucker phân biệt rõ ràng hai khái niệm thường bị nhầm lẫn:</p>
+    <ul>
+      <li><strong>Ethics (Đạo đức)</strong>: Luật chung áp dụng cho tất cả mọi người. Test: "Golden Rule" — bạn có muốn người khác làm với bạn điều bạn đang làm với họ không? Nếu không, đừng làm. Ethics không thay đổi tùy người.</li>
+      <li><strong>Values (Giá trị)</strong>: Hệ thống ưu tiên cá nhân — điều gì quan trọng, cách tổ chức nên hoạt động, đâu là đánh đổi có thể chấp nhận. Values khác nhau giữa người với người — và đó là bình thường.</li>
+    </ul>
+
+    <h4>Hai Ví dụ Xung đột Giá trị Cá nhân của Drucker</h4>
+    <div class="values-split">
+      <div class="val-card">
+        <h4>Trường hợp 1: HR Executive bị Mua lại</h4>
+        <p>Một HR Executive có năng lực tin rằng công ty nên <em>ưu tiên thăng chức người trong trước</em> khi có vị trí trống — trừ khi không có ai phù hợp. Công ty mới mua lại tin rằng cần "bringing in fresh blood" từ bên ngoài để tránh stagnation.</p>
+        <p>Cả hai quan điểm đều có lý — đây là xung đột values, không phải đúng/sai. Nhưng sau nhiều năm bất mãn và hiệu suất kém, cô từ chức với tổn thất tài chính lớn.</p>
+        <p><em>"Her values and the values of the organization simply were not compatible. The situation called for people with different values."</em></p>
+      </div>
+      <div class="val-card">
+        <h4>Trường hợp 2: Drucker cá nhân</h4>
+        <p>Thập niên 1930, Drucker là ngân hàng đầu tư thành công tại London. Công việc hoàn toàn phù hợp với điểm mạnh và cách làm việc. Nhưng ông không thấy mình đóng góp có ý nghĩa.</p>
+        <p><em>"People, I realized, were what I valued, and I saw no point in being the richest man in the cemetery."</em></p>
+        <p>Giữa Đại Khủng hoảng, không tiền, không triển vọng khác — ông vẫn từ chức. Quyết định đó dẫn đến sự nghiệp lẫy lừng như nhà tư tưởng quản trị vĩ đại nhất thế kỷ 20.</p>
+      </div>
+    </div>
+
+    <p><strong>Nguyên tắc quan trọng:</strong> Điểm mạnh và cách làm việc hiếm khi xung đột với nhau — chúng thường bổ sung. Nhưng values có thể xung đột với điểm mạnh. Khi đó: <em>"What one does well — even very well and successfully — may not fit with one's value system. In that case, the work may not appear to be worth devoting one's life to."</em></p>
+
+    <p><strong>Ví dụ về xung đột values trong tổ chức:</strong> Một số financial analysts tin rằng doanh nghiệp có thể tối ưu cả tăng trưởng dài hạn và kết quả quý này cùng lúc. "Successful businesspeople know better" — đây là xung đột values (short-term vs. long-term), không phải xung đột kinh tế. Người tin vào tối ưu ngắn hạn và người tin vào đầu tư dài hạn không thể làm việc tốt trong cùng một tổ chức dù cả hai đều giỏi.</p>
+
+    <!-- D: Where do I belong -->
+    <h3>D. Câu hỏi 4: Where Do I Belong?</h3>
+
+    <p>Một số ít người biết sớm nơi họ thuộc về: nhạc sĩ thiên tài, nhà toán học, đầu bếp thường biết từ 4-5 tuổi. Bác sĩ thường quyết định trong tuổi teen. Nhưng hầu hết — đặc biệt những người có năng khiếu đa dạng — không biết thực sự cho đến sau giữa tuổi 20.</p>
+
+    <div class="quote-box">
+      "Knowing where one belongs can transform an ordinary person — hardworking and competent but otherwise mediocre — into an outstanding performer."
+      <cite>— Drucker</cite>
+    </div>
+
+    <p>Khi đã có câu trả lời rõ ràng cho câu 1 (Điểm mạnh), câu 2 (Cách làm việc) và câu 3 (Giá trị) → bạn có thể quyết định <strong>Where do I belong</strong>. Hay quan trọng hơn: <strong>Where do I NOT belong?</strong></p>
+
+    <h4>Biết nơi KHÔNG phù hợp — Chiến lược âm tính</h4>
+    <ul>
+      <li>Nếu bạn làm tốt nhất trong tổ chức lớn: biết rằng bạn không thuộc về startup 10 người</li>
+      <li>Nếu bạn là Adviser xuất sắc: biết rằng số 1 không phải vị trí của bạn</li>
+      <li>Nếu bạn cần dự đoán được: biết rằng crisis management và emergency work không phải cho bạn</li>
+      <li>Nếu values của bạn là dài hạn: biết rằng hedge fund đòi hỏi kết quả quý không phải môi trường bạn sẽ thành công</li>
+    </ul>
+
+    <p>Khi bạn hiểu rõ bản thân, bạn có thể tự tin nói với người giao việc: <em>"Yes, I will do that. But this is the way I should be doing it. This is the way it should be structured. This is the way the relationships should be. These are the kind of results you should expect from me, and in this time frame, because this is who I am."</em></p>
+
+    <div class="info-box">
+      <div class="ib-title">Bài học từ lịch sử sự nghiệp</div>
+      <p><strong>Sự nghiệp thành công không được lên kế hoạch.</strong> Chúng phát triển khi người ta được chuẩn bị cho các cơ hội vì họ biết điểm mạnh, cách làm việc và giá trị của mình. Biết nơi mình thuộc về cho phép người bình thường — chăm chỉ và có năng lực nhưng không nổi bật — trở thành star performer trong môi trường phù hợp.</p>
+    </div>
+
+    <!-- E: What should I contribute -->
+    <h3>E. Câu hỏi 5: What Should I Contribute?</h3>
+
+    <p>Trong lịch sử, đa số người không phải đặt câu hỏi này — họ được <em>bảo phải đóng góp gì</em>. Nông dân, thợ thủ công: nhiệm vụ do công việc định sẵn. Ngay cả trong thập niên 1950-60, "organization men" nhìn vào HR để lên kế hoạch sự nghiệp và chỉ cần làm đúng những gì được yêu cầu.</p>
+
+    <p>Cuối 1960s: làn sóng phản văn hóa "do your own thing" — đi quá cực đoan kia. Hầu hết người theo xu hướng này không đạt được cả ba: contribution + self-fulfillment + success.</p>
+
+    <h4>3 Câu hỏi để Xác định Contribution</h4>
+    <div class="contrib-grid">
+      <div class="cq-card">
+        <div class="cq-num">①</div>
+        <div class="cq-title">What does the situation require?</div>
+        <p>Hoàn cảnh hiện tại thực sự cần gì? Vấn đề cấp bách nhất của tổ chức/team/khách hàng là gì? Cơ hội nào đang bị bỏ lỡ? Đây là điểm xuất phát — không phải những gì bạn muốn làm mà là những gì thực sự cần thiết.</p>
+      </div>
+      <div class="cq-card">
+        <div class="cq-num">②</div>
+        <div class="cq-title">Given my strengths, performance &amp; values — where can I make the greatest contribution?</div>
+        <p>Tích hợp kết quả của câu 1, 2, 3. Điểm mạnh của tôi phù hợp với nhu cầu nào? Cách làm việc của tôi cho phép tôi đóng góp tốt nhất ở đâu? Giá trị của tôi phù hợp với loại công việc nào?</p>
+      </div>
+      <div class="cq-card">
+        <div class="cq-num">③</div>
+        <div class="cq-title">What results have to be achieved to make a difference?</div>
+        <p>Kết quả nào đủ lớn, đủ có ý nghĩa, và có thể thực hiện được? Phải: Visible (quan sát được), Measurable (đo lường được), Achievable (trong tầm tay), Meaningful (tạo ra sự khác biệt thực sự), và trong khung thời gian 18 tháng.</p>
+      </div>
+    </div>
+
+    <h4>Tiêu chí 18 Tháng — Tại sao không phải 6 tháng hay 5 năm?</h4>
+    <div class="contrib-criteria">
+      <div class="cc-card">
+        <div class="cc-icon">📅</div>
+        <div class="cc-name">18 tháng</div>
+        <div class="cc-desc">Đủ dài để kết quả có ý nghĩa xuất hiện; đủ ngắn để duy trì focus và không mất định hướng</div>
+      </div>
+      <div class="cc-card">
+        <div class="cc-icon">👁️</div>
+        <div class="cc-name">Visible</div>
+        <div class="cc-desc">Kết quả phải quan sát được bởi người khác — không chỉ bạn biết bạn đã cải thiện điều gì</div>
+      </div>
+      <div class="cc-card">
+        <div class="cc-icon">📏</div>
+        <div class="cc-name">Measurable</div>
+        <div class="cc-desc">Phải có metric cụ thể — không phải "tốt hơn" mà là "60 giây," "20% cải thiện," hay "3 sản phẩm mới"</div>
+      </div>
+      <div class="cc-card">
+        <div class="cc-icon">🎯</div>
+        <div class="cc-name">Meaningful</div>
+        <div class="cc-desc">Phải tạo ra sự khác biệt thực sự — với team, tổ chức, khách hàng — không chỉ làm hài lòng sếp</div>
+      </div>
+    </div>
+
+    <!-- F: Responsibility for Relationships -->
+    <h3>F. Trách nhiệm với Các Mối Quan hệ</h3>
+
+    <p>Managing oneself không phải là hoạt động cô lập — nó bao gồm cả việc hiểu và làm việc hiệu quả với những người xung quanh.</p>
+
+    <div class="rel-grid">
+      <div class="rel-card">
+        <h4>Phần 1: Chấp nhận rằng người khác cũng là Con người</h4>
+        <p>Mỗi đồng nghiệp có điểm mạnh riêng, cách làm việc riêng, và giá trị riêng — không giống bạn. Để hiệu quả, bạn phải <strong>biết điểm mạnh, cách làm việc và giá trị của đồng nghiệp</strong> để tận dụng đúng và tránh xung đột không cần thiết.</p>
+        <p><strong>Ví dụ:</strong> VP Marketing mới từ Sales biết tất cả về bán hàng nhưng không biết về pricing, advertising, packaging. Nhân viên bộ phận đó phải chủ động giáo dục cô — và cô phải chủ động giải thích kỳ vọng của mình về marketing. Đây là trách nhiệm hai chiều.</p>
+      </div>
+      <div class="rel-card">
+        <h4>Phần 2: Trách nhiệm Giao tiếp Chủ động</h4>
+        <p>Nguyên nhân phổ biến nhất của "personality conflicts" trong tổ chức là <strong>người ta không biết đồng nghiệp đang làm gì, đóng góp gì, và kỳ vọng gì</strong>. Và lý do họ không biết là vì họ chưa hỏi — và chưa chia sẻ về bản thân.</p>
+        <p>Khi bạn chủ động nói: <em>"This is what I am good at. This is how I work. These are my values. This is the contribution I plan to concentrate on and the results I should be expected to deliver."</em> — Phản hồi luôn là: <em>"This is most helpful. But why didn't you tell me earlier?"</em></p>
+      </div>
+    </div>
+
+    <h4>Managing the Boss (Quản lý Cấp trên)</h4>
+    <p>Drucker không dùng cụm từ "managing the boss" nhưng ý tưởng này ẩn trong bài. Khi biết boss của bạn là Reader hay Listener, bạn có thể thích nghi cách giao tiếp:</p>
+    <ul>
+      <li><strong>Boss là Reader:</strong> Gửi memo/báo cáo trước cuộc họp; không bắt đầu cuộc họp bằng thông tin mới vì boss chưa có thời gian xử lý</li>
+      <li><strong>Boss là Listener:</strong> Thuyết trình trực tiếp trước; sau đó confirm bằng văn bản ngắn — không gửi memo dài trước vì boss sẽ không đọc</li>
+      <li><strong>Boss là Decision Maker:</strong> Đưa rõ recommendation và tóm tắt tradeoffs — không trình bày phân tích dài mà không có kết luận</li>
+      <li><strong>Boss là Adviser:</strong> Đưa nhiều options và muốn thảo luận — không đến với một đáp án đã đóng gói sẵn</li>
+    </ul>
+
+    <div class="quote-box">
+      "The first secret of effectiveness is to understand the people you work with and depend on so that you can make use of their strengths, their ways of working, and their values."
+      <cite>— Drucker</cite>
+    </div>
+
+    <!-- G: Second Half of Life -->
+    <h3>G. Nửa Sau Cuộc Đời (The Second Half of Your Life)</h3>
+
+    <p>Khi công việc phần lớn là lao động thể chất, không ai lo về "nửa sau cuộc đời" — bạn chỉ tiếp tục làm điều mình đã làm, có thể chậm hơn đôi chút. Ngày nay, knowledge workers không "xong" sau 40 năm làm việc — <strong>họ chỉ đơn giản là buồn chán</strong>.</p>
+
+    <p>Ở tuổi 45, hầu hết executive và knowledge workers đã đạt đỉnh sự nghiệp. Sau 20 năm làm một loại công việc, họ rất giỏi nhưng không còn học hỏi, không còn đóng góp có ý nghĩa mới, không còn tìm thấy thách thức thực sự. Nhưng họ vẫn còn 20-25 năm làm việc phía trước — một thách thức thế hệ hoàn toàn mới.</p>
+
+    <div class="sh-grid">
+      <div class="sh-card">
+        <div class="sh-num">1</div>
+        <h4>Bắt đầu Sự nghiệp Mới hoàn toàn</h4>
+        <p>Chuyển sang loại tổ chức khác, hoặc chuyển sang lĩnh vực hoàn toàn khác. Ví dụ: controller của tập đoàn lớn trở thành controller của bệnh viện cỡ vừa — cùng kỹ năng tài chính nhưng môi trường mới, thách thức mới, ý nghĩa mới. Hoặc: luật sư trở thành giáo viên; kỹ sư trở thành social entrepreneur.</p>
+      </div>
+      <div class="sh-card">
+        <div class="sh-num">2</div>
+        <h4>Phát triển Sự nghiệp Song song</h4>
+        <p>Tiếp tục công việc chính (thường part-time hoặc consulting) đồng thời xây dựng công việc thứ hai — thường trong tổ chức phi lợi nhuận. Quản trị nhà thờ, chủ tịch Girl Scouts địa phương, hội đồng trường học, trung tâm phụ nữ, bệnh viện cộng đồng. Đây là cách phổ biến nhất vì ít rủi ro nhất: thu nhập vẫn có, nhưng có thêm nơi để đóng góp và phát triển.</p>
+      </div>
+      <div class="sh-card">
+        <div class="sh-num">3</div>
+        <h4>Social Entrepreneurship</h4>
+        <p>Những người rất thành công trong sự nghiệp đầu thường trở thành social entrepreneurs: xây dựng trường học kiểu mẫu, bệnh viện cộng đồng, tổ chức phi lợi nhuận sáng tạo — không vì tiền mà vì tạo ra tác động xã hội có ý nghĩa. Đây là lựa chọn cho những người có cả năng lực lẫn nguồn lực để làm điều gì đó lớn hơn từ đầu.</p>
+      </div>
+    </div>
+
+    <h4>Lý do quan trọng thứ hai: Khả năng phục hồi (Resilience)</h4>
+    <p>Không ai sống 50 năm sự nghiệp mà không trải qua ít nhất một thất bại nghiêm trọng — sa thải bất ngờ, tổ chức sụp đổ, dự án thất bại, sức khỏe suy giảm, khủng hoảng gia đình. Người có sở thích và đóng góp thứ hai ngoài công việc chính có "nơi nương náu" — họ vẫn là người quan trọng, vẫn có cộng đồng, vẫn đóng góp dù thất bại ở một nơi.</p>
+
+    <div class="info-box">
+      <div class="ib-title">Khi nào nên bắt đầu sự nghiệp thứ hai?</div>
+      <p>Drucker khuyên: <strong>sớm — trước khi bạn bắt buộc phải làm vậy.</strong> Người bắt đầu parallel career ở tuổi 35-40 (khi sự nghiệp chính đang ở đỉnh cao) sẽ dễ dàng hơn nhiều người đợi đến 50-55 khi đã bị bắt buộc phải chuyển đổi. "Manage the second half of your life before you get there."</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION III — MODELS & FORMULAS
+══════════════════════════════════════════════ -->
+<div id="models">
+  <div class="section-header">
+    <div class="section-num">III</div>
+    <div>
+      <div class="section-header h2" style="color:white; font-size:1.35rem; font-weight:700;">Mô hình &amp; Công thức (Models &amp; Formulas)</div>
+      <div class="sec-sub">Bảng tổng hợp · Khung phân tích · Công cụ áp dụng</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>Khung Managing Oneself — 7 Chiều (5 Câu hỏi + 2 Bổ sung)</h3>
+    <table class="summary-table">
+      <tr>
+        <th>Chiều</th>
+        <th>Câu hỏi / Vấn đề</th>
+        <th>Công cụ / Phương pháp</th>
+        <th>Kết quả mong đợi</th>
+      </tr>
+      <tr>
+        <td><strong>1. Strengths</strong></td>
+        <td>What are my strengths?</td>
+        <td>Feedback Analysis: ghi kỳ vọng → 9-12 tháng → so sánh → pattern → 4 implications</td>
+        <td>Biết điểm mạnh thực sự, điểm yếu, thói xấu; áp dụng 4 hàm ý</td>
+      </tr>
+      <tr>
+        <td><strong>2. Performance</strong></td>
+        <td>How do I perform?</td>
+        <td>Reader/Listener · 6 learning styles · Team/Alone · Decision/Advisor · Stress/Predict · Big/Small org</td>
+        <td>Biết điều kiện làm việc tối ưu; tìm đúng môi trường</td>
+      </tr>
+      <tr>
+        <td><strong>3. Values</strong></td>
+        <td>What are my values?</td>
+        <td>Mirror test: "What kind of person do I want to see in the mirror?" + đánh giá tương thích với org</td>
+        <td>Biết values cốt lõi; tránh xung đột values không thể hòa giải</td>
+      </tr>
+      <tr>
+        <td><strong>4. Belonging</strong></td>
+        <td>Where do I belong?</td>
+        <td>Tích hợp Q1+Q2+Q3; biết nơi KHÔNG phù hợp; nói "có/không" tự tin</td>
+        <td>Tìm "perfect fit" — từ mediocre → star performer</td>
+      </tr>
+      <tr>
+        <td><strong>5. Contribution</strong></td>
+        <td>What should I contribute?</td>
+        <td>3 câu hỏi: Situation? + Strengths/values? + Results trong 18 tháng (visible + meaningful + measurable)</td>
+        <td>Kế hoạch contribution cụ thể, đo lường được, có tác động thực sự</td>
+      </tr>
+      <tr>
+        <td><strong>6. Relationships</strong></td>
+        <td>How to work effectively with others?</td>
+        <td>Tìm hiểu đồng nghiệp (strengths/style/values); chủ động chia sẻ về bản thân; quản lý boss theo phong cách của họ</td>
+        <td>Hiệu quả trong công việc; giảm "personality conflicts"</td>
+      </tr>
+      <tr>
+        <td><strong>7. Second Half</strong></td>
+        <td>How to stay engaged for 50-year career?</td>
+        <td>3 options: sự nghiệp mới + parallel career + social entrepreneurship; bắt đầu sớm trước khi cần</td>
+        <td>Duy trì meaning, learning, contribution trong 20-25 năm cuối career</td>
+      </tr>
+    </table>
+
+    <h3>Reader vs. Listener — Ma trận Hàm ý Quản lý</h3>
+    <table class="summary-table">
+      <tr>
+        <th>Tình huống</th>
+        <th>Boss là Reader</th>
+        <th>Boss là Listener</th>
+      </tr>
+      <tr>
+        <td>Báo cáo / đề xuất</td>
+        <td>Gửi memo chi tiết TRƯỚC cuộc họp; họp để thảo luận, không để trình bày</td>
+        <td>Thuyết trình trực tiếp TRƯỚC; sau đó gửi bản tóm tắt ngắn để confirm</td>
+      </tr>
+      <tr>
+        <td>Thông tin khẩn</td>
+        <td>Email/message ngắn → đặt lịch họp để thảo luận sau khi boss đã đọc</td>
+        <td>Gọi điện hoặc gặp trực tiếp ngay; đừng chờ boss đọc email</td>
+      </tr>
+      <tr>
+        <td>Ý tưởng mới</td>
+        <td>Viết ra đầy đủ với context, data, và implications → gửi để boss phân tích</td>
+        <td>Pitch trực tiếp trong cuộc họp; chuẩn bị để thảo luận ngay tại chỗ</td>
+      </tr>
+      <tr>
+        <td>Hậu quả khi sai</td>
+        <td>Reader cố làm Listener (Eisenhower): không xử lý được thông tin; ra quyết định tệ; mất uy tín</td>
+        <td>Listener cố làm Reader (Johnson): không hiểu memo; nhân viên cảm thấy bị bỏ qua; mất kết nối</td>
+      </tr>
+    </table>
+
+    <h3>Feedback Analysis — Công thức</h3>
+    <div class="key-quote">
+      Kỳ vọng BAN ĐẦU (ghi ngay khi quyết định) → [9-12 tháng] → Kết quả THỰC TẾ → So sánh → Pattern → 4 Hàm ý<br/>
+      <cite style="color:rgba(255,255,255,0.6); font-size:0.82rem;">Áp dụng liên tục 15-20 năm mới thấy full picture về điểm mạnh thực sự</cite>
+    </div>
+
+    <h3>Contribution Framework — 3×4 Matrix</h3>
+    <table class="summary-table">
+      <tr>
+        <th>Yếu tố</th>
+        <th>Câu hỏi</th>
+        <th>Tiêu chí</th>
+        <th>Ví dụ</th>
+      </tr>
+      <tr>
+        <td><strong>Situation</strong></td>
+        <td>Hoàn cảnh cần gì?</td>
+        <td>Vấn đề cấp bách nhất; cơ hội bị bỏ lỡ</td>
+        <td>ER "big, visible, and sloppy" — cần cải thiện ngay</td>
+      </tr>
+      <tr>
+        <td><strong>Alignment</strong></td>
+        <td>Điểm mạnh + cách làm việc + values hướng đến đâu?</td>
+        <td>Giao điểm giữa what I'm good at và what org needs</td>
+        <td>Administrator giỏi systems + yêu cầu tiêu chuẩn cao</td>
+      </tr>
+      <tr>
+        <td><strong>Results</strong></td>
+        <td>Kết quả cụ thể trong 18 tháng?</td>
+        <td>Visible + Measurable + Achievable + Meaningful</td>
+        <td>Y tá tiếp nhận mọi bệnh nhân trong 60 giây</td>
+      </tr>
+    </table>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION IV — PRACTICAL EXAMPLES
+══════════════════════════════════════════════ -->
+<div id="examples">
+  <div class="section-header">
+    <div class="section-num">IV</div>
+    <div>
+      <div class="section-header h2" style="color:white; font-size:1.35rem; font-weight:700;">Ví dụ Thực tiễn (Practical Examples)</div>
+      <div class="sec-sub">Các nhân vật lịch sử và case studies từ bài của Drucker</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <!-- Case 1: Eisenhower -->
+    <div class="case-block">
+      <div class="case-header">
+        <div class="case-avatar">IKE</div>
+        <div>
+          <div class="case-title">Dwight D. Eisenhower <span class="case-tag">Reader / How do I perform?</span></div>
+          <div class="case-sub">Tổng tư lệnh Đồng minh WWII → Tổng thống Mỹ thứ 34</div>
+        </div>
+      </div>
+      <div class="case-grid">
+        <div class="cg-cell">
+          <h4>Bối cảnh</h4>
+          <p>Eisenhower là Tổng tư lệnh Đồng minh ở châu Âu (Supreme Commander, Allied Forces) trong Thế chiến II — một trong những vị trí quyền lực và áp lực nhất lịch sử. Sau đó là Tổng thống Mỹ hai nhiệm kỳ (1953-1961).</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Điều gì xảy ra</h4>
+          <p><strong>WWII:</strong> Darling of the press corps — press conferences xuất sắc vì các trợ lý đảm bảo câu hỏi được gửi bằng văn bản ít nhất 30 phút trước. Ông đọc, suy nghĩ, chuẩn bị → trả lời hoàn hảo, sắc bén.</p>
+          <p><strong>Tổng thống:</strong> Cố bắt chước Roosevelt và Truman (listeners) với free-for-all press conferences. Kết quả: cùng nhà báo ngưỡng mộ ông nay khinh thường — "he never addressed the questions and always rambled on about something else."</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Nguyên nhân</h4>
+          <p>Eisenhower là Reader — xử lý thông tin tốt nhất qua văn bản. Khi không có câu hỏi viết trước, ông không thực sự "nghe" được câu hỏi bằng lời — não của ông không xử lý theo cách đó. Ông không hề ngu hay thiếu tập trung — đơn giản là cách bộ não ông hoạt động.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Bài học</h4>
+          <p>Không biết mình là Reader khiến Eisenhower mắc sai lầm môi trường nghiêm trọng. Nếu ông biết: ông đã yêu cầu câu hỏi bằng văn bản, hoặc tổ chức press briefing theo cách khác. Tổng thống cũng có thể thay đổi format — điều quan trọng là hiểu bản thân.</p>
+        </div>
+      </div>
+      <div class="case-result">
+        <strong>Kết luận Drucker:</strong> "Eisenhower as president was a failure, not because he was incompetent but because he tried to perform where he could not perform — as a listener rather than as a reader." Sai lầm môi trường, không phải sai lầm năng lực.
+      </div>
+    </div>
+
+    <!-- Case 2: LBJ -->
+    <div class="case-block">
+      <div class="case-header">
+        <div class="case-avatar">LBJ</div>
+        <div>
+          <div class="case-title">Lyndon B. Johnson <span class="case-tag">Listener / How do I perform?</span></div>
+          <div class="case-sub">Senate Majority Leader → Tổng thống Mỹ thứ 36</div>
+        </div>
+      </div>
+      <div class="case-grid">
+        <div class="cg-cell">
+          <h4>Thành công đỉnh cao</h4>
+          <p>Johnson là Senate Majority Leader xuất sắc nhất trong lịch sử Thượng viện Mỹ — bậc thầy đàm phán, thuyết phục, và điều phối các phe phái. Tất cả kỹ năng đó đòi hỏi: nghe tinh tế, đọc phòng, thảo luận trực tiếp — toàn là thế mạnh của Listener.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Thất bại làm Tổng thống</h4>
+          <p>Khi kế vị Kennedy, Johnson giữ lại toàn bộ staff của Kennedy — những người được chọn VÌ Kennedy là Reader. Họ giao tiếp qua memo chi tiết, phân tích sâu bằng văn bản. Johnson nhận đống memo nhưng không xử lý được: "He did not seem to understand what they wrote." Mất kết nối nghiêm trọng với đội ngũ chính sách.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Nguyên nhân</h4>
+          <p>Johnson là Listener thuần túy — không thể chuyển đổi sang Reader dù ông muốn. Nhưng vì không biết điều này (hoặc không thừa nhận), ông không thay đổi format giao tiếp, không tổ chức lại đội ngũ theo cách phù hợp với mình.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Nếu Johnson biết</h4>
+          <p>Nếu ông biết mình là Listener: ông đã tổ chức các buổi thuyết trình trực tiếp với đội ngũ thay vì đọc memo; ông đã thay thế một số Kennedy staff bằng những người giao tiếp kiểu Listener; thành công của ông ở Thượng viện có thể đã được nhân rộng lên Nhà Trắng.</p>
+        </div>
+      </div>
+      <div class="case-result">
+        <strong>Kết luận Drucker:</strong> Sự nghiệp của Johnson minh họa hậu quả khi xây dựng đội ngũ theo phong cách người tiền nhiệm thay vì theo phong cách của mình. Quản lý bản thân phải đi trước quản lý người khác.
+      </div>
+    </div>
+
+    <!-- Case 3: Churchill -->
+    <div class="case-block">
+      <div class="case-header">
+        <div class="case-avatar">WSC</div>
+        <div>
+          <div class="case-title">Winston Churchill <span class="case-tag">Learning by Writing</span></div>
+          <div class="case-sub">Thủ tướng Anh, Nhà văn đoạt Nobel Văn học 1953</div>
+        </div>
+      </div>
+      <p>Churchill học kém ở trường. Những người cùng lớp nhớ trường học như bình thường; Churchill nhớ như "pure torture." Lý do không phải ông kém thông minh — mà vì ông học bằng cách viết, và trường học không cho phép hoặc không khuyến khích điều đó.</p>
+      <div class="case-grid">
+        <div class="cg-cell">
+          <h4>Cách học của Churchill</h4>
+          <p>Ông viết để tư duy, không phải viết để ghi lại tư duy. Quá trình viết chính là quá trình ông hiểu, phân tích và nhớ. Ông không cần đọc lại những gì đã viết — việc viết đã khắc nó vào trí nhớ.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Kết quả khi đúng cách học</h4>
+          <p>Khi trưởng thành và được tự do viết: Churchill trở thành một trong những nhà văn, nhà hùng biện và nhà lãnh đạo vĩ đại nhất thế kỷ 20. Đoạt Nobel Văn học 1953. Các bài diễn văn của ông ("We shall fight on the beaches") được coi là vũ khí tinh thần quan trọng trong WWII.</p>
+        </div>
+      </div>
+      <div class="case-result">
+        <strong>Bài học:</strong> Trường học không phải thước đo duy nhất của trí tuệ hay năng lực. Nếu Churchill biết sớm mình học bằng cách viết và có môi trường cho phép điều đó, ông đã không phải trải qua "pure torture" trong nhiều năm tuổi trẻ.
+      </div>
+    </div>
+
+    <!-- Case 4: Drucker personal -->
+    <div class="case-block">
+      <div class="case-header">
+        <div class="case-avatar">PFD</div>
+        <div>
+          <div class="case-title">Peter Drucker — Cá nhân <span class="case-tag">Values vs. Strengths</span></div>
+          <div class="case-sub">Ngân hàng đầu tư London → Nhà tư tưởng quản trị vĩ đại nhất thế kỷ 20</div>
+        </div>
+      </div>
+      <div class="case-grid">
+        <div class="cg-cell">
+          <h4>Tình huống</h4>
+          <p>Thập niên 1930, Đại Khủng hoảng. Drucker là ngân hàng đầu tư thành công tại London — công việc hoàn toàn phù hợp với điểm mạnh phân tích và cách làm việc của ông. Về mặt năng lực và kỹ năng: hoàn hảo.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Vấn đề Values</h4>
+          <p>Drucker nhận ra ông không cảm thấy mình đóng góp điều có ý nghĩa. "People, I realized, were what I valued, and I saw no point in being the richest man in the cemetery." Quản lý tài sản (asset management) không liên quan đến con người theo cách ông muốn.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Quyết định</h4>
+          <p>Giữa Đại Khủng hoảng — không tiền, không triển vọng việc làm khác, không ai bảo lãnh — ông từ chức. Quyết định hoàn toàn không hợp lý từ góc độ kinh tế. Nhưng hoàn toàn đúng từ góc độ values.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Kết quả</h4>
+          <p>Drucker chuyển sang lĩnh vực tư tưởng quản trị — nơi ông có thể làm việc với con người và tổ chức có ý nghĩa. Ông trở thành nhà tư tưởng quản trị có ảnh hưởng nhất thế kỷ 20. Đây là "values alignment" hoàn hảo — không phải strengths alignment.</p>
+        </div>
+      </div>
+      <div class="case-result">
+        <strong>Bài học:</strong> Điểm mạnh và cách làm việc thường bổ sung nhau — nhưng values có thể xung đột với strengths. Khi đó, hãy tin vào values. "What one does well — even very well — may not fit with one's value system. In that case, the work may not appear to be worth devoting one's life to."
+      </div>
+    </div>
+
+    <!-- Case 5: Hospital Administrator -->
+    <div class="case-block">
+      <div class="case-header">
+        <div class="case-avatar">HA</div>
+        <div>
+          <div class="case-title">Hospital Administrator <span class="case-tag">What should I contribute?</span></div>
+          <div class="case-sub">Bệnh viện lớn, danh tiếng, "coasting" 30 năm</div>
+        </div>
+      </div>
+      <p>Administrator mới của một bệnh viện lớn và có tiếng nhưng đã "coasting on its reputation" 30 năm — danh tiếng còn đó nhưng không có cải tiến hay thách thức thực sự nào trong ba thập kỷ. Câu hỏi đặt ra: <em>Tôi nên đóng góp gì?</em></p>
+      <div class="case-grid">
+        <div class="cg-cell">
+          <h4>Situation requires gì?</h4>
+          <p>Bệnh viện cần một cú hích — nhưng cần chọn điểm đúng. Thay đổi mọi thứ cùng lúc sẽ gây hỗn loạn và không tạo được momentum. Cần một chiến thắng visible để kéo theo toàn bộ tổ chức.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Quyết định đóng góp</h4>
+          <p>Administrator chọn phòng cấp cứu (ER) — <em>"big, visible, and sloppy."</em> Mục tiêu cụ thể, đo lường được: <strong>mọi bệnh nhân vào ER phải được y tá có chuyên môn tiếp nhận trong vòng 60 giây.</strong> Không phải "cải thiện ER" mà là một metric cụ thể có thể đo ngay hàng ngày.</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Vì sao 60 giây?</h4>
+          <p>Có thể đo được (chronometer); có thể quan sát được (ai cũng thấy ngay khi vào ER); có ý nghĩa thực sự (giảm lo lắng bệnh nhân, cải thiện triage); achievable (không đòi hỏi đầu tư lớn, chủ yếu là quy trình và văn hóa).</p>
+        </div>
+        <div class="cg-cell">
+          <h4>Kết quả</h4>
+          <p>Trong 12 tháng, ER trở thành mô hình cho toàn nước Mỹ. Đội ngũ ER tự hào về tiêu chuẩn mới. Sau 24 tháng, tinh thần và tiêu chuẩn đó lan ra toàn bệnh viện — một cuộc chuyển đổi thực sự từ một chiến thắng cụ thể ban đầu.</p>
+        </div>
+      </div>
+      <div class="case-result">
+        <strong>Bài học:</strong> Contribution tốt nhất không phải lớn nhất hay tham vọng nhất — mà là cụ thể nhất, đo lường được, và tạo ra momentum. "Hard but achievable" là tiêu chí quan trọng. Hospital ER case là mô hình lý tưởng của "What should I contribute?"
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION V — REVIEW & PITFALLS
+══════════════════════════════════════════════ -->
+<div id="review">
+  <div class="section-header">
+    <div class="section-num">V</div>
+    <div>
+      <div class="section-header h2" style="color:white; font-size:1.35rem; font-weight:700;">Ghi chú Ôn tập &amp; Bẫy Nhận thức</div>
+      <div class="sec-sub">Pitfalls · Câu hỏi ôn tập · Liên kết GK5009</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <h3>Bẫy Nhận thức Phổ biến</h3>
+    <div class="pitfall-grid">
+      <div class="pitfall-card">
+        <div class="pc-title">Bẫy 1: "Tôi biết điểm mạnh của mình"</div>
+        <p>Drucker nói thẳng: hầu hết người sai — kể cả người nghĩ mình biết điểm yếu. Tự đánh giá bị ảnh hưởng bởi ego, blind spots, và thiếu feedback thực tế. Feedback Analysis là công cụ duy nhất dựa trên kết quả thực tế, không phải perception.</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pc-title">Bẫy 2: "Tôi phải cải thiện điểm yếu của mình"</div>
+        <p>"It takes far more energy to improve from incompetence to mediocrity than from first-rate to excellence." Cải thiện điểm yếu là lãng phí nguồn lực — trừ khi điểm yếu đó đang cản trở điểm mạnh hoạt động. Đầu tư vào điểm mạnh để từ giỏi thành xuất sắc.</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pc-title">Bẫy 3: "Tôi có thể thay đổi cách làm việc của mình"</div>
+        <p>Drucker: "You are unlikely to succeed." Personality hình thành trước khi đi làm và không thể thay đổi hoàn toàn. Eisenhower cố bắt chước listeners — thất bại thảm hại. Thay vì thay đổi mình: tìm môi trường phù hợp và thích nghi cách giao tiếp với người khác theo phong cách của họ.</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pc-title">Bẫy 4: Nhầm Ethics với Values</div>
+        <p>Ethics là luật chung — test là "Golden Rule." Values là hệ thống ưu tiên cá nhân — xung đột values không có đúng/sai mà chỉ có phù hợp/không phù hợp. Phân biệt rõ: "Tôi thấy điều này sai về mặt đạo đức" (Ethics) vs. "Tôi không đồng ý với cách tiếp cận này" (Values).</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pc-title">Bẫy 5: Nhầm "Where do I belong" với "Where do I want to be"</div>
+        <p>"Where do I belong" dựa trên kết quả thực tế của Q1+Q2+Q3 — không phải trên tham vọng hay hình ảnh lý tưởng về bản thân. Nhiều người muốn thuộc về vị trí C-suite vì danh tiếng, nhưng không phù hợp với cách họ làm việc hay giá trị họ có. "Knowing where NOT to go" quan trọng không kém.</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pc-title">Bẫy 6: Contribution quá mơ hồ hoặc quá tham vọng</div>
+        <p>"Cải thiện văn hóa công ty" và "đổi mới toàn bộ chiến lược trong 6 tháng" — cả hai đều thất bại vì thiếu measurability hoặc thiếu achievability. Contribution tốt: 1 mục tiêu cụ thể + 1 metric rõ ràng + 18 tháng + visible + meaningful. Hospital ER: "60 giây tiếp nhận mọi bệnh nhân."</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pc-title">Bẫy 7: Ghi kỳ vọng SAU khi biết kết quả</div>
+        <p>Hindsight bias khiến bạn vô thức điều chỉnh kỳ vọng để khớp với kết quả thực tế — phá hủy hoàn toàn giá trị của Feedback Analysis. Phải ghi NGAY khi ra quyết định, TRƯỚC khi biết kết quả. Đây là điều kiện tiên quyết, không thể thỏa hiệp.</p>
+      </div>
+      <div class="pitfall-card">
+        <div class="pc-title">Bẫy 8: Bỏ qua "Responsibility for Relationships"</div>
+        <p>Nhiều người xem "Managing Oneself" chỉ là về bản thân mình. Nhưng Drucker dành hẳn một mục cho relationships — vì knowledge worker không làm việc đơn độc. Không chủ động chia sẻ về bản thân và tìm hiểu đồng nghiệp là một trong những nguyên nhân phổ biến nhất của "personality conflicts" không cần thiết.</p>
+      </div>
+    </div>
+
+    <h3>Câu hỏi Ôn tập</h3>
+    <div class="review-grid">
+      <div class="rq-card">
+        <div class="rq-num">Q1</div>
+        Drucker nói "most people think they know what they are good at — they are usually wrong." Vậy ông đề xuất công cụ gì để khám phá điểm mạnh thực sự? Mô tả quy trình và tại sao nó hoạt động tốt hơn tự đánh giá.
+      </div>
+      <div class="rq-card">
+        <div class="rq-num">Q2</div>
+        Tại sao Eisenhower thất bại với tư cách Tổng thống dù là Tổng tư lệnh xuất sắc trong WWII? Drucker giải thích điều này bằng khái niệm nào? Có thể ngăn ngừa không?
+      </div>
+      <div class="rq-card">
+        <div class="rq-num">Q3</div>
+        Phân biệt Ethics và Values theo Drucker. Tại sao xung đột values không có "right or wrong" nhưng vẫn là vấn đề nghiêm trọng? Cho ví dụ từ bài.
+      </div>
+      <div class="rq-card">
+        <div class="rq-num">Q4</div>
+        Drucker nói "do not try to change yourself — you are unlikely to succeed." Nếu không thể thay đổi personality, bạn nên làm gì thay vào đó? Cho ví dụ cụ thể.
+      </div>
+      <div class="rq-card">
+        <div class="rq-num">Q5</div>
+        Contribution trong 18 tháng phải đáp ứng những tiêu chí nào? Tại sao Drucker chọn 18 tháng chứ không phải 6 tháng hay 5 năm?
+      </div>
+      <div class="rq-card">
+        <div class="rq-num">Q6</div>
+        Tại sao knowledge workers phải tự quản lý sự nghiệp của mình — không thể trông chờ vào tổ chức? Điều này khác với thế hệ trước như thế nào?
+      </div>
+      <div class="rq-card">
+        <div class="rq-num">Q7</div>
+        Drucker mô tả ba lựa chọn cho "Second Half of Life." Tại sao ông khuyên bắt đầu sớm, trước khi bắt buộc? Ai được lợi nhiều nhất từ lựa chọn parallel career?
+      </div>
+      <div class="rq-card">
+        <div class="rq-num">Q8</div>
+        Tại sao Drucker nói "Responsibility for Relationships" là phần của managing oneself? Liên hệ với khái niệm "upward management" (quản lý cấp trên).
+      </div>
+    </div>
+
+    <h3>Tips Ôn thi Nhanh</h3>
+    <div class="tip-box">
+      <div class="tb-title">Khi được hỏi về Feedback Analysis:</div>
+      <p>Ghi kỳ vọng TRƯỚC (ngay khi ra quyết định) → chờ 9-12 tháng → so sánh → tìm pattern → áp dụng 4 hàm ý: ① tập trung điểm mạnh ② cải thiện điểm mạnh ③ xóa kiêu ngạo trí thức ④ sửa thói xấu. Nguồn gốc lịch sử: nhà thần học Đức thế kỷ 14 → Calvin + Loyola → Calvinist Church + Dòng Tên thống trị châu Âu 30 năm.</p>
+    </div>
+    <div class="tip-box">
+      <div class="tb-title">Khi được hỏi Reader vs. Listener:</div>
+      <p>4 nhân vật lịch sử: <strong>Eisenhower</strong> (Reader) + <strong>Kennedy</strong> (Reader) vs. <strong>Roosevelt</strong> + <strong>Truman</strong> (Listeners). <strong>Johnson</strong> (Listener) thất bại khi kế vị Kennedy vì giữ staff Kennedy (writers cho Reader). "Few listeners can be made into competent readers — and vice versa." Hàm ý thực tế: thích nghi với boss, không cố thay đổi họ.</p>
+    </div>
+    <div class="tip-box">
+      <div class="tb-title">Khi được hỏi về Second Half of Life:</div>
+      <p>3 lựa chọn: ① sự nghiệp mới hoàn toàn ② parallel career (phi lợi nhuận cùng với công việc chính) ③ social entrepreneurship. Lý do: knowledge workers "not finished at 40 — merely bored." 20-25 năm còn lại cần ý nghĩa và thách thức mới. Lợi ích thứ hai: resilience — khi thất bại một nơi, vẫn có nơi kia để phát triển.</p>
+    </div>
+
+    <div class="cross-ref">
+      <h4>Kết nối với Các Tài liệu Khác trong GK5009</h4>
+      <p><strong>→ Friedman (Total Leadership):</strong> Drucker nhấn mạnh values cá nhân; Friedman mở rộng thành 4 lĩnh vực sống (Work/Home/Community/Self). Cả hai đều yêu cầu tự hiểu bản thân trước khi quản lý hiệu quả.</p>
+      <p><strong>→ Humphrey (Emotional Leadership):</strong> Drucker nói về Reader/Listener như personality traits; Humphrey phân tích Emotional Intelligence như khả năng đọc và phản ứng với cảm xúc người khác. Cả hai đều nhấn mạnh self-awareness.</p>
+      <p><strong>→ Carpenter Ch06 (MBO):</strong> Drucker là cha đẻ của Management by Objectives (MBO) ở cấp tổ chức. "Managing Oneself" là MBO ở cấp cá nhân — biết điểm mạnh, đặt mục tiêu có ý nghĩa, đo lường kết quả.</p>
+      <p><strong>→ Whetten (Developing Management Skills):</strong> Whetten cung cấp frameworks phát triển kỹ năng cụ thể; Drucker cung cấp meta-framework: trước tiên phải biết mình là ai và làm việc tốt nhất như thế nào, sau đó mới phát triển kỹ năng phù hợp.</p>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<footer>
+  <p>Tài liệu học tập GK5009 — Quản lý và Lãnh đạo</p>
+  <p>Nguồn: Peter F. Drucker, "Managing Oneself," <em>Harvard Business Review</em>, Best of HBR 1999 (Published January 2005, Reprint R0501K)</p>
+  <p>HBR Group: Friedman ✓ &nbsp;|&nbsp; Drucker ✓ &nbsp;|&nbsp; Humphrey → tiếp theo</p>
+</footer>
+
+</body>
+</html>
