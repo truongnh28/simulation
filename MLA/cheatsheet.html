@@ -139,7 +139,7 @@ hr{ border:none; border-top:1px solid #e2e8f0; margin:1mm 0; }
 
 <!-- ================================================================ PAGE 1 ================================================================ -->
 <div class="page">
-<div class="pg-hdr">📄 Trang 1/6 — K-Nearest Neighbors · Naive Bayes · K-Means Clustering<span>MLA HK252 | CO5175 — landscape A4</span></div>
+<div class="pg-hdr">📄 Trang 1/4 — K-Nearest Neighbors · Naive Bayes · K-Means Clustering<span>MLA HK252 | CO5175 — landscape A4</span></div>
 <div class="g3">
 
 <!-- COL 1: KNN -->
@@ -275,7 +275,7 @@ D chiều: cả L1 và L2 tách theo tọa độ → áp dụng 1D</div>
 
 <!-- ================================================================ PAGE 2 ================================================================ -->
 <div class="page">
-<div class="pg-hdr">📄 Trang 2/6 — Logistic Regression · Support Vector Machines (SVM)<span>MLA HK252 | CO5175</span></div>
+<div class="pg-hdr">📄 Trang 2/4 — Logistic Regression · Support Vector Machines (SVM)<span>MLA HK252 | CO5175</span></div>
 <div class="g3">
 
 <!-- COL 1: LOGISTIC REGRESSION -->
@@ -422,7 +422,7 @@ CE: log(1+e⁻ᵐ) — smooth, luôn >0, gradient≠0 mọi lúc
 
 <!-- ================================================================ PAGE 3 ================================================================ -->
 <div class="page">
-<div class="pg-hdr">📄 Trang 3/6 — Decision Trees · Neural Networks · Ensemble Methods · HMM<span>MLA HK252 | CO5175</span></div>
+<div class="pg-hdr">📄 Trang 3/4 — Decision Trees · Neural Networks · Ensemble Methods · HMM<span>MLA HK252 | CO5175</span></div>
 <div class="g3">
 
 <!-- COL 1: DECISION TREES -->
@@ -572,13 +572,48 @@ M-step: Aij=Σt ξt(i,j)/Σt γt(i)
 
 <!-- ================================================================ PAGE 4 ================================================================ -->
 <div class="page">
-<div class="pg-hdr">📄 Trang 4/6 — Chứng minh Toán học · Ví dụ Số Đầy Đủ<span>MLA HK252 | CO5175</span></div>
+<div class="pg-hdr">📄 Trang 4/4 — Bẫy Thi · Ví dụ Tính · Siêu Tham Số · Công Thức Nhanh<span>MLA HK252 | CO5175</span></div>
 <div class="g3">
 
-<!-- COL 1: DERIVATIONS -->
+<!-- COL 1: EXAM TRAPS + SVM EXAMPLE -->
 <div class="gcol">
-<div class="blk blk-drv">
-<div class="blk-hdr">📐 Chứng minh SVM & Sigmoid</div>
+<div style="background:#991b1b;color:#fff;padding:1.5mm 2mm;border-radius:3px 3px 0 0;font-size:7.5px;font-weight:800">🚨 Bẫy Thi Thường Gặp — ĐỪNG nhầm!</div>
+<div style="background:#fef2f2;border:1px solid #fca5a5;border-top:none;border-radius:0 0 3px 3px;padding:1.5mm 2mm">
+<ul style="font-size:6.1px;line-height:1.44;padding-left:2mm">
+<li><b>[KNN]</b> K=1: Train Err=0 <u>không phải underfit</u> — self là nearest neighbor của chính nó</li>
+<li><b>[KNN]</b> KD-Tree mất lợi thế khi D lớn (curse of dim); Ball-Tree tốt hơn khi D vừa</li>
+<li><b>[KNN]</b> Tie vote: cần quy tắc rõ ràng (dùng K+1 hoặc chọn class gần nhất)</li>
+<li><b>[NB]</b> "Naive" ≠ yếu — SOTA text; CI vi phạm nhưng argmax vẫn đúng</li>
+<li><b>[NB]</b> Zero freq → <u>cả tích = 0</u>, không chỉ 1 term → Laplace α=1 bắt buộc</li>
+<li><b>[K-Means]</b> WCSS <u>không bao giờ tăng</u> trong Lloyd's — nếu tăng là sai</li>
+<li><b>[K-Means]</b> Hội tụ = local min, KHÔNG phải global (NP-hard)</li>
+<li><b>[LR]</b> Sigmoid = NGHỊCH ĐẢO của logit, không phải "squashing" tùy tiện</li>
+<li><b>[LR]</b> ∂L_CE/∂z = ŷ−y (KHÔNG có σ'); ∂L_MSE = (ŷ−y)·σ'(z) (CÓ σ')</li>
+<li><b>[LR]</b> L2→w nhỏ≠0 (sphere). L1→w=0 sparse (diamond). KHÔNG nhầm!</li>
+<li><b>[SVM]</b> C lớn→overfit (C=1/λ; λ lớn↔underfit). Nhớ quan hệ nghịch!</li>
+<li><b>[SVM]</b> γ→∞ → Gram=I → Train Err=0 (1-NN behavior, overfit cực đại)</li>
+<li><b>[SVM]</b> Hinge=0 khi m≥1, KHÔNG phải m≥0. m=yf(x) functional margin</li>
+<li><b>[SVM]</b> Chỉ SVs (αi&gt;0) ảnh hưởng w — điểm xa margin: αi=0</li>
+<li><b>[DT]</b> IG bias many-valued attrs → GainRatio (C4.5) hoặc Gini (CART)</li>
+<li><b>[NN]</b> Sigmoid L lớp: gradient≤(0.25)^L → dùng ReLU thay thế</li>
+<li><b>[Ensemble]</b> Bagging↓Variance, Boosting↓Bias — KHÔNG đổi ngược!</li>
+<li><b>[HMM]</b> Forward=SUM (tất cả paths). Viterbi=MAX (path tốt nhất). KHÁC!</li>
+<li><b>[General]</b> Accuracy imbalanced → dùng F1/Precision-Recall thay thế</li>
+<li><b>[General]</b> Normalize: KNN,SVM,LR,NN,K-Means cần. DT,RF,NB không cần</li>
+</ul>
+</div>
+<div class="blk blk-svm" style="margin-top:1.5mm">
+<div class="blk-hdr" style="font-size:7.5px">🔢 VD: SVM 4 điểm</div>
+<div class="blk-body">
+<div class="f">A(1,3)+  B(2,2)+  C(1,1)−  D(2,0)−
+SVs A,B∈H₁; C∈H₂ → lập hệ:
+  w₁+3w₂+b=+1..(1)  2w₁+2w₂+b=+1..(2)
+  w₁+ w₂+b=−1..(3)
+(1)−(3): 2w₂=2→w₂=1  (2)−(1): w₁=1  b=−3
+→ f(x)=x₁+x₂−3  Margin=2/√2=√2≈1.414
+Pred E(3,2): f=2>0 → Class +1</div>
+</div></div>
+</div><!-- col1 -->
 <div class="blk-body">
 <span class="sec">▶ Margin = 2/‖w‖ (dẫn xuất)</span>
 <div class="f">x₊∈H₁: w·x₊+b=+1  x₋∈H₂: w·x₋+b=−1
@@ -623,7 +658,7 @@ Median: #{<μ}=#{>μ} (balanced counts)</div>
 </div></div>
 </div><!-- col1 -->
 
-<!-- COL 2: EXAMPLES Part A -->
+<!-- COL 2: HYPERPARAMS + MODEL SELECTION -->
 <div class="gcol">
 <div class="blk blk-svm">
 <div class="blk-hdr">🔢 Ví dụ: SVM từ 4 điểm</div>
