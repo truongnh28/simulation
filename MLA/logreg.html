@@ -110,7 +110,22 @@ li{font-size:.875rem;line-height:1.65}
 ul,ol{padding-left:1.4rem;margin:.4rem 0}
 strong{color:#1e293b}
 
+.insight{background:#f0fdf4;border:1px solid #86efac;border-left:4px solid #16a34a;border-radius:0 8px 8px 0;padding:.9rem 1.1rem;margin:.85rem 0}
+.insight-title{font-weight:700;color:#14532d;margin-bottom:.35rem;font-size:.88rem;display:flex;align-items:center;gap:.4rem}
+.analogy{background:#fefce8;border:1px solid #fde68a;border-left:4px solid #eab308;border-radius:0 8px 8px 0;padding:.9rem 1.1rem;margin:.85rem 0}
+.analogy-title{font-weight:700;color:#854d0e;margin-bottom:.35rem;font-size:.88rem;display:flex;align-items:center;gap:.4rem}
+.key-eq{background:#fff;border:2px solid #16a34a;border-radius:8px;padding:.85rem 1.25rem;margin:.75rem 0;text-align:center}
+.warn-box{background:#fef2f2;border:1px solid #fecaca;border-left:4px solid #ef4444;border-radius:0 8px 8px 0;padding:.9rem 1.1rem;margin:.85rem 0}
+.warn-title{font-weight:700;color:#b91c1c;margin-bottom:.35rem;font-size:.88rem;display:flex;align-items:center;gap:.4rem}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0}
+.col-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:.9rem 1.1rem}
+.col-card h4{font-size:.85rem;font-weight:700;color:#1e293b;margin-bottom:.5rem}
+@media(max-width:640px){.two-col{grid-template-columns:1fr}}
+
 @media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+
+.svg-wrap{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:1rem;margin:.85rem 0;overflow-x:auto;text-align:center}
+.svg-caption{font-size:.78rem;color:#64748b;margin-top:.4rem;text-align:center;font-style:italic}
 </style>
 </head>
 
@@ -169,6 +184,164 @@ strong{color:#1e293b}
 </div>
 </details>
 
+<div class="ss-title">1.1 Tại sao dùng Logit? — Chuỗi suy luận từ xác suất đến đường thẳng</div>
+<div class="insight">
+  <div class="insight-title">&#128161; Tư duy: 3 bước biến đổi để "thẳng hóa" xác suất</div>
+  <p>Mục tiêu: dùng mô hình tuyến tính \(z = \mathbf{w}\cdot\mathbf{x}+b\) để dự đoán xác suất. Vấn đề: \(z \in (-\infty, +\infty)\) nhưng \(P \in (0,1)\) — miền giá trị không khớp. Ta cần một <em>cầu nối</em>.</p>
+</div>
+
+<div class="step"><div class="step-n">1</div><div class="step-c">
+  <strong>Bắt đầu từ \(p = P(y=1|\mathbf{x}) \in (0,1)\)</strong> — bị giới hạn hai phía, không thể dùng trực tiếp làm đầu ra tuyến tính.
+</div></div>
+
+<div class="step"><div class="step-n">2</div><div class="step-c">
+  <strong>Chuyển sang Odds \(= \dfrac{p}{1-p} \in (0, +\infty)\)</strong> — đã mở giới hạn trên, nhưng vẫn bị kẹp ở 0 phía dưới. Odds = 2 nghĩa là "có khả năng xảy ra gấp đôi không xảy ra."
+</div></div>
+
+<div class="step"><div class="step-n">3</div><div class="step-c">
+  <strong>Lấy Log-Odds = \(\log\dfrac{p}{1-p} \in (-\infty, +\infty)\)</strong> — nay miền giá trị khớp hoàn toàn với \(z\). Ta đặt bằng nhau:
+  <div class="key-eq">\[ z = \mathbf{w}\cdot\mathbf{x}+b = \log\frac{p}{1-p} \]</div>
+</div></div>
+
+<div class="ss-title">1.2 Chứng minh: Sigmoid là nghịch đảo của Logit — không phải chọn tùy tiện</div>
+<details open>
+<summary><i class="fas fa-calculator"></i> Đảo ngược phương trình Logit để tìm σ(z)</summary>
+<div class="dc">
+<div class="fbox no-top-radius">
+\[ z = \log\frac{p}{1-p} \]
+\[ \Rightarrow \frac{p}{1-p} = e^z \]
+\[ \Rightarrow p = e^z(1-p) = e^z - pe^z \]
+\[ \Rightarrow p(1+e^z) = e^z \]
+\[ \Rightarrow \boxed{p = \frac{e^z}{1+e^z} = \frac{1}{1+e^{-z}} = \sigma(z)} \]
+</div>
+<div class="alert al-green">
+  <div class="alert-title">Kết luận: Sigmoid không phải được "chọn" — nó được <em>suy ra</em></div>
+  <p>Hàm sigmoid là nghịch đảo toán học của hàm logit. Mô hình tuyến tính dự đoán Log-Odds → để quy đổi ra xác suất thì ta phải dùng sigmoid. Đây là lý do tại sao tên mô hình là <em>Logistic</em> Regression (từ "logit"), không phải "Sigmoid Regression."</p>
+</div>
+<table class="tbl" style="font-size:.83rem;margin-top:.6rem">
+<thead><tr><th>Không gian</th><th>Phạm vi</th><th>Hàm chuyển đổi</th><th>Hướng</th></tr></thead>
+<tbody>
+<tr><td>Xác suất \(p\)</td><td>(0, 1)</td><td>Logit: \(\log\frac{p}{1-p}\)</td><td>→ Log-Odds</td></tr>
+<tr><td>Log-Odds \(z\)</td><td>(-∞, +∞)</td><td>Sigmoid: \(\frac{1}{1+e^{-z}}\)</td><td>→ Xác suất</td></tr>
+</tbody>
+</table>
+<div class="analogy">
+  <div class="analogy-title">&#128249; Hình học của Sigmoid</div>
+  <ul>
+    <li>\(\sigma(0) = 0.5\) — điểm giữa, không nghiêng về lớp nào</li>
+    <li>\(\sigma(z) \to 1\) khi \(z \to +\infty\) — mô hình "rất chắc chắn" là lớp 1</li>
+    <li>\(\sigma(z) \to 0\) khi \(z \to -\infty\) — mô hình "rất chắc chắn" là lớp 0</li>
+    <li>Đạo hàm \(\sigma'(z) = \sigma(z)(1-\sigma(z)) \leq \frac{1}{4}\) — đạt max tại \(z=0\) (vùng không chắc chắn)</li>
+  </ul>
+</div>
+</div>
+</details>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 480 260" width="100%" style="max-width:480px" font-family="'Segoe UI',system-ui,sans-serif">
+  <!-- Background regions -->
+  <!-- y > 0.5 zone (upper half): shaded green — mapped to pixel range y=20..130 -->
+  <rect x="50" y="20" width="400" height="110" fill="#dcfce7" opacity="0.45"/>
+  <!-- y < 0.5 zone (lower half): shaded red — mapped to y=130..220 -->
+  <rect x="50" y="130" width="400" height="90" fill="#fee2e2" opacity="0.45"/>
+
+  <!-- Axes -->
+  <line x1="50" y1="20" x2="50" y2="230" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="50" y1="130" x2="450" y2="130" stroke="#94a3b8" stroke-width="1.5"/>
+
+  <!-- Asymptotes (dashed) -->
+  <line x1="50" y1="22" x2="450" y2="22" stroke="#64748b" stroke-width="1" stroke-dasharray="5,4"/>
+  <line x1="50" y1="228" x2="450" y2="228" stroke="#64748b" stroke-width="1" stroke-dasharray="5,4"/>
+
+  <!-- Dashed vertical at z=0 (x=250) -->
+  <line x1="250" y1="20" x2="250" y2="230" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Sigmoid curve: maps z in [-6,6] → x in [50,450]; σ(z) in [0,1] → y in [228,22]
+       key points: z=-6→σ≈0.0025, z=-4→σ≈0.018, z=-2→σ≈0.119, z=0→σ=0.5, z=2→σ≈0.881, z=4→σ≈0.982, z=6→σ≈0.997
+       x = 50 + (z+6)/12*400; y = 228 - σ*(228-22) = 228 - σ*206 -->
+  <polyline points="
+    50,227.5
+    83.3,224.3
+    116.7,218.3
+    150,204.5
+    183.3,176.5
+    216.7,144.2
+    250,125
+    283.3,81.3
+    316.7,52.2
+    350,38.8
+    383.3,27.6
+    416.7,23.7
+    450,22.5"
+    fill="none" stroke="#16a34a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Tangent line at z=0: slope in σ-space = 0.25, in pixel-space: Δy/Δx = -0.25*206/(400/12) = -0.25*206/33.33 = -1.545
+       At z=0: (250,125). For x ±80: y = 125 ± 1.545*80 = 125 ± 123.6 → clamp to visible range
+       From x=170→y=248 (clamp 228), to x=330→y=2 (clamp 22) -->
+  <line x1="170" y1="228" x2="330" y2="22" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="6,3" opacity="0.85"/>
+
+  <!-- X-axis ticks and labels -->
+  <!-- z=-6 at x=50 -->
+  <line x1="50" y1="230" x2="50" y2="236" stroke="#64748b" stroke-width="1"/>
+  <text x="50" y="247" text-anchor="middle" font-size="10" fill="#64748b">-6</text>
+  <!-- z=-4 at x=116.7 -->
+  <line x1="117" y1="230" x2="117" y2="236" stroke="#64748b" stroke-width="1"/>
+  <text x="117" y="247" text-anchor="middle" font-size="10" fill="#64748b">-4</text>
+  <!-- z=-2 at x=183.3 -->
+  <line x1="183" y1="230" x2="183" y2="236" stroke="#64748b" stroke-width="1"/>
+  <text x="183" y="247" text-anchor="middle" font-size="10" fill="#64748b">-2</text>
+  <!-- z=0 at x=250 -->
+  <line x1="250" y1="230" x2="250" y2="236" stroke="#64748b" stroke-width="1"/>
+  <text x="250" y="247" text-anchor="middle" font-size="10" fill="#64748b">0</text>
+  <!-- z=2 at x=316.7 -->
+  <line x1="317" y1="230" x2="317" y2="236" stroke="#64748b" stroke-width="1"/>
+  <text x="317" y="247" text-anchor="middle" font-size="10" fill="#64748b">+2</text>
+  <!-- z=4 at x=383.3 -->
+  <line x1="383" y1="230" x2="383" y2="236" stroke="#64748b" stroke-width="1"/>
+  <text x="383" y="247" text-anchor="middle" font-size="10" fill="#64748b">+4</text>
+  <!-- z=6 at x=450 -->
+  <line x1="450" y1="230" x2="450" y2="236" stroke="#64748b" stroke-width="1"/>
+  <text x="450" y="247" text-anchor="middle" font-size="10" fill="#64748b">+6</text>
+
+  <!-- Y-axis ticks and labels: y=1→pix=22, y=0.5→pix=125, y=0→pix=228 -->
+  <line x1="44" y1="22" x2="50" y2="22" stroke="#64748b" stroke-width="1"/>
+  <text x="42" y="26" text-anchor="end" font-size="10" fill="#64748b">1</text>
+  <line x1="44" y1="125" x2="50" y2="125" stroke="#64748b" stroke-width="1"/>
+  <text x="42" y="129" text-anchor="end" font-size="10" fill="#64748b">0.5</text>
+  <line x1="44" y1="228" x2="50" y2="228" stroke="#64748b" stroke-width="1"/>
+  <text x="42" y="232" text-anchor="end" font-size="10" fill="#64748b">0</text>
+
+  <!-- Axis labels -->
+  <text x="250" y="260" text-anchor="middle" font-size="11" fill="#475569" font-weight="600">z = w·x + b</text>
+  <text x="14" y="125" text-anchor="middle" font-size="11" fill="#475569" font-weight="600" transform="rotate(-90,14,125)">σ(z)</text>
+
+  <!-- Asymptote labels -->
+  <text x="455" y="26" font-size="9" fill="#64748b">y=1</text>
+  <text x="455" y="232" font-size="9" fill="#64748b">y=0</text>
+
+  <!-- Special point z=0: σ=0.5 at (250,125) -->
+  <circle cx="250" cy="125" r="5" fill="#16a34a" stroke="#fff" stroke-width="1.5"/>
+  <text x="256" y="113" font-size="9.5" fill="#14532d" font-weight="700">σ(0)=0.5</text>
+  <text x="256" y="124" font-size="9" fill="#b45309">σ'(0)=0.25 (max)</text>
+
+  <!-- Tangent label -->
+  <text x="155" y="220" font-size="9" fill="#b45309" transform="rotate(-55,155,220)">slope=0.25</text>
+
+  <!-- Special point z=+2: σ≈0.881 at (317, 228-0.881*206=228-181.5=46.5) -->
+  <circle cx="317" cy="47" r="4" fill="#3b82f6" stroke="#fff" stroke-width="1.5"/>
+  <text x="323" y="44" font-size="9.5" fill="#1d4ed8">σ(2)≈0.88</text>
+
+  <!-- Special point z=-2: σ≈0.119 at (183, 228-0.119*206=228-24.5=203.5) -->
+  <circle cx="183" cy="203" r="4" fill="#ef4444" stroke="#fff" stroke-width="1.5"/>
+  <text x="120" y="208" font-size="9.5" fill="#b91c1c">σ(-2)≈0.12</text>
+
+  <!-- Zone labels -->
+  <text x="350" y="75" font-size="9" fill="#15803d" font-style="italic" opacity="0.8">y &gt; 0.5 (Predict +)</text>
+  <text x="350" y="195" font-size="9" fill="#b91c1c" font-style="italic" opacity="0.8">y &lt; 0.5 (Predict -)</text>
+</svg>
+<div class="svg-caption">Hình 1.1 — Đồ thị hàm Sigmoid σ(z) = 1/(1+e⁻ᶻ): điểm inflection tại z=0, tiếp tuyến slope=0.25, asymptote y=0 và y=1, vùng xanh (predict dương) và đỏ (predict âm).</div>
+</div>
+
 <div class="s-title">2. Decision Threshold, Precision &amp; Recall</div>
 <table class="tbl">
 <thead><tr><th>Threshold tăng</th><th>Precision</th><th>Recall</th><th>F1-Score</th></tr></thead>
@@ -178,6 +351,196 @@ strong{color:#1e293b}
 </table>
 <div class="alert al-yellow">
   <div class="alert-title">Câu 9 → C: Recall giảm, Precision thường tăng</div>
+</div>
+
+<div class="ss-title">2.1 Ma trận nhầm lẫn — Định nghĩa TP, FP, FN, TN</div>
+<div class="insight">
+  <div class="insight-title">&#128161; Tư duy: Mỗi ô = tổ hợp (Thực tế) × (Dự đoán)</div>
+  <p>Với bài toán nhị phân, mọi dự đoán đều rơi vào một trong 4 ô. Tên = <em>Kết quả dự đoán</em> + <em>Tính đúng/sai</em>: True/False mô tả model đúng hay sai, Positive/Negative mô tả model nói gì.</p>
+</div>
+
+<div style="overflow-x:auto;margin:.75rem 0">
+<table class="tbl" style="font-size:.85rem;max-width:520px">
+<thead>
+<tr><th style="background:#374151"></th><th style="background:#1e3a5f">Dự đoán: Positive (+)</th><th style="background:#1e3a5f">Dự đoán: Negative (−)</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td style="background:#14532d;color:#fff;font-weight:700">Thực tế: Positive (+)</td>
+  <td style="background:#dcfce7"><strong>TP — True Positive</strong><br><span style="font-size:.8rem;color:#166534">Dự đoán đúng là dương tính</span></td>
+  <td style="background:#fef2f2"><strong>FN — False Negative</strong><br><span style="font-size:.8rem;color:#991b1b">Bỏ sót ca dương tính (Type II Error)</span></td>
+</tr>
+<tr>
+  <td style="background:#14532d;color:#fff;font-weight:700">Thực tế: Negative (−)</td>
+  <td style="background:#fef2f2"><strong>FP — False Positive</strong><br><span style="font-size:.8rem;color:#991b1b">Báo nhầm âm thành dương (Type I Error)</span></td>
+  <td style="background:#dcfce7"><strong>TN — True Negative</strong><br><span style="font-size:.8rem;color:#166534">Dự đoán đúng là âm tính</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="ss-title">2.2 Precision và Recall — Hai góc nhìn về "sai"</div>
+<div class="two-col">
+<div class="col-card">
+  <h4>Precision = TP / (TP + FP)</h4>
+  <p style="font-size:.85rem">Trong tất cả những gì model gọi là Positive, bao nhiêu cái <em>thực sự</em> là Positive?</p>
+  <div class="key-eq" style="font-size:.85rem">\[ \text{Precision} = \frac{TP}{TP+FP} \]</div>
+  <p style="font-size:.83rem;color:#6b7280">Hỏi: "Model có nói bừa không?" — FP cao → Precision thấp.</p>
+  <p style="font-size:.83rem"><strong>Ví dụ:</strong> Spam filter — Precision thấp → email quan trọng bị xóa nhầm.</p>
+</div>
+<div class="col-card">
+  <h4>Recall = TP / (TP + FN)</h4>
+  <p style="font-size:.85rem">Trong tất cả các trường hợp <em>thực sự</em> là Positive, model phát hiện được bao nhiêu?</p>
+  <div class="key-eq" style="font-size:.85rem">\[ \text{Recall} = \frac{TP}{TP+FN} \]</div>
+  <p style="font-size:.83rem;color:#6b7280">Hỏi: "Model có bỏ sót không?" — FN cao → Recall thấp.</p>
+  <p style="font-size:.83rem"><strong>Ví dụ:</strong> Phát hiện ung thư — Recall thấp → bệnh nhân không được phát hiện.</p>
+</div>
+</div>
+
+<div class="ss-title">2.3 F1-Score — Tại sao dùng Harmonic Mean?</div>
+<details open>
+<summary><i class="fas fa-calculator"></i> Harmonic Mean vs Arithmetic Mean — Sự khác biệt quan trọng</summary>
+<div class="dc">
+<p>F1-Score là <em>harmonic mean</em> của Precision và Recall:</p>
+<div class="fbox no-top-radius">
+\[ F1 = \frac{2}{\frac{1}{P} + \frac{1}{R}} = \frac{2PR}{P+R} \]
+</div>
+<div class="insight">
+  <div class="insight-title">&#128161; Tại sao không dùng trung bình cộng (P+R)/2?</div>
+  <p>Arithmetic mean bị "lừa" bởi một chỉ số cao: nếu P=1.0, R=0.001 → trung bình cộng = 0.5005 (trông ổn), nhưng thực tế mô hình gần như vô dụng (chỉ phát hiện được 0.1% ca bệnh). Harmonic mean phạt nặng sự mất cân bằng:</p>
+  <div class="fbox no-top-radius">
+  \[ F1 = \frac{2 \times 1.0 \times 0.001}{1.0 + 0.001} = \frac{0.002}{1.001} \approx 0.002 \]
+  </div>
+  <p><strong>Quy tắc:</strong> F1 gần với chỉ số <em>thấp hơn</em>. Để tăng F1, cần tăng chỉ số thấp hơn — không thể "bù" bằng chỉ số kia.</p>
+</div>
+<table class="tbl" style="font-size:.83rem;margin-top:.5rem">
+<thead><tr><th>Precision</th><th>Recall</th><th>Arithmetic Mean</th><th>F1 (Harmonic)</th><th>Đánh giá</th></tr></thead>
+<tbody>
+<tr><td>0.9</td><td>0.9</td><td>0.90</td><td>0.90</td><td>Tốt đều cả hai</td></tr>
+<tr><td>1.0</td><td>0.5</td><td>0.75</td><td>0.667</td><td>Chú ý: AM cao hơn HM đáng kể</td></tr>
+<tr><td>1.0</td><td>0.001</td><td>0.50</td><td>0.002</td><td>AM "lừa", HM phản ánh đúng</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 500 240" width="100%" style="max-width:500px" font-family="'Segoe UI',system-ui,sans-serif">
+  <!-- Axes area: x in [60,460], y in [20,200] -->
+  <!-- X axis -->
+  <line x1="60" y1="200" x2="460" y2="200" stroke="#94a3b8" stroke-width="1.5"/>
+  <!-- Y axis -->
+  <line x1="60" y1="20" x2="60" y2="200" stroke="#94a3b8" stroke-width="1.5"/>
+
+  <!-- Grid lines (light) -->
+  <line x1="60" y1="110" x2="460" y2="110" stroke="#e2e8f0" stroke-width="1"/>
+  <line x1="260" y1="20" x2="260" y2="200" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- Default threshold vertical dashed line at θ=0.5 (x=260) -->
+  <line x1="260" y1="20" x2="260" y2="200" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <text x="263" y="33" font-size="9.5" fill="#475569" font-weight="600">default θ=0.5</text>
+
+  <!-- Precision curve: starts ~0.3 at θ=0, rises to 1.0 at θ=1
+       Mapped: θ→x = 60 + θ*400; metric→y = 200 - metric*180
+       Points at θ: 0→0.30, 0.1→0.35, 0.2→0.42, 0.3→0.51, 0.4→0.61, 0.5→0.70, 0.6→0.80, 0.7→0.88, 0.8→0.94, 0.9→0.98, 1.0→1.0
+       y = 200 - v*180 -->
+  <polyline points="
+    60,146
+    100,137
+    140,124.4
+    180,108.2
+    220,90.2
+    260,74
+    300,56
+    340,42.4
+    380,30.8
+    420,23.6
+    460,20"
+    fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Recall curve: starts 1.0 at θ=0, falls to 0 at θ=1
+       Points: 0→1.0, 0.1→0.95, 0.2→0.88, 0.3→0.79, 0.4→0.68, 0.5→0.57, 0.6→0.44, 0.7→0.31, 0.8→0.18, 0.9→0.07, 1.0→0
+       y = 200 - v*180 -->
+  <polyline points="
+    60,20
+    100,29
+    140,41.6
+    180,57.8
+    220,77.6
+    260,97.4
+    300,120.8
+    340,144.2
+    380,167.6
+    420,187.4
+    460,200"
+    fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- F1 curve: bell-shaped, peak ~θ=0.45
+       Points: 0→0.46, 0.1→0.52, 0.2→0.58, 0.3→0.63, 0.4→0.65, 0.45→0.63, 0.5→0.62, 0.6→0.56, 0.7→0.47, 0.8→0.31, 0.9→0.13, 1.0→0
+       y = 200 - v*180 -->
+  <polyline points="
+    60,117.2
+    100,106.4
+    140,95.6
+    180,86.6
+    220,83
+    240,83.4
+    260,88.4
+    300,99.2
+    340,115.4
+    380,144.2
+    420,176.6
+    460,200"
+    fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8,4"/>
+
+  <!-- Intersection point of Precision and Recall (approx θ≈0.57, P=R≈0.53)
+       x = 60+0.57*400=288; y = 200-0.53*180=104.6 -->
+  <circle cx="288" cy="105" r="5.5" fill="#f59e0b" stroke="#fff" stroke-width="1.5"/>
+  <text x="293" y="101" font-size="9" fill="#b45309" font-weight="700">P=R (balanced)</text>
+
+  <!-- X axis ticks & labels -->
+  <line x1="60" y1="200" x2="60" y2="206" stroke="#64748b" stroke-width="1"/>
+  <text x="60" y="216" text-anchor="middle" font-size="9.5" fill="#64748b">0</text>
+  <line x1="160" y1="200" x2="160" y2="206" stroke="#64748b" stroke-width="1"/>
+  <text x="160" y="216" text-anchor="middle" font-size="9.5" fill="#64748b">0.25</text>
+  <line x1="260" y1="200" x2="260" y2="206" stroke="#64748b" stroke-width="1"/>
+  <text x="260" y="216" text-anchor="middle" font-size="9.5" fill="#64748b">0.5</text>
+  <line x1="360" y1="200" x2="360" y2="206" stroke="#64748b" stroke-width="1"/>
+  <text x="360" y="216" text-anchor="middle" font-size="9.5" fill="#64748b">0.75</text>
+  <line x1="460" y1="200" x2="460" y2="206" stroke="#64748b" stroke-width="1"/>
+  <text x="460" y="216" text-anchor="middle" font-size="9.5" fill="#64748b">1</text>
+
+  <!-- Y axis ticks & labels: 0→y=200, 0.5→y=110, 1→y=20 -->
+  <line x1="54" y1="200" x2="60" y2="200" stroke="#64748b" stroke-width="1"/>
+  <text x="52" y="204" text-anchor="end" font-size="9.5" fill="#64748b">0</text>
+  <line x1="54" y1="110" x2="60" y2="110" stroke="#64748b" stroke-width="1"/>
+  <text x="52" y="114" text-anchor="end" font-size="9.5" fill="#64748b">0.5</text>
+  <line x1="54" y1="20" x2="60" y2="20" stroke="#64748b" stroke-width="1"/>
+  <text x="52" y="24" text-anchor="end" font-size="9.5" fill="#64748b">1</text>
+
+  <!-- Axis labels -->
+  <text x="260" y="232" text-anchor="middle" font-size="11" fill="#475569" font-weight="600">Threshold θ</text>
+  <text x="14" y="110" text-anchor="middle" font-size="10" fill="#475569" font-weight="600" transform="rotate(-90,14,110)">Metric Value</text>
+
+  <!-- Legend -->
+  <rect x="62" y="22" width="50" height="13" fill="none"/>
+  <line x1="65" y1="31" x2="82" y2="31" stroke="#3b82f6" stroke-width="2.5"/>
+  <text x="84" y="35" font-size="9.5" fill="#1d4ed8" font-weight="600">Precision</text>
+  <line x1="65" y1="46" x2="82" y2="46" stroke="#ef4444" stroke-width="2.5"/>
+  <text x="84" y="50" font-size="9.5" fill="#b91c1c" font-weight="600">Recall</text>
+  <line x1="65" y1="61" x2="82" y2="61" stroke="#16a34a" stroke-width="2.5" stroke-dasharray="6,3"/>
+  <text x="84" y="65" font-size="9.5" fill="#15803d" font-weight="600">F1</text>
+
+  <!-- Annotations -->
+  <text x="68" y="150" font-size="8.5" fill="#1d4ed8" font-style="italic">High Recall</text>
+  <text x="68" y="161" font-size="8.5" fill="#1d4ed8" font-style="italic">(Low Precision)</text>
+  <text x="68" y="172" font-size="7.5" fill="#475569" font-style="italic">e.g. ung thư</text>
+
+  <text x="360" y="150" font-size="8.5" fill="#b91c1c" font-style="italic" text-anchor="middle">High Precision</text>
+  <text x="360" y="161" font-size="8.5" fill="#b91c1c" font-style="italic" text-anchor="middle">(Low Recall)</text>
+  <text x="360" y="172" font-size="7.5" fill="#475569" font-style="italic" text-anchor="middle">e.g. spam filter</text>
+</svg>
+<div class="svg-caption">Hình 2.1 — Trade-off Precision / Recall / F1 theo Decision Threshold θ. Threshold thấp → Recall cao nhưng Precision thấp (ưu tiên không bỏ sót). Threshold cao → Precision cao nhưng Recall thấp (ưu tiên tránh nhầm). Điểm vàng = Precision = Recall.</div>
 </div>
 
 <div class="s-title">3. Bảng so sánh MSE vs Cross-Entropy</div>
@@ -195,7 +558,175 @@ strong{color:#1e293b}
 <div class="fbox no-top-radius">\[ L_{total} = L_{CE} + \frac{\lambda}{2}\|\mathbf{w}\|^2 \]</div>
 <p>Thu nhỏ trọng số về 0, kiểm soát độ phức tạp mô hình, giảm overfitting.</p>
 
+<div class="svg-wrap">
+<svg viewBox="0 0 520 240" width="100%" style="max-width:520px" font-family="'Segoe UI',system-ui,sans-serif">
+  <!-- ===== PANEL 1: CE Gradient (left, x 0..250) ===== -->
+  <!-- Panel background -->
+  <rect x="10" y="10" width="235" height="220" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.2"/>
+  <text x="127" y="28" text-anchor="middle" font-size="10" fill="#14532d" font-weight="700">Cross-Entropy Gradient: ∂L/∂z = ŷ−y</text>
+
+  <!-- Axes: x∈[30,230], y∈[45,175] (height=130) -->
+  <line x1="30" y1="175" x2="230" y2="175" stroke="#94a3b8" stroke-width="1.4"/>
+  <line x1="30" y1="45" x2="30" y2="175" stroke="#94a3b8" stroke-width="1.4"/>
+
+  <!-- CE gradient line: |1-ŷ| when y=1 → straight line from (ŷ=0,grad=1) to (ŷ=1,grad=0)
+       At ŷ=0: x=30, y=45 (grad=1). At ŷ=1: x=230, y=175 (grad=0). -->
+  <line x1="30" y1="45" x2="230" y2="175" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Fill area under CE gradient (light green) -->
+  <polygon points="30,45 230,175 230,175 30,175" fill="#16a34a" opacity="0.08"/>
+
+  <!-- X ticks: 0, 0.5, 1 -->
+  <line x1="30" y1="175" x2="30" y2="181" stroke="#64748b" stroke-width="1"/>
+  <text x="30" y="191" text-anchor="middle" font-size="9" fill="#64748b">0</text>
+  <line x1="130" y1="175" x2="130" y2="181" stroke="#64748b" stroke-width="1"/>
+  <text x="130" y="191" text-anchor="middle" font-size="9" fill="#64748b">0.5</text>
+  <line x1="230" y1="175" x2="230" y2="181" stroke="#64748b" stroke-width="1"/>
+  <text x="230" y="191" text-anchor="middle" font-size="9" fill="#64748b">1</text>
+
+  <!-- Y ticks: 0, 0.5, 1 mapped to y=175,110,45 -->
+  <line x1="24" y1="175" x2="30" y2="175" stroke="#64748b" stroke-width="1"/>
+  <text x="22" y="179" text-anchor="end" font-size="9" fill="#64748b">0</text>
+  <line x1="24" y1="110" x2="30" y2="110" stroke="#64748b" stroke-width="1"/>
+  <text x="22" y="114" text-anchor="end" font-size="9" fill="#64748b">0.5</text>
+  <line x1="24" y1="45" x2="30" y2="45" stroke="#64748b" stroke-width="1"/>
+  <text x="22" y="49" text-anchor="end" font-size="9" fill="#64748b">1</text>
+
+  <!-- Axis labels -->
+  <text x="130" y="204" text-anchor="middle" font-size="9" fill="#475569" font-weight="600">ŷ (predicted)</text>
+  <text x="12" y="110" text-anchor="middle" font-size="8.5" fill="#475569" font-weight="600" transform="rotate(-90,12,110)">|gradient|</text>
+
+  <!-- Annotation texts -->
+  <text x="50" y="85" font-size="8" fill="#15803d">Sai nhiều →</text>
+  <text x="50" y="96" font-size="8" fill="#15803d">gradient lớn ✓</text>
+  <text x="150" y="163" font-size="8" fill="#15803d">Đúng →</text>
+  <text x="150" y="172" font-size="8" fill="#15803d">grad nhỏ ✓</text>
+
+  <!-- CE label badge -->
+  <rect x="60" y="120" width="115" height="22" rx="4" fill="#16a34a" opacity="0.9"/>
+  <text x="117" y="135" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">CE: Không Vanish ✓</text>
+
+  <!-- ===== PANEL 2: MSE Gradient (right, x 270..510) ===== -->
+  <rect x="270" y="10" width="240" height="220" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.2"/>
+  <text x="390" y="28" text-anchor="middle" font-size="10" fill="#b91c1c" font-weight="700">MSE Gradient: ∂L/∂z = (ŷ−y)·σ'(z)</text>
+
+  <!-- Axes: x∈[290,490], y∈[45,175] (height=130; ymax maps to 0.25 for MSE gradient) -->
+  <line x1="290" y1="175" x2="490" y2="175" stroke="#94a3b8" stroke-width="1.4"/>
+  <line x1="290" y1="45" x2="290" y2="175" stroke="#94a3b8" stroke-width="1.4"/>
+
+  <!-- MSE gradient curve: (1-ŷ)²·ŷ for y=1, scaled so max≈0.148 at ŷ≈0.333
+       Y scale: 0..0.25 maps to y=175..45 (range=130); value→y = 175 - value/0.25*130
+       ŷ:  0.0→0.000, 0.1→0.081, 0.2→0.128, 0.25→0.141, 0.333→0.148(max), 0.4→0.144, 0.5→0.125, 0.6→0.096, 0.7→0.063, 0.8→0.032, 0.9→0.009, 1.0→0.000
+       x = 290 + ŷ*200; y = 175 - v/0.25*130 -->
+  <polyline points="
+    290,175
+    310,133
+    330,108.4
+    340,101.5
+    356.6,98.9
+    370,100
+    390,110
+    410,125
+    430,141.6
+    450,158.4
+    470,170.3
+    490,175"
+    fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Fill area under MSE curve (light red) -->
+  <polygon points="290,175 310,133 330,108.4 340,101.5 356.6,98.9 370,100 390,110 410,125 430,141.6 450,158.4 470,170.3 490,175 490,175 290,175"
+    fill="#ef4444" opacity="0.1"/>
+
+  <!-- Red vanish zones at ŷ≈0 and ŷ≈1 -->
+  <rect x="290" y="158" width="22" height="17" rx="3" fill="#ef4444" opacity="0.3"/>
+  <text x="301" y="156" text-anchor="middle" font-size="8" fill="#b91c1c" font-weight="700">VANISH!</text>
+  <rect x="468" y="158" width="22" height="17" rx="3" fill="#ef4444" opacity="0.3"/>
+  <text x="479" y="156" text-anchor="middle" font-size="8" fill="#b91c1c" font-weight="700">VANISH!</text>
+
+  <!-- X ticks -->
+  <line x1="290" y1="175" x2="290" y2="181" stroke="#64748b" stroke-width="1"/>
+  <text x="290" y="191" text-anchor="middle" font-size="9" fill="#64748b">0</text>
+  <line x1="390" y1="175" x2="390" y2="181" stroke="#64748b" stroke-width="1"/>
+  <text x="390" y="191" text-anchor="middle" font-size="9" fill="#64748b">0.5</text>
+  <line x1="490" y1="175" x2="490" y2="181" stroke="#64748b" stroke-width="1"/>
+  <text x="490" y="191" text-anchor="middle" font-size="9" fill="#64748b">1</text>
+
+  <!-- Y ticks: 0→175, 0.125→110, 0.25→45 -->
+  <line x1="284" y1="175" x2="290" y2="175" stroke="#64748b" stroke-width="1"/>
+  <text x="282" y="179" text-anchor="end" font-size="9" fill="#64748b">0</text>
+  <line x1="284" y1="110" x2="290" y2="110" stroke="#64748b" stroke-width="1"/>
+  <text x="282" y="114" text-anchor="end" font-size="9" fill="#64748b">.125</text>
+  <line x1="284" y1="45" x2="290" y2="45" stroke="#64748b" stroke-width="1"/>
+  <text x="282" y="49" text-anchor="end" font-size="9" fill="#64748b">.25</text>
+
+  <!-- Axis labels -->
+  <text x="390" y="204" text-anchor="middle" font-size="9" fill="#475569" font-weight="600">ŷ (predicted)</text>
+  <text x="272" y="110" text-anchor="middle" font-size="8.5" fill="#475569" font-weight="600" transform="rotate(-90,272,110)">|gradient|</text>
+
+  <!-- Annotation -->
+  <text x="350" y="82" text-anchor="middle" font-size="7.5" fill="#b91c1c">Sai nhiều nhất → học ít nhất</text>
+  <text x="350" y="93" text-anchor="middle" font-size="7.5" fill="#b91c1c">→ NGHỊCH LÝ!</text>
+
+  <!-- MSE label badge -->
+  <rect x="305" y="120" width="170" height="22" rx="4" fill="#ef4444" opacity="0.9"/>
+  <text x="390" y="135" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">MSE: Gradient Vanishing ✗</text>
+</svg>
+<div class="svg-caption">Hình 5.0 — So sánh gradient CE vs MSE khi y=1. CE (trái): gradient = ŷ−y giảm tuyến tính, hợp lý. MSE (phải): gradient = (ŷ−y)·σ'(z) gần bằng 0 ở cả hai đầu — nghịch lý, sai nhiều nhất nhưng học ít nhất.</div>
+</div>
+
 <div class="s-title">5. Chứng minh Gradient Cross-Entropy — Tại sao sạch hơn MSE?</div>
+
+<div class="ss-title">5.1 Cross-Entropy = Maximum Likelihood Estimation (MLE)</div>
+<div class="insight">
+  <div class="insight-title">&#128161; Tư duy: Tại sao chọn Cross-Entropy mà không phải loss khác?</div>
+  <p>Cross-Entropy không được chọn vì nó "trông hay." Nó được suy ra từ <em>nguyên lý Maximum Likelihood</em> — cách tự nhiên nhất để ước lượng tham số cho bài toán phân loại nhị phân.</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Suy ra CE từ Bernoulli MLE — từng bước</summary>
+<div class="dc">
+<p><strong>Bước 1: Mô hình xác suất.</strong> Giả sử \(y \in \{0,1\}\) tuân theo phân phối Bernoulli với tham số \(\hat{y} = \sigma(z)\):</p>
+<div class="fbox no-top-radius">
+\[ P(y|\mathbf{x},\mathbf{w}) = \hat{y}^y \cdot (1-\hat{y})^{1-y} \]
+</div>
+<p><em>Kiểm tra:</em> Nếu y=1: P = ŷ. Nếu y=0: P = 1−ŷ. Đúng với Bernoulli.</p>
+
+<p style="margin-top:.75rem"><strong>Bước 2: Log-Likelihood.</strong> Lấy log (log đổi tích thành tổng, không thay đổi argmax):</p>
+<div class="fbox no-top-radius">
+\[ \log P(y|\mathbf{x},\mathbf{w}) = y\log\hat{y} + (1-y)\log(1-\hat{y}) \]
+</div>
+
+<p style="margin-top:.75rem"><strong>Bước 3: MLE = minimize Negative Log-Likelihood:</strong></p>
+<div class="fbox no-top-radius">
+\[ \mathcal{L}_{CE} = -\log P(y|\mathbf{x},\mathbf{w}) = -y\log\hat{y} - (1-y)\log(1-\hat{y}) \]
+</div>
+
+<div class="alert al-green">
+  <div class="alert-title">Kết luận: CE Loss chính là Negative Log-Likelihood của Bernoulli</div>
+  <p>Huấn luyện với CE = tìm \(\mathbf{w}\) để tối đa hóa xác suất quan sát dữ liệu huấn luyện → đây là lập luận <em>tự nhiên nhất</em> để chọn CE. Không phải ngẫu nhiên.</p>
+</div>
+</div>
+</details>
+
+<div class="ss-title">5.2 Tính lồi (Convexity) của Cross-Entropy — Tại sao không có cực tiểu địa phương?</div>
+<details open>
+<summary><i class="fas fa-calculator"></i> Chứng minh: Hessian của CE là bán xác định dương</summary>
+<div class="dc">
+<p>Với một điểm dữ liệu, \(\mathcal{L}_{CE}(\mathbf{w}) = -y\log\sigma(z) - (1-y)\log(1-\sigma(z))\), \(z = \mathbf{w}\cdot\mathbf{x}\):</p>
+<div class="fbox no-top-radius">
+\[ \frac{\partial^2 \mathcal{L}_{CE}}{\partial \mathbf{w}^2} = \sigma(z)(1-\sigma(z))\cdot \mathbf{x}\mathbf{x}^\top \]
+</div>
+<p>Với toàn bộ dataset:</p>
+<div class="fbox no-top-radius">
+\[ H = \sum_{i=1}^{N} \underbrace{\sigma(z_i)(1-\sigma(z_i))}_{\geq 0} \cdot \mathbf{x}_i\mathbf{x}_i^\top \succeq 0 \]
+</div>
+<div class="insight">
+  <div class="insight-title">&#9989; H &#8253; 0 → CE là hàm lồi trong w → Gradient Descent luôn hội tụ về global minimum</div>
+  <p>Mọi cực tiểu địa phương đều là cực tiểu toàn cục. Điều này <em>không đúng</em> với MSE+Sigmoid (không lồi) hay với Neural Networks (nhiều cực tiểu địa phương).</p>
+  <p style="margin-top:.35rem"><strong>Lưu ý:</strong> Hessian là tổng của các ma trận rank-1 \(\mathbf{x}_i\mathbf{x}_i^\top\) với hệ số không âm → PSD (không nhất thiết PD → không đảm bảo nghiệm duy nhất nếu features tuyến tính phụ thuộc).</p>
+</div>
+</div>
+</details>
 
 <details open>
 <summary><i class="fas fa-calculator"></i> Đạo hàm Cross-Entropy theo logit z (bước từng bước)</summary>
@@ -234,6 +765,57 @@ Thừa số sigmoid \(\hat{y}(1-\hat{y})\) từ chain rule <strong>triệt tiêu
 <div class="alert al-red" style="margin-top:.5rem">
 <div class="alert-title">Nghịch lý: Sai nhiều nhất → học ít nhất</div>
 Khi mô hình dự đoán cực kỳ sai (ŷ gần 0 hoặc 1 nhưng y ngược lại), sigmoid đang bão hòa → đạo hàm ≈ 0 → trọng số gần như không cập nhật → học rất chậm. Cross-Entropy không có vấn đề này vì thừa số sigmoid bị triệt tiêu trong công thức đạo hàm.
+</div>
+</div>
+</details>
+
+<div class="ss-title">6.1 Giới hạn trên của đạo hàm Sigmoid — σ'(z) ≤ 1/4</div>
+<div class="insight">
+  <div class="insight-title">&#128161; Tư duy: Tại sao 1/4 là con số quan trọng?</div>
+  <p>Đạo hàm \(\sigma'(z) = \sigma(z)(1-\sigma(z))\) là tích của hai số dương có tổng = 1. Theo bất đẳng thức AM-GM: tích tối đa khi hai số bằng nhau, tức \(\sigma(z) = 0.5\), tức \(z = 0\).</p>
+</div>
+
+<div class="fbox no-top-radius">
+\[ \sigma'(z) = \sigma(z)(1-\sigma(z)) \leq \left(\frac{\sigma(z) + (1-\sigma(z))}{2}\right)^2 = \frac{1}{4} \]
+\[ \text{Đạt max khi } z=0: \quad \sigma(0)=0.5 \Rightarrow \sigma'(0) = 0.5 \times 0.5 = \boxed{0.25} \]
+</div>
+
+<div class="ss-title">6.2 Hiệu ứng tích lũy qua L lớp — Exponential Decay</div>
+<details open>
+<summary><i class="fas fa-calculator"></i> Gradient Vanishing trong mạng nhiều lớp với Sigmoid</summary>
+<div class="dc">
+<p>Trong mạng L lớp với sigmoid mọi nơi, gradient backpropagation qua mỗi lớp nhân thêm một thừa số \(\sigma'(z_l)\):</p>
+<div class="fbox no-top-radius">
+\[ \frac{\partial \mathcal{L}}{\partial z_0} = \frac{\partial \mathcal{L}}{\partial z_L} \cdot \prod_{l=1}^{L} \underbrace{w_l \cdot \sigma'(z_l)}_{\leq w_l/4} \]
+</div>
+<p>Nếu các trọng số \(w_l \approx 1\) (không được khởi tạo tốt), giới hạn trên:</p>
+<div class="fbox no-top-radius">
+\[ \left|\frac{\partial \mathcal{L}}{\partial z_0}\right| \leq \left|\frac{\partial \mathcal{L}}{\partial z_L}\right| \cdot \left(\frac{1}{4}\right)^L \]
+</div>
+
+<table class="tbl" style="font-size:.83rem">
+<thead><tr><th>Số lớp L</th><th>Giới hạn trên \((1/4)^L\)</th><th>Ý nghĩa</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>0.25</td><td>Gradient còn 25% — ổn</td></tr>
+<tr><td>3</td><td>0.0156</td><td>Gradient còn 1.6% — đã yếu</td></tr>
+<tr><td>5</td><td>0.00098</td><td>Gradient còn 0.1% — rất yếu</td></tr>
+<tr><td>10</td><td>\(9.5 \times 10^{-7}\)</td><td>Gradient ≈ 0 — gần như không học</td></tr>
+<tr><td>20</td><td>\(9 \times 10^{-13}\)</td><td>Hoàn toàn biến mất</td></tr>
+</tbody>
+</table>
+
+<div class="warn-box">
+  <div class="warn-title">&#128683; Lý do Deep Networks không dùng Sigmoid ở hidden layers</div>
+  <ul>
+    <li><strong>Vanishing gradient:</strong> Lớp đầu nhận gradient ≈ 0 → trọng số không cập nhật → mạng không học được biểu diễn cấp thấp</li>
+    <li><strong>Giải pháp:</strong> ReLU — \(\text{ReLU}'(z) = 1\) khi \(z > 0\) → gradient không bị suy giảm (chỉ bị triệt tiêu khi z &lt; 0, không nhân lũy tiến)</li>
+    <li><strong>Sigmoid vẫn dùng ở output layer</strong> cho bài toán nhị phân vì đó là nơi CE gradient được tính</li>
+  </ul>
+</div>
+
+<div class="analogy">
+  <div class="analogy-title">&#127774; Ẩn dụ: Trò chơi điện thoại (Chinese Whispers)</div>
+  <p>Mỗi người trong chuỗi chỉ nghe được 25% tín hiệu từ người tiếp theo. Sau 10 người, thông tin ban đầu còn lại \(0.25^{10} \approx 10^{-6}\) — gần như câm hoàn toàn. Lớp đầu tiên của mạng sigmoid chính là người cuối cùng trong chuỗi.</p>
 </div>
 </div>
 </details>
@@ -281,6 +863,112 @@ Khi mô hình dự đoán cực kỳ sai (ŷ gần 0 hoặc 1 nhưng y ngược 
 <tr><td>λ = 0</td><td>Không decay, w tự do</td><td>Dễ overfit</td></tr>
 <tr><td>λ = 0.001</td><td>Decay nhẹ, kiểm soát vừa phải</td><td>Cân bằng tốt</td></tr>
 <tr><td>λ = 100</td><td>Decay mạnh, hầu hết w → 0</td><td>Underfit — mô hình gần linear trivial</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+<div class="ss-title">8.1 Diễn giải Bayesian: L2-Reg = MAP với Prior Gaussian</div>
+<div class="insight">
+  <div class="insight-title">&#128161; Tư duy: Regularization không phải "thủ thuật" — nó là cách mô hình hóa niềm tin tiên nghiệm về trọng số</div>
+  <p>MLE (không regularization): tìm \(\mathbf{w}\) tối đa hóa \(P(\mathcal{D}|\mathbf{w})\). MAP (có regularization): tìm \(\mathbf{w}\) tối đa hóa \(P(\mathbf{w}|\mathcal{D}) \propto P(\mathcal{D}|\mathbf{w}) \cdot P(\mathbf{w})\). Dạng của prior \(P(\mathbf{w})\) quyết định loại regularization.</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Suy ra L2 Regularization từ Gaussian Prior</summary>
+<div class="dc">
+<p><strong>Giả sử:</strong> Prior độc lập mỗi chiều: \(P(\mathbf{w}) = \prod_j \mathcal{N}(w_j; 0, 1/\lambda)\)</p>
+<div class="fbox no-top-radius">
+\[ P(\mathbf{w}) \propto \exp\!\left(-\frac{\lambda}{2}\|\mathbf{w}\|^2\right) \]
+</div>
+
+<p style="margin-top:.6rem"><strong>MAP Objective:</strong></p>
+<div class="fbox no-top-radius">
+\[ \hat{\mathbf{w}}_{MAP} = \arg\max_{\mathbf{w}}\; P(\mathbf{w}|\mathcal{D}) = \arg\max_{\mathbf{w}}\left[\sum_i \log P(y_i|\mathbf{x}_i,\mathbf{w}) + \log P(\mathbf{w})\right] \]
+\[ = \arg\max_{\mathbf{w}}\left[\sum_i \log P(y_i|\mathbf{x}_i,\mathbf{w}) - \frac{\lambda}{2}\|\mathbf{w}\|^2\right] \]
+\[ = \arg\min_{\mathbf{w}}\left[\mathcal{L}_{CE} + \frac{\lambda}{2}\|\mathbf{w}\|^2\right] = \arg\min_{\mathbf{w}}\; \mathcal{L}_{total} \]
+</div>
+<div class="alert al-green">
+  <div class="alert-title">L2 Regularization = MAP với Prior \(\mathcal{N}(0, 1/\lambda)\)</div>
+  <p>Gaussian prior có đỉnh tại 0, trải rộng theo \(1/\lambda\). λ lớn → prior hẹp → buộc trọng số gần 0 hơn. λ = 0 → không có prior → MLE thuần túy.</p>
+</div>
+</div>
+</details>
+
+<div class="ss-title">8.2 So sánh L1 và L2 — Prior, hình học, và ảnh hưởng đến trọng số</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> L1 = Laplace Prior → Sparse Weights</summary>
+<div class="dc">
+<p><strong>Laplace Prior:</strong> \(P(w_j) \propto \exp(-\lambda|w_j|)\)</p>
+<div class="fbox no-top-radius">
+\[ \log P(\mathbf{w}) = -\lambda\|\mathbf{w}\|_1 \quad\Rightarrow\quad \mathcal{L}_{L1} = \mathcal{L}_{CE} + \lambda\|\mathbf{w}\|_1 \]
+</div>
+
+<div class="two-col" style="margin-top:.6rem">
+<div class="col-card">
+  <h4>L2 (Ridge) — Gaussian Prior</h4>
+  <p style="font-size:.83rem">Phạt: \(\lambda\sum w_j^2\) — phạt nặng trọng số lớn, nhẹ trọng số nhỏ</p>
+  <p style="font-size:.83rem">Kết quả: Tất cả trọng số nhỏ nhưng <em>khác 0</em></p>
+  <p style="font-size:.83rem">Gradient: \(\nabla = \lambda w_j\) — tỉ lệ thuận với \(w_j\) → giảm dần (asymptotic)</p>
+  <p style="font-size:.83rem"><strong>Ứng dụng:</strong> Khi tất cả features đều có liên quan, chỉ muốn kiểm soát độ lớn</p>
+</div>
+<div class="col-card">
+  <h4>L1 (Lasso) — Laplace Prior</h4>
+  <p style="font-size:.83rem">Phạt: \(\lambda\sum|w_j|\) — phạt đều mọi trọng số, không giảm khi \(w_j \to 0\)</p>
+  <p style="font-size:.83rem">Kết quả: Nhiều trọng số = <em>chính xác 0</em> (sparse)</p>
+  <p style="font-size:.83rem">Subgradient: \(\text{sign}(w_j)\lambda\) — hằng số → đẩy thẳng về 0</p>
+  <p style="font-size:.83rem"><strong>Ứng dụng:</strong> Khi nhiều features không liên quan, muốn tự động chọn feature</p>
+</div>
+</div>
+
+<div class="insight">
+  <div class="insight-title">&#9711; Hình học: Tại sao L1 tạo sparsity — Góc nhìn constraint region</div>
+  <p>Minimizing \(\mathcal{L}_{CE} + \lambda\|\mathbf{w}\|_p\) tương đương với minimize \(\mathcal{L}_{CE}\) subject to \(\|\mathbf{w}\|_p \leq C(\lambda)\). Vùng ràng buộc (feasible region) của hai norm có hình dạng khác nhau:</p>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0">
+<div style="text-align:center;font-family:monospace;font-size:.8rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:1rem">
+<strong style="display:block;margin-bottom:.5rem;font-family:sans-serif;font-size:.83rem">L2 Constraint: Hình Cầu (Sphere)</strong>
+<pre style="background:none;font-size:.75rem;line-height:1.4;margin:0">
+    w₂
+     |
+   .-+-.
+  /  |  \
+ |   |   |
+-+---+---+-- w₁
+ |   |   |
+  \  |  /
+   '-+-'
+</pre>
+<p style="font-family:sans-serif;font-size:.8rem;margin-top:.4rem">Tất cả góc đều "cong" → nghiệm ít khi rơi vào trục → w₁ hoặc w₂ ít khi = 0</p>
+</div>
+<div style="text-align:center;font-family:monospace;font-size:.8rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:1rem">
+<strong style="display:block;margin-bottom:.5rem;font-family:sans-serif;font-size:.83rem">L1 Constraint: Hình Thoi (Diamond)</strong>
+<pre style="background:none;font-size:.75rem;line-height:1.4;margin:0">
+    w₂
+     |
+     *
+    /|\
+   / | \
+--*--+--*-- w₁
+   \ | /
+    \|/
+     *
+</pre>
+<p style="font-family:sans-serif;font-size:.8rem;margin-top:.4rem">Góc nhọn ở trục → contour CE thường tiếp xúc tại góc → w₁=0 hoặc w₂=0 → sparse!</p>
+</div>
+</div>
+
+<table class="tbl" style="font-size:.83rem;margin-top:.5rem">
+<thead><tr><th>Tiêu chí</th><th>L1 (Lasso)</th><th>L2 (Ridge)</th></tr></thead>
+<tbody>
+<tr><td>Prior tương đương</td><td>Laplace(0, 1/λ)</td><td>Gaussian(0, 1/λ)</td></tr>
+<tr><td>Vùng ràng buộc</td><td>Hình thoi (diamond)</td><td>Hình cầu (sphere)</td></tr>
+<tr><td>Trọng số bằng 0?</td><td>Có — chính xác 0 (sparse)</td><td>Không — tiệm cận 0</td></tr>
+<tr><td>Feature selection</td><td>Tự động (w=0 = bỏ feature)</td><td>Không (giữ tất cả features)</td></tr>
+<tr><td>Đạo hàm tại 0</td><td>Không tồn tại (subgradient)</td><td>Bằng 0 (mượt)</td></tr>
+<tr><td>Khi dùng</td><td>Nhiều features không liên quan</td><td>Ít features, tất cả có ý nghĩa</td></tr>
 </tbody>
 </table>
 </div>

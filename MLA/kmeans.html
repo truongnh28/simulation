@@ -110,6 +110,20 @@ li{font-size:.875rem;line-height:1.65}
 ul,ol{padding-left:1.4rem;margin:.4rem 0}
 strong{color:#1e293b}
 
+.insight{background:#f0fdf4;border:1px solid #86efac;border-left:4px solid #16a34a;border-radius:0 8px 8px 0;padding:.9rem 1.1rem;margin:.85rem 0}
+.insight-title{font-weight:700;color:#14532d;margin-bottom:.35rem;font-size:.88rem;display:flex;align-items:center;gap:.4rem}
+.analogy{background:#fefce8;border:1px solid #fde68a;border-left:4px solid #eab308;border-radius:0 8px 8px 0;padding:.9rem 1.1rem;margin:.85rem 0}
+.analogy-title{font-weight:700;color:#854d0e;margin-bottom:.35rem;font-size:.88rem;display:flex;align-items:center;gap:.4rem}
+.key-eq{background:#fff;border:2px solid #16a34a;border-radius:8px;padding:.85rem 1.25rem;margin:.75rem 0;text-align:center}
+.warn-box{background:#fef2f2;border:1px solid #fecaca;border-left:4px solid #ef4444;border-radius:0 8px 8px 0;padding:.9rem 1.1rem;margin:.85rem 0}
+.warn-title{font-weight:700;color:#b91c1c;margin-bottom:.35rem;font-size:.88rem;display:flex;align-items:center;gap:.4rem}
+.svg-wrap{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:1rem;margin:.85rem 0;overflow-x:auto;text-align:center}
+.svg-caption{font-size:.78rem;color:#64748b;margin-top:.4rem;text-align:center;font-style:italic}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0}
+.col-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:.9rem 1.1rem}
+.col-card h4{font-size:.85rem;font-weight:700;color:#1e293b;margin-bottom:.5rem}
+@media(max-width:640px){.two-col{grid-template-columns:1fr}}
+
 @media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
 </style>
 </head>
@@ -154,6 +168,77 @@ strong{color:#1e293b}
 <div class="s-title">1. Hàm mục tiêu WCSS</div>
 <div class="fbox no-top-radius">\[ J(C,\mu) = \sum_{k=1}^{K}\sum_{x\in C_k}\|x-\mu_k\|^2 \]</div>
 
+<div class="svg-wrap">
+<svg viewBox="0 0 420 250" width="100%" style="max-width:420px" font-family="'Segoe UI',system-ui,sans-serif">
+  <!-- Background -->
+  <rect width="420" height="250" fill="#f8fafc" rx="8"/>
+  <!-- Axes -->
+  <line x1="40" y1="220" x2="390" y2="220" stroke="#94a3b8" stroke-width="1.2"/>
+  <line x1="40" y1="220" x2="40" y2="20" stroke="#94a3b8" stroke-width="1.2"/>
+  <text x="210" y="245" text-anchor="middle" font-size="11" fill="#64748b">Feature 1</text>
+  <text x="14" y="125" text-anchor="middle" font-size="11" fill="#64748b" transform="rotate(-90,14,125)">Feature 2</text>
+  <!-- Cluster 1 points (blue) at roughly (80,160),(100,140),(70,120),(110,150),(90,170) -->
+  <!-- Squared distance squares for cluster 1 (2 points shown) -->
+  <!-- Point (80,160) to centroid (90,150): dist~14.1, square ~14px side -->
+  <rect x="80" y="150" width="10" height="10" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="1" stroke-dasharray="3,2"/>
+  <!-- Point (110,150) to centroid (90,150): dist~20, square shown -->
+  <rect x="90" y="150" width="20" height="20" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="1" stroke-dasharray="3,2"/>
+  <!-- label on square -->
+  <text x="101" y="164" text-anchor="middle" font-size="8.5" fill="#3b82f6">‖x−μ₁‖²</text>
+  <!-- Cluster 1 data points -->
+  <circle cx="80" cy="160" r="5" fill="#3b82f6"/>
+  <circle cx="100" cy="140" r="5" fill="#3b82f6"/>
+  <circle cx="70" cy="125" r="5" fill="#3b82f6"/>
+  <circle cx="110" cy="155" r="5" fill="#3b82f6"/>
+  <circle cx="95" cy="175" r="5" fill="#3b82f6"/>
+  <!-- Centroid 1 (cross) at (90,150) -->
+  <line x1="83" y1="150" x2="97" y2="150" stroke="#1d4ed8" stroke-width="2.5"/>
+  <line x1="90" y1="143" x2="90" y2="157" stroke="#1d4ed8" stroke-width="2.5"/>
+  <text x="90" y="138" text-anchor="middle" font-size="10" fill="#1d4ed8" font-weight="bold">μ₁</text>
+  <!-- Cluster 2 points (red) at roughly (270,80),(300,60),(320,90),(280,50),(310,75) -->
+  <!-- Square for point (270,80) to centroid (296,71): approx -->
+  <rect x="270" y="71" width="26" height="9" fill="#ef4444" fill-opacity="0.15" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,2"/>
+  <!-- Square for point (320,90) to centroid (296,71) -->
+  <rect x="296" y="71" width="24" height="19" fill="#ef4444" fill-opacity="0.15" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="308" y="85" text-anchor="middle" font-size="8.5" fill="#ef4444">‖x−μ₂‖²</text>
+  <!-- Cluster 2 data points -->
+  <circle cx="270" cy="80" r="5" fill="#ef4444"/>
+  <circle cx="300" cy="60" r="5" fill="#ef4444"/>
+  <circle cx="320" cy="90" r="5" fill="#ef4444"/>
+  <circle cx="280" cy="50" r="5" fill="#ef4444"/>
+  <circle cx="310" cy="75" r="5" fill="#ef4444"/>
+  <!-- Centroid 2 (cross) at (296,71) -->
+  <line x1="289" y1="71" x2="303" y2="71" stroke="#b91c1c" stroke-width="2.5"/>
+  <line x1="296" y1="64" x2="296" y2="78" stroke="#b91c1c" stroke-width="2.5"/>
+  <text x="296" y="58" text-anchor="middle" font-size="10" fill="#b91c1c" font-weight="bold">μ₂</text>
+  <!-- Legend -->
+  <circle cx="52" cy="30" r="5" fill="#3b82f6"/>
+  <text x="61" y="34" font-size="10" fill="#1d4ed8">Cluster 1</text>
+  <circle cx="120" cy="30" r="5" fill="#ef4444"/>
+  <text x="129" y="34" font-size="10" fill="#b91c1c">Cluster 2</text>
+  <!-- Main caption -->
+  <text x="210" y="16" text-anchor="middle" font-size="11" fill="#14532d" font-weight="700">WCSS = Σ diện tích các hình vuông</text>
+</svg>
+<div class="svg-caption">Mỗi hình vuông (nét đứt) có diện tích = ‖xᵢ − μₖ‖² — bình phương khoảng cách từ điểm đến tâm cụm. WCSS là tổng tất cả diện tích đó.</div>
+</div>
+
+<div class="ss-title">1.1 Ý nghĩa hình học của WCSS</div>
+<p>WCSS đo <strong>tổng độ phân tán nội cụm</strong> (within-cluster scatter). Mỗi số hạng \(\|x - \mu_k\|^2\) là bình phương khoảng cách từ điểm \(x\) đến tâm cụm — hình vuông cạnh \(\|x-\mu_k\|\). WCSS là tổng diện tích tất cả hình vuông đó trên toàn bộ dữ liệu.</p>
+<div class="analogy">
+  <div class="analogy-title"><i class="fas fa-city"></i> Tư duy trực giác</div>
+  <p>Hãy nghĩ K cụm là K quận trong thành phố và mỗi điểm dữ liệu là một cư dân. WCSS = tổng bình phương khoảng cách từ <em>mỗi cư dân</em> đến <em>trung tâm quận</em> mình. Phân cụm tốt = mỗi cư dân gần trung tâm quận nhất. K-Means tìm cách đặt trung tâm K quận sao cho tổng đó nhỏ nhất.</p>
+</div>
+
+<div class="ss-title">1.2 Tại sao WCSS phi lồi (Non-convex)?</div>
+<div class="insight">
+  <div class="insight-title"><i class="fas fa-lightbulb"></i> Key Insight — Hai không gian tối ưu hóa xung đột</div>
+  <p>WCSS phụ thuộc vào <em>hai biến cùng lúc</em>: tâm cụm \(\mu\) (liên tục) và phân gán cụm \(C\) (rời rạc tổ hợp).</p>
+  <ul style="margin-top:.4rem">
+    <li><strong>Cố định C, tối ưu μ:</strong> mỗi cụm giải độc lập bài toán \(\min_{\mu_k}\sum_{x\in C_k}\|x-\mu_k\|^2\) → hàm lồi (quadratic), có global minimum duy nhất là Mean.</li>
+    <li><strong>Cố định μ, tối ưu C:</strong> bài toán tổ hợp rời rạc — mỗi trong N điểm chọn 1 trong K cụm → \(K^N\) cấu hình → không gian rời rạc, khái niệm "lồi" không áp dụng được.</li>
+    <li><strong>Kết hợp:</strong> tối ưu <em>đồng thời</em> trên tích Descartes của không gian liên tục và rời rạc → phi lồi → tồn tại nhiều cực tiểu cục bộ.</li>
+  </ul>
+</div>
 <div class="alert al-yellow">
   <div class="alert-title">Câu 14 — Tính chất tối ưu hóa của WCSS</div>
   <p><strong>C (đúng):</strong> Hàm WCSS là <strong>non-convex</strong>. Không gian phân gán cụm C là rời rạc tổ hợp → tồn tại nhiều cực tiểu cục bộ. K-Means chỉ đảm bảo tìm cực tiểu cục bộ.</p>
@@ -164,6 +249,125 @@ strong{color:#1e293b}
 <div class="step"><div class="step-n">2</div><div class="step-c"><strong>Assignment:</strong> \(C_k = \{x : \|x-\mu_k\|\leq\|x-\mu_j\|,\;\forall j\}\)</div></div>
 <div class="step"><div class="step-n">3</div><div class="step-c"><strong>Update:</strong> \(\mu_k = \frac{1}{|C_k|}\sum_{x\in C_k} x\) (Mean với L2-norm)</div></div>
 <div class="step"><div class="step-n">4</div><div class="step-c"><strong>Lặp</strong> bước 2–3 đến khi không có điểm nào thay đổi cụm.</div></div>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 620 220" width="100%" style="max-width:620px" font-family="'Segoe UI',system-ui,sans-serif">
+  <!-- Panel backgrounds -->
+  <rect x="0"   y="0" width="180" height="220" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="220" y="0" width="180" height="220" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="440" y="0" width="180" height="220" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <!-- Panel headers -->
+  <rect x="0"   y="0" width="180" height="26" rx="8" fill="#14532d"/>
+  <rect x="0"   y="16" width="180" height="10" fill="#14532d"/>
+  <rect x="220" y="0" width="180" height="26" rx="8" fill="#1e3a5f"/>
+  <rect x="220" y="16" width="180" height="10" fill="#1e3a5f"/>
+  <rect x="440" y="0" width="180" height="26" rx="8" fill="#7c3aed"/>
+  <rect x="440" y="16" width="180" height="10" fill="#7c3aed"/>
+  <text x="90"  y="17" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">Bước 1: Khởi tạo</text>
+  <text x="310" y="17" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">Bước 2: Assignment</text>
+  <text x="530" y="17" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">Bước 3: Update</text>
+
+  <!-- ===== PANEL 1 DATA POINTS (all gray, unassigned) ===== -->
+  <!-- Cluster A region: ~(50,55),(65,70),(40,80),(55,90) -->
+  <circle cx="50"  cy="55"  r="5" fill="#94a3b8"/>
+  <circle cx="68"  cy="72"  r="5" fill="#94a3b8"/>
+  <circle cx="42"  cy="82"  r="5" fill="#94a3b8"/>
+  <circle cx="58"  cy="92"  r="5" fill="#94a3b8"/>
+  <!-- Cluster B region: ~(110,55),(130,65),(115,80),(135,85) -->
+  <circle cx="112" cy="55"  r="5" fill="#94a3b8"/>
+  <circle cx="132" cy="68"  r="5" fill="#94a3b8"/>
+  <circle cx="115" cy="82"  r="5" fill="#94a3b8"/>
+  <circle cx="138" cy="88"  r="5" fill="#94a3b8"/>
+  <!-- Cluster C region: ~(75,140),(90,150),(65,160),(80,170) -->
+  <circle cx="75"  cy="140" r="5" fill="#94a3b8"/>
+  <circle cx="93"  cy="152" r="5" fill="#94a3b8"/>
+  <circle cx="65"  cy="162" r="5" fill="#94a3b8"/>
+  <circle cx="85"  cy="172" r="5" fill="#94a3b8"/>
+  <!-- Random centroids (stars) for panel 1 -->
+  <!-- Star at (100,110) -->
+  <polygon points="100,100 103,108 112,108 105,113 108,122 100,117 92,122 95,113 88,108 97,108" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+  <!-- Star at (45,130) -->
+  <polygon points="45,120 48,128 57,128 50,133 53,142 45,137 37,142 40,133 33,128 42,128" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+  <!-- Star at (135,130) -->
+  <polygon points="135,120 138,128 147,128 140,133 143,142 135,137 127,142 130,133 123,128 132,128" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+  <!-- Label -->
+  <text x="90" y="200" text-anchor="middle" font-size="9.5" fill="#14532d" font-weight="600">Centroids ngẫu nhiên</text>
+  <text x="90" y="213" text-anchor="middle" font-size="9"   fill="#64748b">★ = centroid ban đầu</text>
+
+  <!-- Arrows between panels -->
+  <text x="205" y="115" text-anchor="middle" font-size="20" fill="#16a34a">→</text>
+  <text x="425" y="115" text-anchor="middle" font-size="20" fill="#16a34a">→</text>
+
+  <!-- ===== PANEL 2 DATA POINTS (colored by nearest centroid) ===== -->
+  <!-- Cluster A → red -->
+  <circle cx="270" cy="55"  r="5" fill="#ef4444"/>
+  <circle cx="288" cy="72"  r="5" fill="#ef4444"/>
+  <circle cx="262" cy="82"  r="5" fill="#ef4444"/>
+  <circle cx="278" cy="92"  r="5" fill="#ef4444"/>
+  <!-- Cluster B → blue -->
+  <circle cx="332" cy="55"  r="5" fill="#3b82f6"/>
+  <circle cx="352" cy="68"  r="5" fill="#3b82f6"/>
+  <circle cx="335" cy="82"  r="5" fill="#3b82f6"/>
+  <circle cx="358" cy="88"  r="5" fill="#3b82f6"/>
+  <!-- Cluster C → yellow/amber -->
+  <circle cx="295" cy="140" r="5" fill="#f59e0b"/>
+  <circle cx="313" cy="152" r="5" fill="#f59e0b"/>
+  <circle cx="285" cy="162" r="5" fill="#f59e0b"/>
+  <circle cx="305" cy="172" r="5" fill="#f59e0b"/>
+  <!-- Centroids panel 2 (same positions as panel 1 shifted +220) -->
+  <polygon points="320,100 323,108 332,108 325,113 328,122 320,117 312,122 315,113 308,108 317,108" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+  <polygon points="265,120 268,128 277,128 270,133 273,142 265,137 257,142 260,133 253,128 262,128" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+  <polygon points="355,120 358,128 367,128 360,133 363,142 355,137 347,142 350,133 343,128 352,128" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+  <!-- Dashed lines from centroid to cluster points (a few) -->
+  <line x1="275" y1="72" x2="265" y2="127" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+  <line x1="344" y1="68" x2="355" y2="127" stroke="#3b82f6" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+  <line x1="305" y1="155" x2="320" y2="108" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+  <!-- Label -->
+  <text x="310" y="200" text-anchor="middle" font-size="9.5" fill="#1e3a5f" font-weight="600">Mỗi điểm → centroid gần nhất</text>
+  <text x="310" y="213" text-anchor="middle" font-size="9"   fill="#64748b">màu = cụm được gán</text>
+
+  <!-- ===== PANEL 3 DATA POINTS (same coloring) ===== -->
+  <!-- Cluster A → red -->
+  <circle cx="490" cy="55"  r="5" fill="#ef4444"/>
+  <circle cx="508" cy="72"  r="5" fill="#ef4444"/>
+  <circle cx="482" cy="82"  r="5" fill="#ef4444"/>
+  <circle cx="498" cy="92"  r="5" fill="#ef4444"/>
+  <!-- Cluster B → blue -->
+  <circle cx="552" cy="55"  r="5" fill="#3b82f6"/>
+  <circle cx="572" cy="68"  r="5" fill="#3b82f6"/>
+  <circle cx="555" cy="82"  r="5" fill="#3b82f6"/>
+  <circle cx="578" cy="88"  r="5" fill="#3b82f6"/>
+  <!-- Cluster C → yellow/amber -->
+  <circle cx="515" cy="140" r="5" fill="#f59e0b"/>
+  <circle cx="533" cy="152" r="5" fill="#f59e0b"/>
+  <circle cx="505" cy="162" r="5" fill="#f59e0b"/>
+  <circle cx="525" cy="172" r="5" fill="#f59e0b"/>
+  <!-- Old centroids (faded stars) -->
+  <polygon points="540,100 543,108 552,108 545,113 548,122 540,117 532,122 535,113 528,108 537,108" fill="#f59e0b" fill-opacity="0.3" stroke="#b45309" stroke-width="1" stroke-opacity="0.3"/>
+  <polygon points="485,120 488,128 497,128 490,133 493,142 485,137 477,142 480,133 473,128 482,128" fill="#f59e0b" fill-opacity="0.3" stroke="#b45309" stroke-width="1" stroke-opacity="0.3"/>
+  <polygon points="575,120 578,128 587,128 580,133 583,142 575,137 567,142 570,133 563,128 572,128" fill="#f59e0b" fill-opacity="0.3" stroke="#b45309" stroke-width="1" stroke-opacity="0.3"/>
+  <!-- New centroids (solid stars, shifted to mean of cluster) -->
+  <!-- Red cluster mean ≈ (495,75) -->
+  <polygon points="495,65 498,73 507,73 500,78 503,87 495,82 487,87 490,78 483,73 492,73" fill="#ef4444" stroke="#b91c1c" stroke-width="1"/>
+  <!-- Blue cluster mean ≈ (564,73) -->
+  <polygon points="564,63 567,71 576,71 569,76 572,85 564,80 556,85 559,76 552,71 561,71" fill="#3b82f6" stroke="#1d4ed8" stroke-width="1"/>
+  <!-- Amber cluster mean ≈ (519,157) -->
+  <polygon points="519,147 522,155 531,155 524,160 527,169 519,164 511,169 514,160 507,155 516,155" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+  <!-- Arrows old→new centroids -->
+  <defs>
+    <marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+  <line x1="540" y1="110" x2="497" y2="77" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="575" y1="130" x2="566" y2="83" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="519" y1="130" x2="519" y2="148" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- Label -->
+  <text x="530" y="200" text-anchor="middle" font-size="9.5" fill="#7c3aed" font-weight="600">Centroid ← Mean của cluster</text>
+  <text x="530" y="213" text-anchor="middle" font-size="9"   fill="#64748b">★ mờ=cũ, ★ rõ=mới</text>
+</svg>
+<div class="svg-caption">Ba bước lặp của Lloyd's Algorithm. Mũi tên xanh lá (→) chỉ hướng lặp lại cho đến khi hội tụ.</div>
+</div>
 
 <div class="alert al-green">
   <div class="alert-title">Câu 16 — Đảm bảo hội tụ</div>
@@ -177,68 +381,377 @@ strong{color:#1e293b}
   <p>→ Khi dùng Manhattan distance, bước Update phải đổi sang Median. <strong>Đáp án B</strong></p>
 </div>
 
-<div class="s-title">4. Chứng minh Hội tụ của Lloyd's Algorithm</div>
+<!-- ══════════════════════════════════════════════
+     SECTION 4 — Convergence (deep analysis)
+══════════════════════════════════════════════ -->
+<div class="s-title">4. Hội tụ của Lloyd's Algorithm — Chứng minh chặt chẽ</div>
+
+<div class="ss-title">4.1 Cấu trúc Alternating Optimization (Tối ưu hóa xen kẽ)</div>
+<div class="analogy">
+  <div class="analogy-title"><i class="fas fa-sync-alt"></i> Tư duy về Lloyd's Algorithm</div>
+  <p>Lloyd's Algorithm giải bài toán tối ưu WCSS(C, μ) bằng cách xen kẽ hai bước:<br>
+  • <strong>Assignment</strong>: cố định μ, tìm C* tối ưu (mỗi điểm về cụm gần nhất).<br>
+  • <strong>Update</strong>: cố định C, tìm μ* tối ưu (tâm cụm mới = Mean).<br>
+  Mỗi bước <em>tối ưu toàn cục cho bài toán con</em> của nó. Kết hợp hai bước: WCSS không bao giờ tăng.</p>
+</div>
+
+<div class="ss-title">4.2 Ba luận điểm đảm bảo hội tụ hữu hạn</div>
 
 <details open>
-<summary><i class="fas fa-calculator"></i> Hai điều kiện đảm bảo hội tụ hữu hạn</summary>
+<summary><i class="fas fa-check-circle"></i> Luận điểm 1 — Assignment step không tăng WCSS</summary>
 <div class="dc">
-<p><strong>Điều kiện 1: WCSS không tăng tại mỗi bước</strong></p>
-<div class="step"><div class="step-n">A</div><div class="step-c"><strong>Assignment step:</strong> Mỗi điểm gán vào cụm có tâm gần nhất → \(\|x-\mu_{c_{\text{new}}}\| \leq \|x-\mu_{c_{\text{old}}}\|\) → WCSS không tăng.</div></div>
-<div class="step"><div class="step-n">B</div><div class="step-c"><strong>Update step:</strong> Mean là nghiệm tối ưu của \(\min_\mu \sum_{x\in C_k}\|x-\mu\|^2\) → thay tâm cũ bằng Mean luôn giảm hoặc giữ WCSS trong cluster đó.</div></div>
-<p style="margin:.7rem 0"><strong>Điều kiện 2: Số cấu hình phân gán là hữu hạn</strong></p>
-<p>Có tối đa \(K^N\) cách phân gán N điểm vào K cụm (thực tế ít hơn nhiều). Kết hợp với WCSS non-increasing → không thể lặp vô hạn → thuật toán dừng.</p>
-<div class="alert al-yellow" style="margin-top:.5rem">
-<div class="alert-title">Lưu ý quan trọng</div>
-Hội tụ đến <strong>cực tiểu CỤC BỘ</strong>, không phải toàn cục. Trong thực tế: chạy K-Means nhiều lần với init khác nhau (hoặc dùng K-Means++), chọn kết quả có WCSS nhỏ nhất.
+<p>Trước bước Assignment, điểm \(x_i\) đang thuộc cụm \(c_i^{\text{cũ}}\). Sau Assignment, \(x_i\) được gán vào cụm \(c_i^{\text{mới}} = \arg\min_k \|x_i - \mu_k\|^2\).</p>
+<div class="key-eq">
+\[ \|x_i - \mu_{c_i^{\text{mới}}}\|^2 = \min_k \|x_i - \mu_k\|^2 \;\leq\; \|x_i - \mu_{c_i^{\text{cũ}}}\|^2 \]
+</div>
+<p>Điều này đúng cho <em>mọi</em> điểm \(x_i\) → tổng cũng không tăng:</p>
+<div class="key-eq">
+\[ \text{WCSS}_{\text{sau Assignment}} = \sum_{i=1}^N \min_k \|x_i - \mu_k\|^2 \;\leq\; \sum_{i=1}^N \|x_i - \mu_{c_i^{\text{cũ}}}\|^2 = \text{WCSS}_{\text{trước}} \]
+</div>
+<div class="insight">
+  <div class="insight-title"><i class="fas fa-lightbulb"></i> Tại sao đẳng thức có thể xảy ra?</div>
+  <p>Nếu <em>không có điểm nào</em> đổi cụm trong bước Assignment → tất cả điểm đều đã ở cụm gần nhất → đẳng thức → thuật toán đã hội tụ (điểm dừng).</p>
 </div>
 </div>
 </details>
 
-<div class="s-title">5. Tính Phi lồi (Non-convex) — Tại sao tồn tại Local Minima?</div>
+<details open>
+<summary><i class="fas fa-check-circle"></i> Luận điểm 2 — Update step không tăng WCSS</summary>
+<div class="dc">
+<p>Với phân gán C cố định, bước Update giải N bài toán <em>độc lập</em>, một cho mỗi cụm:</p>
+<div class="key-eq">
+\[ \mu_k^{\text{mới}} = \arg\min_\mu \sum_{x \in C_k} \|x - \mu\|^2 \]
+</div>
+<p>Đây là bài toán <strong>lồi</strong> (quadratic) → nghiệm global duy nhất là Mean (chứng minh ở Section 6). Bằng cách thay tâm cũ bằng nghiệm tối ưu này, WCSS của cụm \(k\) không thể tăng:</p>
+<div class="key-eq">
+\[ \sum_{x \in C_k} \|x - \mu_k^{\text{mới}}\|^2 \;\leq\; \sum_{x \in C_k} \|x - \mu_k^{\text{cũ}}\|^2 \quad \forall k \]
+</div>
+<p>Cộng theo tất cả K cụm → WCSS toàn cục không tăng.</p>
+</div>
+</details>
 
-<div class="alert al-red">
-  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> WCSS phi lồi theo không gian phân gán C</div>
-  <ul>
-    <li>Với phân gán C cố định → WCSS là hàm lồi theo μ → có global optimum là Mean → giải được chính xác.</li>
-    <li>Với μ cố định → tìm phân gán tối ưu là bài toán tổ hợp rời rạc → không convex.</li>
-    <li>Kết hợp hai không gian (rời rạc + liên tục) → WCSS toàn cục phi lồi → nhiều local minima.</li>
-  </ul>
+<details open>
+<summary><i class="fas fa-check-circle"></i> Luận điểm 3 — Không gian tổ hợp hữu hạn → thuật toán phải dừng</summary>
+<div class="dc">
+<p>Số cấu hình phân gán N điểm vào K cụm bị chặn trên bởi:</p>
+<div class="key-eq">
+\[ |\mathcal{C}| \leq K^N \quad \text{(thực tế là số Stirling loại 2: } S(N,K) \text{, nhỏ hơn nhiều)} \]
+</div>
+<p>Kết hợp ba tính chất:</p>
+<ul>
+  <li>WCSS không tăng sau mỗi vòng lặp (từ Luận điểm 1 và 2).</li>
+  <li>Nếu WCSS <em>giảm</em> → cấu hình phân gán phải thay đổi (không thể về cấu hình cũ với WCSS thấp hơn).</li>
+  <li>Chỉ có hữu hạn cấu hình → không thể giảm WCSS nhiều hơn \(K^N\) lần.</li>
+</ul>
+<div class="insight">
+  <div class="insight-title"><i class="fas fa-route"></i> Kết luận hội tụ</div>
+  <p>Sau tối đa \(K^N\) vòng lặp, Lloyd's algorithm <em>phải</em> đạt điểm dừng (fixed point): Assignment step không thay đổi cấu hình → WCSS không giảm thêm được. <strong>Thuật toán luôn hội tụ sau hữu hạn bước.</strong></p>
+</div>
+</div>
+</details>
+
+<div class="ss-title">4.3 Điều Lloyd's Algorithm KHÔNG đảm bảo</div>
+<div class="warn-box">
+  <div class="warn-title"><i class="fas fa-exclamation-triangle"></i> Hội tụ đến Local Minimum, KHÔNG phải Global Minimum</div>
+  <p>Điểm dừng của Lloyd's algorithm thỏa mãn: <em>không có điểm nào có thể được gán lại sang cụm khác mà giảm WCSS</em>. Đây là điều kiện local minimum, không phải global. Bài toán tìm phân cụm tối ưu toàn cục (K-Means chính xác) là NP-hard — không có thuật toán đa thức nào giải được tổng quát.</p>
+  <p><strong>Hệ quả thực tế:</strong> chạy K-Means nhiều lần (\(\geq 10\)) với khởi tạo khác nhau (hoặc K-Means++) rồi chọn kết quả có WCSS nhỏ nhất.</p>
+</div>
+
+<div class="ss-title">4.4 Tốc độ hội tụ thực tế</div>
+<div class="two-col">
+  <div class="col-card">
+    <h4>Lý thuyết (worst case)</h4>
+    <ul>
+      <li>Tối đa \(K^N\) vòng lặp</li>
+      <li>Có thể exponential với N</li>
+      <li>Ít xảy ra trong thực tế</li>
+    </ul>
+  </div>
+  <div class="col-card">
+    <h4>Thực tế (average case)</h4>
+    <ul>
+      <li>Thường hội tụ sau 10–50 vòng lặp</li>
+      <li>Mỗi vòng: nhiều điểm không đổi cụm → "bulk convergence" nhanh</li>
+      <li>Phụ thuộc mạnh vào chất lượng khởi tạo</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 5 — Non-convexity (deep analysis)
+══════════════════════════════════════════════ -->
+<div class="s-title">5. Tính Phi lồi — Bản chất của Local Minima trong K-Means</div>
+
+<div class="ss-title">5.1 Định nghĩa local minimum trong K-Means</div>
+
+<div class="insight">
+  <div class="insight-title"><i class="fas fa-map-pin"></i> Điều kiện local minimum (chặt chẽ)</div>
+  <p>Cấu hình \((C^*, \mu^*)\) là <strong>local minimum</strong> khi và chỉ khi không có điểm nào có thể được gán lại sang cụm khác mà làm giảm WCSS:</p>
+  <div style="margin:.5rem 0">
+    \[\forall i, \forall k \neq c_i^*: \quad \|x_i - \mu_{c_i^*}^*\|^2 \leq \|x_i - \mu_k^*\|^2\]
+  </div>
+  <p>Đây chính xác là điều Assignment step đảm bảo. Nhưng có thể có cặp điểm \((x_i, x_j)\) mà nếu <em>đồng thời</em> hoán đổi cụm, WCSS giảm — local minimum không xét hoán đổi đồng thời.</p>
+</div>
+
+<div class="ss-title">5.2 Visualization địa hình tối ưu hóa của K-Means</div>
+<div class="fbox no-top-radius" style="text-align:left;padding:1rem 1.5rem">
+<pre style="font-family:monospace;font-size:.79rem;line-height:1.9">
+  WCSS (cao = xấu)
+    │
+    │  Khởi tạo A              Khởi tạo B
+    │  ●                          ●
+    │   ╲                        ╱
+    │    ╲                      ╱
+    │     ╲   Local Min        ╱       Global Min
+    │      ▼ ←──────────┐    ╱──────────→ ▼
+    │      ■             │  ╱             ■  ← thấp nhất
+    │                    ╰─╯
+    └──────────────────────────────────────→ Không gian phân gán C
+
+  • Lloyd's = gradient descent trên địa hình này
+  • Không "nhảy qua" đỉnh → bị mắc kẹt ở valley đầu tiên gặp phải
+  • Khởi tạo khác nhau → dẫn đến các valley khác nhau</pre>
 </div>
 
 <details>
-<summary><i class="fas fa-lightbulb"></i> Ví dụ: Cùng data, init khác → local minima khác</summary>
+<summary><i class="fas fa-lightbulb"></i> Ví dụ cụ thể: cùng data, init khác → local minima khác</summary>
 <div class="dc">
-<p>6 điểm: A(0,0), B(1,0), C(5,0), D(6,0), E(3,3), F(3,-3). K=2.</p>
+<p>6 điểm: A(0,0), B(1,0), C(5,0), D(6,0), E(3,3), F(3,−3). K=2. Dữ liệu tự nhiên nên chia theo trục X: {A,B} vs {C,D,E,F}.</p>
 <table class="tbl" style="font-size:.82rem">
-<thead><tr><th>Khởi tạo</th><th>Cụm 1</th><th>Cụm 2</th><th>WCSS</th></tr></thead>
+<thead><tr><th>Khởi tạo</th><th>Cụm 1</th><th>Cụm 2</th><th>WCSS</th><th>Đánh giá</th></tr></thead>
 <tbody>
-<tr><td>μ₁=(0,0), μ₂=(5,0)</td><td>{A,B}</td><td>{C,D,E,F}</td><td>Nhỏ (tốt)</td></tr>
-<tr><td>μ₁=(3,3), μ₂=(3,-3)</td><td>{A,B,E}</td><td>{C,D,F}</td><td>Lớn hơn (local min)</td></tr>
+<tr style="background:#f0fdf4"><td>μ₁=(0,0), μ₂=(5,0)</td><td>{A,B}</td><td>{C,D,E,F}</td><td>Thấp</td><td>Global min ✓</td></tr>
+<tr><td>μ₁=(3,3), μ₂=(3,−3)</td><td>{A,B,C,D trên E}</td><td>{F,…}</td><td>Cao hơn</td><td>Local min ✗</td></tr>
 </tbody>
 </table>
-<p>Cùng dữ liệu, init khác → hội tụ đến các cực tiểu cục bộ khác nhau!</p>
+<p>Khởi tạo theo trục Y (E và F) "nhìn" dữ liệu theo chiều sai → hội tụ đến cực tiểu cục bộ.</p>
 </div>
 </details>
 
-<div class="s-title">6. Bằng chứng toán học: Tại sao L1 → Median, L2 → Mean?</div>
+<div class="ss-title">5.3 Giải pháp: K-Means++ Initialization</div>
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-rocket"></i> K-Means++ — Khởi tạo thông minh</div>
+  <div class="step"><div class="step-n">1</div><div class="step-c">Chọn tâm đầu tiên \(\mu_1\) <strong>ngẫu nhiên đều</strong> từ tập dữ liệu.</div></div>
+  <div class="step"><div class="step-n">2</div><div class="step-c">Tính \(D(x) = \min_{j < \text{current}}\|x - \mu_j\|^2\) cho mỗi điểm x chưa chọn (khoảng cách đến tâm gần nhất đã có).</div></div>
+  <div class="step"><div class="step-n">3</div><div class="step-c">Chọn tâm mới với xác suất tỷ lệ \(D(x)^2\): điểm <em>xa</em> các tâm hiện có có xác suất được chọn <em>cao</em>.</div></div>
+  <div class="step"><div class="step-n">4</div><div class="step-c">Lặp bước 2–3 đến khi có đủ K tâm. Sau đó chạy Lloyd's bình thường.</div></div>
+  <div class="insight" style="margin-top:.7rem">
+    <div class="insight-title"><i class="fas fa-shield-alt"></i> Đảm bảo lý thuyết của K-Means++</div>
+    <p>K-Means++ đảm bảo trong kỳ vọng: \(\mathbb{E}[\text{WCSS}] \leq 8(\ln K + 2) \cdot \text{WCSS}^*\), trong đó \(\text{WCSS}^*\) là giá trị tối ưu toàn cục. Xác suất "trải đều" tâm ban đầu giúp tránh phần lớn local minima xấu.</p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 6 — L1→Median, L2→Mean (deep analysis)
+══════════════════════════════════════════════ -->
+<div class="s-title">6. L2 → Mean, L1 → Median — Chứng minh và Trực quan sâu</div>
+
+<div class="ss-title">6.1 Cơ sở: bước Update giải bài toán tối ưu nào?</div>
+<p>Với phân gán cụm \(C_k\) cố định, bước Update tìm tâm \(\mu_k\) tối thiểu hóa tổng "phí tổn" từ mỗi điểm trong cụm đến tâm:</p>
+<div class="two-col">
+  <div class="col-card">
+    <h4>K-Means (L2-norm)</h4>
+    \[\min_\mu \sum_{x \in C_k} \|x - \mu\|_2^2 = \sum_{x \in C_k}(x-\mu)^2\]
+    <p style="font-size:.83rem;margin-top:.4rem">Phí tổn = bình phương khoảng cách</p>
+  </div>
+  <div class="col-card">
+    <h4>K-Medians (L1-norm)</h4>
+    \[\min_\mu \sum_{x \in C_k} \|x - \mu\|_1 = \sum_{x \in C_k}|x-\mu|\]
+    <p style="font-size:.83rem;margin-top:.4rem">Phí tổn = khoảng cách tuyệt đối</p>
+  </div>
+</div>
+<p>Hai bài toán giống nhau về cấu trúc nhưng khác hàm phí tổn → nghiệm khác nhau.</p>
+
+<div class="ss-title">6.2 L2 → Mean: Chứng minh và trực quan hình học</div>
 
 <details open>
 <summary><i class="fas fa-calculator"></i> Chứng minh bằng đạo hàm (1 chiều)</summary>
 <div class="dc">
-<p><strong>L2-norm → Mean:</strong> Tối thiểu hóa \(f(\mu) = \sum_{x\in C_k}(x-\mu)^2\):</p>
+<p>Tối thiểu hóa \(f(\mu) = \sum_{i=1}^n (x_i - \mu)^2\):</p>
 <div class="fbox no-top-radius">
-\[ \frac{df}{d\mu} = -2\sum_{x\in C_k}(x-\mu) = 0 \implies \mu = \frac{1}{|C_k|}\sum_{x\in C_k} x = \textbf{Mean} \]
+\[\frac{df}{d\mu} = \sum_{i=1}^n \frac{d}{d\mu}(x_i-\mu)^2 = \sum_{i=1}^n -2(x_i-\mu) = -2\left(\sum_{i=1}^n x_i - n\mu\right) = 0\]
+\[\Longrightarrow\quad n\mu = \sum_{i=1}^n x_i \quad\Longrightarrow\quad \mu^* = \frac{1}{n}\sum_{i=1}^n x_i = \mathbf{Mean}\]
 </div>
-<p><strong>L1-norm → Median:</strong> Tối thiểu hóa \(g(\mu) = \sum_{x\in C_k}|x-\mu|\):</p>
-<div class="fbox no-top-radius">
-\[ \frac{dg}{d\mu} = -\sum_{x\in C_k}\text{sgn}(x-\mu) = 0 \implies \#\{x > \mu\} = \#\{x < \mu\} \implies \mu = \textbf{Median} \]
-</div>
-<div class="alert al-green" style="margin-top:.5rem">
-<div class="alert-title">Trực quan</div>
-<strong>Mean</strong> cân bằng khoảng cách có hướng (signed distances). <strong>Median</strong> cân bằng số lượng điểm hai phía. Median robust với outliers hơn Mean — đặc tính hữu ích khi data có noise.
+<div class="insight">
+  <div class="insight-title"><i class="fas fa-balance-scale"></i> Trực quan hình học</div>
+  <p>Điều kiện tối ưu \(\sum_i (x_i - \mu) = 0\) có nghĩa: <strong>tổng khoảng cách có hướng (signed distances) từ Mean đến tất cả điểm = 0</strong>. Mean là "điểm cân bằng trọng lực" — tổng khoảng cách về bên trái bằng tổng khoảng cách về bên phải (theo nghĩa có hướng).</p>
+  <p>Đây cũng là lý do tại sao Mean nhạy cảm với outliers: một điểm ở xa làm \((x_{\text{outlier}} - \mu)\) rất lớn → kéo Mean về phía nó để cân bằng phương trình.</p>
 </div>
 </div>
 </details>
+
+<div class="ss-title">6.3 L1 → Median: Chứng minh qua Subgradient</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Chứng minh qua điều kiện tối ưu của hàm không khả vi</summary>
+<div class="dc">
+<p>Tối thiểu hóa \(g(\mu) = \sum_{i=1}^n |x_i - \mu|\). Hàm này <strong>không khả vi</strong> tại \(\mu = x_i\) (điểm "góc"). Dùng subgradient:</p>
+<div class="fbox no-top-radius">
+\[\partial g / \partial \mu = \sum_{i=1}^n \frac{d}{d\mu}|x_i - \mu| = \sum_{i=1}^n (-\,\text{sgn}(x_i - \mu))\]
+</div>
+<p>Trong đó \(\text{sgn}(x_i - \mu) = +1\) nếu \(x_i > \mu\), \(-1\) nếu \(x_i < \mu\), \(\in [-1,+1]\) nếu \(x_i = \mu\).</p>
+<p>Điều kiện tối ưu \(0 \in \partial g / \partial \mu\):</p>
+<div class="key-eq">
+\[\sum_{i: x_i > \mu} 1 \;=\; \sum_{i: x_i < \mu} 1 \quad\Longleftrightarrow\quad \#\{x_i > \mu\} = \#\{x_i < \mu\}\]
+</div>
+<p>→ Điểm \(\mu^*\) có <strong>số lượng điểm bên trái = số lượng điểm bên phải</strong> → đó chính là <strong>Median</strong>.</p>
+<div class="insight">
+  <div class="insight-title"><i class="fas fa-balance-scale"></i> Trực quan hình học — Sự khác biệt cốt lõi</div>
+  <div class="two-col">
+    <div class="col-card">
+      <h4>Mean (L2)</h4>
+      <p>Cân bằng <em>khoảng cách có hướng</em> (signed distances): \(\sum(x_i - \mu) = 0\). Phụ thuộc vào <em>giá trị</em> khoảng cách → bị kéo bởi outliers.</p>
+    </div>
+    <div class="col-card">
+      <h4>Median (L1)</h4>
+      <p>Cân bằng <em>số lượng điểm</em> hai phía: \(\#\text{phải} = \#\text{trái}\). Chỉ phụ thuộc vào <em>thứ tự</em> → outliers không ảnh hưởng miễn là còn là thiểu số.</p>
+    </div>
+  </div>
+</div>
+</div>
+</details>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 500 180" width="100%" style="max-width:500px" font-family="'Segoe UI',system-ui,sans-serif">
+  <!-- Panel backgrounds -->
+  <rect x="0"   y="0" width="238" height="180" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="262" y="0" width="238" height="180" rx="8" fill="#fff" stroke="#e2e8f0" stroke-width="1"/>
+  <!-- Headers -->
+  <rect x="0"   y="0" width="238" height="26" rx="8" fill="#14532d"/>
+  <rect x="0"   y="16" width="238" height="10" fill="#14532d"/>
+  <rect x="262" y="0" width="238" height="26" rx="8" fill="#1e3a5f"/>
+  <rect x="262" y="16" width="238" height="10" fill="#1e3a5f"/>
+  <text x="119" y="17" text-anchor="middle" font-size="10.5" fill="#fff" font-weight="700">L2 → Mean (cân bằng signed dist.)</text>
+  <text x="381" y="17" text-anchor="middle" font-size="10.5" fill="#fff" font-weight="700">L1 → Median (cân bằng counts)</text>
+
+  <!-- ===== PANEL 1: L2 → Mean ===== -->
+  <!-- Number line -->
+  <line x1="20" y1="90" x2="225" y2="90" stroke="#cbd5e1" stroke-width="1.5"/>
+  <!-- Tick marks 0..10 mapped: x = 20 + val*20 -->
+  <!-- 0→20, 1→40, 2→60, 4→100, 8→180, 9→200, 10→220 -->
+  <line x1="20"  y1="85" x2="20"  y2="95" stroke="#94a3b8" stroke-width="1"/>
+  <line x1="220" y1="85" x2="220" y2="95" stroke="#94a3b8" stroke-width="1"/>
+  <text x="20"  y="104" text-anchor="middle" font-size="8" fill="#94a3b8">0</text>
+  <text x="220" y="104" text-anchor="middle" font-size="8" fill="#94a3b8">10</text>
+  <!-- Data points at 1,2,4,8,9 → x: 40,60,100,180,200 -->
+  <circle cx="40"  cy="90" r="5.5" fill="#3b82f6"/>
+  <circle cx="60"  cy="90" r="5.5" fill="#3b82f6"/>
+  <circle cx="100" cy="90" r="5.5" fill="#3b82f6"/>
+  <circle cx="180" cy="90" r="5.5" fill="#3b82f6"/>
+  <circle cx="200" cy="90" r="5.5" fill="#3b82f6"/>
+  <text x="40"  y="78" text-anchor="middle" font-size="8" fill="#3b82f6">1</text>
+  <text x="60"  y="78" text-anchor="middle" font-size="8" fill="#3b82f6">2</text>
+  <text x="100" y="78" text-anchor="middle" font-size="8" fill="#3b82f6">4</text>
+  <text x="180" y="78" text-anchor="middle" font-size="8" fill="#3b82f6">8</text>
+  <text x="200" y="78" text-anchor="middle" font-size="8" fill="#3b82f6">9</text>
+  <!-- Mean = 4.8 → x = 20 + 4.8*20 = 116 -->
+  <!-- Triangle (▲) at 116 -->
+  <polygon points="116,70 110,84 122,84" fill="#16a34a"/>
+  <text x="116" y="62" text-anchor="middle" font-size="9" fill="#16a34a" font-weight="700">μ=4.8</text>
+  <!-- Arrows: negative (left of mean) → red, positive → positive (right) → blue -->
+  <!-- x=1 (40) is left of mean (116): red arrow 116→40 -->
+  <defs>
+    <marker id="ar-neg" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto"><path d="M0,0 L0,5 L5,2.5 z" fill="#ef4444"/></marker>
+    <marker id="ar-pos" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto"><path d="M0,0 L0,5 L5,2.5 z" fill="#3b82f6"/></marker>
+  </defs>
+  <line x1="116" y1="110" x2="42"  y2="110" stroke="#ef4444" stroke-width="1.5" marker-end="url(#ar-neg)"/>
+  <line x1="116" y1="117" x2="62"  y2="117" stroke="#ef4444" stroke-width="1.5" marker-end="url(#ar-neg)"/>
+  <line x1="116" y1="124" x2="102" y2="124" stroke="#ef4444" stroke-width="1.5" marker-end="url(#ar-neg)"/>
+  <line x1="116" y1="110" x2="178" y2="110" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#ar-pos)"/>
+  <line x1="116" y1="117" x2="198" y2="117" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#ar-pos)"/>
+  <text x="119" y="152" text-anchor="middle" font-size="9" fill="#14532d" font-weight="600">Σ(xᵢ − μ) = 0</text>
+  <text x="119" y="165" text-anchor="middle" font-size="8.5" fill="#64748b">Signed distances cancel</text>
+
+  <!-- ===== PANEL 2: L1 → Median ===== -->
+  <!-- Number line -->
+  <line x1="282" y1="90" x2="487" y2="90" stroke="#cbd5e1" stroke-width="1.5"/>
+  <line x1="282" y1="85" x2="282" y2="95" stroke="#94a3b8" stroke-width="1"/>
+  <line x1="482" y1="85" x2="482" y2="95" stroke="#94a3b8" stroke-width="1"/>
+  <text x="282" y="104" text-anchor="middle" font-size="8" fill="#94a3b8">0</text>
+  <text x="482" y="104" text-anchor="middle" font-size="8" fill="#94a3b8">10</text>
+  <!-- Data points at 1,2,4,8,9 → x: 302,322,362,442,462 (base 282 + val*20) -->
+  <circle cx="302" cy="90" r="5.5" fill="#3b82f6"/>
+  <circle cx="322" cy="90" r="5.5" fill="#3b82f6"/>
+  <circle cx="362" cy="90" r="5.5" fill="#f59e0b"/>
+  <circle cx="442" cy="90" r="5.5" fill="#ef4444"/>
+  <circle cx="462" cy="90" r="5.5" fill="#ef4444"/>
+  <text x="302" y="78" text-anchor="middle" font-size="8" fill="#3b82f6">1</text>
+  <text x="322" y="78" text-anchor="middle" font-size="8" fill="#3b82f6">2</text>
+  <text x="362" y="78" text-anchor="middle" font-size="9" fill="#f59e0b" font-weight="700">4</text>
+  <text x="442" y="78" text-anchor="middle" font-size="8" fill="#ef4444">8</text>
+  <text x="462" y="78" text-anchor="middle" font-size="8" fill="#ef4444">9</text>
+  <!-- Median = 4 → x = 282 + 4*20 = 362 -->
+  <polygon points="362,70 356,84 368,84" fill="#16a34a"/>
+  <text x="362" y="62" text-anchor="middle" font-size="9" fill="#16a34a" font-weight="700">m=4</text>
+  <!-- Count indicators -->
+  <text x="312" y="122" text-anchor="middle" font-size="13" fill="#3b82f6" font-weight="700">&lt;</text>
+  <text x="312" y="136" text-anchor="middle" font-size="8" fill="#3b82f6">2 điểm</text>
+  <text x="452" y="122" text-anchor="middle" font-size="13" fill="#ef4444" font-weight="700">&gt;</text>
+  <text x="452" y="136" text-anchor="middle" font-size="8" fill="#ef4444">2 điểm</text>
+  <!-- Balance arrows -->
+  <line x1="362" y1="110" x2="324" y2="110" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#ar-neg)"/>
+  <line x1="362" y1="110" x2="440" y2="110" stroke="#ef4444" stroke-width="1.5" marker-end="url(#ar-pos)"/>
+  <text x="381" y="152" text-anchor="middle" font-size="9" fill="#1e3a5f" font-weight="600">#{xᵢ &gt; m} = #{xᵢ &lt; m} = 2</text>
+  <text x="381" y="165" text-anchor="middle" font-size="8.5" fill="#64748b">Counts balance</text>
+</svg>
+<div class="svg-caption">Trực quan sự khác biệt giữa L2→Mean và L1→Median. Mean cân bằng tổng khoảng cách có hướng; Median cân bằng số điểm hai phía.</div>
+</div>
+
+<div class="ss-title">6.4 Mở rộng sang D chiều — Tính tách biệt theo tọa độ</div>
+
+<div class="insight">
+  <div class="insight-title"><i class="fas fa-expand-arrows-alt"></i> Key Insight — Cả L1 và L2 đều tách biệt theo từng chiều</div>
+  <p>Đây là lý do tại sao có thể tính tâm cụm bằng cách áp dụng Mean/Median độc lập cho từng chiều:</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> L2 (Euclidean) phân tách D chiều</summary>
+<div class="dc">
+<div class="fbox no-top-radius">
+\[\min_\mu \sum_{x \in C_k}\|x - \mu\|_2^2 = \min_\mu \sum_{x \in C_k}\sum_{d=1}^D (x_d - \mu_d)^2 = \sum_{d=1}^D \underbrace{\min_{\mu_d}\sum_{x \in C_k}(x_d - \mu_d)^2}_{\text{bài toán 1D độc lập trên chiều d}}\]
+</div>
+<p>→ Mỗi tọa độ \(\mu_d\) được tối ưu độc lập → \(\mu_d^* = \text{Mean}(x_{1d},\ldots,x_{nd})\). Tâm cụm = Mean theo từng chiều.</p>
+</div>
+</details>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> L1 (Manhattan) phân tách D chiều</summary>
+<div class="dc">
+<div class="fbox no-top-radius">
+\[\min_\mu \sum_{x \in C_k}\|x - \mu\|_1 = \min_\mu \sum_{x \in C_k}\sum_{d=1}^D |x_d - \mu_d| = \sum_{d=1}^D \underbrace{\min_{\mu_d}\sum_{x \in C_k}|x_d - \mu_d|}_{\text{bài toán 1D độc lập trên chiều d}}\]
+</div>
+<p>→ Mỗi tọa độ \(\mu_d\) được tối ưu độc lập → \(\mu_d^* = \text{Median}(x_{1d},\ldots,x_{nd})\). Tâm cụm = Median theo từng chiều.</p>
+<div class="alert al-yellow" style="margin-top:.5rem">
+  <div class="alert-title">Lưu ý quan trọng</div>
+  Tính tách biệt này <em>chỉ đúng</em> với L1 (Manhattan) và L2 (Euclidean). Với Lp khác (p ≠ 1, 2): không tách biệt được → bài toán D chiều phức tạp hơn nhiều.
+</div>
+</div>
+</details>
+
+<div class="ss-title">6.5 Robustness: tại sao Median chống outlier tốt hơn Mean?</div>
+
+<div class="analogy">
+  <div class="analogy-title"><i class="fas fa-shield-alt"></i> Breakdown Point — Ngưỡng chịu đựng outlier</div>
+  <p><strong>Breakdown point</strong> của một estimator = tỷ lệ dữ liệu bị hỏng tối đa mà estimator vẫn cho kết quả hữu ích.</p>
+  <ul style="margin-top:.3rem">
+    <li><strong>Mean:</strong> Breakdown point = 0. Một outlier duy nhất tại \(\pm\infty\) đẩy Mean đến \(\pm\infty\). Mean không robust.</li>
+    <li><strong>Median:</strong> Breakdown point = 50%. Cần hỏng <em>hơn một nửa</em> dữ liệu mới làm Median thay đổi tùy ý. Median cực kỳ robust.</li>
+  </ul>
+</div>
+
+<table class="tbl">
+<thead><tr><th>Tính chất</th><th>Mean (L2)</th><th>Median (L1)</th></tr></thead>
+<tbody>
+<tr><td>Norm tối thiểu hóa</td><td>Tổng bình phương khoảng cách</td><td>Tổng khoảng cách tuyệt đối</td></tr>
+<tr><td>Điều kiện tối ưu</td><td>Cân bằng khoảng cách có hướng: \(\sum(x_i-\mu)=0\)</td><td>Cân bằng số lượng: \(\#\text{phải}=\#\text{trái}\)</td></tr>
+<tr><td>Breakdown point</td><td>0% (một outlier có thể phá hoại)</td><td>50% (cần &gt;50% dữ liệu hỏng)</td></tr>
+<tr><td>Sensitivity với outlier</td><td>Cao — bị kéo theo giá trị outlier</td><td>Thấp — chỉ quan tâm đến thứ hạng</td></tr>
+<tr><td>Computational cost</td><td>O(n) đơn giản</td><td>O(n log n) do cần sắp xếp</td></tr>
+<tr><td>Khi nào dùng?</td><td>Data sạch, ít outliers</td><td>Data có nhiễu, outliers, hoặc phân phối lệch</td></tr>
+</tbody>
+</table>
 
 <div class="s-title">7. Ví dụ tính toán đầy đủ — Một vòng lặp K-Means</div>
 

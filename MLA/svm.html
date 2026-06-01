@@ -111,6 +111,20 @@ ul,ol{padding-left:1.4rem;margin:.4rem 0}
 strong{color:#1e293b}
 
 @media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+
+.insight{background:#f0fdf4;border:1px solid #86efac;border-left:4px solid #16a34a;border-radius:0 8px 8px 0;padding:.9rem 1.1rem;margin:.85rem 0}
+.insight-title{font-weight:700;color:#14532d;margin-bottom:.35rem;font-size:.88rem;display:flex;align-items:center;gap:.4rem}
+.analogy{background:#fefce8;border:1px solid #fde68a;border-left:4px solid #eab308;border-radius:0 8px 8px 0;padding:.9rem 1.1rem;margin:.85rem 0}
+.analogy-title{font-weight:700;color:#854d0e;margin-bottom:.35rem;font-size:.88rem;display:flex;align-items:center;gap:.4rem}
+.key-eq{background:#fff;border:2px solid #16a34a;border-radius:8px;padding:.85rem 1.25rem;margin:.75rem 0;text-align:center}
+.warn-box{background:#fef2f2;border:1px solid #fecaca;border-left:4px solid #ef4444;border-radius:0 8px 8px 0;padding:.9rem 1.1rem;margin:.85rem 0}
+.warn-title{font-weight:700;color:#b91c1c;margin-bottom:.35rem;font-size:.88rem;display:flex;align-items:center;gap:.4rem}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0}
+.col-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:.9rem 1.1rem}
+.col-card h4{font-size:.85rem;font-weight:700;color:#1e293b;margin-bottom:.5rem}
+@media(max-width:640px){.two-col{grid-template-columns:1fr}}
+.svg-wrap{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:1rem;margin:.85rem 0;overflow-x:auto;text-align:center}
+.svg-caption{font-size:.78rem;color:#64748b;margin-top:.4rem;text-align:center;font-style:italic}
 </style>
 </head>
 
@@ -156,6 +170,80 @@ strong{color:#1e293b}
 <p>Với dữ liệu 2D (A₁, A₂): \(w_0 + w_1 x_1 + w_2 x_2 = 0\).<br>
 Điểm phía trên: \(w_0+w_1x_1+w_2x_2 &gt; 0\) (lớp +1); phía dưới: &lt; 0 (lớp −1).</p>
 
+<div class="ss-title">1.1 Tư duy hình học: Siêu phẳng phân chia không gian như thế nào?</div>
+
+<div class="insight">
+  <div class="insight-title">&#128161; Quy tắc tổng quát: Boundary trong không gian D chiều có D−1 chiều</div>
+  <p>Mỗi lần tăng một chiều, biên quyết định tăng thêm một chiều tương ứng. Đây là hệ quả tự nhiên của phương trình tuyến tính: một phương trình tuyến tính trong D ẩn xác định một tập (D−1) chiều.</p>
+</div>
+
+<table class="tbl">
+<thead><tr><th>Không gian</th><th>D</th><th>Boundary shape</th><th>Ví dụ trực quan</th><th>Phương trình</th></tr></thead>
+<tbody>
+<tr><td>1D (trục số)</td><td>1</td><td>Điểm (threshold)</td><td>Chia trục thành 2 đoạn: &lt;θ và ≥θ</td><td>\(w_1 x_1 + b = 0 \Rightarrow x_1 = -b/w_1\)</td></tr>
+<tr><td>2D (mặt phẳng)</td><td>2</td><td>Đường thẳng</td><td>Chia mặt phẳng thành 2 nửa</td><td>\(w_1 x_1 + w_2 x_2 + b = 0\)</td></tr>
+<tr><td>3D (không gian)</td><td>3</td><td>Mặt phẳng</td><td>Chia không gian thành 2 nửa</td><td>\(w_1 x_1+w_2 x_2+w_3 x_3+b=0\)</td></tr>
+<tr><td>nD (siêu không gian)</td><td>n</td><td>Siêu phẳng (n−1)D</td><td>Chia ℝⁿ thành 2 half-space</td><td>\(\mathbf{w}\cdot\mathbf{x}+b=0\)</td></tr>
+</tbody>
+</table>
+
+<details open>
+<summary><i class="fas fa-eye"></i> Hình dung từ 1D đến 2D — tại sao tuyến tính đủ mạnh?</summary>
+<div class="dc">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+<div style="font-family:monospace;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:1rem;font-size:.8rem">
+<strong style="font-family:sans-serif;font-size:.83rem;display:block;margin-bottom:.4rem">1D — Threshold tại x=2</strong>
+<pre style="background:none;margin:0;line-height:1.8">
+ ○  ○  |  ●  ●  ●
+─────────────────→
+ 0  1  2  3  4  5
+
+x &lt; 2 → Class 0 (○)
+x ≥ 2 → Class 1 (●)
+Boundary = điểm {2}
+</pre>
+</div>
+<div style="font-family:monospace;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:1rem;font-size:.8rem">
+<strong style="font-family:sans-serif;font-size:.83rem;display:block;margin-bottom:.4rem">2D — Đường thẳng x₁+x₂=3</strong>
+<pre style="background:none;margin:0;line-height:1.6">
+  x₂
+4│  ●(1,3)
+3│      ●(2,2)
+2│─ ─ ─ ─ ─ ─ (boundary)
+1│  ○(1,1)
+0│       ○(2,0)
+ └──────────── x₁
+    1   2   3
+
+Trên đường → Class +1
+Dưới đường → Class −1
+</pre>
+</div>
+</div>
+<div class="insight" style="margin-top:.75rem">
+  <div class="insight-title">&#128161; Tại sao tuyến tính phân tách rất nhiều bài toán thực tế?</div>
+  <p>Dữ liệu thực tế thường được biểu diễn trong không gian cao chiều (ảnh: 1024D+, văn bản: 10000D+). Trong không gian cao chiều, dữ liệu thường trở nên <em>sparser</em> và dễ linearly separable hơn — đây là lý do tại sao Linear SVM và Logistic Regression vẫn mạnh. Kernel trick đẩy chiều cao hơn nữa khi dữ liệu không tách được tuyến tính.</p>
+</div>
+</div>
+</details>
+
+<div class="ss-title">1.2 Linearly Separable vs Not — và tại sao cần Kernel</div>
+
+<div class="two-col">
+<div class="col-card">
+  <h4>&#9989; Linearly Separable</h4>
+  <p style="font-size:.83rem">Tồn tại siêu phẳng \(\mathbf{w},b\) sao cho tất cả điểm lớp +1 ở một phía và lớp −1 ở phía kia.</p>
+  <p style="font-size:.83rem">Ví dụ: email spam vs. ham với đặc trưng tần suất từ — trong không gian 10000 chiều từ, hai lớp thường tách được tuyến tính.</p>
+  <p style="font-size:.83rem"><strong>Hard-margin SVM:</strong> Tìm hyperplane với margin lớn nhất.</p>
+</div>
+<div class="col-card">
+  <h4>&#10060; Không Linearly Separable</h4>
+  <p style="font-size:.83rem">Dữ liệu dạng XOR, hai vòng tròn đồng tâm — không tồn tại đường thẳng nào chia được.</p>
+  <p style="font-size:.83rem">Giải pháp: Kernel map dữ liệu lên không gian cao hơn → có thể tách tuyến tính ở đó. Quyết định boundary cong trong không gian gốc.</p>
+  <p style="font-size:.83rem"><strong>Kernel SVM:</strong> Học boundary cong = boundary thẳng ở không gian φ(x).</p>
+</div>
+</div>
+
 <div class="s-title">2. Support Hyperplanes &amp; Support Vectors</div>
 <div class="fbox no-top-radius">
 \[ H_1: \mathbf{w}\cdot\mathbf{x}+b = +1 \quad\text{(lề lớp +1)} \]
@@ -172,6 +260,154 @@ strong{color:#1e293b}
   \[ \text{Margin width (total)} = \frac{2}{\|\mathbf{w}\|} \]
   </div>
 </div>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 480 320" width="100%" style="max-width:480px" font-family="'Segoe UI',system-ui,sans-serif">
+  <!-- Background -->
+  <rect width="480" height="320" fill="#f8fafc"/>
+
+  <!-- Margin fill between H1 and H2 (x1+x2=4 and x1+x2=2) -->
+  <!-- H1: x2 = 4-x1; H2: x2 = 2-x1. In SVG coords: origin bottom-left mapped -->
+  <!-- Coordinate mapping: x1 in [0,5] → svg_x = 60+x1*70; x2 in [0,5] → svg_y = 290-x2*50 -->
+  <!-- H1 line: x2=4-x1 → at x1=0: (60,90); at x1=4: (340,90)... recompute -->
+  <!-- svg_x = 60 + x1*68, svg_y = 295 - x2*52 -->
+  <!-- H1 x1+x2=4: at x1=0 → x2=4 → (60,87); at x1=4 → x2=0 → (332,295) -->
+  <!-- H2 x1+x2=2: at x1=0 → x2=2 → (60,191); at x1=4 → x2=-2 (offscreen) → clamp at x1=2,x2=0 → (196,295) -->
+  <!-- Margin polygon vertices: H1 from (60,87) to (332,295); H2 from (60,191) to (196,295) -->
+  <polygon points="60,87 332,295 196,295 60,191" fill="#dcfce7" opacity="0.5"/>
+
+  <!-- Axes -->
+  <line x1="50" y1="295" x2="420" y2="295" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="50" y1="295" x2="50" y2="30" stroke="#94a3b8" stroke-width="1.5"/>
+  <!-- Axis arrows -->
+  <polygon points="420,295 412,291 412,299" fill="#94a3b8"/>
+  <polygon points="50,30 46,38 54,38" fill="#94a3b8"/>
+  <!-- Axis labels -->
+  <text x="425" y="299" font-size="13" fill="#475569" font-weight="600">X₁</text>
+  <text x="35" y="28" font-size="13" fill="#475569" font-weight="600">X₂</text>
+  <!-- Tick marks X axis -->
+  <text x="112" y="310" font-size="10" fill="#94a3b8" text-anchor="middle">1</text>
+  <text x="180" y="310" font-size="10" fill="#94a3b8" text-anchor="middle">2</text>
+  <text x="248" y="310" font-size="10" fill="#94a3b8" text-anchor="middle">3</text>
+  <text x="316" y="310" font-size="10" fill="#94a3b8" text-anchor="middle">4</text>
+  <!-- Tick marks Y axis -->
+  <text x="38" y="248" font-size="10" fill="#94a3b8" text-anchor="middle">1</text>
+  <text x="38" y="196" font-size="10" fill="#94a3b8" text-anchor="middle">2</text>
+  <text x="38" y="144" font-size="10" fill="#94a3b8" text-anchor="middle">3</text>
+  <text x="38" y="92" font-size="10" fill="#94a3b8" text-anchor="middle">4</text>
+
+  <!-- H1: x1+x2=4 (dashed green, top boundary) — x1=0→x2=4: (50,91); x1=4→x2=0: (322,295) clamp at svg edge -->
+  <line x1="50" y1="91" x2="322" y2="295" stroke="#14532d" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="58" y="80" font-size="10" fill="#14532d" font-weight="600">H₁: w·x+b=+1</text>
+
+  <!-- Decision boundary: x1+x2=3 — x1=0→x2=3:(50,143); x1=3→x2=0:(254,295) -->
+  <line x1="50" y1="143" x2="254" y2="295" stroke="#1e293b" stroke-width="2.5"/>
+  <text x="258" y="305" font-size="10" fill="#1e293b" font-weight="700">Decision Boundary</text>
+
+  <!-- H2: x1+x2=2 — x1=0→x2=2:(50,195); x1=2→x2=0:(186,295) -->
+  <line x1="50" y1="195" x2="186" y2="295" stroke="#14532d" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="55" y="215" font-size="10" fill="#14532d" font-weight="600">H₂: w·x+b=−1</text>
+
+  <!-- Class +1 points (green) — positioned upper-right of H1 -->
+  <!-- (2,4): svg=(186,87) -->
+  <circle cx="186" cy="87" r="7" fill="#16a34a"/>
+  <!-- (3,3): svg=(254,143) — ON H1, support vector -->
+  <circle cx="254" cy="143" r="11" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+  <circle cx="254" cy="143" r="7" fill="#16a34a"/>
+  <!-- (1,4): svg=(118,87) — support vector ring -->
+  <circle cx="118" cy="87" r="11" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+  <circle cx="118" cy="87" r="7" fill="#16a34a"/>
+  <!-- (3,4): svg=(254,87) -->
+  <circle cx="254" cy="87" r="7" fill="#16a34a"/>
+  <!-- (4,3): svg=(322,143) -->
+  <circle cx="322" cy="143" r="7" fill="#16a34a"/>
+  <!-- (4,4): svg=(322,87) -->
+  <circle cx="322" cy="87" r="7" fill="#16a34a"/>
+
+  <!-- Class -1 points (blue) — positioned lower-left of H2 -->
+  <!-- (1,0): svg=(118,295) — ON H2, support vector -->
+  <circle cx="118" cy="243" r="11" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+  <circle cx="118" cy="243" r="7" fill="#3b82f6"/>
+  <!-- (2,0): svg=(186,295) — ON H2 -->
+  <circle cx="186" cy="243" r="11" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+  <circle cx="186" cy="243" r="7" fill="#3b82f6"/>
+  <!-- (0,1): svg=(50,247) -->
+  <circle cx="68" cy="191" r="7" fill="#3b82f6"/>
+  <!-- (1,1) -->
+  <circle cx="68" cy="247" r="7" fill="#3b82f6"/>
+  <!-- (2,1) -->
+  <circle cx="186" cy="191" r="7" fill="#3b82f6"/>
+  <!-- (3,0) -->
+  <circle cx="254" cy="243" r="7" fill="#3b82f6"/>
+
+  <!-- Support Vector label -->
+  <text x="274" y="136" font-size="9.5" fill="#b45309" font-style="italic">Support Vector</text>
+
+  <!-- Margin width arrow -->
+  <!-- Draw arrow between H1 and H2 at x1=3: H1 y=143, H2: x2=2-3=-1 (offscreen) so use perpendicular -->
+  <!-- Perpendicular from boundary at ~(200,219): offset ±52 pixels perp to direction (-1,1)/sqrt2 -->
+  <!-- Arrow from (336,108) to (336,178) -->
+  <line x1="356" y1="110" x2="356" y2="178" stroke="#f59e0b" stroke-width="1.5" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <text x="362" y="148" font-size="10" fill="#b45309" font-weight="700">← 2/‖w‖ →</text>
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+
+  <!-- Normal vector w arrow -->
+  <line x1="200" y1="165" x2="240" y2="125" stroke="#ef4444" stroke-width="2" marker-end="url(#warr)"/>
+  <text x="245" y="122" font-size="10" fill="#ef4444" font-weight="600">w (normal vector)</text>
+  <defs>
+    <marker id="warr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#ef4444"/>
+    </marker>
+  </defs>
+
+  <!-- Legend -->
+  <circle cx="68" cy="22" r="6" fill="#16a34a"/>
+  <text x="80" y="26" font-size="10" fill="#475569">Class +1</text>
+  <circle cx="145" cy="22" r="6" fill="#3b82f6"/>
+  <text x="157" y="26" font-size="10" fill="#475569">Class −1</text>
+  <circle cx="228" cy="22" r="9" fill="none" stroke="#f59e0b" stroke-width="2"/>
+  <circle cx="228" cy="22" r="5" fill="#16a34a"/>
+  <text x="242" y="26" font-size="10" fill="#475569">Support Vector</text>
+</svg>
+<div class="svg-caption">Hình 1 — Maximum Margin Hyperplane: Decision boundary (đen) nằm giữa H₁ và H₂ (xanh đậm, dashed). Vùng margin tô xanh nhạt. Các điểm có vòng vàng là Support Vectors — chúng hoàn toàn xác định siêu phẳng.</div>
+</div>
+
+<div class="ss-title">3.1 Tư duy: Tại sao Margin lớn hơn = Generalization tốt hơn?</div>
+
+<div class="insight">
+  <div class="insight-title">&#128161; Lập luận từ tính bền vững (robustness argument)</div>
+  <p>Giả sử điểm test bị nhiễu (noise) một lượng ε trong mọi hướng. Nếu margin = γ, thì một điểm test nằm đúng phía ranh giới khi đến từ vùng cách boundary ít nhất ε. Margin lớn hơn → chịu đựng được nhiễu lớn hơn → tổng quát hóa tốt hơn.</p>
+</div>
+
+<div style="font-family:monospace;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:1rem;font-size:.8rem;margin:.75rem 0">
+<pre style="background:none;margin:0;line-height:1.7">
+  Margin nhỏ (C lớn)          Margin lớn (C nhỏ)
+
+  ●●●  |  ○○○               ●●●  ·  ·  ·  ○○○
+  ●●●  |  ○○○               ● ●·[H₂ ─── H₁]·○ ○
+  ●●● H₂─H₁ ○○○              ●  [   margin  ]  ○
+  ●●● ←↓→ ○○○               ●  [max margin ]  ○
+    ↑  ↑  ↑                      ↑           ↑
+  SV boundary SV               H₂          H₁
+
+  Điểm test gần biên dễ sai     Điểm test cần "vượt" xa hơn mới sai
+</pre>
+</div>
+
+<div class="analogy">
+  <div class="analogy-title">&#9992;&#65039; Ẩn dụ: Hành lang sân bay</div>
+  <p>Margin giống như hành lang an toàn giữa hai dòng hành khách đi ngược chiều. Hành lang rộng hơn → ít va chạm hơn khi có người đi lệch → hệ thống "robust" hơn. SVM tối đa hóa hành lang này bằng cách chỉ để những người đứng gần nhất (support vectors) xác định ranh giới.</p>
+</div>
+
+<div class="ss-title">3.2 Công thức khoảng cách từ siêu phẳng bất kỳ</div>
+<div class="fbox no-top-radius">
+\[ \text{dist}(\mathbf{x}_0, \text{hyperplane}) = \frac{|\mathbf{w}\cdot\mathbf{x}_0 + b|}{\|\mathbf{w}\|} \]
+</div>
+<p>Đây là công thức khoảng cách từ điểm \(\mathbf{x}_0\) đến siêu phẳng \(\mathbf{w}\cdot\mathbf{x}+b=0\). Khi siêu phẳng được chuẩn hóa sao cho \(\mathbf{w}\cdot\mathbf{x}+b=\pm 1\) tại support vectors, khoảng cách từ SV đến boundary = \(\frac{1}{\|\mathbf{w}\|}\), từ đó margin = \(\frac{2}{\|\mathbf{w}\|}\).</p>
 
 <details open>
 <summary><i class="fas fa-calculator"></i> Câu 6 — Tính Margin Width</summary>
@@ -211,6 +447,178 @@ strong{color:#1e293b}
 </tbody>
 </table>
 
+<div class="ss-title">6.1 Slack Variables ξ_i — Ý nghĩa hình học của từng vùng</div>
+
+<div class="insight">
+  <div class="insight-title">&#128161; Tư duy: ξ_i đo "mức độ vi phạm" so với lề lý tưởng</div>
+  <p>Trong Hard-margin SVM, mọi điểm phải nằm <em>ngoài</em> margin: \(y_i(\mathbf{w}\cdot\mathbf{x}_i+b) \geq 1\). Soft-margin cho phép vi phạm một lượng ξ_i ≥ 0: \(y_i(\mathbf{w}\cdot\mathbf{x}_i+b) \geq 1 - \xi_i\). Giá trị ξ_i quyết định điểm nằm ở vùng nào.</p>
+</div>
+
+<div style="font-family:monospace;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:1rem;font-size:.8rem;margin:.75rem 0">
+<pre style="background:none;margin:0;line-height:1.7">
+              H₂                H₁
+               |     MARGIN     |
+ ─────────────────────────────────────────────────
+  ξ_i=0        |                |   ξ_i=0
+  (đúng phía,  |                |   (đúng phía,
+   ngoài lề)   |  0 &lt; ξ_i ≤ 1  |   ngoài lề)
+               |  (trong margin,|
+               |   đúng phía)   |
+               |                |
+  ξ_i &gt; 1     |   boundary     |   ξ_i &gt; 1
+  (sai phía =  |←──────────────→|   (sai phía)
+   misclassify)|                |
+ ─────────────────────────────────────────────────
+               ↑                ↑
+         Boundary y=−1    Boundary y=+1
+         (H₂: f=−1)       (H₁: f=+1)
+</pre>
+</div>
+
+<table class="tbl" style="font-size:.83rem">
+<thead><tr><th>Giá trị ξ_i</th><th>Vị trí điểm</th><th>Phân loại có đúng không?</th><th>Mức phạt</th></tr></thead>
+<tbody>
+<tr><td>ξ_i = 0</td><td>Ngoài margin, đúng phía</td><td>✓ Đúng và tự tin</td><td>0 — không bị phạt</td></tr>
+<tr><td>0 &lt; ξ_i ≤ 1</td><td>Trong margin, đúng phía</td><td>✓ Đúng nhưng không tự tin</td><td>ξ_i — phạt nhẹ</td></tr>
+<tr><td>ξ_i = 1</td><td>Nằm trên boundary (f=0)</td><td>Không xác định (biên)</td><td>1 — phạt trung bình</td></tr>
+<tr><td>ξ_i &gt; 1</td><td>Sai phía boundary</td><td>✗ Phân loại sai</td><td>ξ_i — phạt nặng</td></tr>
+</tbody>
+</table>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 500 280" width="100%" style="max-width:500px" font-family="'Segoe UI',system-ui,sans-serif">
+  <!-- Background -->
+  <rect width="500" height="280" fill="#f8fafc"/>
+
+  <!-- Coordinate mapping: x in [0,6] → sx=40+x*72; y in [0,5] → sy=250-y*44 -->
+  <!-- H2: x1+x2=2 → x1=0→x2=2→(40,162); x1=2→x2=0→(184,250) -->
+  <!-- Boundary: x1+x2=3 → x1=0→x2=3→(40,118); x1=3→x2=0→(256,250) -->
+  <!-- H1: x1+x2=4 → x1=0→x2=4→(40,74); x1=4→x2=0→(328,250) -->
+
+  <!-- Margin fill between H1 and H2 -->
+  <polygon points="40,74 328,250 184,250 40,162" fill="#dcfce7" opacity="0.45"/>
+
+  <!-- Axes -->
+  <line x1="30" y1="250" x2="470" y2="250" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="30" y1="250" x2="30" y2="20" stroke="#94a3b8" stroke-width="1.5"/>
+  <polygon points="470,250 462,246 462,254" fill="#94a3b8"/>
+  <polygon points="30,20 26,28 34,28" fill="#94a3b8"/>
+  <text x="476" y="254" font-size="12" fill="#475569" font-weight="600">X₁</text>
+  <text x="16" y="18" font-size="12" fill="#475569" font-weight="600">X₂</text>
+
+  <!-- H1: dashed green top -->
+  <line x1="40" y1="74" x2="328" y2="250" stroke="#14532d" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="42" y="64" font-size="10" fill="#14532d" font-weight="600">H₁ (w·x+b=+1)</text>
+
+  <!-- Boundary -->
+  <line x1="40" y1="118" x2="256" y2="250" stroke="#1e293b" stroke-width="2.5"/>
+  <text x="260" y="260" font-size="9.5" fill="#1e293b" font-weight="700">Boundary</text>
+
+  <!-- H2: dashed green bottom -->
+  <line x1="40" y1="162" x2="184" y2="250" stroke="#14532d" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="42" y="180" font-size="10" fill="#14532d" font-weight="600">H₂ (w·x+b=−1)</text>
+
+  <!-- Points with slack labels -->
+
+  <!-- Class +1 safe (ξ=0) outside H1: (5,4)→sx=400,sy=74; (4,4)→sx=328,sy=74 -->
+  <circle cx="400" cy="74" r="7" fill="#16a34a"/>
+  <text x="410" y="70" font-size="9" fill="#15803d">ξ=0 ✓ an toàn</text>
+  <circle cx="350" cy="96" r="7" fill="#16a34a"/>
+  <text x="360" y="92" font-size="9" fill="#15803d">ξ=0 ✓</text>
+
+  <!-- Class +1 in margin (ξ=0.6): (2,2.4)→sx=184,sy=144 -->
+  <circle cx="200" cy="140" r="7" fill="#f59e0b"/>
+  <line x1="207" y1="133" x2="232" y2="115" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="234" y="112" font-size="9" fill="#b45309" font-weight="600">ξ=0.6</text>
+  <text x="234" y="124" font-size="9" fill="#b45309">(trong margin)</text>
+
+  <!-- Class -1 safe (ξ=0) outside H2: (0.5,0.5)→sx=76,sy=228; (1,0.3)→sx=112,sy=237 -->
+  <circle cx="76" cy="228" r="7" fill="#3b82f6"/>
+  <text x="20" y="242" font-size="9" fill="#1d4ed8">ξ=0 ✓</text>
+  <circle cx="112" cy="237" r="7" fill="#3b82f6"/>
+
+  <!-- Class -1 misclassified (ξ=1.5): wrong side, label −1 but above boundary at (3.5,2) → sx=292,sy=162 -->
+  <circle cx="310" cy="162" r="7" fill="#ef4444"/>
+  <line x1="317" y1="155" x2="348" y2="138" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="350" y="135" font-size="9" fill="#b91c1c" font-weight="600">ξ=1.5 ✗</text>
+  <text x="350" y="147" font-size="9" fill="#b91c1c">misclassified</text>
+  <!-- small -1 label -->
+  <text x="303" y="177" font-size="8" fill="#b91c1c" font-weight="700">y=−1</text>
+
+  <!-- Gradient bar at bottom -->
+  <defs>
+    <linearGradient id="slackGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#16a34a;stop-opacity:1"/>
+      <stop offset="50%" style="stop-color:#f59e0b;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#ef4444;stop-opacity:1"/>
+    </linearGradient>
+  </defs>
+  <rect x="60" y="265" width="380" height="8" rx="4" fill="url(#slackGrad)"/>
+  <text x="60" y="262" font-size="9" fill="#15803d" font-weight="600">ξ=0 (tốt)</text>
+  <text x="395" y="262" font-size="9" fill="#b91c1c" font-weight="600" text-anchor="end">ξ&gt;1 (sai phía)</text>
+
+  <!-- Legend -->
+  <circle cx="55" cy="18" r="6" fill="#16a34a"/>
+  <text x="65" y="22" font-size="10" fill="#475569">Class +1</text>
+  <circle cx="145" cy="18" r="6" fill="#3b82f6"/>
+  <text x="155" y="22" font-size="10" fill="#475569">Class −1</text>
+  <circle cx="245" cy="18" r="6" fill="#f59e0b"/>
+  <text x="255" y="22" font-size="10" fill="#475569">trong margin (0&lt;ξ≤1)</text>
+  <circle cx="395" cy="18" r="6" fill="#ef4444"/>
+  <text x="405" y="22" font-size="10" fill="#475569">sai phía (ξ&gt;1)</text>
+</svg>
+<div class="svg-caption">Hình 2 — Soft-margin SVM & Slack Variables ξ_i: Xanh lá = an toàn (ξ=0), Cam = trong margin (0&lt;ξ≤1), Đỏ = phân loại sai (ξ&gt;1). Thanh gradient dưới biểu thị mức độ vi phạm.</div>
+</div>
+
+<div class="ss-title">6.2 C như Đòn Bẩy Bias-Variance — Cơ chế hoạt động</div>
+
+<details open>
+<summary><i class="fas fa-balance-scale"></i> Phân tích toán học: C kiểm soát tỷ lệ giữa ||w||² và Σξ_i như thế nào?</summary>
+<div class="dc">
+<p>Hàm mục tiêu: \(\min \frac{1}{2}\|\mathbf{w}\|^2 + C\sum_i\xi_i\)</p>
+<div class="fbox no-top-radius">
+\[ \underbrace{\frac{1}{2}\|\mathbf{w}\|^2}_{\text{Muốn margin lớn}} + C \cdot \underbrace{\sum_i\xi_i}_{\text{Muốn ít vi phạm}} \]
+</div>
+
+<div class="two-col">
+<div class="col-card">
+  <h4>C = 0.001 (nhỏ)</h4>
+  <p style="font-size:.83rem">Số hạng \(C\sum\xi_i\) quá nhỏ so với \(\|\mathbf{w}\|^2\)</p>
+  <p style="font-size:.83rem">Optimizer ưu tiên <em>giảm</em> \(\|\mathbf{w}\|^2\) → margin rất lớn</p>
+  <p style="font-size:.83rem">Sẵn sàng chấp nhận nhiều vi phạm (ξ_i lớn)</p>
+  <p style="font-size:.83rem;color:#b45309"><strong>Kết quả:</strong> Boundary đơn giản, margin rộng, nhiều điểm bị phân loại sai → <strong>Underfit</strong></p>
+</div>
+<div class="col-card">
+  <h4>C = 1000 (lớn)</h4>
+  <p style="font-size:.83rem">Số hạng \(C\sum\xi_i\) chi phối hàm mục tiêu</p>
+  <p style="font-size:.83rem">Optimizer ưu tiên <em>giảm</em> vi phạm → ξ_i → 0</p>
+  <p style="font-size:.83rem">Chấp nhận \(\|\mathbf{w}\|^2\) lớn → margin hẹp</p>
+  <p style="font-size:.83rem;color:#b91c1c"><strong>Kết quả:</strong> Boundary phức tạp, margin hẹp, fit sát data → <strong>Overfit</strong></p>
+</div>
+</div>
+
+<div class="warn-box" style="margin-top:.6rem">
+  <div class="warn-title">&#9888; C → ∞: Soft-margin trở thành Hard-margin</div>
+  <p>Khi C → ∞, bất kỳ ξ_i > 0 nào đều làm mục tiêu → ∞ → optimizer buộc phải tìm nghiệm với ξ_i = 0 cho mọi i, tức là không cho phép vi phạm. Đây chính là Hard-margin SVM. Nếu dữ liệu không linearly separable, bài toán <em>vô nghiệm</em> khi C = ∞.</p>
+</div>
+
+<p style="margin-top:.6rem"><strong>Tương đương Regularization:</strong> Đặt \(\lambda = 1/C\), objective trở thành \(\lambda\|\mathbf{w}\|^2 + \sum\xi_i\), đây là dạng regularization quen thuộc. C nhỏ ↔ λ lớn ↔ regularization mạnh ↔ underfit.</p>
+</div>
+</details>
+
+<div class="ss-title">6.3 Sơ đồ tư duy chọn C</div>
+<div style="display:grid;grid-template-columns:1fr 3fr 1fr;gap:.5rem;margin:.75rem 0;text-align:center;font-size:.83rem">
+<div style="background:#dbeafe;border-radius:8px;padding:.75rem;border:1px solid #93c5fd">
+  <strong>C nhỏ</strong><br>↓<br>Margin lớn<br>↓<br>Nhiều lỗi huấn luyện<br>↓<br><span style="color:#1d4ed8">Underfit</span>
+</div>
+<div style="background:#f0fdf4;border-radius:8px;padding:.75rem;border:2px solid #22c55e;display:flex;align-items:center;justify-content:center;flex-direction:column">
+  <strong>C tối ưu</strong><br>(Cross-validation)<br>↓<br>Cân bằng margin và lỗi<br>↓<br><span style="color:#15803d">Generalize tốt</span>
+</div>
+<div style="background:#fef2f2;border-radius:8px;padding:.75rem;border:1px solid #fca5a5">
+  <strong>C lớn</strong><br>↓<br>Margin nhỏ<br>↓<br>Fit sát dữ liệu<br>↓<br><span style="color:#b91c1c">Overfit</span>
+</div>
+</div>
+
 <div class="s-title">7. Kernel Trick — RBF Kernel</div>
 <div class="fbox no-top-radius">\[ K(\mathbf{x},\mathbf{x}') = \exp\!\left(-\gamma\|\mathbf{x}-\mathbf{x}'\|^2\right) \]</div>
 <table class="tbl">
@@ -220,6 +628,161 @@ strong{color:#1e293b}
 <tr><td>γ → 0</td><td>Tất cả phần tử → 1</td><td>Underfit</td></tr>
 </tbody>
 </table>
+
+<div class="ss-title">7.1 Kernel Trick — Cơ chế hoạt động mà không cần tính φ(x)</div>
+
+<div class="insight">
+  <div class="insight-title">&#128161; Ý tưởng cốt lõi: SVM chỉ cần tích vô hướng, không cần tọa độ</div>
+  <p>Dual formulation của SVM chỉ sử dụng \(\mathbf{x}_i \cdot \mathbf{x}_j\) (tích vô hướng giữa các điểm), không bao giờ dùng tọa độ trực tiếp. Kernel trick thay thế \(\mathbf{x}_i \cdot \mathbf{x}_j\) bằng \(K(\mathbf{x}_i, \mathbf{x}_j) = \phi(\mathbf{x}_i) \cdot \phi(\mathbf{x}_j)\) — tính tích vô hướng trong không gian mới <em>mà không cần biết</em> \(\phi(\mathbf{x})\) là gì.</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-layer-group"></i> Feature Map φ(x) và tại sao RBF tương ứng với không gian vô hạn chiều</summary>
+<div class="dc">
+<p><strong>Ví dụ đơn giản — Polynomial Kernel bậc 2:</strong></p>
+<div class="fbox no-top-radius">
+\[ K(\mathbf{x},\mathbf{x}') = (\mathbf{x}\cdot\mathbf{x}')^2 \quad\Leftrightarrow\quad \phi(\mathbf{x}) = [x_1^2,\; x_2^2,\; \sqrt{2}x_1x_2] \]
+</div>
+<p>Tính \(\phi(\mathbf{x})\cdot\phi(\mathbf{x}') = x_1^2{x_1'}^2 + x_2^2{x_2'}^2 + 2x_1x_2x_1'x_2' = (x_1x_1'+x_2x_2')^2 = K(\mathbf{x},\mathbf{x}')\). Kernel tính trực tiếp tích vô hướng trong không gian 3D từ vectors 2D — tiết kiệm tính toán.</p>
+
+<p style="margin-top:.75rem"><strong>RBF Kernel — feature map vô hạn chiều:</strong></p>
+<div class="fbox no-top-radius">
+\[ K(\mathbf{x},\mathbf{x}') = e^{-\gamma\|\mathbf{x}-\mathbf{x}'\|^2} = e^{-\gamma\|\mathbf{x}\|^2} \cdot e^{2\gamma\mathbf{x}\cdot\mathbf{x}'} \cdot e^{-\gamma\|\mathbf{x}'\|^2} \]
+\[ = \sum_{n=0}^{\infty} \frac{(2\gamma)^n}{n!} (\mathbf{x}\cdot\mathbf{x}')^n \cdot e^{-\gamma(\|\mathbf{x}\|^2+\|\mathbf{x}'\|^2)} \]
+</div>
+<p>Khai triển Taylor → tổng vô hạn các polynomial terms → RBF tương ứng với <em>không gian Hilbert vô hạn chiều</em>. Tính \(\phi(\mathbf{x})\) tường minh là bất khả thi, nhưng <em>tính \(K(\mathbf{x},\mathbf{x}')\) chỉ mất O(D)</em>.</p>
+
+<div class="analogy">
+  <div class="analogy-title">&#128249; Ẩn dụ: Thang máy và tòa nhà</div>
+  <p>Dữ liệu ở tầng 2D không tách được → kernel "đưa" lên tòa nhà vô hạn tầng (φ vô hạn chiều), ở đó chúng tách được bằng mặt phẳng → chiếu quyết định boundary đó xuống tầng 2D → biên cong. Thang máy = kernel function; bạn không cần biết thiết kế tòa nhà, chỉ cần biết cách tính khoảng cách giữa các phòng (K).</p>
+</div>
+</div>
+</details>
+
+<div class="ss-title">7.2 γ kiểm soát "bán kính ảnh hưởng" — Cơ chế Gram Matrix</div>
+
+<details open>
+<summary><i class="fas fa-calculator"></i> Phân tích tường minh: K_ij phụ thuộc vào khoảng cách như thế nào?</summary>
+<div class="dc">
+<p>Với \(K_{ij} = \exp(-\gamma \|\mathbf{x}_i - \mathbf{x}_j\|^2)\), đặt \(d_{ij} = \|\mathbf{x}_i - \mathbf{x}_j\|\):</p>
+
+<table class="tbl" style="font-size:.82rem">
+<thead><tr><th>γ</th><th>K_ij khi d=1</th><th>K_ij khi d=3</th><th>K_ij khi d=10</th><th>Gram Matrix</th></tr></thead>
+<tbody>
+<tr><td>γ=0.01</td><td>e^{-0.01}≈0.990</td><td>e^{-0.09}≈0.914</td><td>e^{-1}≈0.368</td><td>Dense, mọi điểm "ảnh hưởng" nhau</td></tr>
+<tr><td>γ=0.1</td><td>e^{-0.1}≈0.905</td><td>e^{-0.9}≈0.407</td><td>e^{-10}≈0.00005</td><td>Semi-local, ảnh hưởng vừa phải</td></tr>
+<tr><td>γ=10</td><td>e^{-10}≈0.00005</td><td>≈0</td><td>≈0</td><td>Gần diagonal</td></tr>
+<tr><td>γ→∞</td><td>→0 (i≠j)</td><td>→0</td><td>→0</td><td><strong>I (Identity)</strong></td></tr>
+</tbody>
+</table>
+
+<div class="insight">
+  <div class="insight-title">&#128161; Trực giác: γ = 1 / (2σ²) — bán kính Gaussian</div>
+  <p>Hiểu γ như nghịch đảo của "vùng ảnh hưởng" σ². γ lớn → σ nhỏ → mỗi điểm chỉ ảnh hưởng đến vùng rất nhỏ quanh nó → kernel hoạt động như 1-NN. γ nhỏ → σ lớn → mỗi điểm ảnh hưởng toàn bộ không gian → boundary mượt.</p>
+</div>
+
+<div class="warn-box">
+  <div class="warn-title">&#9888; Khi γ → ∞: Gram Matrix = I → Tương đương 1-NN</div>
+  <p>Khi Gram Matrix = I, dual SVM trở thành: "phân loại điểm test x theo điểm training gần nhất với kernel similarity = 1 (chính nó) hoặc 0 (tất cả khác)." Đây chính xác là 1-NN với khoảng cách cứng: Training Error = 0, nhưng không tổng quát hóa được gì.</p>
+  <div class="fbox no-top-radius" style="margin-top:.5rem">
+  \[ f(\mathbf{x}) = \sum_i \alpha_i y_i K(\mathbf{x}_i, \mathbf{x}) \xrightarrow{\gamma\to\infty} \alpha_j y_j \cdot 1 \quad \text{với } j = \arg\min_i \|\mathbf{x}_i - \mathbf{x}\| \]
+  </div>
+</div>
+
+<div style="font-family:monospace;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:1rem;font-size:.79rem;margin:.75rem 0">
+<pre style="background:none;margin:0;line-height:1.7">
+ γ nhỏ: smooth boundary         γ lớn: overfit boundary
+ (underfit nếu quá nhỏ)         (mỗi point = "island")
+
+  ●  ●            ●  ●●●
+    ─────────         ╭╮╭─╮
+  ○  ○            ○  ╰╯○  ●⟵ overfit island
+                            ○
+  Boundary mượt             ○  ●
+  tổng quát tốt           ○  ╭──╮●
+                             ╰──╯
+                          mỗi point gần → own bubble
+</pre>
+</div>
+</div>
+</details>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 540 240" width="100%" style="max-width:540px" font-family="'Segoe UI',system-ui,sans-serif">
+  <!-- Background -->
+  <rect width="540" height="240" fill="#f8fafc"/>
+
+  <!-- Divider -->
+  <line x1="270" y1="10" x2="270" y2="230" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- ===== PANEL 1: γ nhỏ (left, x offset 0-270) ===== -->
+  <text x="135" y="22" font-size="11.5" fill="#14532d" font-weight="700" text-anchor="middle">γ nhỏ (smooth boundary)</text>
+
+  <!-- Decision region background — two halves -->
+  <clipPath id="leftPanel"><rect x="5" y="28" width="260" height="195"/></clipPath>
+  <rect x="5" y="28" width="260" height="195" fill="#f8fafc"/>
+
+  <!-- Class +1 region (upper-right) — smooth curve -->
+  <path d="M5,120 Q80,60 180,50 Q240,48 265,60 L265,28 L5,28 Z" fill="#dcfce7" opacity="0.5" clip-path="url(#leftPanel)"/>
+  <!-- Class -1 region (lower-left) -->
+  <path d="M5,120 Q80,60 180,50 Q240,48 265,60 L265,223 L5,223 Z" fill="#dbeafe" opacity="0.5" clip-path="url(#leftPanel)"/>
+
+  <!-- Smooth decision boundary (γ small) -->
+  <path d="M5,118 Q50,90 120,80 Q180,72 265,60" stroke="#14532d" stroke-width="2" fill="none" clip-path="url(#leftPanel)"/>
+
+  <!-- Points Class +1 (green) -->
+  <circle cx="180" cy="48" r="6" fill="#16a34a"/>
+  <circle cx="210" cy="62" r="6" fill="#16a34a"/>
+  <circle cx="155" cy="42" r="6" fill="#16a34a"/>
+  <circle cx="230" cy="40" r="6" fill="#16a34a"/>
+
+  <!-- Points Class -1 (blue) -->
+  <circle cx="60" cy="160" r="6" fill="#3b82f6"/>
+  <circle cx="90" cy="180" r="6" fill="#3b82f6"/>
+  <circle cx="45" cy="185" r="6" fill="#3b82f6"/>
+  <circle cx="100" cy="155" r="6" fill="#3b82f6"/>
+
+  <!-- Label + note -->
+  <text x="135" y="210" font-size="10" fill="#14532d" text-anchor="middle" font-weight="600">γ nhỏ: Boundary mượt</text>
+  <text x="135" y="222" font-size="10" fill="#14532d" text-anchor="middle">Generalize tốt</text>
+  <text x="135" y="114" font-size="9" fill="#64748b" text-anchor="middle" font-style="italic">Ảnh hưởng rộng</text>
+
+  <!-- ===== PANEL 2: γ lớn (right, x offset 270-535) ===== -->
+  <text x="405" y="22" font-size="11.5" fill="#b91c1c" font-weight="700" text-anchor="middle">γ lớn (island boundary)</text>
+
+  <clipPath id="rightPanel"><rect x="275" y="28" width="260" height="195"/></clipPath>
+  <rect x="275" y="28" width="260" height="195" fill="#f8fafc"/>
+
+  <!-- Base blue background for -1 -->
+  <rect x="275" y="28" width="260" height="195" fill="#dbeafe" opacity="0.3" clip-path="url(#rightPanel)"/>
+
+  <!-- "Island" bubbles around each +1 point — complex boundary -->
+  <!-- Points Class +1 in right panel at same relative positions: +270 offset -->
+  <circle cx="450" cy="48" r="22" fill="#dcfce7" opacity="0.7" stroke="#14532d" stroke-width="1.5" clip-path="url(#rightPanel)"/>
+  <circle cx="450" cy="48" r="6" fill="#16a34a"/>
+
+  <circle cx="480" cy="62" r="22" fill="#dcfce7" opacity="0.7" stroke="#14532d" stroke-width="1.5" clip-path="url(#rightPanel)"/>
+  <circle cx="480" cy="62" r="6" fill="#16a34a"/>
+
+  <circle cx="425" cy="42" r="22" fill="#dcfce7" opacity="0.7" stroke="#14532d" stroke-width="1.5" clip-path="url(#rightPanel)"/>
+  <circle cx="425" cy="42" r="6" fill="#16a34a"/>
+
+  <circle cx="500" cy="40" r="22" fill="#dcfce7" opacity="0.7" stroke="#14532d" stroke-width="1.5" clip-path="url(#rightPanel)"/>
+  <circle cx="500" cy="40" r="6" fill="#16a34a"/>
+
+  <!-- Points Class -1 (blue) in right panel -->
+  <circle cx="330" cy="160" r="6" fill="#3b82f6"/>
+  <circle cx="360" cy="180" r="6" fill="#3b82f6"/>
+  <circle cx="315" cy="185" r="6" fill="#3b82f6"/>
+  <circle cx="370" cy="155" r="6" fill="#3b82f6"/>
+
+  <!-- Label + note -->
+  <text x="405" y="210" font-size="10" fill="#b91c1c" text-anchor="middle" font-weight="600">γ lớn: Overfit</text>
+  <text x="405" y="222" font-size="10" fill="#b91c1c" text-anchor="middle">Mỗi điểm = "đảo riêng"</text>
+  <text x="405" y="114" font-size="9" fill="#64748b" text-anchor="middle" font-style="italic">Ảnh hưởng cục bộ</text>
+</svg>
+<div class="svg-caption">Hình 3 — RBF Kernel: γ nhỏ tạo biên mượt, tổng quát tốt (trái); γ lớn tạo "bong bóng" riêng quanh từng điểm — overfit (phải).</div>
+</div>
 
 <div class="s-title">8. SVM vs Logistic Regression</div>
 <table class="tbl">
@@ -296,6 +859,169 @@ Maximize Margin \(= \frac{2}{\|\mathbf{w}\|}\) ⟺ Minimize \(\|\mathbf{w}\|\) �
     <li><strong>Cross-Entropy (LR):</strong> Hàm <em>smooth và lồi</em>. Luôn có gradient ≠ 0 — tiếp tục update kể cả điểm đã phân loại đúng. Phân biệt được mức độ chắc chắn → calibrated probabilities.</li>
     <li><strong>Hệ quả:</strong> SVM sparse (chỉ dùng support vectors để predict), LR dùng tất cả training data. SVM không cho probability output trực tiếp, LR có.</li>
   </ul>
+</div>
+
+<div class="ss-title">11.1 Phân tích hình học Hinge Loss — "Flat region" và sparsity</div>
+
+<div class="insight">
+  <div class="insight-title">&#128161; Tư duy: Hinge Loss có "vùng bằng phẳng" — Cross-Entropy thì không</div>
+  <p>Đây là sự khác biệt cốt lõi. Hinge Loss = 0 khi \(y_i f(\mathbf{x}_i) \geq 1\) (đúng và ngoài margin) → gradient = 0 → những điểm này <em>hoàn toàn không ảnh hưởng</em> đến nghiệm. Cross-Entropy không bao giờ = 0 → mọi điểm đều có đóng góp.</p>
+</div>
+
+<details open>
+<summary><i class="fas fa-chart-line"></i> So sánh đồ thị Hinge Loss vs Cross-Entropy theo functional margin m = y·f(x)</summary>
+<div class="dc">
+<div style="font-family:monospace;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:1rem;font-size:.79rem;margin:.5rem 0">
+<pre style="background:none;margin:0;line-height:1.5">
+  Loss
+   3 │╲
+     │ ╲  Hinge Loss
+   2 │  ╲              Cross-Entropy (−log σ(m))
+     │   ╲          ╲
+   1 │    ╲          ╲
+     │     ╲            ╲
+   0 │      ╲─────────────╲──────────────────→ m = y·f(x)
+             0      1      2      3      4
+                     ↑
+               margin boundary
+               (m=1: nằm trên H₁/H₂)
+
+  Hinge: ZERO cho m ≥ 1 (đúng và tự tin)    ← FLAT
+  CE:    >0 với mọi m (tiệm cận 0 khi m→∞)  ← KHÔNG BAO GIỜ 0
+</pre>
+</div>
+
+<div class="fbox no-top-radius">
+\[ L_{\text{Hinge}}(m) = \max(0,\; 1-m), \qquad \frac{\partial L}{\partial m} = \begin{cases} -1 & \text{nếu } m < 1 \\ 0 & \text{nếu } m > 1 \end{cases} \]
+\[ L_{\text{CE}}(m) = \log(1+e^{-m}), \qquad \frac{\partial L}{\partial m} = -\frac{1}{1+e^m} < 0 \;\forall m \]
+</div>
+
+<div class="alert al-green" style="margin-top:.5rem">
+  <div class="alert-title">Hệ quả quan trọng của Flat Region — Sparse Solution</div>
+  <p>Nghiệm của SVM \(\mathbf{w}^* = \sum_i \alpha_i y_i \mathbf{x}_i\) chỉ có <em>support vectors</em> (điểm với \(m_i \leq 1\)) đóng góp vào \(\mathbf{w}\) (có \(\alpha_i > 0\)). Tất cả điểm ngoài margin → \(\alpha_i = 0\). Trong thực tế, thường chỉ 5–20% điểm là support vectors → <em>giải pháp thưa thớt</em>. LR: tất cả N điểm đóng góp vào gradient → \(\mathbf{w}\) phụ thuộc mọi training data.</p>
+</div>
+</div>
+</details>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 500 260" width="100%" style="max-width:500px" font-family="'Segoe UI',system-ui,sans-serif">
+  <!-- Background -->
+  <rect width="500" height="260" fill="#f8fafc"/>
+
+  <!-- Axis mapping: m in [-2,3] → sx=60+m*80+160=60+(m+2)*80; loss in [0,3.2] → sy=220-loss*62 -->
+  <!-- sx = 60 + (m+2)*80 = 60+80m+160 = 220+80m -->
+  <!-- at m=-2: sx=60; m=0: sx=220; m=1: sx=300; m=3: sx=460 -->
+  <!-- sy = 220 - loss*62 -->
+  <!-- at loss=0: sy=220; loss=3: sy=34; loss=3.2: sy=21 -->
+
+  <!-- Axes -->
+  <line x1="55" y1="220" x2="475" y2="220" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="55" y1="220" x2="55" y2="15" stroke="#94a3b8" stroke-width="1.5"/>
+  <polygon points="475,220 467,216 467,224" fill="#94a3b8"/>
+  <polygon points="55,15 51,23 59,23" fill="#94a3b8"/>
+  <!-- Axis labels -->
+  <text x="478" y="224" font-size="11" fill="#475569" font-weight="600">m</text>
+  <text x="28" y="13" font-size="10" fill="#475569" font-weight="600">Loss</text>
+  <text x="200" y="240" font-size="10" fill="#475569" text-anchor="middle">m = y·f(x) (functional margin)</text>
+
+  <!-- X axis ticks -->
+  <line x1="60" y1="218" x2="60" y2="222" stroke="#94a3b8" stroke-width="1"/>
+  <text x="60" y="232" font-size="9" fill="#94a3b8" text-anchor="middle">−2</text>
+  <line x1="140" y1="218" x2="140" y2="222" stroke="#94a3b8" stroke-width="1"/>
+  <text x="140" y="232" font-size="9" fill="#94a3b8" text-anchor="middle">−1</text>
+  <line x1="220" y1="218" x2="220" y2="222" stroke="#94a3b8" stroke-width="1"/>
+  <text x="220" y="232" font-size="9" fill="#94a3b8" text-anchor="middle">0</text>
+  <line x1="300" y1="218" x2="300" y2="222" stroke="#94a3b8" stroke-width="1"/>
+  <text x="300" y="232" font-size="9" fill="#94a3b8" text-anchor="middle">1</text>
+  <line x1="380" y1="218" x2="380" y2="222" stroke="#94a3b8" stroke-width="1"/>
+  <text x="380" y="232" font-size="9" fill="#94a3b8" text-anchor="middle">2</text>
+  <line x1="460" y1="218" x2="460" y2="222" stroke="#94a3b8" stroke-width="1"/>
+  <text x="460" y="232" font-size="9" fill="#94a3b8" text-anchor="middle">3</text>
+
+  <!-- Y axis ticks -->
+  <text x="48" y="223" font-size="9" fill="#94a3b8" text-anchor="end">0</text>
+  <line x1="53" y1="158" x2="57" y2="158" stroke="#94a3b8" stroke-width="1"/>
+  <text x="48" y="162" font-size="9" fill="#94a3b8" text-anchor="end">1</text>
+  <line x1="53" y1="96" x2="57" y2="96" stroke="#94a3b8" stroke-width="1"/>
+  <text x="48" y="100" font-size="9" fill="#94a3b8" text-anchor="end">2</text>
+  <line x1="53" y1="34" x2="57" y2="34" stroke="#94a3b8" stroke-width="1"/>
+  <text x="48" y="38" font-size="9" fill="#94a3b8" text-anchor="end">3</text>
+
+  <!-- Flat region fill (m>1, Hinge=0) -->
+  <rect x="300" y="158" width="162" height="62" fill="#dcfce7" opacity="0.5"/>
+  <text x="370" y="185" font-size="9" fill="#15803d" text-anchor="middle" font-weight="600">Gradient=0</text>
+  <text x="370" y="196" font-size="9" fill="#15803d" text-anchor="middle">(Support Vectors</text>
+  <text x="370" y="207" font-size="9" fill="#15803d" text-anchor="middle">only)</text>
+
+  <!-- Vertical dashed line at m=1 -->
+  <line x1="300" y1="25" x2="300" y2="220" stroke="#64748b" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="303" y="35" font-size="9" fill="#64748b">margin</text>
+  <text x="303" y="46" font-size="9" fill="#64748b">boundary</text>
+
+  <!-- Vertical dashed line at m=0 -->
+  <line x1="220" y1="25" x2="220" y2="220" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="223" y="35" font-size="9" fill="#94a3b8">decision</text>
+  <text x="223" y="46" font-size="9" fill="#94a3b8">boundary</text>
+
+  <!-- Hinge Loss: max(0,1-m) — piecewise linear -->
+  <!-- from m=-2 (sx=60): loss=3→sy=34 -->
+  <!-- to m=1 (sx=300): loss=0→sy=220 -->
+  <!-- then flat to m=3 (sx=460): loss=0→sy=220 -->
+  <polyline points="60,34 300,220 460,220" stroke="#ef4444" stroke-width="2.5" fill="none"/>
+
+  <!-- Cross-Entropy: log(1+e^{-m}), approximate as smooth curve -->
+  <!-- m=-2: log(1+e^2)≈2.13 → sy=220-2.13*62≈88 → sy=88 -->
+  <!-- m=-1: log(1+e^1)≈1.31 → sy=220-1.31*62≈139 -->
+  <!-- m=0: log(2)≈0.693 → sy=220-0.693*62≈177 -->
+  <!-- m=1: log(1+e^-1)≈0.314 → sy=220-0.314*62≈201 -->
+  <!-- m=2: log(1+e^-2)≈0.127 → sy=220-0.127*62≈212 -->
+  <!-- m=3: log(1+e^-3)≈0.049 → sy=220-0.049*62≈217 -->
+  <path d="M60,88 C100,105 140,138 220,177 C260,193 300,201 380,212 C420,215 450,217 460,217" stroke="#3b82f6" stroke-width="2.5" fill="none"/>
+
+  <!-- Annotation: Hinge > CE at m=-1.5 -->
+  <!-- m=-1.5: sx=100; hinge=2.5→sy=220-2.5*62=65; CE≈1.70→sy=220-1.70*62=114 -->
+  <line x1="100" y1="65" x2="130" y2="55" stroke="#ef4444" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <line x1="100" y1="114" x2="130" y2="55" stroke="#3b82f6" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <rect x="130" y="38" width="138" height="30" rx="4" fill="#fffbeb" stroke="#f59e0b" stroke-width="1"/>
+  <text x="199" y="52" font-size="8.5" fill="#b45309" text-anchor="middle">Hinge phạt tuyến tính</text>
+  <text x="199" y="63" font-size="8.5" fill="#b45309" text-anchor="middle">CE phạt log-scale</text>
+
+  <!-- Legend -->
+  <line x1="62" y1="15" x2="90" y2="15" stroke="#ef4444" stroke-width="2.5"/>
+  <text x="95" y="19" font-size="10" fill="#475569">Hinge (SVM)</text>
+  <line x1="195" y1="15" x2="223" y2="15" stroke="#3b82f6" stroke-width="2.5"/>
+  <text x="228" y="19" font-size="10" fill="#475569">Cross-Entropy (LR)</text>
+</svg>
+<div class="svg-caption">Hình 4 — Hinge Loss vs Cross-Entropy: Hinge Loss = 0 khi m≥1 (vùng phẳng xanh = gradient=0, chỉ support vectors đóng góp). Cross-Entropy luôn &gt;0, gradient ≠ 0 với mọi điểm.</div>
+</div>
+
+<div class="ss-title">11.2 Bảng so sánh tổng thể: SVM vs Logistic Regression</div>
+
+<table class="tbl" style="font-size:.83rem">
+<thead><tr><th>Tiêu chí</th><th>SVM (Hinge Loss)</th><th>Logistic Regression (CE)</th></tr></thead>
+<tbody>
+<tr><td>Loss function</td><td>Hinge: max(0, 1−yf(x)) — piecewise linear</td><td>CE: −log σ(yf(x)) — smooth, convex</td></tr>
+<tr><td>Gradient với điểm dễ</td><td>= 0 (ngoài margin) → không update</td><td>≠ 0 mọi lúc → tiếp tục update</td></tr>
+<tr><td>Mục tiêu tối ưu</td><td>Geometric: maximize margin</td><td>Probabilistic: maximize likelihood</td></tr>
+<tr><td>Nghiệm phụ thuộc vào</td><td>Chỉ support vectors (~5–20% data)</td><td>Tất cả training data</td></tr>
+<tr><td>Output</td><td>sign(f(x)) — quyết định nhị phân</td><td>σ(f(x)) ∈ (0,1) — xác suất có nghĩa</td></tr>
+<tr><td>Calibration</td><td>Không calibrated (cần Platt scaling)</td><td>Tự calibrated (MLE)</td></tr>
+<tr><td>Outlier sensitivity</td><td>Thấp (outliers có ξ_i cao nhưng C kiểm soát)</td><td>Cao (mọi điểm đóng góp vào gradient)</td></tr>
+<tr><td>Tính lồi</td><td>Lồi (với kernel cố định)</td><td>Lồi (global optimum)</td></tr>
+<tr><td>Regularization tự nhiên</td><td>\(\frac{1}{2}\|\mathbf{w}\|^2\) (L2 buil-in)</td><td>Thêm \(\lambda\|\mathbf{w}\|^2\) riêng</td></tr>
+</tbody>
+</table>
+
+<div class="analogy">
+  <div class="analogy-title">&#9917; Ẩn dụ bóng đá: Hinge vs CE</div>
+  <div class="two-col">
+  <div>
+    <p style="font-size:.83rem"><strong>Hinge (SVM) = Huấn luyện viên khắt khe:</strong> "Nếu cậu đã ghi bàn và đứng xa vạch offside đủ rồi (ngoài margin), tôi không cần nói thêm gì. Nhưng bất kỳ ai đứng trong vùng nguy hiểm (gần biên) hay phạm lỗi → phải luyện thêm."</p>
+  </div>
+  <div>
+    <p style="font-size:.83rem"><strong>CE (LR) = Huấn luyện viên cầu toàn:</strong> "Dù cậu đã ghi bàn đẹp, tôi vẫn muốn cậu tốt hơn. Không bao giờ hài lòng hoàn toàn → cầu thủ nào cũng được huấn luyện, dù đang chơi tốt."</p>
+  </div>
+  </div>
 </div>
 
 <div class="s-title">12. Gram Matrix và hành vi γ trong RBF Kernel</div>

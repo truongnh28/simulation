@@ -110,7 +110,22 @@ li{font-size:.875rem;line-height:1.65}
 ul,ol{padding-left:1.4rem;margin:.4rem 0}
 strong{color:#1e293b}
 
+.insight{background:#f0fdf4;border:1px solid #86efac;border-left:4px solid #16a34a;border-radius:0 8px 8px 0;padding:.9rem 1.1rem;margin:.85rem 0}
+.insight-title{font-weight:700;color:#14532d;margin-bottom:.35rem;font-size:.88rem;display:flex;align-items:center;gap:.4rem}
+.analogy{background:#fefce8;border:1px solid #fde68a;border-left:4px solid #eab308;border-radius:0 8px 8px 0;padding:.9rem 1.1rem;margin:.85rem 0}
+.analogy-title{font-weight:700;color:#854d0e;margin-bottom:.35rem;font-size:.88rem;display:flex;align-items:center;gap:.4rem}
+.key-eq{background:#fff;border:2px solid #16a34a;border-radius:8px;padding:.85rem 1.25rem;margin:.75rem 0;text-align:center}
+.warn-box{background:#fef2f2;border:1px solid #fecaca;border-left:4px solid #ef4444;border-radius:0 8px 8px 0;padding:.9rem 1.1rem;margin:.85rem 0}
+.warn-title{font-weight:700;color:#b91c1c;margin-bottom:.35rem;font-size:.88rem;display:flex;align-items:center;gap:.4rem}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0}
+.col-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:.9rem 1.1rem}
+.col-card h4{font-size:.85rem;font-weight:700;color:#1e293b;margin-bottom:.5rem}
+@media(max-width:640px){.two-col{grid-template-columns:1fr}}
+
 @media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+
+.svg-wrap{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:1rem;margin:.85rem 0;overflow-x:auto;text-align:center}
+.svg-caption{font-size:.78rem;color:#64748b;margin-top:.4rem;text-align:center;font-style:italic}
 </style>
 </head>
 
@@ -161,10 +176,201 @@ strong{color:#1e293b}
   <li>\(P(X)\) — Evidence (hằng số chuẩn hóa, bỏ qua khi so sánh)</li>
 </ul>
 
+<div class="ss-title">1.1 Ý nghĩa từng thành phần — Tư duy "cập nhật niềm tin"</div>
+
+<div class="analogy">
+  <div class="analogy-title"><i class="fas fa-sync-alt"></i> Tư duy Bayesian — Từng thành phần làm gì?</div>
+  <p><strong>Prior \(P(C)\):</strong> Niềm tin ban đầu <em>trước</em> khi thấy bất kỳ dữ liệu cụ thể nào. Ví dụ: P(Spam)=0.2 nghĩa là 20% email trong thế giới thực là spam — chỉ dựa trên base rate, chưa biết nội dung. Prior thể hiện kiến thức nền (background knowledge).</p>
+  <p><strong>Likelihood \(P(X|C)\):</strong> "Nếu email này <em>thực sự</em> là Spam, khả năng nó trông như X là bao nhiêu?" Đây là câu hỏi về <em>tính điển hình</em> của bằng chứng đối với từng giả thuyết — nhìn từ góc độ của mô hình sinh (generative model).</p>
+  <p><strong>Evidence \(P(X) = \sum_c P(X|c)\cdot P(c)\):</strong> Tổng xác suất quan sát được X, tính trên tất cả các lớp. Đây là hằng số chuẩn hóa — như nhau cho mọi lớp C → không ảnh hưởng đến <em>thứ hạng</em> → bỏ qua khi so sánh (MAP).</p>
+  <p><strong>Posterior \(P(C|X)\):</strong> Niềm tin <em>sau khi</em> quan sát X. Đây là output ta muốn — niềm tin được cập nhật.</p>
+</div>
+
+<div class="insight">
+  <div class="insight-title"><i class="fas fa-arrow-right"></i> Pipeline cập nhật: Prior → Data → Posterior</div>
+  <p>\(P(C|X) \;\propto\; P(C) \;\times\; P(X|C)\)</p>
+  <p style="margin-top:.35rem">Posterior tỷ lệ với Prior nhân Likelihood. Evidence chỉ là normalization để tổng posterior bằng 1. Đây là <em>cốt lõi</em> tư duy Bayesian: ta bắt đầu với prior, quan sát dữ liệu X, cập nhật thành posterior. Mỗi lần quan sát mới → posterior cũ trở thành prior mới.</p>
+</div>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 460 280" width="100%" style="max-width:460px" font-family="'Segoe UI',system-ui,sans-serif">
+  <!-- Background -->
+  <rect x="0" y="0" width="460" height="280" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+  <!-- Sample Space label -->
+  <text x="440" y="22" text-anchor="end" font-size="11" fill="#64748b" font-style="italic">Sample Space Ω</text>
+  <!-- Spam ellipse (left) -->
+  <ellipse cx="175" cy="115" rx="110" ry="72" fill="#dcfce7" fill-opacity="0.85" stroke="#16a34a" stroke-width="2"/>
+  <!-- Evidence ellipse (right) -->
+  <ellipse cx="285" cy="115" rx="110" ry="72" fill="#dbeafe" fill-opacity="0.75" stroke="#3b82f6" stroke-width="2"/>
+  <!-- Overlap region (clipping approach via path) -->
+  <!-- Approximate overlap shading -->
+  <path d="M230,65 Q260,65 280,90 Q295,108 295,115 Q295,130 280,145 Q260,165 230,165 Q205,165 215,145 Q205,130 205,115 Q205,100 215,85 Q220,72 230,65Z" fill="#86efac" fill-opacity="0.9"/>
+  <!-- Spam label outside left -->
+  <text x="112" y="85" text-anchor="middle" font-size="13" font-weight="700" fill="#15803d">P(Spam)</text>
+  <text x="112" y="100" text-anchor="middle" font-size="11" fill="#15803d">(Prior)</text>
+  <!-- Evidence label outside right -->
+  <text x="352" y="85" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">P(X="tiền")</text>
+  <text x="352" y="100" text-anchor="middle" font-size="11" fill="#1d4ed8">(Evidence)</text>
+  <!-- Overlap label -->
+  <text x="230" y="108" text-anchor="middle" font-size="9.5" font-weight="700" fill="#14532d">P(Spam ∩ X)</text>
+  <text x="230" y="122" text-anchor="middle" font-size="9" fill="#14532d">= P(X|Spam)·P(Spam)</text>
+  <!-- Annotation: Spam only region -->
+  <text x="135" y="135" text-anchor="middle" font-size="9" fill="#166534">Spam nhưng</text>
+  <text x="135" y="147" text-anchor="middle" font-size="9" fill="#166534">không có "tiền"</text>
+  <!-- Annotation: Evidence only region -->
+  <text x="330" y="135" text-anchor="middle" font-size="9" fill="#1e40af">Có "tiền" nhưng</text>
+  <text x="330" y="147" text-anchor="middle" font-size="9" fill="#1e40af">không phải Spam</text>
+  <!-- Annotation: outside both -->
+  <text x="52" y="245" font-size="9" fill="#94a3b8">Không Spam,</text>
+  <text x="52" y="257" font-size="9" fill="#94a3b8">không có "tiền"</text>
+  <!-- Bottom formula box -->
+  <rect x="60" y="200" width="340" height="50" rx="7" fill="#fefce8" stroke="#fde68a" stroke-width="1.5"/>
+  <text x="230" y="219" text-anchor="middle" font-size="10" fill="#92400e" font-weight="700">Bayes Theorem:</text>
+  <text x="230" y="237" text-anchor="middle" font-size="11" fill="#78350f" font-weight="600">P(Spam|X) = P(Spam ∩ X) / P(X)</text>
+  <text x="230" y="250" text-anchor="middle" font-size="9.5" fill="#b45309">Posterior = (Prior × Likelihood) / Evidence</text>
+  <!-- Arrow pointing to formula -->
+  <line x1="230" y1="187" x2="230" y2="200" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arrowY)"/>
+  <defs>
+    <marker id="arrowY" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+      <polygon points="0 0, 7 3.5, 0 7" fill="#f59e0b"/>
+    </marker>
+  </defs>
+</svg>
+<div class="svg-caption">Hình 1 — Venn Diagram minh họa Định lý Bayes: Vùng giao P(Spam ∩ X) là chìa khóa tính Posterior</div>
+</div>
+
+<div class="ss-title">1.2 Dạng Log-Odds — Mỗi feature "bầu chọn" độc lập</div>
+<p>Chia posterior của hai lớp để khử Evidence hoàn toàn:</p>
+<div class="key-eq">
+\[\frac{P(\text{Spam}|X)}{P(\text{Ham}|X)} = \underbrace{\frac{P(\text{Spam})}{P(\text{Ham})}}_{\text{Prior Odds}} \times \underbrace{\frac{P(X|\text{Spam})}{P(X|\text{Ham})}}_{\text{Likelihood Ratio}}\]
+</div>
+<p>Với giả định Naive, lấy logarithm hai vế:</p>
+<div class="key-eq">
+\[\underbrace{\log\frac{P(\text{Spam}|X)}{P(\text{Ham}|X)}}_{\text{Log-Posterior Odds}} = \underbrace{\log\frac{P(\text{Spam})}{P(\text{Ham})}}_{\text{Log-Prior Odds}} + \sum_{k=1}^n \underbrace{\log\frac{P(x_k|\text{Spam})}{P(x_k|\text{Ham})}}_{\text{Đóng góp của feature }k}\]
+</div>
+<div class="insight">
+  <div class="insight-title"><i class="fas fa-lightbulb"></i> Key Insight — Tuyến tính trong log-space</div>
+  <p>Log-posterior odds = log-prior odds + <em>tổng phiếu bầu</em> từ từng feature độc lập:<br>
+  • \(\log[P(x_k|\text{Spam})/P(x_k|\text{Ham})] > 0\): feature \(k\) ủng hộ Spam<br>
+  • \(= 0\): feature không phân biệt được hai lớp (trung lập)<br>
+  • \(< 0\): feature ủng hộ Ham<br>
+  Tổng log-LR &gt; 0 → predict Spam. Cấu trúc tuyến tính này giải thích tại sao NB <em>nhanh, interpretable</em>, và có thể phân tích được tầm quan trọng từng feature.</p>
+</div>
+
 <div class="s-title">2. Giả định Naive & Quy tắc MAP</div>
 <p>Giả định các đặc trưng độc lập có điều kiện: \(P(X|C_i) = \prod_{k=1}^{n} P(x_k|C_i)\)</p>
 <div class="flabel">MAP Decision Rule</div>
 <div class="fbox">\[ \hat{C} = \arg\max_{C_i} \; P(C_i) \prod_{k=1}^{n} P(x_k|C_i) \]</div>
+
+<div class="ss-title">2.1 Định nghĩa chặt chẽ: Giả định CI (Conditional Independence)</div>
+<p>Giả định CI phát biểu: <em>Cho biết lớp C, mọi đặc trưng độc lập hoàn toàn với nhau.</em></p>
+<div class="key-eq">
+\[P(X_1,\ldots,X_n \mid C) = \prod_{k=1}^n P(X_k \mid C)\]
+</div>
+<p>Tương đương: \(P(X_i \mid X_j, C) = P(X_i \mid C)\) với \(\forall i \neq j\) — biết lớp C rồi, biết thêm \(X_j\) <em>không thay đổi gì</em> về phân phối của \(X_i\).</p>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 500 220" width="100%" style="max-width:500px" font-family="'Segoe UI',system-ui,sans-serif">
+  <defs>
+    <marker id="arrowG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <polygon points="0 0, 8 4, 0 8" fill="#16a34a"/>
+    </marker>
+  </defs>
+  <!-- Background box for features -->
+  <rect x="28" y="100" width="300" height="105" rx="8" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="178" y="218" text-anchor="middle" font-size="9.5" fill="#64748b" font-style="italic">n features — nhưng độc lập với nhau khi biết C</text>
+
+  <!-- Class node (center top) -->
+  <circle cx="178" cy="55" r="32" fill="#14532d" stroke="#0a1f10" stroke-width="2"/>
+  <text x="178" y="51" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">C</text>
+  <text x="178" y="66" text-anchor="middle" font-size="10" fill="#86efac">(Class)</text>
+
+  <!-- Feature nodes -->
+  <!-- X1 at x=45 -->
+  <circle cx="45" cy="148" r="20" fill="#f8fafc" stroke="#16a34a" stroke-width="2"/>
+  <text x="45" y="153" text-anchor="middle" font-size="12" font-weight="600" fill="#14532d">X₁</text>
+  <text x="45" y="182" text-anchor="middle" font-size="8.5" fill="#64748b">P(X₁|C)</text>
+
+  <!-- X2 at x=110 -->
+  <circle cx="110" cy="148" r="20" fill="#f8fafc" stroke="#16a34a" stroke-width="2"/>
+  <text x="110" y="153" text-anchor="middle" font-size="12" font-weight="600" fill="#14532d">X₂</text>
+  <text x="110" y="182" text-anchor="middle" font-size="8.5" fill="#64748b">P(X₂|C)</text>
+
+  <!-- X3 at x=178 -->
+  <circle cx="178" cy="148" r="20" fill="#f8fafc" stroke="#16a34a" stroke-width="2"/>
+  <text x="178" y="153" text-anchor="middle" font-size="12" font-weight="600" fill="#14532d">X₃</text>
+  <text x="178" y="182" text-anchor="middle" font-size="8.5" fill="#64748b">P(X₃|C)</text>
+
+  <!-- X4 at x=246 -->
+  <circle cx="246" cy="148" r="20" fill="#f8fafc" stroke="#16a34a" stroke-width="2"/>
+  <text x="246" y="153" text-anchor="middle" font-size="12" font-weight="600" fill="#14532d">X₄</text>
+  <text x="246" y="182" text-anchor="middle" font-size="8.5" fill="#64748b">P(X₄|C)</text>
+
+  <!-- X5 at x=312 -->
+  <circle cx="312" cy="148" r="20" fill="#f8fafc" stroke="#16a34a" stroke-width="2"/>
+  <text x="312" y="153" text-anchor="middle" font-size="12" font-weight="600" fill="#14532d">X₅</text>
+  <text x="312" y="182" text-anchor="middle" font-size="8.5" fill="#64748b">P(X₅|C)</text>
+
+  <!-- Arrows from C to each X (stopping at circle edge r=20) -->
+  <line x1="153" y1="75" x2="57" y2="130" stroke="#16a34a" stroke-width="2" marker-end="url(#arrowG)"/>
+  <line x1="162" y1="81" x2="118" y2="130" stroke="#16a34a" stroke-width="2" marker-end="url(#arrowG)"/>
+  <line x1="178" y1="87" x2="178" y2="128" stroke="#16a34a" stroke-width="2" marker-end="url(#arrowG)"/>
+  <line x1="194" y1="81" x2="238" y2="130" stroke="#16a34a" stroke-width="2" marker-end="url(#arrowG)"/>
+  <line x1="203" y1="75" x2="299" y2="130" stroke="#16a34a" stroke-width="2" marker-end="url(#arrowG)"/>
+
+  <!-- No horizontal arrows between X nodes — label -->
+  <text x="178" y="98" text-anchor="middle" font-size="8.5" fill="#ef4444" font-style="italic">↕ không có mũi tên ngang giữa các Xₖ</text>
+
+  <!-- Right panel: formula comparison -->
+  <rect x="350" y="20" width="138" height="145" rx="7" fill="#fff" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="419" y="38" text-anchor="middle" font-size="10" font-weight="700" fill="#1e293b">So sánh tham số</text>
+  <line x1="360" y1="44" x2="478" y2="44" stroke="#e2e8f0"/>
+  <text x="360" y="58" font-size="8.5" fill="#ef4444" font-weight="600">Không CI:</text>
+  <text x="360" y="71" font-size="8.5" fill="#ef4444">P(X|C) cần</text>
+  <text x="360" y="84" font-size="9" fill="#ef4444" font-weight="700">2ⁿ − 1 params</text>
+  <line x1="360" y1="92" x2="478" y2="92" stroke="#e2e8f0" stroke-dasharray="3,2"/>
+  <text x="360" y="106" font-size="8.5" fill="#16a34a" font-weight="600">Có CI (Naive):</text>
+  <text x="360" y="119" font-size="8" fill="#14532d">P(X|C) = Π P(Xₖ|C)</text>
+  <text x="360" y="132" font-size="8.5" fill="#16a34a" font-weight="700">chỉ cần n params</text>
+  <rect x="356" y="143" width="126" height="16" rx="4" fill="#dcfce7"/>
+  <text x="419" y="155" text-anchor="middle" font-size="8.5" fill="#14532d" font-weight="700">n=30: 10⁹ → 30 ✓</text>
+
+  <!-- NAIVE label bottom right -->
+  <text x="419" y="198" text-anchor="middle" font-size="9" fill="#9333ea" font-weight="700">NAIVE:</text>
+  <text x="419" y="211" text-anchor="middle" font-size="8.5" fill="#9333ea">Xₖ không liên hệ</text>
+</svg>
+<div class="svg-caption">Hình 2 — Plate model: C ảnh hưởng đến mỗi Xₖ độc lập — không có cạnh ngang giữa các feature khi đã biết C</div>
+</div>
+
+<div class="analogy">
+  <div class="analogy-title"><i class="fas fa-question-circle"></i> Tại sao gọi là "Naive"?</div>
+  <p>Trong Spam email: "free" và "prize" thường đi cùng nhau. Biết class=Spam, thấy "free" <em>vẫn làm</em> "prize" có khả năng cao hơn — tương quan dương điều kiện. NB bỏ qua điều này: P("prize"|"free", Spam) = P("prize"|Spam). Đây là giả định "ngây thơ" vì hoàn toàn không đúng trong thực tế, nhưng đơn giản hóa tính toán một cách cực kỳ mạnh mẽ.</p>
+</div>
+
+<div class="ss-title">2.2 Hệ quả tính toán: từ \(2^n\) xuống \(n\) tham số</div>
+<div class="two-col">
+  <div class="col-card">
+    <h4>Mô hình đầy đủ (không Naive)</h4>
+    <p>Cần ước lượng \(P(X_1,\ldots,X_n|C)\): với n đặc trưng nhị phân → \(2^n - 1\) tham số mỗi lớp.</p>
+    <p>n=30 → hơn 10⁹ tham số. Cần dữ liệu thiên văn. Không khả thi.</p>
+  </div>
+  <div class="col-card">
+    <h4>Naive Bayes</h4>
+    <p>Chỉ cần n giá trị \(P(X_k|C)\) độc lập.</p>
+    <p>n=30 → 30 tham số. Giảm từ 10⁹ xuống 30. Có thể học từ vài chục ví dụ.</p>
+  </div>
+</div>
+<p>Với Multinomial NB trên văn bản: |V|=10.000 từ → cần 10.000 tham số thay vì \(2^{10000}\) — con số vượt xa số nguyên tử trong vũ trụ. <strong>Giả định Naive là lý do duy nhất khiến text classification bằng Bayes khả thi.</strong></p>
+
+<div class="ss-title">2.3 Khi nào CI đúng / sai trong thực tế?</div>
+<table class="tbl" style="font-size:.83rem">
+<thead><tr><th>Tình huống</th><th>CI có đúng không?</th><th>Hệ quả</th></tr></thead>
+<tbody>
+<tr><td>Features độc lập hoàn toàn (sensor data nhiễu)</td><td>Gần đúng</td><td>NB hoạt động tốt, posterior calibrated</td></tr>
+<tr><td>Từ ngữ trong văn bản (email, reviews)</td><td>Sai — từ đồng nghĩa, cụm từ tương quan</td><td>Overconfident posterior, nhưng label thường đúng</td></tr>
+<tr><td>Medical diagnosis (nhiều triệu chứng liên quan)</td><td>Sai nghiêm trọng</td><td>NB hoạt động kém, cần mô hình phức tạp hơn</td></tr>
+</tbody>
+</table>
 
 <details open>
 <summary><i class="fas fa-calculator"></i> Ví dụ: Spam Filter (Câu 10 đề thi thử)</summary>
@@ -182,14 +388,49 @@ strong{color:#1e293b}
 <p>Cho đặc trưng liên tục, dùng phân phối chuẩn:</p>
 <div class="fbox no-top-radius">\[ P(x_k|C_i) = \frac{1}{\sqrt{2\pi\sigma_{ki}^2}} \exp\!\left(-\frac{(x_k-\mu_{ki})^2}{2\sigma_{ki}^2}\right) \]</div>
 
-<div class="s-title">4. Vấn đề và nhược điểm</div>
-<div class="alert al-red">
-  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> Zero Frequency — Xác suất bằng 0</div>
-  <p>Nếu đặc trưng chưa xuất hiện trong lớp nào đó, tích toàn bộ = 0. Giải pháp: <strong>Laplace Smoothing</strong> (cộng 1 vào mỗi count).</p>
+<div class="s-title">4. Vấn đề và Nhược điểm — Phân tích sâu</div>
+
+<div class="ss-title">4.1 Zero Frequency — Một zero phá hủy tất cả</div>
+<div class="warn-box">
+  <div class="warn-title"><i class="fas fa-skull-crossbones"></i> Cơ chế: Multiplication propagates zero</div>
+  <p>Nếu từ \(w_k\) chưa bao giờ xuất hiện trong Spam ở tập huấn luyện → MLE cho \(\hat{P}(w_k|\text{Spam}) = 0\). Do NB dùng <em>tích</em>:</p>
+  <div style="margin:.4rem 0">\[P(C)\cdot P(x_1|C)\cdot\ldots\cdot \underbrace{P(x_k|C)}_{= 0}\cdot\ldots\cdot P(x_n|C) = 0\]</div>
+  <p>Một factor bằng 0 khiến toàn bộ Score = 0. Mọi document chứa \(w_k\) sẽ không bao giờ được predict là Spam, dù tất cả features còn lại ủng hộ Spam cực mạnh. Đây là hậu quả của MLE thuần túy — nếu chưa thấy, xác suất = 0 hoàn toàn.</p>
 </div>
-<div class="alert al-yellow">
-  <div class="alert-title"><i class="fas fa-lightbulb"></i> Overconfident Posterior (Câu 11)</div>
-  <p>Vì các đặc trưng không thực sự độc lập trong thực tế, tích nhiều xác suất tương quan đẩy posterior cực đoan về 0 hoặc 1 → mô hình <strong>overconfident</strong>.</p>
+
+<div class="insight">
+  <div class="insight-title"><i class="fas fa-shield-alt"></i> Giải pháp: Laplace Smoothing — Tại sao cộng 1 vào tử và cộng |V| vào mẫu?</div>
+  <p>Laplace Smoothing thêm k=1 "ví dụ ảo" cho mỗi từ, như thể ta đã quan sát mỗi từ ít nhất một lần:</p>
+  <div style="margin:.4rem 0">\[\hat{P}(w_k|c) = \frac{\text{count}(w_k, c) + 1}{\sum_{w'}\text{count}(w', c) + |V|}\]</div>
+  <p>Mẫu số thêm |V| để đảm bảo \(\sum_k \hat{P}(w_k|c) = 1\) (vẫn là phân phối hợp lệ). Kết quả: mọi xác suất &gt; 0 → tích không bao giờ = 0.</p>
+  <p><strong>Lý giải Bayesian:</strong> Laplace Smoothing tương đương đặt prior Dirichlet(1,1,...,1) (phân phối uniform) lên phân phối từ — đây là MAP estimation thay vì MLE thuần túy. Prior "kéo" xác suất về phía uniform, tránh cực đoan.</p>
+</div>
+
+<div class="ss-title">4.2 Overconfident Posterior — Cơ chế Double-Counting</div>
+<div class="warn-box">
+  <div class="warn-title"><i class="fas fa-exclamation-triangle"></i> Nguồn gốc: Vi phạm CI → tính thừa bằng chứng</div>
+  <p>Khi X₁ và X₂ tương quan (ví dụ: "free" và "prize" cùng xuất hiện trong Spam):</p>
+  <ul style="margin-top:.3rem">
+    <li><strong>Thực tế:</strong> Sau khi biết X₁=1, X₂ không cung cấp nhiều thông tin mới. Nếu \(X_1 \Rightarrow X_2\) (tương quan hoàn toàn): \(P(X_1=1, X_2=1|\text{Spam}) = P(X_1=1|\text{Spam})\).</li>
+    <li><strong>NB tính:</strong> \(P(X_1=1|\text{Spam})\cdot P(X_2=1|\text{Spam})\) — nhân cả hai như thể bằng chứng hoàn toàn độc lập.</li>
+    <li><strong>Hệ quả:</strong> NB <em>overcounts</em> bằng chứng → phóng đại score → posterior bị đẩy cực đoan về 0 hoặc 1.</li>
+  </ul>
+</div>
+
+<div class="insight">
+  <div class="insight-title"><i class="fas fa-calculator"></i> Ví dụ định lượng — n features tương quan</div>
+  <p>Giả sử P(Spam|email có "free") = 0.8. Thêm n từ đồng nghĩa {"prize", "win", "gift", ...} đều tương quan cao với "free", mỗi từ có P(w|Spam)=0.9, P(w|Ham)=0.1.</p>
+  <p>NB tính: Log-posterior odds += \(n \times \log(0.9/0.1) = n \times 2.197\). Với n=5 → posterior Spam ≈ 0.9994. Thực tế có thể chỉ là 0.82 vì các từ mang cùng thông tin. <strong>NB nhân bằng chứng n lần thay vì đếm một lần.</strong></p>
+</div>
+
+<div class="insight">
+  <div class="insight-title"><i class="fas fa-balance-scale"></i> Hệ quả thực tế và khi nào NB vẫn dùng được</div>
+  <ul>
+    <li><strong>Label (nhãn lớp):</strong> Thường vẫn đúng — NB là strong classifier dù posterior không calibrated. Nghịch lý nổi tiếng: giả định sai nhưng kết quả tốt.</li>
+    <li><strong>Confidence score:</strong> Không tin được. P(Spam)=0.999 thực tế có thể chỉ là 0.75.</li>
+    <li><strong>Khi cần probability calibration:</strong> Dùng Logistic Regression (discriminative) — tối ưu trực tiếp trên posterior, không cần giả định CI.</li>
+    <li><strong>NB vẫn mạnh trong:</strong> Text classification (spam, sentiment), medical screening (với domain knowledge về independence), khi data ít (ít parameter → ít overfit).</li>
+  </ul>
 </div>
 
 <div class="s-title">5. Multinomial Naive Bayes — Phân loại văn bản (Text Classification)</div>
@@ -217,6 +458,145 @@ strong{color:#1e293b}
   </div>
   <p>Thêm 1 vào mỗi từ (tử số), thêm |V| vào tổng (mẫu số) để đảm bảo \(\sum_k \hat{P}(w_k|c)=1\).</p>
 </div>
+
+<div class="ss-title">5.1 The Generative Story — Mô hình sinh dữ liệu của Multinomial NB</div>
+<div class="analogy">
+  <div class="analogy-title"><i class="fas fa-theater-masks"></i> Cách Multinomial NB "tưởng tượng" document được tạo ra</div>
+  <p>Multinomial NB là một <em>generative model</em> — nó đặt ra một câu chuyện về cách dữ liệu được sinh:</p>
+  <ol style="margin-top:.4rem">
+    <li>Chọn lớp C theo prior: \(C \sim \text{Categorical}(P(\text{Spam}), P(\text{Ham}))\)</li>
+    <li>Chọn độ dài document \(n\)</li>
+    <li>Với mỗi vị trí: rút một từ <em>độc lập</em> từ phân phối từ của lớp C: \(w_i \sim \text{Categorical}(P(w_1|C), \ldots, P(w_{|V|}|C))\)</li>
+  </ol>
+  <p style="margin-top:.4rem">Document là "túi từ" — thứ tự không quan trọng, chỉ cần số lần xuất hiện. Đây chính xác là lý do biểu diễn Bag-of-Words phù hợp với Multinomial NB.</p>
+</div>
+<p>Từ câu chuyện này, xác suất sinh ra document \(d\) từ lớp \(c\) là phân phối đa thức:</p>
+<div class="key-eq">
+\[P(d \mid c) = \frac{(\sum_k x_k)!}{\prod_k x_k!}\prod_{k=1}^{|V|} P(w_k|c)^{x_k} \propto \prod_{k=1}^{|V|} P(w_k|c)^{x_k}\]
+</div>
+<p>Phần factorial là hằng số chuẩn hóa, bỏ qua khi so sánh các lớp.</p>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 520 200" width="100%" style="max-width:520px" font-family="'Segoe UI',system-ui,sans-serif">
+  <defs>
+    <marker id="arrowB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <polygon points="0 0, 8 4, 0 8" fill="#475569"/>
+    </marker>
+    <marker id="arrowDash" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <polygon points="0 0, 8 4, 0 8" fill="#9333ea"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <polygon points="0 0, 8 4, 0 8" fill="#ef4444"/>
+    </marker>
+  </defs>
+
+  <!-- Step 1: Choose Class -->
+  <rect x="8" y="10" width="118" height="80" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="67" y="28" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1e3a8a">Step 1</text>
+  <text x="67" y="41" text-anchor="middle" font-size="9" fill="#1e40af">Chọn Class C</text>
+  <!-- dice icon approximate -->
+  <rect x="48" y="47" width="14" height="14" rx="2" fill="#fff" stroke="#3b82f6"/>
+  <circle cx="52" cy="51" r="1.2" fill="#3b82f6"/>
+  <circle cx="58" cy="55" r="1.2" fill="#3b82f6"/>
+  <circle cx="58" cy="51" r="1.2" fill="#3b82f6"/>
+  <text x="67" y="57" text-anchor="middle" font-size="8" fill="#1e40af" dx="10">🎲</text>
+  <text x="67" y="68" text-anchor="middle" font-size="8" fill="#1e40af">P(Spam)=0.3</text>
+  <text x="67" y="80" text-anchor="middle" font-size="8" fill="#1e40af">P(Ham)=0.7</text>
+
+  <!-- Arrow 1→2 -->
+  <line x1="126" y1="50" x2="140" y2="50" stroke="#475569" stroke-width="1.8" marker-end="url(#arrowB)"/>
+
+  <!-- Step 2: Choose words -->
+  <rect x="141" y="10" width="118" height="80" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="200" y="28" text-anchor="middle" font-size="9.5" font-weight="700" fill="#14532d">Step 2</text>
+  <text x="200" y="41" text-anchor="middle" font-size="9" fill="#166534">Chọn từng từ</text>
+  <text x="200" y="53" text-anchor="middle" font-size="8.5" fill="#166534">i.i.d. từ P(w|C)</text>
+  <!-- word chips -->
+  <rect x="148" y="58" width="32" height="13" rx="3" fill="#fff" stroke="#16a34a"/>
+  <text x="164" y="68" text-anchor="middle" font-size="7.5" fill="#14532d">money</text>
+  <rect x="183" y="58" width="24" height="13" rx="3" fill="#fff" stroke="#16a34a"/>
+  <text x="195" y="68" text-anchor="middle" font-size="7.5" fill="#14532d">free</text>
+  <rect x="210" y="58" width="24" height="13" rx="3" fill="#fff" stroke="#16a34a"/>
+  <text x="222" y="68" text-anchor="middle" font-size="7.5" fill="#14532d">click</text>
+  <text x="200" y="83" text-anchor="middle" font-size="7.5" fill="#64748b">Bag-of-Words</text>
+
+  <!-- Arrow 2→3 -->
+  <line x1="259" y1="50" x2="273" y2="50" stroke="#475569" stroke-width="1.8" marker-end="url(#arrowB)"/>
+
+  <!-- Step 3: Document -->
+  <rect x="274" y="10" width="118" height="80" rx="8" fill="#fef9c3" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="333" y="28" text-anchor="middle" font-size="9.5" font-weight="700" fill="#78350f">Step 3</text>
+  <text x="333" y="41" text-anchor="middle" font-size="9" fill="#854d0e">Document d</text>
+  <!-- doc icon -->
+  <rect x="318" y="46" width="18" height="22" rx="2" fill="#fff" stroke="#f59e0b"/>
+  <line x1="321" y1="53" x2="333" y2="53" stroke="#f59e0b" stroke-width="1"/>
+  <line x1="321" y1="57" x2="333" y2="57" stroke="#f59e0b" stroke-width="1"/>
+  <line x1="321" y1="61" x2="330" y2="61" stroke="#f59e0b" stroke-width="1"/>
+  <text x="348" y="58" font-size="7.5" fill="#854d0e">[money,</text>
+  <text x="348" y="68" font-size="7.5" fill="#854d0e">free, click,</text>
+  <text x="348" y="78" font-size="7.5" fill="#854d0e">...]</text>
+
+  <!-- Dashed backward arrow from document back up/left to class label -->
+  <path d="M333 90 Q333 105 200 105 Q145 105 67 105 Q67 95 67 90" fill="none" stroke="#9333ea" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrowDash)"/>
+  <text x="200" y="119" text-anchor="middle" font-size="8" fill="#7e22ce" font-style="italic">Classification: Tìm C* = argmax P(C|d)</text>
+
+  <!-- Log-score bar chart -->
+  <text x="8" y="143" font-size="9" font-weight="700" fill="#1e293b">Log-Score comparison:</text>
+
+  <!-- Spam bar -->
+  <rect x="8" y="150" width="200" height="18" rx="4" fill="#ef4444"/>
+  <text x="13" y="163" font-size="8" fill="#fff" font-weight="600">Spam: log P(Spam) + Σ xₖ log P(wₖ|Spam) = −12.3</text>
+
+  <!-- Ham bar -->
+  <rect x="8" y="174" width="130" height="18" rx="4" fill="#3b82f6"/>
+  <text x="13" y="187" font-size="8" fill="#fff" font-weight="600">Ham: log P(Ham) + Σ xₖ log P(wₖ|Ham) = −18.7</text>
+
+  <!-- Arrow pointing to spam result -->
+  <line x1="215" y1="159" x2="240" y2="159" stroke="#ef4444" stroke-width="2" marker-end="url(#arrowRed)"/>
+  <text x="244" y="163" font-size="9" fill="#ef4444" font-weight="700">→ Predict: SPAM</text>
+</svg>
+<div class="svg-caption">Hình 3 — Generative Story của Multinomial NB: Class → Từng từ → Document, và quá trình phân loại ngược lại dùng log-score</div>
+</div>
+
+<div class="ss-title">5.2 Log-Space Computation — Bắt buộc để tránh Numerical Underflow</div>
+<div class="warn-box">
+  <div class="warn-title"><i class="fas fa-exclamation-triangle"></i> Vấn đề: Tích hàng trăm xác suất nhỏ → máy tính trả về 0</div>
+  <p>Document 200 từ, P(w|c) ≈ 0.001 trung bình:</p>
+  <div style="margin:.4rem 0">\[P(d|c) \approx 0.001^{200} = 10^{-600}\]</div>
+  <p>IEEE 754 double precision nhỏ nhất là \(\approx 10^{-308}\) → máy tính làm tròn về 0. Mọi lớp đều có Score = 0 → không phân loại được. Đây là <strong>numerical underflow</strong>.</p>
+</div>
+<div class="insight">
+  <div class="insight-title"><i class="fas fa-shield-alt"></i> Giải pháp: argmax không thay đổi khi lấy log (log là hàm đơn điệu tăng)</div>
+  <div class="key-eq" style="margin:.5rem 0">
+    \[\hat{C} = \arg\max_c\underbrace{\left[\log P(c) + \sum_{k=1}^{|V|} x_k \cdot \log\hat{P}(w_k|c)\right]}_{\text{Log-Score — số bình thường, không bao giờ underflow}}\]
+  </div>
+  <p>\(\log(10^{-600}) = -600 \cdot \ln 10 \approx -1381\) — số bình thường với floating point. <strong>Implementation thực tế luôn dùng log-space.</strong></p>
+</div>
+
+<div class="ss-title">5.3 Bernoulli NB vs Multinomial NB — Khi nào dùng cái nào?</div>
+<div class="two-col">
+  <div class="col-card">
+    <h4>Bernoulli NB</h4>
+    <p><strong>Feature:</strong> \(x_k \in \{0,1\}\) — từ có xuất hiện không?</p>
+    <p>\[P(d|c) = \prod_k P(w_k|c)^{x_k}\cdot(1-P(w_k|c))^{1-x_k}\]</p>
+    <p>Penalize vắng mặt: từ <em>không có</em> trong document cũng đóng góp vào score.</p>
+  </div>
+  <div class="col-card">
+    <h4>Multinomial NB</h4>
+    <p><strong>Feature:</strong> \(x_k \in \mathbb{N}\) — từ xuất hiện bao nhiêu lần?</p>
+    <p>\[P(d|c) \propto \prod_k P(w_k|c)^{x_k}\]</p>
+    <p>Không penalize vắng mặt: từ 0 lần không đóng góp vào score.</p>
+  </div>
+</div>
+<table class="tbl" style="font-size:.83rem">
+<thead><tr><th>Tiêu chí</th><th>Bernoulli NB</th><th>Multinomial NB</th></tr></thead>
+<tbody>
+<tr><td>Feature</td><td>Binary {0,1} — có xuất hiện không?</td><td>Integer ℕ — xuất hiện bao nhiêu lần?</td></tr>
+<tr><td>Từ vắng mặt</td><td>Đóng góp vào score (penalize)</td><td>Không đóng góp (x_k=0 → 0 trong log-sum)</td></tr>
+<tr><td>Phù hợp</td><td>Document ngắn, sự hiện diện quan trọng hơn tần suất</td><td>Document dài, tần suất từ mang thông tin</td></tr>
+<tr><td>Ứng dụng thực tế</td><td>Short text: titles, social media</td><td>Email, articles, product reviews</td></tr>
+</tbody>
+</table>
 
 <details open>
 <summary><i class="fas fa-calculator"></i> Ví dụ: Spam Filter với Multinomial NB</summary>

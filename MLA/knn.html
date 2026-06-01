@@ -123,6 +123,9 @@ strong{color:#1e293b}
 @media(max-width:640px){.two-col{grid-template-columns:1fr}}
 
 @media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+
+.svg-wrap{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:1rem;margin:.85rem 0;overflow-x:auto;text-align:center}
+.svg-caption{font-size:.78rem;color:#64748b;margin-top:.4rem;text-align:center;font-style:italic}
 </style>
 </head>
 
@@ -261,6 +264,89 @@ strong{color:#1e293b}
 </div>
 
 <div class="ss-title">6.3 KD-Tree — Binary Search Tree trên không gian D chiều</div>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 450 320" width="100%" style="max-width:450px" font-family="'Segoe UI',system-ui,sans-serif">
+  <!-- Background -->
+  <rect width="450" height="320" fill="#fff" rx="6" stroke="#e2e8f0" stroke-width="1"/>
+  <!-- Title -->
+  <text x="225" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#14532d">KD-Tree: Phân hoạch không gian đệ quy</text>
+
+  <!-- Plot area: x=40..410, y=35..285 -->
+  <!-- Axes border -->
+  <rect x="40" y="35" width="370" height="250" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" rx="2"/>
+
+  <!-- Pruned region (right-bottom area) -->
+  <rect x="225" y="175" width="185" height="110" fill="#fef2f2" opacity="0.7"/>
+  <text x="308" y="232" text-anchor="middle" font-size="9" fill="#ef4444" font-weight="600">Vùng bị cắt tỉa</text>
+
+  <!-- Level 0: vertical split at x=5 → pixel x=225 (midpoint of 40..410) -->
+  <line x1="225" y1="35" x2="225" y2="285" stroke="#14532d" stroke-width="2.5"/>
+  <text x="229" y="46" font-size="10" fill="#14532d" font-weight="700">Split dim=X₁</text>
+
+  <!-- Level 1 left: horizontal at y=6 → pixel y=160 within left half -->
+  <line x1="40" y1="160" x2="225" y2="160" stroke="#16a34a" stroke-width="1.8"/>
+  <text x="43" y="155" font-size="9" fill="#16a34a" font-weight="600">Split dim=X₂</text>
+
+  <!-- Level 1 right: horizontal at y=3 → pixel y=210 within right half -->
+  <line x1="225" y1="210" x2="410" y2="210" stroke="#16a34a" stroke-width="1.8"/>
+  <text x="228" y="205" font-size="9" fill="#16a34a" font-weight="600">Split dim=X₂</text>
+
+  <!-- Level 2: finer vertical splits (light green) -->
+  <line x1="130" y1="35" x2="130" y2="160" stroke="#86efac" stroke-width="1.2"/>
+  <line x1="130" y1="160" x2="130" y2="285" stroke="#86efac" stroke-width="1.2"/>
+  <line x1="318" y1="35" x2="318" y2="210" stroke="#86efac" stroke-width="1.2"/>
+  <line x1="318" y1="210" x2="318" y2="285" stroke="#86efac" stroke-width="1.2"/>
+
+  <!-- Axis labels -->
+  <text x="225" y="300" text-anchor="middle" font-size="10" fill="#64748b">X₁</text>
+  <text x="22" y="162" text-anchor="middle" font-size="10" fill="#64748b" transform="rotate(-90,22,162)">X₂</text>
+
+  <!-- Data points: 6 filled green circles (class A) -->
+  <circle cx="80" cy="70" r="5.5" fill="#16a34a"/>
+  <circle cx="155" cy="120" r="5.5" fill="#16a34a"/>
+  <circle cx="100" cy="200" r="5.5" fill="#16a34a"/>
+  <circle cx="170" cy="255" r="5.5" fill="#16a34a"/>
+  <circle cx="270" cy="60" r="5.5" fill="#16a34a"/>
+  <circle cx="360" cy="140" r="5.5" fill="#16a34a"/>
+
+  <!-- Data points: 6 hollow red circles (class B) -->
+  <circle cx="60" cy="135" r="5.5" fill="none" stroke="#ef4444" stroke-width="1.8"/>
+  <circle cx="190" cy="80" r="5.5" fill="none" stroke="#ef4444" stroke-width="1.8"/>
+  <circle cx="90" cy="245" r="5.5" fill="none" stroke="#ef4444" stroke-width="1.8"/>
+  <circle cx="290" cy="240" r="5.5" fill="none" stroke="#ef4444" stroke-width="1.8"/>
+  <circle cx="370" cy="255" r="5.5" fill="none" stroke="#ef4444" stroke-width="1.8"/>
+  <circle cx="350" cy="185" r="5.5" fill="none" stroke="#ef4444" stroke-width="1.8"/>
+
+  <!-- Query point Q: yellow diamond -->
+  <polygon points="308,175 318,190 308,205 298,190" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/>
+  <text x="322" y="193" font-size="9" fill="#b45309" font-weight="700">Q</text>
+  <!-- Search radius circle -->
+  <circle cx="308" cy="190" r="38" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.8"/>
+  <text x="308" y="153" text-anchor="middle" font-size="8" fill="#b45309">r_best</text>
+
+  <!-- Prune arrow -->
+  <line x1="308" y1="232" x2="308" y2="248" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrowRed)"/>
+  <defs>
+    <marker id="arrowRed" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+      <path d="M1,1 L7,4 L1,7 Z" fill="#ef4444"/>
+    </marker>
+  </defs>
+  <text x="308" y="262" text-anchor="middle" font-size="8" fill="#ef4444">Prune: subtree này</text>
+  <text x="308" y="273" text-anchor="middle" font-size="8" fill="#ef4444">không thể gần hơn r_best</text>
+
+  <!-- Legend -->
+  <circle cx="50" cy="310" r="5" fill="#16a34a"/>
+  <text x="60" y="314" font-size="9" fill="#1e293b">Class A</text>
+  <circle cx="100" cy="310" r="5" fill="none" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="110" y="314" font-size="9" fill="#1e293b">Class B</text>
+  <polygon points="155,307 161,313 155,319 149,313" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+  <text x="165" y="314" font-size="9" fill="#1e293b">Query Q</text>
+  <rect x="210" y="305" width="10" height="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1"/>
+  <text x="224" y="314" font-size="9" fill="#1e293b">Pruned region</text>
+</svg>
+<div class="svg-caption">KD-Tree chia không gian 2D đệ quy: đường xanh đậm (Level 0), xanh lá (Level 1), xanh nhạt (Level 2). Vùng đỏ nhạt bị cắt tỉa vì r_best nhỏ hơn khoảng cách đến vùng đó.</div>
+</div>
 
 <details open>
 <summary><i class="fas fa-hammer"></i> Pha xây dựng (Build): chia không gian bằng siêu phẳng axis-aligned</summary>
@@ -420,6 +506,102 @@ strong{color:#1e293b}
 
 <div class="ss-title">7.5 Đường cong Training/Test Error và Bias-Variance Tradeoff</div>
 
+<div class="svg-wrap">
+<svg viewBox="0 0 550 210" width="100%" style="max-width:550px" font-family="'Segoe UI',system-ui,sans-serif">
+  <!-- Panel 1: K=1 (x=10..180) -->
+  <rect x="10" y="10" width="160" height="155" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" rx="4"/>
+  <text x="90" y="26" text-anchor="middle" font-size="11" font-weight="700" fill="#14532d">K = 1</text>
+
+  <!-- K=1 class A points (green filled) -->
+  <circle cx="35" cy="50" r="5" fill="#16a34a"/>
+  <circle cx="55" cy="80" r="5" fill="#16a34a"/>
+  <circle cx="75" cy="45" r="5" fill="#16a34a"/>
+  <circle cx="50" cy="115" r="5" fill="#16a34a"/>
+  <circle cx="90" cy="100" r="5" fill="#16a34a"/>
+  <circle cx="110" cy="60" r="5" fill="#16a34a"/>
+
+  <!-- K=1 class B points (blue filled) -->
+  <circle cx="115" cy="90" r="5" fill="#3b82f6"/>
+  <circle cx="140" cy="55" r="5" fill="#3b82f6"/>
+  <circle cx="155" cy="80" r="5" fill="#3b82f6"/>
+  <circle cx="135" cy="120" r="5" fill="#3b82f6"/>
+  <circle cx="160" cy="105" r="5" fill="#3b82f6"/>
+  <circle cx="125" cy="140" r="5" fill="#3b82f6"/>
+
+  <!-- K=1 jagged Voronoi-like boundary (complex path) -->
+  <path d="M100,35 L105,50 L98,55 L112,65 L108,78 L120,82 L115,95 L122,105 L118,118 L125,130 L120,150 L110,155" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+  <!-- K=1 labels -->
+  <text x="90" y="172" text-anchor="middle" font-size="9" fill="#ef4444" font-weight="600">K=1: Jagged boundary</text>
+  <text x="90" y="183" text-anchor="middle" font-size="8.5" fill="#64748b">Train Err=0, Overfit</text>
+
+  <!-- Panel 2: K=5 optimal (x=195..355) — highlighted with yellow border -->
+  <rect x="195" y="10" width="160" height="155" fill="#f8fafc" stroke="#f59e0b" stroke-width="2.5" rx="4"/>
+  <text x="275" y="26" text-anchor="middle" font-size="11" font-weight="700" fill="#14532d">K = 5 ✦ Optimal</text>
+
+  <!-- K=5 class A points -->
+  <circle cx="220" cy="50" r="5" fill="#16a34a"/>
+  <circle cx="240" cy="80" r="5" fill="#16a34a"/>
+  <circle cx="260" cy="45" r="5" fill="#16a34a"/>
+  <circle cx="235" cy="115" r="5" fill="#16a34a"/>
+  <circle cx="275" cy="100" r="5" fill="#16a34a"/>
+  <circle cx="295" cy="60" r="5" fill="#16a34a"/>
+
+  <!-- K=5 class B points -->
+  <circle cx="300" cy="90" r="5" fill="#3b82f6"/>
+  <circle cx="325" cy="55" r="5" fill="#3b82f6"/>
+  <circle cx="340" cy="80" r="5" fill="#3b82f6"/>
+  <circle cx="320" cy="120" r="5" fill="#3b82f6"/>
+  <circle cx="345" cy="105" r="5" fill="#3b82f6"/>
+  <circle cx="310" cy="140" r="5" fill="#3b82f6"/>
+
+  <!-- K=5 smooth boundary -->
+  <path d="M295,35 Q302,65 300,85 Q298,105 305,120 Q308,138 300,155" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+  <text x="275" y="172" text-anchor="middle" font-size="9" fill="#16a34a" font-weight="600">K=5: Smooth boundary</text>
+  <text x="275" y="183" text-anchor="middle" font-size="8.5" fill="#64748b">Best generalization</text>
+
+  <!-- Panel 3: K=N (x=380..540) -->
+  <rect x="380" y="10" width="160" height="155" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" rx="4"/>
+  <text x="460" y="26" text-anchor="middle" font-size="11" font-weight="700" fill="#14532d">K = N</text>
+
+  <!-- Majority region fill (green) -->
+  <rect x="381" y="11" width="158" height="153" fill="#dcfce7" opacity="0.5" rx="3"/>
+
+  <!-- K=N class A points -->
+  <circle cx="405" cy="50" r="5" fill="#16a34a"/>
+  <circle cx="425" cy="80" r="5" fill="#16a34a"/>
+  <circle cx="445" cy="45" r="5" fill="#16a34a"/>
+  <circle cx="420" cy="115" r="5" fill="#16a34a"/>
+  <circle cx="460" cy="100" r="5" fill="#16a34a"/>
+  <circle cx="480" cy="60" r="5" fill="#16a34a"/>
+
+  <!-- K=N class B points (minority, still shown) -->
+  <circle cx="485" cy="90" r="5" fill="#3b82f6"/>
+  <circle cx="510" cy="55" r="5" fill="#3b82f6"/>
+  <circle cx="525" cy="80" r="5" fill="#3b82f6"/>
+  <circle cx="505" cy="120" r="5" fill="#3b82f6"/>
+  <circle cx="530" cy="105" r="5" fill="#3b82f6"/>
+  <circle cx="495" cy="140" r="5" fill="#3b82f6"/>
+
+  <!-- K=N flat boundary line (nearly horizontal, majority wins everywhere) -->
+  <line x1="381" y1="83" x2="539" y2="83" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <text x="460" y="79" text-anchor="middle" font-size="8" fill="#14532d" font-weight="600">← Majority (A) wins</text>
+
+  <text x="460" y="172" text-anchor="middle" font-size="9" fill="#3b82f6" font-weight="600">K=N: Boundary phẳng</text>
+  <text x="460" y="183" text-anchor="middle" font-size="8.5" fill="#64748b">Underfit</text>
+
+  <!-- Legend bottom -->
+  <circle cx="80" cy="200" r="5" fill="#16a34a"/>
+  <text x="90" y="204" font-size="9" fill="#1e293b">Class A</text>
+  <circle cx="130" cy="200" r="5" fill="#3b82f6"/>
+  <text x="140" y="204" font-size="9" fill="#1e293b">Class B</text>
+  <rect x="195" y="195" width="13" height="8" fill="none" stroke="#f59e0b" stroke-width="2"/>
+  <text x="212" y="204" font-size="9" fill="#b45309">Optimal panel</text>
+</svg>
+<div class="svg-caption">Ảnh hưởng của K lên decision boundary: K=1 tạo biên Voronoi gấp khúc (overfit), K=5 tạo biên mượt (tổng quát tốt nhất), K=N tạo biên phẳng chỉ predict majority class (underfit).</div>
+</div>
+
 <table class="tbl">
 <thead><tr><th>Giá trị K</th><th>Biên quyết định</th><th>Training Error</th><th>Bias</th><th>Variance</th><th>Hiện tượng</th></tr></thead>
 <tbody>
@@ -430,6 +612,90 @@ strong{color:#1e293b}
 <tr><td><strong>K = N</strong></td><td>Biến mất — 1 lớp duy nhất</td><td><strong>= minority%</strong></td><td>Cực đại</td><td>~0</td><td>Underfit cực đại</td></tr>
 </tbody>
 </table>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 480 250" width="100%" style="max-width:480px" font-family="'Segoe UI',system-ui,sans-serif">
+  <defs>
+    <marker id="arrowX" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M1,1 L7,4 L1,7 Z" fill="#1e293b"/>
+    </marker>
+    <marker id="arrowY" markerWidth="8" markerHeight="8" refX="4" refY="6" orient="auto">
+      <path d="M1,7 L4,1 L7,7 Z" fill="#1e293b"/>
+    </marker>
+  </defs>
+
+  <!-- Chart area: x=55..440, y=20..200 -->
+  <!-- Background -->
+  <rect width="480" height="250" fill="#fff"/>
+
+  <!-- Overfit region (left, K small) -->
+  <rect x="55" y="20" width="100" height="180" fill="#fef2f2" opacity="0.5"/>
+  <text x="105" y="210" text-anchor="middle" font-size="9" fill="#ef4444" font-weight="600">Overfit</text>
+
+  <!-- Underfit region (right, K large) -->
+  <rect x="330" y="20" width="110" height="180" fill="#eff6ff" opacity="0.5"/>
+  <text x="385" y="210" text-anchor="middle" font-size="9" fill="#3b82f6" font-weight="600">Underfit</text>
+
+  <!-- K_optimal highlight region (K≈√N) -->
+  <rect x="155" y="20" width="60" height="180" fill="#fefce8" opacity="0.85"/>
+  <text x="185" y="15" text-anchor="middle" font-size="9.5" fill="#b45309" font-weight="700">K* ≈ √N</text>
+
+  <!-- Axes -->
+  <line x1="55" y1="200" x2="445" y2="200" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrowX)"/>
+  <line x1="55" y1="200" x2="55" y2="15" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrowY)"/>
+
+  <!-- Axis labels -->
+  <text x="445" y="215" font-size="10" fill="#1e293b">K (số lân cận)</text>
+  <text x="15" y="115" font-size="10" fill="#1e293b" transform="rotate(-90,15,115)">Error Rate</text>
+
+  <!-- Y-axis ticks -->
+  <line x1="51" y1="200" x2="55" y2="200" stroke="#1e293b" stroke-width="1"/>
+  <text x="48" y="204" text-anchor="end" font-size="8.5" fill="#64748b">0</text>
+  <line x1="51" y1="155" x2="55" y2="155" stroke="#1e293b" stroke-width="1"/>
+  <text x="48" y="159" text-anchor="end" font-size="8.5" fill="#64748b">0.1</text>
+  <line x1="51" y1="110" x2="55" y2="110" stroke="#1e293b" stroke-width="1"/>
+  <text x="48" y="114" text-anchor="end" font-size="8.5" fill="#64748b">0.2</text>
+  <line x1="51" y1="65" x2="55" y2="65" stroke="#1e293b" stroke-width="1"/>
+  <text x="48" y="69" text-anchor="end" font-size="8.5" fill="#64748b">0.3</text>
+  <line x1="51" y1="25" x2="55" y2="25" stroke="#1e293b" stroke-width="1"/>
+  <text x="48" y="29" text-anchor="end" font-size="8.5" fill="#64748b">0.5</text>
+
+  <!-- X-axis ticks: K=1(x=75), K*=√N(x=185), K=N(x=420) -->
+  <line x1="75" y1="200" x2="75" y2="204" stroke="#1e293b" stroke-width="1"/>
+  <text x="75" y="215" text-anchor="middle" font-size="8.5" fill="#64748b">1</text>
+  <line x1="185" y1="200" x2="185" y2="204" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="185" y="215" text-anchor="middle" font-size="8.5" fill="#b45309" font-weight="700">√N</text>
+  <line x1="420" y1="200" x2="420" y2="204" stroke="#1e293b" stroke-width="1"/>
+  <text x="420" y="215" text-anchor="middle" font-size="8.5" fill="#64748b">N</text>
+
+  <!-- Vertical dashed lines -->
+  <line x1="75" y1="25" x2="75" y2="200" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="185" y1="25" x2="185" y2="200" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <line x1="420" y1="25" x2="420" y2="200" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Training Error: starts at 0 at K=1, monotone increase to ~0.3 at K=N -->
+  <!-- Points: (75,200), (120,185), (185,168), (260,148), (340,125), (420,65) -->
+  <polyline points="75,200 120,185 185,168 260,148 340,125 420,65" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linejoin="round"/>
+  <text x="428" y="60" font-size="9" fill="#ef4444" font-weight="600">Training Error</text>
+
+  <!-- Test Error: U-shape, high at K=1 (~0.4), low at K*=√N, rises again -->
+  <!-- Points: (75,38), (110,55), (150,68), (185,75), (220,68), (270,72), (340,85), (420,65) -->
+  <!-- Actually: starts ~0.4 at K=1, dips to minimum near √N, then rises to ~0.3 at K=N -->
+  <!-- y: 0.4→y=25+(0.5-0.4)/0.5*175=25+35=60; 0.3→65; minimum at √N ~ 0.18 → 25+56=81... let me recalculate -->
+  <!-- y = 200 - (error/0.5)*175: 0→200, 0.1→165, 0.2→130, 0.3→95, 0.4→60, 0.5→25 -->
+  <polyline points="75,60 110,80 150,95 185,100 220,95 270,90 340,88 420,65" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linejoin="round"/>
+  <text x="75" y="52" font-size="9" fill="#3b82f6" font-weight="600">Test Error</text>
+
+  <!-- Annotations -->
+  <text x="105" y="35" text-anchor="middle" font-size="8.5" fill="#ef4444" font-style="italic">High Variance</text>
+  <text x="385" y="35" text-anchor="middle" font-size="8.5" fill="#3b82f6" font-style="italic">High Bias</text>
+
+  <!-- Optimal point dot on test curve -->
+  <circle cx="185" cy="100" r="4.5" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/>
+  <text x="195" y="96" font-size="8.5" fill="#b45309" font-weight="700">Min Test Error</text>
+</svg>
+<div class="svg-caption">Đường cong lỗi theo K: Training Error tăng đơn điệu (đỏ), Test Error hình chữ U (xanh dương). K* ≈ √N là điểm elbow tối ưu — cân bằng bias và variance.</div>
+</div>
 
 <details open>
 <summary><i class="fas fa-chart-line"></i> Đường cong lỗi theo K — Đọc hiểu từng vùng</summary>
