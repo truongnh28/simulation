@@ -163,6 +163,13 @@ Ball-Tree: Prune nếu \(d(q,c)-r>r_\text{best}\)
 <div class="step"><div class="sn">1</div><div class="sc">Tính \(d(q,x_i)\) cho mọi training point</div></div>
 <div class="step"><div class="sn">2</div><div class="sc">Sort, lấy K nearest neighbors</div></div>
 <div class="step"><div class="sn">3</div><div class="sc">Majority vote → class. Normalize features!</div></div>
+<span class="sec">▶ Weighted KNN &amp; Leave-One-Out</span>
+<div class="f">
+Weighted: \(\hat{y}=\dfrac{\sum_{i\in N_K} w_i y_i}{\sum_{i\in N_K} w_i},\;\; w_i=\dfrac{1}{d(\mathbf{x}_q,\mathbf{x}_i)^2}\)<br>
+LOO-CV: Train trên \(N-1\), test trên 1, lặp N lần.<br>
+Unbiased nhưng đắt \(\mathcal{O}(N^2)\). Hữu ích khi N nhỏ.
+</div>
+<div class="tip">💡 KNN không có training phase — lazy learner. Test time \(\mathcal{O}(N\cdot D)\) là bottleneck.</div>
 </div></div>
 </div><!-- col1 -->
 
@@ -204,6 +211,13 @@ Log-space: \(\text{score}(c)=\log P(c)+\sum_k x_k\log P(w_k|c)\)
 <div class="step"><div class="sn">1</div><div class="sc">Tính \(\log P(C)\) từ training counts</div></div>
 <div class="step"><div class="sn">2</div><div class="sc">Tính \(\log P(x_k|C)\) với Laplace \(\alpha=1\)</div></div>
 <div class="step"><div class="sn">3</div><div class="sc">\(\text{score}(c)=\log P(c)+\sum_k x_k\log P(w_k|c)\), argmax</div></div>
+<span class="sec">▶ Gaussian NB (continuous features)</span>
+<div class="f">
+\(P(x_k|c)=\dfrac{1}{\sqrt{2\pi\sigma_{kc}^2}}\exp\!\left(-\dfrac{(x_k-\mu_{kc})^2}{2\sigma_{kc}^2}\right)\)<br>
+\(\mu_{kc}=\mathbb{E}[x_k|C\!=\!c]\quad\sigma_{kc}^2=\text{Var}[x_k|C\!=\!c]\)<br>
+Variance per-class per-feature → đủ linh hoạt cho thực tế.
+</div>
+<div class="ok">✓ NB không cần normalize. Không cần nhiều data. SOTA spam, sentiment với đúng variant.</div>
 </div></div>
 </div><!-- col2 -->
 
@@ -242,6 +256,16 @@ L1 → Median: \(\#\{x_i\!<\!\mu\}=\#\{x_i\!>\!\mu\}\)
 <tr><td>L2</td><td>Mean</td><td>0% (outlier-sensitive)</td></tr>
 <tr><td>L1</td><td>Median</td><td>50% (robust)</td></tr>
 </table>
+<span class="sec">▶ Silhouette Score — Chọn K tối ưu</span>
+<div class="f">
+\(s(i)=\dfrac{b(i)-a(i)}{\max(a(i),b(i))}\in[-1,1]\)<br>
+\(a(i)\): mean dist trong cluster. \(b(i)\): min mean dist tới cluster khác.<br>
+\(s\approx 1\): cluster đặc &amp; tách biệt. \(s\approx 0\): boundary. \(s<0\): sai cluster.
+</div>
+<div class="f">
+<b>Elbow Method:</b> Plot WCSS vs K; chọn K tại "khuỷu tay" — điểm giảm thêm K không còn giảm WCSS đáng kể.<br>
+GMM thay thế: Soft assignment \(\gamma_{ik}=P(z_k|\mathbf{x}_i)\) → xử lý hình elipsoid.
+</div>
 </div></div>
 </div><!-- col3 -->
 
@@ -289,11 +313,26 @@ Khi \(\hat{y}\to 0\) hoặc \(\hat{y}\to 1\): \(\sigma'\to 0\) → gradient \(\t
 <tr><td>Thấp (0.2)</td><td>\(\downarrow\)</td><td>\(\uparrow\)</td><td>Ung thư (no miss)</td></tr>
 <tr><td>Cao (0.8)</td><td>\(\uparrow\)</td><td>\(\downarrow\)</td><td>Spam filter</td></tr>
 </table>
-<span class="sec">▶ L2/L1 Regularization</span>
+<span class="sec">▶ L2/L1 Regularization ↔ MAP Prior</span>
 <div class="f">
-L2: \(\mathcal{L}+\dfrac{\lambda}{2}\|\mathbf{w}\|^2\leftrightarrow\mathcal{N}(0,1/\lambda)\) → \(\mathbf{w}\neq\mathbf{0}\)<br>
-L1: \(\mathcal{L}+\lambda\|\mathbf{w}\|_1\leftrightarrow\text{Laplace}(0,1/\lambda)\) → sparse
+L2: \(\mathcal{L}+\dfrac{\lambda}{2}\|\mathbf{w}\|^2\leftrightarrow\mathcal{N}(0,1/\lambda)\) → \(\mathbf{w}\neq\mathbf{0}\) (sphere)<br>
+L1: \(\mathcal{L}+\lambda\|\mathbf{w}\|_1\leftrightarrow\text{Laplace}(0,1/\lambda)\) → sparse (diamond)<br>
+\(\lambda=\sigma^2_\text{noise}/\sigma^2_w\): L2 prior variance kiểm soát regularization strength.
 </div>
+<span class="sec">▶ Softmax Regression (Multi-class)</span>
+<div class="f">
+\(P(y=k|\mathbf{x})=\dfrac{\exp(\mathbf{w}_k^\top\mathbf{x}+b_k)}{\sum_j\exp(\mathbf{w}_j^\top\mathbf{x}+b_j)}\)<br>
+CE loss: \(\mathcal{L}=-\sum_k y_k\log P(k|\mathbf{x})\quad\) [\(K\!=\!2\Rightarrow\) LR]<br>
+Gradient: \(\partial\mathcal{L}/\partial\mathbf{w}_k=(P(k|\mathbf{x})-y_k)\mathbf{x}\)<br>
+OvR: K binary classifiers (thresholded). OvO: \(\binom{K}{2}\) classifiers (vote).
+</div>
+<span class="sec">▶ ROC Curve &amp; AUC</span>
+<div class="f">
+TPR (Recall)\(=TP/(TP+FN)\) vs FPR\(=FP/(FP+TN)\)<br>
+AUC\(=P(\hat{s}_{+}>\hat{s}_{-})\): prob đúng rank random \(+\) cao hơn \(-\)<br>
+AUC=0.5 → random. AUC=1 → perfect. Threshold-agnostic.
+</div>
+<div class="tip">💡 LR cho calibrated probability — output \(\hat{y}\) trực tiếp là \(P(y=1|\mathbf{x})\), không cần thêm bước nào.</div>
 </div></div>
 </div><!-- col1 -->
 
@@ -470,6 +509,34 @@ Adam: \(m_t=\beta_1 m_{t-1}+(1-\beta_1)g_t\)<br>
 \(P(y=k|\mathbf{x})=\dfrac{e^{\mathbf{w}_k^\top\mathbf{x}}}{\sum_j e^{\mathbf{w}_j^\top\mathbf{x}}}\)<br>
 \(K=2\): Softmax = Sigmoid. CE: \(\mathcal{L}=-\sum_k y_k\log P(k|\mathbf{x})\)
 </div>
+<span class="sec">▶ Weight Init — Xavier &amp; He</span>
+<div class="f">
+Sym. problem: \(w=0\) → mọi neuron giống nhau → không học được!<br>
+\(\mathrm{Var}(z)=n_{in}\cdot\mathrm{Var}(w)\cdot\mathrm{Var}(a)\) → cần kiểm soát scale.
+</div>
+<table class="tbl">
+<tr><th>Init</th><th>\(\mathrm{Var}(w)\)</th><th>Dùng cho</th></tr>
+<tr><td>Xavier</td><td>\(\frac{2}{n_{in}+n_{out}}\)</td><td>Sigmoid, Tanh</td></tr>
+<tr><td>He</td><td>\(\frac{2}{n_{in}}\)</td><td>ReLU (bù 50% zero)</td></tr>
+</table>
+<span class="sec">▶ Batch Normalization</span>
+<div class="f">
+\(\hat{x}_i=\dfrac{x_i-\mu_\mathcal{B}}{\sqrt{\sigma^2_\mathcal{B}+\varepsilon}},\quad y_i=\gamma\hat{x}_i+\beta\)<br>
+Train: \(\mu_\mathcal{B},\sigma^2_\mathcal{B}\) từ mini-batch. Infer: running stats!<br>
+Cho phép LR cao hơn. Giảm Internal Covariate Shift.
+</div>
+<span class="sec">▶ Dropout (Inverted)</span>
+<div class="f">
+Train: tắt neuron prob \(p\), scale \(\tilde{a}=a\cdot\text{Ber}(1-p)/(1-p)\)<br>
+\(\mathbb{E}[\tilde{a}]=a\) → inference không đổi gì. Implicit ensemble \(2^n\) sub-nets.<br>
+Ngăn co-adaptation: neuron không phụ thuộc neuron cụ thể khác.
+</div>
+<span class="sec">▶ Universal Approximation Theorem</span>
+<div class="f">
+1 hidden layer + đủ neurons → xấp xỉ bất kỳ \(f\) liên tục (Cybenko 1989).<br>
+⚠️ Không nói: (1) cần bao nhiêu neurons, (2) làm sao tìm, (3) generalize không?<br>
+Depth &gt; Width: biểu diễn cấu trúc phân cấp, ít params hơn mũ.
+</div>
 </div></div>
 </div><!-- col2 -->
 
@@ -497,6 +564,21 @@ OOB error: \(\approx 37\%\) data không sample → free validation
 <div class="step"><div class="sn">4</div><div class="sc">\(w_i\leftarrow w_i\exp(-\alpha_t y_i h_t(\mathbf{x}_i))\), normalize</div></div>
 <div class="step"><div class="sn">5</div><div class="sc">\(H(\mathbf{x})=\text{sign}\!\left(\sum_t\alpha_t h_t(\mathbf{x})\right)\)</div></div>
 <div class="ok">✓ Bagging \(\downarrow\) Variance. Boosting \(\downarrow\) Bias.</div>
+<span class="sec">▶ Gradient Boosting (GBM)</span>
+<div class="f">
+Pseudo-residuals \(= -\partial\mathcal{L}/\partial F_{t-1}(\mathbf{x})\) (negative gradient)<br>
+MSE: \(r_i=y_i-F_{t-1}(\mathbf{x}_i)\) | Log-loss: \(r_i=y_i-\hat{p}_i\)<br>
+\(F_t(\mathbf{x})=F_{t-1}(\mathbf{x})+\eta\cdot h_t(\mathbf{x})\) [functional grad descent]<br>
+AdaBoost = GBM với Exponential loss. \(\eta\) nhỏ → cần nhiều T hơn.
+</div>
+<span class="sec">▶ XGBoost — Regularized Obj</span>
+<div class="f">
+\(\mathcal{L}^{(t)}=\sum_i[g_i f_t(\mathbf{x}_i)+\tfrac{1}{2}h_i f_t^2(\mathbf{x}_i)]+\gamma T+\tfrac{\lambda}{2}\sum_j w_j^2\)<br>
+\(g_i=\partial\mathcal{L}/\partial\hat{y}_i^{t-1},\;h_i=\partial^2\mathcal{L}/\partial(\hat{y}_i^{t-1})^2\) [Newton step]<br>
+Optimal leaf: \(w_j^*=-G_j/(H_j+\lambda)\)<br>
+Split gain: \(\text{Gain}=\tfrac{1}{2}\left[\tfrac{G_L^2}{H_L+\lambda}+\tfrac{G_R^2}{H_R+\lambda}-\tfrac{G^2}{H+\lambda}\right]-\gamma\)
+</div>
+<div class="err">⚠️ \(\gamma\): điều chỉnh số lá (split threshold). \(\lambda\): L2 trên leaf weights → shrink.</div>
 </div></div>
 
 <div class="blk blk-hmm">
@@ -567,6 +649,21 @@ SVs \(A,B\in H_1\); \(C\in H_2\) → lập hệ:<br>
 Predict \(E(3,2)\): \(f=2>0\Rightarrow\) Class \(+1\)
 </div>
 </div></div>
+<div style="background:#312e81;color:#c7d2fe;padding:1.5mm 2mm;border-radius:3px 3px 0 0;font-size:7.5px;font-weight:800;margin-top:1.5mm">📐 PAC Learning &amp; VC Dimension</div>
+<div style="background:#eef2ff;border:1px solid #a5b4fc;border-top:none;border-radius:0 0 3px 3px;padding:1.5mm 2mm">
+<div style="font-size:6.2px;line-height:1.5;color:#1e293b">
+<b>(\(\varepsilon,\delta\))-PAC:</b> \(P(\text{err}(h)>\varepsilon)<\delta\) với high prob (\(1-\delta\)) setelah \(n\) samples.<br>
+<b>Sample complexity</b> (finite \(|\mathcal{H}|\), realizable):<br>
+\(n\geq\dfrac{1}{\varepsilon}\!\left(\ln|\mathcal{H}|+\ln\dfrac{1}{\delta}\right)\) — Union Bound + Hoeffding<br><br>
+<b>VC Dimension:</b> \(\text{VC}(\mathcal{H})=\max|S|\) s.t. \(\mathcal{H}\) shatter \(S\)<br>
+Shatter: \(\exists h\in\mathcal{H}\) cho mọi labeling \(2^{|S|}\) của \(S\).<br>
+Linear classifiers \(\mathbb{R}^d\): \(\text{VC}=d+1\)<br><br>
+<b>Fund. Thm:</b> \(n=\Theta\!\left(\dfrac{d+\ln(1/\delta)}{\varepsilon}\right)\) cần &amp; đủ.<br>
+<b>Bias-Var:</b> \(\mathbb{E}[\text{err}]=\text{Bias}^2+\text{Variance}+\sigma^2\)<br>
+\(\text{Var}=\mathbb{E}[(\hat{f}-\bar{f})^2]\) — phụ thuộc training set. Bagging↓Var.<br>
+L2↔Gaussian MAP: minimize \(-\log P(w|\text{data})\) = minimize CE+\(\lambda\|w\|^2\).
+</div>
+</div>
 </div><!-- col1 -->
 
 <!-- COL 2: HYPERPARAMS + MODEL SELECTION -->
@@ -622,6 +719,11 @@ Predict \(E(3,2)\): \(f=2>0\Rightarrow\) Class \(+1\)
 <tr><td>\(\boldsymbol{\delta}^l=(\mathbf{W}^{l+1})^\top\boldsymbol{\delta}^{l+1}\odot f'(\mathbf{z}^l)\)</td><td>Backprop</td><td>ReLU \(f'\in\{0,1\}\)</td></tr>
 <tr><td>\(\alpha_t=\frac{1}{2}\ln\frac{1-\varepsilon_t}{\varepsilon_t};\;\sum_t\alpha_t h_t(\mathbf{x})\)</td><td>AdaBoost</td><td>\(\varepsilon_t<0.5\Rightarrow\alpha_t>0\)</td></tr>
 <tr><td>\(\alpha_t(j)=[\sum_i\alpha_{t-1}(i)A_{ij}]B_j(o_t)\)</td><td>HMM Fwd [SUM]</td><td>vs Viterbi: MAX→\(Q^*\)</td></tr>
+<tr><td>\(w_j^*=-G_j/(H_j+\lambda)\); Gain\(=\frac{G_L^2}{H_L+\lambda}+\frac{G_R^2}{H_R+\lambda}-\frac{G^2}{H+\lambda}-2\gamma\)</td><td>XGBoost</td><td>\(\gamma\): prune leaves; \(\lambda\): L2 shrink</td></tr>
+<tr><td>\(D_{KL}(p\|q)=\sum p\ln\frac{p}{q}\geq 0\); \(H(p,q)=H(p)+D_{KL}\)</td><td>KL / CE</td><td>Min CE = Min KL; fwd=cover, rev=seek</td></tr>
+<tr><td>\(n\geq\frac{1}{\varepsilon}(\ln|\mathcal{H}|+\ln\frac{1}{\delta})\); VC(linear \(\mathbb{R}^d\))=\(d+1\)</td><td>PAC / VC</td><td>Fundamental Thm: \(\Theta((d+\ln\frac{1}{\delta})/\varepsilon)\)</td></tr>
+<tr><td>\(\hat{x}=\frac{x-\mu_B}{\sqrt{\sigma_B^2+\varepsilon}}\); \(y=\gamma\hat{x}+\beta\)</td><td>BatchNorm</td><td>Train: batch stats. Infer: running stats!</td></tr>
+<tr><td>He: \(\mathrm{Var}(w)=2/n_{in}\); Xavier: \(2/(n_{in}+n_{out})\)</td><td>Weight Init</td><td>He→ReLU (50% zero). Xavier→Sigmoid/Tanh</td></tr>
 </table>
 
 <div style="background:#0d9488;color:#fff;padding:1.2mm 2mm;border-radius:3px 3px 0 0;font-size:7px;font-weight:800">📐 Bias-Variance</div>
@@ -645,6 +747,22 @@ Predict \(E(3,2)\): \(f=2>0\Rightarrow\) Class \(+1\)
 <tr><td style="color:#15803d"><b>Cần normalize</b></td><td>KNN, SVM, LR, NN</td><td>Distance/margin phụ thuộc scale</td></tr>
 <tr><td style="color:#b91c1c"><b>Không cần</b></td><td>DT, RF, NB</td><td>Split thứ tự / \(P(x_k|c)\) độc lập</td></tr>
 </table>
+
+<div style="background:#0c4a6e;color:#bae6fd;padding:1.2mm 2mm;border-radius:3px 3px 0 0;font-size:7px;font-weight:800;margin-top:1.5mm">🔵 Information Theory &amp; EM</div>
+<table class="tbl" style="font-size:5.4px;margin:0 0 1mm">
+<tr><th>Khái niệm</th><th>Công thức</th><th>Tính chất / Ý nghĩa</th></tr>
+<tr><td>KL Divergence</td><td>\(D_{KL}(p\|q)=\sum_x p(x)\ln\frac{p(x)}{q(x)}\geq 0\)</td><td>Không đối xứng, = 0 iff \(p=q\)</td></tr>
+<tr><td>Forward KL \(D(p\|q)\)</td><td>Min → \(q\) bao phủ support \(p\)</td><td>Mode-covering, zero-avoiding</td></tr>
+<tr><td>Reverse KL \(D(q\|p)\)</td><td>Min → \(q\) tập trung 1 mode \(p\)</td><td>Mode-seeking → mode collapse (VI)</td></tr>
+<tr><td>Cross-Entropy</td><td>\(H(p,q)=H(p)+D_{KL}(p\|q)\)</td><td>Min CE = Min KL; dùng khi \(H(p)\) cố định</td></tr>
+<tr><td>Mutual Info</td><td>\(I(X;Y)=D_{KL}(P_{XY}\|P_XP_Y)\geq 0\)</td><td>= IG (DT); contrastive learning; feature sel.</td></tr>
+<tr><td>EM — E-step</td><td>\(Q(\theta|\theta^{old})=\mathbb{E}_{z|x,\theta^{old}}[\log P(x,z|\theta)]\)</td><td>Tight lower bound ELBO via Jensen's ineq.</td></tr>
+<tr><td>EM — M-step</td><td>\(\theta^{new}=\arg\max_\theta Q(\theta|\theta^{old})\)</td><td>Monotone: \(P(x|\theta^{new})\geq P(x|\theta^{old})\)</td></tr>
+<tr><td>Jensen's Ineq.</td><td>\(\log\mathbb{E}[Z]\geq\mathbb{E}[\log Z]\) (concave)</td><td>Chứng minh ELBO: \(\log P(x)\geq\mathbb{E}_q[\log\frac{P(x,z)}{q(z)}]\)</td></tr>
+</table>
+<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:3px;padding:1mm 1.5mm;font-size:5.8px;color:#7f1d1d;line-height:1.45">
+⚠️ EM chỉ đảm bảo <b>local maximum</b> (non-convex). Baum-Welch (HMM) là EM. KL không phải distance (không đối xứng, không triangle ineq.)
+</div>
 </div><!-- col3 -->
 
 </div><!-- g3 -->
