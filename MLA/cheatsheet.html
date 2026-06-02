@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <title>MLA Cheat Sheet — HK252 CO5175</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false})"></script>
+<script>window.onbeforeprint=function(){if(window.renderMathInElement)renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false})};</script>
 <style>
 @page { size: A4 landscape; margin: 5mm; }
 @media print {
@@ -14,7 +19,6 @@
 html{ font-size:6.8px; }
 body{ font-family:'Segoe UI',Arial,sans-serif; background:#d1d5db; color:#1e293b; }
 
-/* PAGE — landscape A4 */
 .page{
   width:287mm; height:200mm;
   background:#fff; margin:5mm auto;
@@ -24,13 +28,9 @@ body{ font-family:'Segoe UI',Arial,sans-serif; background:#d1d5db; color:#1e293b
 }
 .page:last-child{ page-break-after:avoid; }
 
-/* GRIDS */
 .g3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:2.5mm; flex:1; min-height:0; }
-.g2{ display:grid; grid-template-columns:1fr 1fr; gap:2.5mm; flex:1; min-height:0; }
-.g31{ display:grid; grid-template-columns:1fr 1fr 1.15fr; gap:2.5mm; flex:1; min-height:0; }
 .gcol{ min-width:0; display:flex; flex-direction:column; gap:1.5mm; overflow:hidden; }
 
-/* PAGE HEADER */
 .pg-hdr{
   display:flex; align-items:center; justify-content:space-between;
   background:linear-gradient(135deg,#0a1f10,#14532d);
@@ -39,23 +39,18 @@ body{ font-family:'Segoe UI',Arial,sans-serif; background:#d1d5db; color:#1e293b
 }
 .pg-hdr span{ color:#d1fae5; font-size:6.5px; font-weight:400; }
 
-/* ALGO BLOCK */
 .blk{ border-radius:4px; overflow:hidden; border:1px solid; flex-shrink:0; }
-.blk-knn  { border-color:#93c5fd; }
-.blk-nb   { border-color:#c4b5fd; }
-.blk-km   { border-color:#fcd34d; }
-.blk-lr   { border-color:#86efac; }
-.blk-svm  { border-color:#fca5a5; }
-.blk-dt   { border-color:#5eead4; }
-.blk-nn   { border-color:#a5b4fc; }
-.blk-ens  { border-color:#f9a8d4; }
-.blk-hmm  { border-color:#94a3b8; }
-.blk-drv  { border-color:#e2e8f0; }
+.blk-knn { border-color:#93c5fd; }
+.blk-nb  { border-color:#c4b5fd; }
+.blk-km  { border-color:#fcd34d; }
+.blk-lr  { border-color:#86efac; }
+.blk-svm { border-color:#fca5a5; }
+.blk-dt  { border-color:#5eead4; }
+.blk-nn  { border-color:#a5b4fc; }
+.blk-ens { border-color:#f9a8d4; }
+.blk-hmm { border-color:#94a3b8; }
 
-.blk-hdr{
-  padding:1.5mm 2.5mm; font-size:8.5px; font-weight:800;
-  color:#fff; display:flex; align-items:center; gap:1.5mm; letter-spacing:.02em;
-}
+.blk-hdr{ padding:1.5mm 2.5mm; font-size:8.5px; font-weight:800; color:#fff; display:flex; align-items:center; gap:1.5mm; }
 .blk-knn .blk-hdr { background:#1d4ed8; }
 .blk-nb  .blk-hdr { background:#6d28d9; }
 .blk-km  .blk-hdr { background:#b45309; }
@@ -65,15 +60,12 @@ body{ font-family:'Segoe UI',Arial,sans-serif; background:#d1d5db; color:#1e293b
 .blk-nn  .blk-hdr { background:#4338ca; }
 .blk-ens .blk-hdr { background:#be185d; }
 .blk-hmm .blk-hdr { background:#374151; }
-.blk-drv .blk-hdr { background:#334155; }
 
 .blk-body{ padding:1.5mm 2mm; overflow:hidden; }
 
-/* SECTION */
 .sec{
   font-size:7px; font-weight:800; color:#fff;
-  padding:.6mm 1.8mm; border-radius:2px; margin:1.2mm 0 .5mm;
-  display:block;
+  padding:.6mm 1.8mm; border-radius:2px; margin:1.2mm 0 .5mm; display:block;
 }
 .blk-knn .sec { background:#1e40af; }
 .blk-nb  .sec { background:#5b21b6; }
@@ -84,17 +76,14 @@ body{ font-family:'Segoe UI',Arial,sans-serif; background:#d1d5db; color:#1e293b
 .blk-nn  .sec { background:#3730a3; }
 .blk-ens .sec { background:#9d174d; }
 .blk-hmm .sec { background:#1f2937; }
-.blk-drv .sec { background:#1e293b; }
 
-/* FORMULA */
+/* Formula block — LaTeX rendered (no monospace, no pre-wrap) */
 .f{
   background:#f8fafc; border:1px solid #e2e8f0;
   border-left:2.5px solid currentColor;
   border-radius:0 2px 2px 0;
-  padding:.5mm 1.5mm; font-size:6.8px;
-  font-family:'Courier New',monospace;
-  margin:.4mm 0; line-height:1.5;
-  white-space:pre-wrap;
+  padding:.6mm 1.5mm; font-size:6.8px;
+  margin:.4mm 0; line-height:1.7;
 }
 .blk-knn .f { color:#1d4ed8; }
 .blk-nb  .f { color:#6d28d9; }
@@ -105,30 +94,27 @@ body{ font-family:'Segoe UI',Arial,sans-serif; background:#d1d5db; color:#1e293b
 .blk-nn  .f { color:#4338ca; }
 .blk-ens .f { color:#be185d; }
 .blk-hmm .f { color:#374151; }
-.blk-drv .f { color:#334155; }
 
-/* TIPS */
-.tip{ background:#fefce8; border-left:2.5px solid #f59e0b; border-radius:0 2px 2px 0; padding:.5mm 1.5mm; font-size:6.5px; margin:.4mm 0; line-height:1.45; color:#78350f; }
-.ok { background:#f0fdf4; border-left:2.5px solid #22c55e; border-radius:0 2px 2px 0; padding:.5mm 1.5mm; font-size:6.5px; margin:.4mm 0; line-height:1.45; color:#14532d; }
-.err{ background:#fef2f2; border-left:2.5px solid #ef4444; border-radius:0 2px 2px 0; padding:.5mm 1.5mm; font-size:6.5px; margin:.4mm 0; line-height:1.45; color:#7f1d1d; }
+.tip{ background:#fefce8; border-left:2.5px solid #f59e0b; border-radius:0 2px 2px 0; padding:.5mm 1.5mm; font-size:6.5px; margin:.4mm 0; line-height:1.5; color:#78350f; }
+.ok { background:#f0fdf4; border-left:2.5px solid #22c55e; border-radius:0 2px 2px 0; padding:.5mm 1.5mm; font-size:6.5px; margin:.4mm 0; line-height:1.5; color:#14532d; }
+.err{ background:#fef2f2; border-left:2.5px solid #ef4444; border-radius:0 2px 2px 0; padding:.5mm 1.5mm; font-size:6.5px; margin:.4mm 0; line-height:1.5; color:#7f1d1d; }
 
-/* TEXT */
 p,li{ font-size:6.5px; line-height:1.5; }
 ul{ padding-left:2.5mm; margin:.3mm 0; }
 li{ margin:.15mm 0; }
 b{ font-weight:700; color:#0f172a; }
-hr{ border:none; border-top:1px solid #e2e8f0; margin:1mm 0; }
 
-/* TABLES */
 .tbl{ width:100%; border-collapse:collapse; margin:.4mm 0; font-size:6px; }
 .tbl th{ background:#334155; color:#fff; padding:.4mm 1.2mm; text-align:left; font-weight:700; }
-.tbl td{ padding:.4mm 1.2mm; border:1px solid #e2e8f0; vertical-align:top; line-height:1.4; }
+.tbl td{ padding:.4mm 1.2mm; border:1px solid #e2e8f0; vertical-align:top; line-height:1.5; }
 .tbl tr:nth-child(even) td{ background:#f8fafc; }
 
-/* STEPS */
 .step{ display:flex; gap:1.2mm; margin:.25mm 0; align-items:flex-start; }
-.sn{ background:#334155; color:#fff; min-width:9px; height:9px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:5.5px; font-weight:800; flex-shrink:0; margin-top:.2mm; }
-.sc{ font-size:6.5px; line-height:1.45; flex:1; }
+.sn{ background:#334155; color:#fff; min-width:9px; height:9px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:5.5px; font-weight:800; flex-shrink:0; margin-top:.3mm; }
+.sc{ font-size:6.5px; line-height:1.5; flex:1; }
+
+/* KaTeX scales with font-size automatically */
+.katex { font-size: 1em; }
 
 .no-print{ text-align:center; margin:5mm auto; }
 .no-print button{ padding:3mm 8mm; background:#14532d; color:#fff; border:none; border-radius:4px; font-size:12px; cursor:pointer; }
@@ -137,7 +123,7 @@ hr{ border:none; border-top:1px solid #e2e8f0; margin:1mm 0; }
 <body>
 <div class="no-print"><button onclick="window.print()">🖨️ In / Xuất PDF A4 Ngang</button></div>
 
-<!-- ================================================================ PAGE 1 ================================================================ -->
+<!-- ===== PAGE 1 ===== -->
 <div class="page">
 <div class="pg-hdr">📄 Trang 1/4 — K-Nearest Neighbors · Naive Bayes · K-Means Clustering<span>MLA HK252 | CO5175 — landscape A4</span></div>
 <div class="g3">
@@ -147,38 +133,36 @@ hr{ border:none; border-top:1px solid #e2e8f0; margin:1mm 0; }
 <div class="blk blk-knn">
 <div class="blk-hdr">📍 K-Nearest Neighbors — Ch.3</div>
 <div class="blk-body">
-<span class="sec">▶ Nguyên tắc & Khoảng cách</span>
-<ul><li><b>Lazy learning</b> — không train, ghi nhớ toàn bộ data</li><li>Test: tính khoảng cách đến mọi training point</li><li>Vote: K điểm gần nhất → majority class</li></ul>
-<div class="f">L2: d(x,x')=√Σ(xd−x'd)²  L1: Σ|xd−x'd|
-Minkowski: (Σ|xd−x'd|^p)^(1/p)  [p=2→L2, p=1→L1]</div>
-<span class="sec">▶ Brute-force vs KD-Tree vs Ball-Tree</span>
-<div class="f">Brute-force: O(N·D) mỗi query — duyệt all N điểm
-KD-Tree Build: dim*=argmax_d Var(X_d), split median
-         → cây cân bằng depth O(logN)
-KD-Tree Query: descent + backtrack + PRUNE
-  Điều kiện prune: d(q, hyperplane) > r_best
-  → bỏ toàn bộ subtree (mọi điểm đều xa hơn)
-Ball-Tree: mỗi node=ball(centroid c, radius r)
-  Prune: d(q,c)−r > r_best → skip ball</div>
-<div class="err">⚠️ Curse of Dimensionality: D lớn → hypersphere query bao phủ toàn hyperrectangle → pruning vô hiệu → KD-Tree thoái hóa O(N·D). Ball-Tree tốt hơn khi D vừa.</div>
+<span class="sec">▶ Khoảng cách</span>
+<div class="f">
+\(L_2: d(\mathbf{x},\mathbf{x}') = \sqrt{\sum_d (x_d - x'_d)^2}\)<br>
+\(L_1: d(\mathbf{x},\mathbf{x}') = \sum_d |x_d - x'_d|\)<br>
+Minkowski: \(\!\left(\sum_d |x_d-x'_d|^p\right)^{1/p}\) [p=2→L₂, p=1→L₁]
+</div>
+<span class="sec">▶ KD-Tree vs Ball-Tree</span>
+<div class="f">
+Brute-force: \(\mathcal{O}(N\cdot D)\) mỗi query<br>
+KD-Tree: \(\text{dim}^*=\arg\max_d\text{Var}(X_d)\), split median → depth \(\mathcal{O}(\log N)\)<br>
+Prune: \(d(q,\text{hyperplane})>r_\text{best}\) → skip subtree<br>
+Ball-Tree: Prune nếu \(d(q,c)-r>r_\text{best}\)
+</div>
+<div class="err">⚠️ Curse of Dim: D lớn → KD-Tree thoái hóa \(\mathcal{O}(N\cdot D)\). Ball-Tree tốt hơn khi D vừa.</div>
 <span class="sec">▶ Siêu tham số K</span>
-<div class="f">K=1:  Train Err=0 (self là nearest neighbor)
-      Boundary=Voronoi cells  → OVERFIT
-K=N:  Predict majority class mọi lúc
-      Train Err=1−max_c P(c)=n_minority/N → UNDERFIT
-K*≈√N: optimal (cross-validation)</div>
+<div class="f">
+\(K=1\): Train Err \(=0\) (self = nearest neighbor) → OVERFIT<br>
+\(K=N\): Predict majority → Train Err \(=1-\max_c P(c)\) → UNDERFIT<br>
+\(K^*\approx\sqrt{N}\): optimal (cross-validation)
+</div>
 <table class="tbl">
 <tr><th>K</th><th>Train Err</th><th>Test Err</th><th>Hiện tượng</th></tr>
 <tr><td>1</td><td>0</td><td>Cao</td><td style="color:#b91c1c">Overfit</td></tr>
-<tr><td>√N</td><td>Thấp</td><td>Thấp nhất</td><td style="color:#15803d">Optimal</td></tr>
-<tr><td>N</td><td>1−max P(c)</td><td>Cao</td><td style="color:#1d4ed8">Underfit</td></tr>
+<tr><td>\(\sqrt{N}\)</td><td>Thấp</td><td>Thấp nhất</td><td style="color:#15803d">Optimal</td></tr>
+<tr><td>N</td><td>\(1-\max P(c)\)</td><td>Cao</td><td style="color:#1d4ed8">Underfit</td></tr>
 </table>
-<div class="ok">✓ Train Err monotone↑ với K. Test Err U-shape. Chọn K bằng CV.</div>
 <span class="sec">▶ Quy trình thi</span>
-<div class="step"><div class="sn">1</div><div class="sc">Tính d(query, mọi training point)</div></div>
-<div class="step"><div class="sn">2</div><div class="sc">Sort khoảng cách, lấy K nearest</div></div>
-<div class="step"><div class="sn">3</div><div class="sc">Majority vote → predicted class</div></div>
-<div class="tip">💡 Cần NORMALIZE features (Min-Max hoặc Z-score) vì KNN nhạy cảm với scale.</div>
+<div class="step"><div class="sn">1</div><div class="sc">Tính \(d(q,x_i)\) cho mọi training point</div></div>
+<div class="step"><div class="sn">2</div><div class="sc">Sort, lấy K nearest neighbors</div></div>
+<div class="step"><div class="sn">3</div><div class="sc">Majority vote → class. Normalize features!</div></div>
 </div></div>
 </div><!-- col1 -->
 
@@ -187,42 +171,39 @@ K*≈√N: optimal (cross-validation)</div>
 <div class="blk blk-nb">
 <div class="blk-hdr">🔮 Naive Bayes — Ch.4</div>
 <div class="blk-body">
-<span class="sec">▶ Bayes Theorem — 4 thành phần</span>
-<div class="f">P(C|X) = P(C)·P(X|C) / P(X)
-          ↑    ↑         ↑
-      Posterior Prior Likelihood / Evidence
-
-Log-Odds form (tuyến tính!):
-log[P(+|X)/P(−|X)] = log[P(+)/P(−)] + Σk log[P(xk|+)/P(xk|−)]
-→ Mỗi feature k đóng 1 vote độc lập</div>
+<span class="sec">▶ Bayes Theorem</span>
+<div class="f">
+\(P(C|\mathbf{X}) = \dfrac{P(C)\cdot P(\mathbf{X}|C)}{P(\mathbf{X})}\)<br><br>
+Log-Odds (tuyến tính!):<br>
+\(\log\dfrac{P(+|\mathbf{X})}{P(-|\mathbf{X})} = \log\dfrac{P(+)}{P(-)} + \sum_k\log\dfrac{P(x_k|+)}{P(x_k|-)}\)
+</div>
 <span class="sec">▶ Conditional Independence (CI)</span>
-<div class="f">P(X₁,...,Xn|C) = Π P(Xk|C)   [CI]
-≡ P(Xi|Xj,C) = P(Xi|C)  ∀i≠j
-
-Params: 2ⁿ−1 → n per class (exponential → linear!)</div>
-<div class="err">⚠️ CI vi phạm → double-count evidence → posterior→0/1 (overconfident). Vẫn dùng được vì chỉ cần argmax, không cần P chính xác.</div>
-<span class="sec">▶ Zero Frequency + Laplace Smoothing</span>
-<div class="f">Vấn đề: count=0 → P=0 → tích=0 → mất hết info!
-Laplace: P(xk|c) = [count(xk,c)+α] / [count(c)+α·|V|]
-α=1: MAP với Dirichlet(1,...,1) prior</div>
-<span class="sec">▶ Multinomial NB cho Text</span>
-<div class="f">Generative story:
-  ① C~P(C) ② Mỗi word: wt~P(w|C) i.i.d.
-Vấn đề underflow: P(d|c)≈(0.001)²⁰⁰=10⁻⁶⁰⁰→0
-Log-space: score(c)=log P(c)+Σk xk·log P(wk|c)</div>
+<div class="f">
+\(P(X_1,\ldots,X_n|C)=\prod_k P(X_k|C)\) [CI]<br>
+Params: \(2^n-1 \;\to\; n\) per class (exponential → linear!)
+</div>
+<div class="err">⚠️ CI vi phạm → double-count evidence → posterior overconfident. Vẫn dùng được vì chỉ cần argmax.</div>
+<span class="sec">▶ Laplace Smoothing</span>
+<div class="f">
+Vấn đề: count\(=0\;\Rightarrow\;P=0\;\Rightarrow\) tích \(=0\)<br>
+\(P(x_k|c) = \dfrac{\text{count}(x_k,c)+\alpha}{\text{count}(c)+\alpha|V|}\)<br>
+\(\alpha=1\): MAP với Dirichlet\((1,\ldots,1)\) prior
+</div>
+<span class="sec">▶ Multinomial NB (Text)</span>
+<div class="f">
+Underflow: \(P(d|c)\approx(0.001)^{200}=10^{-600}\to 0\)<br>
+Log-space: \(\text{score}(c)=\log P(c)+\sum_k x_k\log P(w_k|c)\)
+</div>
 <table class="tbl">
 <tr><th></th><th>Bernoulli NB</th><th>Multinomial NB</th></tr>
 <tr><td>Feature</td><td>Binary (0/1)</td><td>Count</td></tr>
-<tr><td>Absent word</td><td>Phạt P(0|c)</td><td>Bỏ qua</td></tr>
+<tr><td>Absent word</td><td>Phạt \(P(0|c)\)</td><td>Bỏ qua</td></tr>
 <tr><td>Dùng khi</td><td>Short docs</td><td>Long docs</td></tr>
 </table>
-<span class="sec">▶ Khi nào NB hoạt động tốt?</span>
-<ul><li>Text classification (bag-of-words, high-dim)</li><li>Data nhỏ: ít parameters → không overfit</li><li>Real-time: O(D·C) tốc độ cao</li><li>CI gần đúng: chuỗi nhiều features semi-independent</li></ul>
 <span class="sec">▶ Quy trình thi</span>
-<div class="step"><div class="sn">1</div><div class="sc">Tính log P(C) từ training</div></div>
-<div class="step"><div class="sn">2</div><div class="sc">Tính log P(xk|C) với Laplace α=1</div></div>
-<div class="step"><div class="sn">3</div><div class="sc">score(c) = log P(c) + Σk xk·log P(wk|c)</div></div>
-<div class="step"><div class="sn">4</div><div class="sc">argmax_c score(c) → class</div></div>
+<div class="step"><div class="sn">1</div><div class="sc">Tính \(\log P(C)\) từ training counts</div></div>
+<div class="step"><div class="sn">2</div><div class="sc">Tính \(\log P(x_k|C)\) với Laplace \(\alpha=1\)</div></div>
+<div class="step"><div class="sn">3</div><div class="sc">\(\text{score}(c)=\log P(c)+\sum_k x_k\log P(w_k|c)\), argmax</div></div>
 </div></div>
 </div><!-- col2 -->
 
@@ -232,40 +213,35 @@ Log-space: score(c)=log P(c)+Σk xk·log P(wk|c)</div>
 <div class="blk-hdr">🎯 K-Means Clustering</div>
 <div class="blk-body">
 <span class="sec">▶ Hàm mục tiêu WCSS</span>
-<div class="f">WCSS = Σk Σ_{x∈Ck} ‖x−μk‖²
-Non-convex: không gian liên tục μ × rời rạc C
-→ Global minimum là NP-hard → chỉ tìm local min</div>
+<div class="f">
+\(\text{WCSS}=\sum_k\sum_{\mathbf{x}\in C_k}\|\mathbf{x}-\boldsymbol{\mu}_k\|^2\)<br>
+Non-convex: không gian \(\boldsymbol{\mu}\) liên tục × \(C\) rời rạc<br>
+→ Global min là NP-hard → chỉ tìm local min
+</div>
 <span class="sec">▶ Lloyd's Algorithm</span>
-<div class="step"><div class="sn">1</div><div class="sc"><b>Init:</b> Chọn K centroids (K-Means++ khuyên dùng)</div></div>
-<div class="step"><div class="sn">2</div><div class="sc"><b>Assignment:</b> ci=argmin_k ‖xi−μk‖² (gán mỗi xi về centroid gần nhất)</div></div>
-<div class="step"><div class="sn">3</div><div class="sc"><b>Update:</b> μk=(1/|Ck|)Σ_{xi∈Ck} xi (tính mean mới)</div></div>
-<div class="step"><div class="sn">4</div><div class="sc">Lặp 2-3 cho đến khi WCSS không đổi</div></div>
+<div class="step"><div class="sn">1</div><div class="sc"><b>Init:</b> K-Means++ seed</div></div>
+<div class="step"><div class="sn">2</div><div class="sc"><b>Assignment:</b> \(c_i=\arg\min_k\|\mathbf{x}_i-\boldsymbol{\mu}_k\|^2\)</div></div>
+<div class="step"><div class="sn">3</div><div class="sc"><b>Update:</b> \(\boldsymbol{\mu}_k=\frac{1}{|C_k|}\sum_{\mathbf{x}_i\in C_k}\mathbf{x}_i\)</div></div>
+<div class="step"><div class="sn">4</div><div class="sc">Lặp đến khi WCSS không đổi</div></div>
 <span class="sec">▶ Chứng minh Hội tụ</span>
-<div class="f">① Assignment: WCSS_after=Σmin_k‖xi−μk‖²≤WCSS_before
-② Update: dΣ‖xi−μ‖²/dμ=−2Σ(xi−μ)=0 → μ*=mean
-   → mean = global minimizer của hàm bậc 2 này
-③ Cấu hình ≤ K^N (hữu hạn) + WCSS monotone↓
-   → buộc phải dừng sau hữu hạn bước</div>
-<div class="err">⚠️ Đảm bảo LOCAL minimum, không phải global!</div>
-<span class="sec">▶ K-Means++  &  L1/L2 Centers</span>
-<div class="f">K-Means++: seed P(x)∝d(x,nearest_centroid)²
-  → E[WCSS] ≤ 8(lnK+2)·WCSS*
-
-L2 → Mean:  d/dμ[Σ‖xi−μ‖²]=−2Σ(xi−μ)=0
-  → μ*=mean → cân bằng signed distances Σ(xi−μ)=0
-
-L1 → Median: subgradient 0∈∂g/∂μ
-  → #{xi>μ}=#{xi<μ} → μ*=median
-  → cân bằng số lượng hai phía
-
-D chiều: cả L1 và L2 tách theo tọa độ → áp dụng 1D</div>
+<div class="f">
+① Assignment: \(\text{WCSS}_\text{after}\leq\text{WCSS}_\text{before}\)<br>
+② Update: \(\frac{d}{d\boldsymbol{\mu}}\sum\|\mathbf{x}_i-\boldsymbol{\mu}\|^2=0\Rightarrow\boldsymbol{\mu}^*=\text{mean}\)<br>
+③ Configs \(\leq K^N\) (hữu hạn) + monotone\(\downarrow\) → PHẢI dừng ✓
+</div>
+<div class="err">⚠️ Chỉ LOCAL minimum, không phải global!</div>
+<span class="sec">▶ K-Means++ & L1/L2</span>
+<div class="f">
+K-Means++: \(P(\mathbf{x})\propto d(\mathbf{x},\text{nearest})^2\)<br>
+\(\mathbb{E}[\text{WCSS}]\leq 8(\ln K+2)\cdot\text{WCSS}^*\)<br><br>
+L2 → Mean: \(\sum(\mathbf{x}_i-\boldsymbol{\mu})=\mathbf{0}\)<br>
+L1 → Median: \(\#\{x_i\!<\!\mu\}=\#\{x_i\!>\!\mu\}\)
+</div>
 <table class="tbl">
-<tr><th>Metric</th><th>Center</th><th>Breakdown</th></tr>
+<tr><th>Metric</th><th>Center</th><th>Breakdown pt</th></tr>
 <tr><td>L2</td><td>Mean</td><td>0% (outlier-sensitive)</td></tr>
-<tr><td>L1</td><td>Median</td><td>50% (outlier-robust)</td></tr>
+<tr><td>L1</td><td>Median</td><td>50% (robust)</td></tr>
 </table>
-<span class="sec">▶ Chọn K</span>
-<ul><li><b>Elbow:</b> WCSS vs K, tìm điểm gãy</li><li><b>Silhouette:</b> (b−a)/max(a,b) ∈ [−1,1]</li><li>K-Means giả sử cluster hình cầu, đồng kích thước</li></ul>
 </div></div>
 </div><!-- col3 -->
 
@@ -273,51 +249,51 @@ D chiều: cả L1 và L2 tách theo tọa độ → áp dụng 1D</div>
 </div><!-- page 1 -->
 
 
-<!-- ================================================================ PAGE 2 ================================================================ -->
+<!-- ===== PAGE 2 ===== -->
 <div class="page">
 <div class="pg-hdr">📄 Trang 2/4 — Logistic Regression · Support Vector Machines (SVM)<span>MLA HK252 | CO5175</span></div>
 <div class="g3">
 
-<!-- COL 1: LOGISTIC REGRESSION -->
+<!-- COL 1: LR -->
 <div class="gcol">
 <div class="blk blk-lr">
 <div class="blk-hdr">📈 Logistic Regression</div>
 <div class="blk-body">
 <span class="sec">▶ Logit → Sigmoid (suy ra, không tùy tiện)</span>
-<div class="f">p∈(0,1) → Odds=p/(1-p)∈(0,∞) → Logit=log(p/(1-p))∈ℝ
-Đặt: z=w·x+b = log(p/(1−p))  [linear model]
-Đảo: p=eᶻ/(1+eᶻ)=1/(1+e⁻ᶻ)=σ(z)  [sigmoid]
-σ'(z)=σ(z)(1−σ(z))≤1/4 (max tại z=0)</div>
+<div class="f">
+\(p\in(0,1)\;\to\;\text{Odds}=\dfrac{p}{1-p}\;\to\;\text{Logit}=\log\dfrac{p}{1-p}\in\mathbb{R}\)<br><br>
+Đặt: \(z=\mathbf{w}\cdot\mathbf{x}+b=\log\dfrac{p}{1-p}\)<br>
+Đảo: \(p=\sigma(z)=\dfrac{1}{1+e^{-z}}\)<br>
+\(\sigma'(z)=\sigma(z)(1-\sigma(z))\leq\dfrac{1}{4}\) (max tại \(z=0\))
+</div>
 <span class="sec">▶ CE Loss = MLE + Convexity</span>
-<div class="f">Bernoulli: P(y|x,w)=ŷʸ·(1-ŷ)^(1-y)
-CE = −log P = −y·logŷ−(1−y)·log(1−ŷ)
-→ Min CE = Max Likelihood (MLE)
-
-∂L_CE/∂z = ŷ−y  [σ'(z) triệt tiêu hoàn toàn]
-Hessian: H=Σ σ(zi)(1−σ(zi))·xi xiᵀ ≽ 0 → CONVEX
-→ Không có local min, GD hội tụ global ✓</div>
+<div class="f">
+\(P(y|\mathbf{x},\mathbf{w})=\hat{y}^y(1-\hat{y})^{1-y}\)<br>
+\(\mathcal{L}_{CE}=-y\log\hat{y}-(1-y)\log(1-\hat{y})\)\;→ Min CE = MLE ✓<br><br>
+\(\dfrac{\partial\mathcal{L}_{CE}}{\partial z}=\hat{y}-y\) [\(\sigma'(z)\) triệt tiêu hoàn toàn]<br>
+\(\mathbf{H}=\sum_i\sigma_i(1-\sigma_i)\mathbf{x}_i\mathbf{x}_i^\top\succeq\mathbf{0}\) → CONVEX
+</div>
 <span class="sec">▶ MSE Vanishing Gradient</span>
-<div class="f">∂L_MSE/∂z = (ŷ−y)·σ'(z) = (ŷ−y)·ŷ(1−ŷ)
-Khi ŷ→0 hoặc ŷ→1: σ'→0 → gradient→0
-⚠️ Nghịch lý: sai nhiều nhất → học ít nhất!
-L lớp sigmoid: ≤(1/4)^L → L=10: 10⁻⁶ ≈ 0</div>
+<div class="f">
+\(\dfrac{\partial\mathcal{L}_{MSE}}{\partial z}=(\hat{y}-y)\cdot\hat{y}(1-\hat{y})\)<br>
+Khi \(\hat{y}\to 0\) hoặc \(\hat{y}\to 1\): \(\sigma'\to 0\) → gradient \(\to 0\)<br>
+\(L\) lớp sigmoid: \(\leq\left(\tfrac{1}{4}\right)^L\) → \(L=10\): \(10^{-6}\approx 0\)
+</div>
 <span class="sec">▶ Precision / Recall / F1</span>
-<div class="f">Precision = TP/(TP+FP)  "Predict+ có bao nhiêu đúng?"
-Recall    = TP/(TP+FN)  "Actual+ tìm được bao nhiêu?"
-F1 = 2PR/(P+R)  [harmonic mean, phạt mất cân bằng]
-θ↑ → Precision↑, Recall↓ | θ↓ → Recall↑, Precision↓</div>
+<div class="f">
+\(\text{Precision}=\dfrac{TP}{TP+FP}\quad\text{Recall}=\dfrac{TP}{TP+FN}\)<br>
+\(F_1=\dfrac{2PR}{P+R}\) [harmonic mean, phạt mất cân bằng]
+</div>
 <table class="tbl">
-<tr><th>θ</th><th>P</th><th>R</th><th>Use case</th></tr>
-<tr><td>Thấp (0.2)</td><td>↓</td><td>↑</td><td>Ung thư (no miss)</td></tr>
-<tr><td>0.5 (default)</td><td>~</td><td>~</td><td>Balanced</td></tr>
-<tr><td>Cao (0.8)</td><td>↑</td><td>↓</td><td>Spam filter</td></tr>
+<tr><th>\(\theta\)</th><th>P</th><th>R</th><th>Use case</th></tr>
+<tr><td>Thấp (0.2)</td><td>\(\downarrow\)</td><td>\(\uparrow\)</td><td>Ung thư (no miss)</td></tr>
+<tr><td>Cao (0.8)</td><td>\(\uparrow\)</td><td>\(\downarrow\)</td><td>Spam filter</td></tr>
 </table>
-<span class="sec">▶ L2/L1 Regularization — Bayesian View</span>
-<div class="f">L2: L_total=L_CE+λ/2‖w‖²  ↔  Prior: N(0,1/λ)
-  → w nhỏ ≠ 0 | Sphere constraint | Smooth
-L1: L_total=L_CE+λ‖w‖₁  ↔  Prior: Laplace(0,1/λ)
-  → w sparse (=0) | Diamond constraint | Feature select
-Weight decay: wj←(1−ηλ)wj−η·∂L_CE/∂wj</div>
+<span class="sec">▶ L2/L1 Regularization</span>
+<div class="f">
+L2: \(\mathcal{L}+\dfrac{\lambda}{2}\|\mathbf{w}\|^2\leftrightarrow\mathcal{N}(0,1/\lambda)\) → \(\mathbf{w}\neq\mathbf{0}\)<br>
+L1: \(\mathcal{L}+\lambda\|\mathbf{w}\|_1\leftrightarrow\text{Laplace}(0,1/\lambda)\) → sparse
+</div>
 </div></div>
 </div><!-- col1 -->
 
@@ -326,44 +302,41 @@ Weight decay: wj←(1−ηλ)wj−η·∂L_CE/∂wj</div>
 <div class="blk blk-svm">
 <div class="blk-hdr">⚔️ SVM — Margin, Hard/Soft, Dual</div>
 <div class="blk-body">
-<span class="sec">▶ Decision Boundary trong các chiều</span>
+<span class="sec">▶ Decision Boundary</span>
 <table class="tbl">
-<tr><th>D</th><th>Boundary (D−1 chiều)</th><th>Phương trình</th></tr>
-<tr><td>1D</td><td>Điểm (threshold)</td><td>w₁x₁+b=0</td></tr>
-<tr><td>2D</td><td>Đường thẳng</td><td>w₁x₁+w₂x₂+b=0</td></tr>
-<tr><td>nD</td><td>Siêu phẳng (n−1)D</td><td><b>w·x+b=0</b></td></tr>
+<tr><th>D</th><th>Boundary</th><th>Phương trình</th></tr>
+<tr><td>1D</td><td>Điểm</td><td>\(w_1x_1+b=0\)</td></tr>
+<tr><td>2D</td><td>Đường thẳng</td><td>\(w_1x_1+w_2x_2+b=0\)</td></tr>
+<tr><td>nD</td><td>Hyperplane (n−1)D</td><td>\(\mathbf{w}\cdot\mathbf{x}+b=0\)</td></tr>
 </table>
-<span class="sec">▶ Hard-margin SVM & Margin = 2/‖w‖</span>
-<div class="f">H₁: w·x+b=+1  H₂: w·x+b=−1
-Constraint: yi(w·xi+b)≥1  ∀i
-Margin = (x₊−x₋)·w/‖w‖ = (1+1)/‖w‖ = 2/‖w‖
-
-Min (1/2)‖w‖² s.t. yi(w·xi+b)≥1
-↔ Maximize margin 2/‖w‖
-
-dist(x₀,boundary) = |w·x₀+b|/‖w‖</div>
-<div class="tip">💡 Margin lớn → chịu noise tốt hơn → generalize tốt hơn.</div>
+<span class="sec">▶ Hard-margin & Margin = \(2/\|\mathbf{w}\|\)</span>
+<div class="f">
+\(H_1:\mathbf{w}\cdot\mathbf{x}+b=+1\quad H_2:\mathbf{w}\cdot\mathbf{x}+b=-1\)<br>
+Constraint: \(y_i(\mathbf{w}\cdot\mathbf{x}_i+b)\geq 1\;\forall i\)<br>
+\(\text{Margin}=\dfrac{(\mathbf{x}_+-\mathbf{x}_-)\cdot\mathbf{w}}{\|\mathbf{w}\|}=\dfrac{2}{\|\mathbf{w}\|}\)<br><br>
+\(\min\dfrac{1}{2}\|\mathbf{w}\|^2\) s.t. \(y_i(\mathbf{w}\cdot\mathbf{x}_i+b)\geq 1\)<br>
+\(\text{dist}(x_0)=\dfrac{|\mathbf{w}\cdot\mathbf{x}_0+b|}{\|\mathbf{w}\|}\)
+</div>
 <span class="sec">▶ Dual Formulation</span>
-<div class="f">W(α)=Σαi−(1/2)Σij αiαj·yi·yj(xi·xj)
-KKT: w=Σαi·yi·xi,  Σαi·yi=0,  αi≥0
-αi>0 ↔ Support Vector (~5−20% data)
-αi=0 ↔ Nằm ngoài margin, không ảnh hưởng</div>
-<span class="sec">▶ Soft-margin — Slack Variables ξ</span>
-<div class="f">min (1/2)‖w‖² + C·Σξi
-s.t. yi(w·xi+b)≥1−ξi,  ξi≥0
-
-ξi=0:    ngoài margin, đúng phía  ✓ (không phạt)
-0<ξi≤1: trong margin, đúng phía  ✓ (phạt nhẹ)
-ξi=1:   trên boundary (ranh giới)
-ξi>1:   sai phía = misclassified  ✗ (phạt nặng)</div>
+<div class="f">
+\(W(\boldsymbol{\alpha})=\sum_i\alpha_i-\dfrac{1}{2}\sum_{ij}\alpha_i\alpha_j y_i y_j(\mathbf{x}_i\cdot\mathbf{x}_j)\)<br>
+KKT: \(\mathbf{w}=\sum_i\alpha_i y_i\mathbf{x}_i\), \(\sum_i\alpha_i y_i=0\), \(\alpha_i\geq 0\)<br>
+\(\alpha_i>0\leftrightarrow\) Support Vector; \(\alpha_i=0\leftrightarrow\) non-SV
+</div>
+<span class="sec">▶ Soft-margin — Slack \(\xi_i\)</span>
+<div class="f">
+\(\min\dfrac{1}{2}\|\mathbf{w}\|^2+C\sum_i\xi_i\quad\text{s.t. }y_i(\mathbf{w}\cdot\mathbf{x}_i+b)\geq 1-\xi_i,\;\xi_i\geq 0\)<br><br>
+\(\xi_i=0\): ngoài margin, đúng phía ✓<br>
+\(0<\xi_i\leq 1\): trong margin, đúng phía ✓<br>
+\(\xi_i>1\): sai phía = misclassified ✗
+</div>
 <table class="tbl">
-<tr><th>C</th><th>Phạt</th><th>Margin</th><th>Kết quả</th></tr>
-<tr><td>→0</td><td>Bỏ qua</td><td>Rất lớn</td><td style="color:#1d4ed8">Underfit</td></tr>
-<tr><td>Optimal</td><td>Cân bằng</td><td>Vừa</td><td style="color:#15803d">Best</td></tr>
-<tr><td>Lớn</td><td>Nặng</td><td>Nhỏ</td><td style="color:#b91c1c">Overfit</td></tr>
-<tr><td>→∞</td><td>Tuyệt đối</td><td>Cực nhỏ</td><td style="color:#b91c1c">Hard-margin</td></tr>
+<tr><th>C</th><th>Margin</th><th>Kết quả</th></tr>
+<tr><td>\(\to 0\)</td><td>Rất lớn</td><td style="color:#1d4ed8">Underfit</td></tr>
+<tr><td>Optimal</td><td>Vừa</td><td style="color:#15803d">Best</td></tr>
+<tr><td>\(\to\infty\)</td><td>Cực nhỏ</td><td style="color:#b91c1c">Hard-margin</td></tr>
 </table>
-<div class="tip">💡 C≡1/λ: C nhỏ↔λ lớn↔regularize mạnh↔underfit.</div>
+<div class="tip">💡 \(C\equiv 1/\lambda\): C nhỏ ↔ \(\lambda\) lớn ↔ regularize mạnh ↔ underfit.</div>
 </div></div>
 </div><!-- col2 -->
 
@@ -373,46 +346,43 @@ s.t. yi(w·xi+b)≥1−ξi,  ξi≥0
 <div class="blk-hdr">⚔️ SVM — Kernel Trick, RBF, Hinge Loss</div>
 <div class="blk-body">
 <span class="sec">▶ Kernel Trick</span>
-<div class="f">Dual SVM chỉ dùng xi·xj (inner products)
-→ Thay xi·xj bằng K(xi,xj)=φ(xi)·φ(xj)
-→ Không cần tính φ(x) tường minh!
-Predict: ŷ=sign(Σ αi·yi·K(xi,x)+b)</div>
+<div class="f">
+Dual SVM chỉ dùng \(\mathbf{x}_i\cdot\mathbf{x}_j\)<br>
+→ Thay bằng \(K(\mathbf{x}_i,\mathbf{x}_j)=\varphi(\mathbf{x}_i)\cdot\varphi(\mathbf{x}_j)\)<br>
+Predict: \(\hat{y}=\text{sign}\!\left(\sum_i\alpha_i y_i K(\mathbf{x}_i,\mathbf{x})+b\right)\)
+</div>
 <table class="tbl">
 <tr><th>Kernel</th><th>Công thức</th><th>Feature space</th></tr>
-<tr><td>Linear</td><td>xᵀx'</td><td>D chiều</td></tr>
-<tr><td>Poly deg-d</td><td>(γxᵀx'+r)^d</td><td>Poly deg-d</td></tr>
-<tr><td><b>RBF</b></td><td>exp(−γ‖x−x'‖²)</td><td>∞ chiều</td></tr>
+<tr><td>Linear</td><td>\(\mathbf{x}^\top\mathbf{x}'\)</td><td>D chiều</td></tr>
+<tr><td>Poly deg-d</td><td>\((\gamma\mathbf{x}^\top\mathbf{x}'+r)^d\)</td><td>Poly</td></tr>
+<tr><td><b>RBF</b></td><td>\(\exp(-\gamma\|\mathbf{x}-\mathbf{x}'\|^2)\)</td><td>\(\infty\) chiều</td></tr>
 </table>
-<span class="sec">▶ RBF: Gram Matrix và hành vi γ</span>
-<div class="f">Gram matrix: Kij=K(xi,xj), luôn PSD (Mercer)
-γ→0:  Kij→1 mọi cặp → all-ones → Linear → UNDERFIT
-γ nhỏ: boundary mượt, ảnh hưởng rộng → generalize
-γ lớn: mỗi điểm="đảo" riêng → OVERFIT
-γ→∞: Kij=0 (i≠j), Kii=1 → Identity I
-      ≡ 1-NN → Train Err=0, test OVERFIT cực đại</div>
-<div class="tip">💡 γ = "bán kính ảnh hưởng nghịch đảo". RBF ≡ ∞-dim feature map (Taylor expansion).</div>
+<span class="sec">▶ RBF: Gram Matrix & hành vi \(\gamma\)</span>
+<div class="f">
+Gram matrix: \(K_{ij}=K(\mathbf{x}_i,\mathbf{x}_j)\), luôn PSD (Mercer)<br>
+\(\gamma\to 0\): \(K_{ij}\to 1\) → all-ones → Linear → UNDERFIT<br>
+\(\gamma\to\infty\): \(K_{ij}=0\,(i\neq j),\,K_{ii}=1\) → Identity \(\mathbf{I}\)<br>
+\(\equiv\) 1-NN → Train Err\(=0\), test OVERFIT
+</div>
+<div class="tip">💡 \(\gamma\) = "bán kính ảnh hưởng nghịch đảo". RBF \(\equiv\) \(\infty\)-dim feature map.</div>
 <span class="sec">▶ Hinge Loss vs Cross-Entropy</span>
-<div class="f">Hinge: max(0, 1−y·f(x)) — piecewise linear
-  m≥1: gradient=0 → FLAT region
-  → Chỉ SVs (αi>0) ảnh hưởng đến w → SPARSE
-
-CE: log(1+e⁻ᵐ) — smooth, luôn >0, gradient≠0 mọi lúc
-  → Mọi điểm đều đóng góp vào gradient → DENSE</div>
+<div class="f">
+Hinge: \(\max(0,\,1-yf(\mathbf{x}))\) — piecewise linear<br>
+\(m\geq 1\): gradient \(=0\) → FLAT → SPARSE \(\alpha_i\)<br><br>
+CE: \(\log(1+e^{-m})\) — smooth, gradient \(\neq 0\) mọi lúc → DENSE
+</div>
 <table class="tbl">
 <tr><th>Tiêu chí</th><th>Hinge (SVM)</th><th>CE (LR)</th></tr>
-<tr><td>Gradient điểm dễ</td><td>=0 (sparse)</td><td>≠0 (tất cả update)</td></tr>
-<tr><td>Objective</td><td>Geometric: max margin</td><td>Probabilistic: MLE</td></tr>
-<tr><td>Output</td><td>sign(f(x))</td><td>σ(f(x)) xác suất</td></tr>
-<tr><td>Calibration</td><td>Không (cần Platt)</td><td>Có (MLE)</td></tr>
-<tr><td>Phụ thuộc vào</td><td>~5-20% SVs</td><td>Tất cả data</td></tr>
-<tr><td>Outlier sensitivity</td><td>Thấp (C kiểm soát)</td><td>Cao</td></tr>
+<tr><td>Grad điểm dễ</td><td>\(=0\) (sparse)</td><td>\(\neq 0\) (all update)</td></tr>
+<tr><td>Objective</td><td>Max margin</td><td>MLE</td></tr>
+<tr><td>Output</td><td>\(\text{sign}(f)\)</td><td>\(\sigma(f)\) prob</td></tr>
+<tr><td>Outlier sens.</td><td>Thấp (C)</td><td>Cao</td></tr>
 </table>
 <span class="sec">▶ Quy trình thi SVM</span>
-<div class="step"><div class="sn">1</div><div class="sc">Identify SVs: điểm gần boundary nhất mỗi lớp</div></div>
-<div class="step"><div class="sn">2</div><div class="sc">Lập hệ: yi(w·xi+b)=1 → D+1 phương trình</div></div>
-<div class="step"><div class="sn">3</div><div class="sc">Giải: trừ PT khử b, tìm w, tính b</div></div>
-<div class="step"><div class="sn">4</div><div class="sc">Margin=2/‖w‖. Kiểm tra: yi(w·xi+b)≥1 ∀i</div></div>
-<div class="step"><div class="sn">5</div><div class="sc">Predict: sign(w·x+b). Dist=|f(x)|/‖w‖</div></div>
+<div class="step"><div class="sn">1</div><div class="sc">Identify SVs (điểm gần boundary nhất)</div></div>
+<div class="step"><div class="sn">2</div><div class="sc">Lập hệ: \(y_i(\mathbf{w}\cdot\mathbf{x}_i+b)=1\) → D+1 PT</div></div>
+<div class="step"><div class="sn">3</div><div class="sc">Giải: tìm \(\mathbf{w}\), \(b\). Margin \(=2/\|\mathbf{w}\|\)</div></div>
+<div class="step"><div class="sn">4</div><div class="sc">Predict: \(\text{sign}(\mathbf{w}\cdot\mathbf{x}+b)\)</div></div>
 </div></div>
 </div><!-- col3 -->
 
@@ -420,87 +390,86 @@ CE: log(1+e⁻ᵐ) — smooth, luôn >0, gradient≠0 mọi lúc
 </div><!-- page 2 -->
 
 
-<!-- ================================================================ PAGE 3 ================================================================ -->
+<!-- ===== PAGE 3 ===== -->
 <div class="page">
 <div class="pg-hdr">📄 Trang 3/4 — Decision Trees · Neural Networks · Ensemble Methods · HMM<span>MLA HK252 | CO5175</span></div>
 <div class="g3">
 
-<!-- COL 1: DECISION TREES -->
+<!-- COL 1: DT -->
 <div class="gcol">
 <div class="blk blk-dt">
 <div class="blk-hdr">🌳 Decision Trees — Ch.5</div>
 <div class="blk-body">
-<span class="sec">▶ Độ đo tạp chất (Impurity)</span>
-<div class="f">Entropy:  H(S) = −Σk pk·log₂(pk)   [0 ÷ log₂K]
-Gini:     G(S) = 1−Σk pk²           [0 ÷ 1−1/K]
-Error:    E(S) = 1−max_k pk          [0 ÷ 1−1/K]
-Thứ tự:  H ≥ G ≥ E (thường)
-Pure node (pk=1): H=G=E=0</div>
+<span class="sec">▶ Độ đo tạp chất</span>
+<div class="f">
+Entropy: \(H(S)=-\sum_k p_k\log_2 p_k\in[0,\log_2 K]\)<br>
+Gini: \(G(S)=1-\sum_k p_k^2\in[0,1-1/K]\)<br>
+Error: \(E(S)=1-\max_k p_k\)<br>
+Thứ tự: \(H\geq G\geq E\). Pure node: \(H=G=E=0\)
+</div>
 <span class="sec">▶ Information Gain & Gain Ratio</span>
-<div class="f">IG(S,A) = H(S) − Σv (|Sv|/|S|)·H(Sv)
-GainRatio = IG(S,A) / SplitInfo(S,A)
-SplitInfo = −Σv (|Sv|/|S|)·log(|Sv|/|S|)
-→ Sửa bias IG với attrs có nhiều values (ID3→C4.5)</div>
+<div class="f">
+\(\text{IG}(S,A)=H(S)-\sum_v\dfrac{|S_v|}{|S|}H(S_v)\)<br>
+\(\text{GainRatio}=\dfrac{\text{IG}(S,A)}{\text{SplitInfo}(S,A)}\)<br>
+\(\text{SplitInfo}=-\sum_v\dfrac{|S_v|}{|S|}\log\dfrac{|S_v|}{|S|}\)
+</div>
 <span class="sec">▶ CART — Binary Splits với Gini</span>
-<div class="f">Chọn t*=argmin_t [(|L|/|S|)·G(L)+(|R|/|S|)·G(R)]
-→ Binary tree, mọi feature (numerical/categorical)</div>
-<span class="sec">▶ Overfitting & Pruning</span>
-<ul><li><b>Pre-pruning:</b> max_depth, min_samples_split, min_impurity</li><li><b>Post-pruning:</b> Reduced Error — cắt nếu val acc không giảm</li><li>Cây sâu → overfit. Cây nông → underfit</li></ul>
-<div class="ok">✓ DT tự nhiên multi-class, không cần normalize, xử lý categorical.</div>
-<div class="err">⚠️ IG bias với many-valued attrs → luôn dùng GainRatio (C4.5) hoặc Gini (CART).</div>
-</div></div>
-
-<hr style="margin:1mm 0; border:none;">
-
-<div class="blk blk-dt" style="border-color:#5eead4">
-<div class="blk-hdr" style="background:#0f766e;font-size:7.5px">🌳 DT — Ví dụ IG (Play Tennis)</div>
+<div class="f">
+\(t^*=\arg\min_t\!\left[\dfrac{|L|}{|S|}G(L)+\dfrac{|R|}{|S|}G(R)\right]\)
+</div>
+<div class="ok">✓ DT multi-class, không cần normalize, xử lý categorical.</div>
+<div class="err">⚠️ IG bias many-valued attrs → dùng GainRatio (C4.5) hoặc Gini (CART).</div>
+<div class="blk blk-dt" style="border-color:#5eead4;margin-top:1mm">
+<div class="blk-hdr" style="background:#0f766e;font-size:7.5px">🌳 VD: IG (Play Tennis)</div>
 <div class="blk-body">
-<div class="f">Root: 9Yes/5No → H=0.940 bits
-Outlook: Sunny(2/3), Overcast(4/0), Rain(3/2)
-H(S)=0.971, H(O)=0.000, H(R)=0.971
-IG=0.940−[5/14×0.971+4/14×0+5/14×0.971]
-  =0.940−0.694=0.246 bits ✓</div>
+<div class="f">
+Root: 9Yes/5No → \(H=0.940\) bits<br>
+Outlook: Sunny(5), Overcast(4), Rain(5)<br>
+\(H_\text{Sun}=0.971,\;H_\text{Over}=0,\;H_\text{Rain}=0.971\)<br>
+\(\text{IG}=0.940-\!\left[\tfrac{5}{14}(0.971)+\tfrac{4}{14}(0)+\tfrac{5}{14}(0.971)\right]=0.246\) ✓
+</div>
+</div></div>
 </div></div>
 </div><!-- col1 -->
 
-<!-- COL 2: NEURAL NETWORKS -->
+<!-- COL 2: NN -->
 <div class="gcol">
 <div class="blk blk-nn">
 <div class="blk-hdr">🧠 Neural Networks — Ch.7</div>
 <div class="blk-body">
 <span class="sec">▶ Forward Propagation</span>
-<div class="f">z^l = W^l · a^{l-1} + b^l   [linear transform]
-a^l = f(z^l)                 [activation]
-Output: ŷ = softmax(z^L) hoặc σ(z^L)</div>
+<div class="f">
+\(\mathbf{z}^l=\mathbf{W}^l\mathbf{a}^{l-1}+\mathbf{b}^l\quad\) [linear transform]<br>
+\(\mathbf{a}^l=f(\mathbf{z}^l)\quad\) [activation]
+</div>
 <span class="sec">▶ Backpropagation</span>
-<div class="f">δ^L = ∂L/∂z^L            [output layer error]
-δ^l = (W^{l+1})ᵀδ^{l+1} ⊙ f'(z^l) [chain rule]
-∂L/∂W^l = δ^l·(a^{l-1})ᵀ
-∂L/∂b^l = δ^l</div>
-<div class="tip">💡 ⊙ = element-wise (Hadamard). Gradient flows backward through each layer.</div>
+<div class="f">
+\(\boldsymbol{\delta}^L=\partial\mathcal{L}/\partial\mathbf{z}^L\)<br>
+\(\boldsymbol{\delta}^l=(\mathbf{W}^{l+1})^\top\boldsymbol{\delta}^{l+1}\odot f'(\mathbf{z}^l)\)<br>
+\(\partial\mathcal{L}/\partial\mathbf{W}^l=\boldsymbol{\delta}^l(\mathbf{a}^{l-1})^\top,\quad\partial\mathcal{L}/\partial\mathbf{b}^l=\boldsymbol{\delta}^l\)
+</div>
 <span class="sec">▶ Activation Functions</span>
 <table class="tbl">
 <tr><th>Hàm</th><th>Công thức</th><th>Đạo hàm</th><th>Vanish?</th></tr>
-<tr><td>Sigmoid</td><td>1/(1+e⁻ᶻ)</td><td>σ(1−σ)≤0.25</td><td>✗ Có</td></tr>
-<tr><td>Tanh</td><td>(eᶻ−e⁻ᶻ)/(eᶻ+e⁻ᶻ)</td><td>1−tanh²≤1</td><td>✗ Có</td></tr>
-<tr><td><b>ReLU</b></td><td>max(0,z)</td><td>0 hoặc 1</td><td>✓ Không*</td></tr>
-<tr><td>Softmax</td><td>eᶻⁱ/Σeᶻʲ</td><td>—</td><td>—</td></tr>
+<tr><td>Sigmoid</td><td>\(\frac{1}{1+e^{-z}}\)</td><td>\(\sigma(1-\sigma)\leq 0.25\)</td><td>✗ Có</td></tr>
+<tr><td>Tanh</td><td>\(\tanh(z)\)</td><td>\(1-\tanh^2(z)\leq 1\)</td><td>✗ Có</td></tr>
+<tr><td><b>ReLU</b></td><td>\(\max(0,z)\)</td><td>0 hoặc 1</td><td>✓ Không*</td></tr>
+<tr><td>Softmax</td><td>\(\frac{e^{z_i}}{\sum_j e^{z_j}}\)</td><td>—</td><td>—</td></tr>
 </table>
-<div class="err">⚠️ Sigmoid L lớp: gradient≤(0.25)^L → L=10: 10⁻⁶. ReLU "dying" khi z≤0 mãi → dùng Leaky ReLU.</div>
-<span class="sec">▶ Perceptron & Delta Rule</span>
-<div class="f">Perceptron: w←w+η·(y−ŷ)·x  [sai→update, đúng→skip]
-Delta Rule: w←w−η·∇L        [smooth gradient]</div>
-<span class="sec">▶ Optimizer & Regularization</span>
-<div class="f">SGD:  wt+1 = wt − η·∇L(wt)
-Adam: mt=β₁mt-1+(1-β₁)gt, vt=β₂vt-1+(1-β₂)gt²
-      wt+1 = wt − η·m̂t/√(v̂t+ε)  [adaptive LR]
-Dropout: tắt neuron với prob p khi train
-         → ensemble-like effect, reduce overfit
-BatchNorm: normalize activations → faster convergence</div>
+<div class="err">⚠️ Sigmoid \(L\) lớp: gradient \(\leq(0.25)^L\). \(L=10\): \(10^{-6}\). Dùng ReLU.</div>
+<span class="sec">▶ Delta Rule & Optimizers</span>
+<div class="f">
+Perceptron: \(\mathbf{w}\leftarrow\mathbf{w}+\eta(y-\hat{y})\mathbf{x}\)<br>
+SGD: \(w_{t+1}=w_t-\eta\nabla\mathcal{L}(w_t)\)<br>
+Adam: \(m_t=\beta_1 m_{t-1}+(1-\beta_1)g_t\)<br>
+\(v_t=\beta_2 v_{t-1}+(1-\beta_2)g_t^2\)<br>
+\(w_{t+1}=w_t-\eta\,\hat{m}_t/\!\sqrt{\hat{v}_t+\varepsilon}\)
+</div>
 <span class="sec">▶ Softmax (Multi-class)</span>
-<div class="f">P(y=k|x) = exp(wkᵀx)/Σj exp(wjᵀx)
-K=2: Softmax = Sigmoid  [special case]
-CE loss với softmax: L=−Σk yk·log P(k|x)</div>
+<div class="f">
+\(P(y=k|\mathbf{x})=\dfrac{e^{\mathbf{w}_k^\top\mathbf{x}}}{\sum_j e^{\mathbf{w}_j^\top\mathbf{x}}}\)<br>
+\(K=2\): Softmax = Sigmoid. CE: \(\mathcal{L}=-\sum_k y_k\log P(k|\mathbf{x})\)
+</div>
 </div></div>
 </div><!-- col2 -->
 
@@ -513,56 +482,42 @@ CE loss với softmax: L=−Σk yk·log P(k|x)</div>
 <table class="tbl">
 <tr><th>Tiêu chí</th><th>Bagging</th><th>Boosting</th></tr>
 <tr><td>Cơ chế</td><td>Parallel, bootstrap</td><td>Sequential, reweight</td></tr>
-<tr><td>Mục tiêu</td><td>↓ Variance</td><td>↓ Bias</td></tr>
+<tr><td>Mục tiêu</td><td>\(\downarrow\) Variance</td><td>\(\downarrow\) Bias</td></tr>
 <tr><td>Ví dụ</td><td>Random Forest</td><td>AdaBoost, XGBoost</td></tr>
-<tr><td>Overfit?</td><td>Khó overfit</td><td>Có thể nếu nhiều rounds</td></tr>
 </table>
 <span class="sec">▶ Random Forest</span>
-<div class="f">= Bagging + Random Feature Subsampling (√D)
-Mỗi tree: bootstrap sample + random √D features
-OOB error: ~37% data không sample → free validation
-Tính OOB: predict bằng các trees chưa thấy điểm đó</div>
+<div class="f">
+= Bagging + Random Feature Subsampling \((\sqrt{D})\)<br>
+OOB error: \(\approx 37\%\) data không sample → free validation
+</div>
 <span class="sec">▶ AdaBoost</span>
-<div class="step"><div class="sn">1</div><div class="sc">Init weights: wi=1/N (đều nhau)</div></div>
-<div class="step"><div class="sn">2</div><div class="sc">Train weak learner ht, tính εt=Σ wi·1[ht(xi)≠yi]</div></div>
-<div class="step"><div class="sn">3</div><div class="sc">αt=0.5·ln((1−εt)/εt) [weight của ht]</div></div>
-<div class="step"><div class="sn">4</div><div class="sc">Update: wi←wi·exp(−αt·yi·ht(xi)), normalize</div></div>
-<div class="step"><div class="sn">5</div><div class="sc">H(x)=sign(Σ αt·ht(x))</div></div>
-<div class="ok">✓ Bagging↓Variance (avg nhiều model). Boosting↓Bias (focus lỗi).</div>
+<div class="step"><div class="sn">1</div><div class="sc">Init: \(w_i=1/N\)</div></div>
+<div class="step"><div class="sn">2</div><div class="sc">Train \(h_t\), tính \(\varepsilon_t=\sum_i w_i\cdot\mathbf{1}[h_t(\mathbf{x}_i)\neq y_i]\)</div></div>
+<div class="step"><div class="sn">3</div><div class="sc">\(\alpha_t=\tfrac{1}{2}\ln\dfrac{1-\varepsilon_t}{\varepsilon_t}\)</div></div>
+<div class="step"><div class="sn">4</div><div class="sc">\(w_i\leftarrow w_i\exp(-\alpha_t y_i h_t(\mathbf{x}_i))\), normalize</div></div>
+<div class="step"><div class="sn">5</div><div class="sc">\(H(\mathbf{x})=\text{sign}\!\left(\sum_t\alpha_t h_t(\mathbf{x})\right)\)</div></div>
+<div class="ok">✓ Bagging \(\downarrow\) Variance. Boosting \(\downarrow\) Bias.</div>
 </div></div>
-
-<hr style="margin:1mm 0; border:none;">
 
 <div class="blk blk-hmm">
 <div class="blk-hdr">🔗 Hidden Markov Models</div>
 <div class="blk-body">
-<span class="sec">▶ Tham số λ = (π, A, B)</span>
-<div class="f">π: P(q₁=i)       [initial state, N×1]
-A: P(qt=j|qt-1=i) [transition, N×N]
-B: P(ot=k|qt=i)   [emission, N×M]</div>
-<span class="sec">▶ 3 bài toán cơ bản</span>
-<table class="tbl">
-<tr><th>Bài toán</th><th>Input→Output</th><th>Thuật toán</th></tr>
-<tr><td>Evaluation</td><td>O,λ→P(O|λ)</td><td>Forward (αt)</td></tr>
-<tr><td>Decoding</td><td>O,λ→Q*</td><td>Viterbi (δt)</td></tr>
-<tr><td>Learning</td><td>O→λ*</td><td>Baum-Welch (EM)</td></tr>
-</table>
+<span class="sec">▶ Tham số \(\lambda=(\boldsymbol{\pi},A,B)\)</span>
+<div class="f">
+\(\pi_i=P(q_1=i)\quad A_{ij}=P(q_t=j|q_{t-1}=i)\quad B_j(o)=P(o_t=o|q_t=j)\)
+</div>
 <span class="sec">▶ Forward & Viterbi</span>
-<div class="f">Forward: αt(j)=[Σi αt-1(i)·Aij]·Bj(ot)  [SUM]
-Init:    α₁(i)=πi·Bi(o₁)
-Result:  P(O|λ)=Σi αT(i)
-
-Viterbi: δt(j)=[MAX_i δt-1(i)·Aij]·Bj(ot)  [MAX]
-Init:    δ₁(i)=πi·Bi(o₁)
-Result:  Q*=backtrack từ argmax δT(i)
-
-⚠️ Forward dùng SUM (xét tất cả paths)
-   Viterbi dùng MAX (tìm path tốt nhất)</div>
+<div class="f">
+Forward: \(\alpha_t(j)=\!\left[\sum_i\alpha_{t-1}(i)A_{ij}\right]\!B_j(o_t)\) [<b>SUM</b>]<br>
+Init: \(\alpha_1(i)=\pi_i B_i(o_1)\), \(P(O|\lambda)=\sum_i\alpha_T(i)\)<br><br>
+Viterbi: \(\delta_t(j)=\!\left[\max_i\delta_{t-1}(i)A_{ij}\right]\!B_j(o_t)\) [<b>MAX</b>]<br>
+\(Q^*=\) backtrack từ \(\arg\max_i\delta_T(i)\)
+</div>
 <span class="sec">▶ Baum-Welch (EM)</span>
-<div class="f">E-step: γt(i)=P(qt=i|O,λ)   [state posterior]
-        ξt(i,j)=P(qt=i,qt+1=j|O,λ) [pair posterior]
-M-step: Aij=Σt ξt(i,j)/Σt γt(i)
-        Bi(k)=Σt:ot=k γt(i)/Σt γt(i)</div>
+<div class="f">
+\(\gamma_t(i)=P(q_t=i|O,\lambda)\), \(\xi_t(i,j)=P(q_t=i,q_{t+1}=j|O,\lambda)\)<br>
+\(A_{ij}=\dfrac{\sum_t\xi_t(i,j)}{\sum_t\gamma_t(i)}\quad B_i(k)=\dfrac{\sum_{t:o_t=k}\gamma_t(i)}{\sum_t\gamma_t(i)}\)
+</div>
 </div></div>
 </div><!-- col3 -->
 
@@ -570,7 +525,7 @@ M-step: Aij=Σt ξt(i,j)/Σt γt(i)
 </div><!-- page 3 -->
 
 
-<!-- ================================================================ PAGE 4 ================================================================ -->
+<!-- ===== PAGE 4 ===== -->
 <div class="page">
 <div class="pg-hdr">📄 Trang 4/4 — Bẫy Thi · Ví dụ Tính · Siêu Tham Số · Công Thức Nhanh<span>MLA HK252 | CO5175</span></div>
 <div class="g3">
@@ -580,59 +535,58 @@ M-step: Aij=Σt ξt(i,j)/Σt γt(i)
 <div style="background:#991b1b;color:#fff;padding:1.5mm 2mm;border-radius:3px 3px 0 0;font-size:7.5px;font-weight:800">🚨 Bẫy Thi Thường Gặp — ĐỪNG nhầm!</div>
 <div style="background:#fef2f2;border:1px solid #fca5a5;border-top:none;border-radius:0 0 3px 3px;padding:1.5mm 2mm">
 <ul style="font-size:6.1px;line-height:1.44;padding-left:2mm">
-<li><b>[KNN]</b> K=1: Train Err=0 <u>không phải underfit</u> — self là nearest neighbor của chính nó</li>
-<li><b>[KNN]</b> KD-Tree mất lợi thế khi D lớn (curse of dim); Ball-Tree tốt hơn khi D vừa</li>
-<li><b>[KNN]</b> Tie vote: cần quy tắc rõ ràng (dùng K+1 hoặc chọn class gần nhất)</li>
+<li><b>[KNN]</b> \(K=1\): Train Err\(=0\) <u>không phải underfit</u> — self là nearest neighbor</li>
+<li><b>[KNN]</b> KD-Tree mất lợi thế khi D lớn (curse of dim)</li>
 <li><b>[NB]</b> "Naive" ≠ yếu — SOTA text; CI vi phạm nhưng argmax vẫn đúng</li>
-<li><b>[NB]</b> Zero freq → <u>cả tích = 0</u>, không chỉ 1 term → Laplace α=1 bắt buộc</li>
-<li><b>[K-Means]</b> WCSS <u>không bao giờ tăng</u> trong Lloyd's — nếu tăng là sai</li>
+<li><b>[NB]</b> Zero freq → cả tích \(=0\) → Laplace \(\alpha=1\) bắt buộc</li>
+<li><b>[K-Means]</b> WCSS không bao giờ tăng trong Lloyd's</li>
 <li><b>[K-Means]</b> Hội tụ = local min, KHÔNG phải global (NP-hard)</li>
-<li><b>[LR]</b> Sigmoid = NGHỊCH ĐẢO của logit, không phải "squashing" tùy tiện</li>
-<li><b>[LR]</b> ∂L_CE/∂z = ŷ−y (KHÔNG có σ'); ∂L_MSE = (ŷ−y)·σ'(z) (CÓ σ')</li>
-<li><b>[LR]</b> L2→w nhỏ≠0 (sphere). L1→w=0 sparse (diamond). KHÔNG nhầm!</li>
-<li><b>[SVM]</b> C lớn→overfit (C=1/λ; λ lớn↔underfit). Nhớ quan hệ nghịch!</li>
-<li><b>[SVM]</b> γ→∞ → Gram=I → Train Err=0 (1-NN behavior, overfit cực đại)</li>
-<li><b>[SVM]</b> Hinge=0 khi m≥1, KHÔNG phải m≥0. m=yf(x) functional margin</li>
-<li><b>[SVM]</b> Chỉ SVs (αi&gt;0) ảnh hưởng w — điểm xa margin: αi=0</li>
-<li><b>[DT]</b> IG bias many-valued attrs → GainRatio (C4.5) hoặc Gini (CART)</li>
-<li><b>[NN]</b> Sigmoid L lớp: gradient≤(0.25)^L → dùng ReLU thay thế</li>
-<li><b>[Ensemble]</b> Bagging↓Variance, Boosting↓Bias — KHÔNG đổi ngược!</li>
-<li><b>[HMM]</b> Forward=SUM (tất cả paths). Viterbi=MAX (path tốt nhất). KHÁC!</li>
-<li><b>[General]</b> Accuracy imbalanced → dùng F1/Precision-Recall thay thế</li>
-<li><b>[General]</b> Normalize: KNN,SVM,LR,NN,K-Means cần. DT,RF,NB không cần</li>
+<li><b>[LR]</b> \(\sigma(z)\) = nghịch đảo của logit, không phải "squashing" tùy tiện</li>
+<li><b>[LR]</b> \(\partial\mathcal{L}_{CE}/\partial z=\hat{y}-y\) (KHÔNG có \(\sigma'\)); MSE = \((\hat{y}-y)\sigma'(z)\) (CÓ)</li>
+<li><b>[LR]</b> L2→\(\mathbf{w}\neq\mathbf{0}\) (sphere). L1→\(\mathbf{w}=\mathbf{0}\) sparse (diamond)</li>
+<li><b>[SVM]</b> C lớn→overfit (\(C=1/\lambda\); \(\lambda\) lớn↔underfit)</li>
+<li><b>[SVM]</b> \(\gamma\to\infty\) → Gram\(=\mathbf{I}\) → Train Err\(=0\) (1-NN, overfit)</li>
+<li><b>[SVM]</b> Hinge\(=0\) khi \(m\geq 1\), KHÔNG phải \(m\geq 0\)</li>
+<li><b>[SVM]</b> Chỉ SVs (\(\alpha_i>0\)) ảnh hưởng \(\mathbf{w}\)</li>
+<li><b>[DT]</b> IG bias many-valued → GainRatio (C4.5) hoặc Gini (CART)</li>
+<li><b>[NN]</b> Sigmoid \(L\) lớp: gradient \(\leq(0.25)^L\) → dùng ReLU</li>
+<li><b>[Ensemble]</b> Bagging\(\downarrow\)Variance, Boosting\(\downarrow\)Bias — KHÔNG đổi!</li>
+<li><b>[HMM]</b> Forward=SUM (tất cả paths). Viterbi=MAX (path tốt nhất)</li>
+<li><b>[General]</b> Normalize: KNN, SVM, LR, NN cần. DT, RF, NB không cần</li>
 </ul>
 </div>
 <div class="blk blk-svm" style="margin-top:1.5mm">
 <div class="blk-hdr" style="font-size:7.5px">🔢 VD: SVM 4 điểm</div>
 <div class="blk-body">
-<div class="f">A(1,3)+  B(2,2)+  C(1,1)−  D(2,0)−
-SVs A,B∈H₁; C∈H₂ → lập hệ:
-  w₁+3w₂+b=+1..(1)  2w₁+2w₂+b=+1..(2)
-  w₁+ w₂+b=−1..(3)
-(1)−(3): 2w₂=2→w₂=1  (2)−(1): w₁=1  b=−3
-→ f(x)=x₁+x₂−3  Margin=2/√2=√2≈1.414
-Pred E(3,2): f=2>0 → Class +1</div>
+<div class="f">
+\(A(1,3)^+\; B(2,2)^+\; C(1,1)^-\; D(2,0)^-\)<br>
+SVs \(A,B\in H_1\); \(C\in H_2\) → lập hệ:<br>
+\(w_1+3w_2+b=1\;(1)\quad 2w_1+2w_2+b=1\;(2)\quad w_1+w_2+b=-1\;(3)\)<br>
+\((1)-(3)\): \(2w_2=2\Rightarrow w_2=1\)\quad\((2)-(1)\): \(w_1=1\)\quad \(b=-3\)<br>
+\(f(\mathbf{x})=x_1+x_2-3\), Margin\(=\frac{2}{\sqrt{2}}=\sqrt{2}\approx 1.414\)<br>
+Predict \(E(3,2)\): \(f=2>0\Rightarrow\) Class \(+1\)
+</div>
 </div></div>
 </div><!-- col1 -->
+
 <!-- COL 2: HYPERPARAMS + MODEL SELECTION -->
 <div class="gcol">
 <div style="background:#1e293b;color:#e2e8f0;padding:1.5mm 2mm;border-radius:3px 3px 0 0;font-size:7.5px;font-weight:800">⚙️ Bảng Siêu Tham Số</div>
 <table class="tbl" style="font-size:5.5px;margin:0 0 1.5mm">
-<tr><th>Model</th><th>Param</th><th>↑ Tăng</th><th>↓ Giảm</th><th>Chọn</th></tr>
-<tr><td><b>KNN</b></td><td>K</td><td>Smooth→Underfit</td><td>Jagged→Overfit</td><td>CV; K*≈√N</td></tr>
-<tr><td><b>NB</b></td><td>α Laplace</td><td>Smooth→underfit</td><td>→0: zero freq</td><td>α=1 default</td></tr>
-<tr><td><b>K-Means</b></td><td>K</td><td>WCSS↓(trivial)</td><td>Coarse clusters</td><td>Elbow/Silhouette</td></tr>
-<tr><td rowspan="2"><b>LR</b></td><td>λ (=1/C)</td><td>w→0→underfit</td><td>→0: no reg, overfit</td><td>CV 10⁻³÷10¹</td></tr>
-<tr><td>threshold θ</td><td>P↑, Recall↓</td><td>Recall↑, P↓</td><td>Business need</td></tr>
-<tr><td rowspan="2"><b>SVM</b></td><td>C</td><td>Margin↓→overfit</td><td>Margin↑→underfit</td><td>CV 10⁻²÷10³</td></tr>
-<tr><td>γ (RBF)</td><td>Local→overfit</td><td>Global→underfit</td><td>Grid+C</td></tr>
-<tr><td rowspan="2"><b>DT</b></td><td>max_depth</td><td>Complex→overfit</td><td>Simple→underfit</td><td>CV hoặc prune</td></tr>
-<tr><td>min_samples</td><td>Fewer→underfit</td><td>More→overfit</td><td>2-20</td></tr>
-<tr><td rowspan="2"><b>RF</b></td><td>n_trees T</td><td>Tốt hơn, chậm</td><td>Kém ổn định</td><td>↑ until stable</td></tr>
-<tr><td>max_features</td><td>↑ correlation</td><td>↑ diversity</td><td>√D (class)</td></tr>
-<tr><td><b>AdaBoost</b></td><td>T rounds</td><td>Có thể overfit!</td><td>Underfit</td><td>Early stopping</td></tr>
-<tr><td rowspan="2"><b>NN</b></td><td>LR η</td><td>Diverge/oscillate</td><td>Converge chậm</td><td>0.001 (Adam)</td></tr>
-<tr><td>Dropout p</td><td>Underfit (quá cao)</td><td>Overfit</td><td>0.2–0.5</td></tr>
+<tr><th>Model</th><th>Param</th><th>\(\uparrow\) Tăng</th><th>\(\downarrow\) Giảm</th><th>Chọn</th></tr>
+<tr><td><b>KNN</b></td><td>K</td><td>Smooth→Underfit</td><td>Jagged→Overfit</td><td>CV; \(K^*\approx\sqrt{N}\)</td></tr>
+<tr><td><b>NB</b></td><td>\(\alpha\)</td><td>Smooth→underfit</td><td>→0: zero freq</td><td>\(\alpha=1\)</td></tr>
+<tr><td><b>K-Means</b></td><td>K</td><td>WCSS\(\downarrow\)(trivial)</td><td>Coarse</td><td>Elbow/Sil</td></tr>
+<tr><td rowspan="2"><b>LR</b></td><td>\(\lambda\) (=1/C)</td><td>\(\mathbf{w}\to 0\)→underfit</td><td>no reg→overfit</td><td>CV \(10^{-3}\div 10^1\)</td></tr>
+<tr><td>\(\theta\)</td><td>P\(\uparrow\), R\(\downarrow\)</td><td>R\(\uparrow\), P\(\downarrow\)</td><td>Business</td></tr>
+<tr><td rowspan="2"><b>SVM</b></td><td>C</td><td>Margin\(\downarrow\)→overfit</td><td>Margin\(\uparrow\)→underfit</td><td>CV \(10^{-2}\div 10^3\)</td></tr>
+<tr><td>\(\gamma\) (RBF)</td><td>Local→overfit</td><td>Global→underfit</td><td>Grid+C</td></tr>
+<tr><td rowspan="2"><b>DT</b></td><td>max_depth</td><td>Complex→overfit</td><td>Simple→underfit</td><td>CV/prune</td></tr>
+<tr><td>min_samples</td><td>Fewer→underfit</td><td>More→overfit</td><td>2–20</td></tr>
+<tr><td rowspan="2"><b>RF</b></td><td>n_trees</td><td>Tốt+chậm</td><td>Kém ổn định</td><td>\(\uparrow\) stable</td></tr>
+<tr><td>max_feat</td><td>\(\uparrow\) correlation</td><td>\(\uparrow\) diversity</td><td>\(\sqrt{D}\)</td></tr>
+<tr><td><b>AdaBoost</b></td><td>T</td><td>Có thể overfit!</td><td>Underfit</td><td>EarlyStop</td></tr>
+<tr><td><b>NN</b></td><td>\(\eta\)</td><td>Diverge</td><td>Chậm</td><td>0.001</td></tr>
 </table>
 
 <div style="background:#1e3a5f;color:#93c5fd;padding:1.2mm 2mm;border-radius:3px 3px 0 0;font-size:7px;font-weight:800">🧭 Khi nào dùng mô hình?</div>
@@ -641,56 +595,55 @@ Pred E(3,2): f=2>0 → Class +1</div>
 <tr><td>Cần probability</td><td>LR, NB</td><td>Calibrated probs</td></tr>
 <tr><td>Interpretable</td><td>LR, DT, NB</td><td>Weights/rules rõ</td></tr>
 <tr><td>High-dim, ít data</td><td>SVM, NB</td><td>Max-margin/few params</td></tr>
-<tr><td>Text classification</td><td>NB, SVM-linear</td><td>Sparse bag-of-words</td></tr>
-<tr><td>Non-linear boundary</td><td>SVM-RBF, RF, NN</td><td>Kernel/ensemble/depth</td></tr>
-<tr><td>Imbalanced classes</td><td>F1 + adjust θ</td><td>Accuracy unreliable!</td></tr>
+<tr><td>Non-linear</td><td>SVM-RBF, RF, NN</td><td>Kernel/depth</td></tr>
+<tr><td>Imbalanced</td><td>\(F_1\) + adjust \(\theta\)</td><td>Accuracy unreliable</td></tr>
 <tr><td>Large N, complex</td><td>NN, XGBoost</td><td>Capacity to learn</td></tr>
 <tr><td>Unsupervised</td><td>K-Means</td><td>Cluster structure</td></tr>
-<tr><td>Sequential data</td><td>HMM, RNN</td><td>Temporal deps</td></tr>
+<tr><td>Sequential</td><td>HMM, RNN</td><td>Temporal deps</td></tr>
 <tr><td>General purpose</td><td>Random Forest</td><td>SOTA tabular data</td></tr>
 </table>
 </div><!-- col2 -->
 
-<!-- COL 3: FORMULA REFERENCE + B/V + METRICS + NORMALIZATION -->
+<!-- COL 3: FORMULA REFERENCE + B/V + METRICS -->
 <div class="gcol">
 <div style="background:#0a1f10;color:#86efac;padding:1.5mm 2mm;border-radius:3px 3px 0 0;font-size:7.5px;font-weight:800">⚡ Quick Reference Công Thức</div>
 <table class="tbl" style="font-size:5.4px;margin:0 0 1.5mm">
-<tr><th style="width:36%">Công thức</th><th style="width:20%">Ký hiệu</th><th style="width:44%">Lưu ý quan trọng</th></tr>
-<tr><td>Train Err(1)=0; Err(N)=1−max P(c)</td><td>KNN</td><td>K*≈√N; Test Err U-shape</td></tr>
-<tr><td>P(C|X)∝P(C)·Π P(xk|C)</td><td>Naive Bayes</td><td>Log-space; Laplace α=1</td></tr>
-<tr><td>WCSS=Σk Σ‖x−μk‖²; monotone↓</td><td>K-Means</td><td>Local min; K-Means++ seed</td></tr>
-<tr><td>σ(z)=1/(1+e⁻ᶻ); σ'(z)≤1/4</td><td>LR Sigmoid</td><td>Inverse of logit; max at z=0</td></tr>
-<tr><td>∂L_CE/∂z=ŷ−y; H=Σσ(1−σ)xxᵀ≽0</td><td>CE Grad+Convex</td><td>σ' cancels→no vanish; global min</td></tr>
-<tr><td>L2:N(0,1/λ)→w≠0; L1:Lap→sparse</td><td>Regularization</td><td>C=1/λ in SVM; sphere vs diamond</td></tr>
-<tr><td>Margin=2/‖w‖; dist=|f(x₀)|/‖w‖</td><td>SVM</td><td>SVs: αi&gt;0 (~5-20% data)</td></tr>
-<tr><td>K_RBF=exp(−γ‖x−x'‖²) [∞-dim]</td><td>RBF Kernel</td><td>γ↑:overfit; γ↓:underfit; PSD</td></tr>
-<tr><td>Hinge=max(0,1−m)=0 if m≥1</td><td>SVM Loss</td><td>Flat→sparse αi; vs CE always≠0</td></tr>
-<tr><td>IG=H(S)−Σ(|Sv|/|S|)H(Sv)</td><td>DT Info Gain</td><td>GainRatio=IG/SplitInfo→C4.5</td></tr>
-<tr><td>δ^l=(W^{l+1})ᵀδ^{l+1}⊙f'(z^l)</td><td>Backprop</td><td>ReLU f'={0,1}→no vanish</td></tr>
-<tr><td>αt=0.5ln((1−ε)/ε); Σαt·ht(x)</td><td>AdaBoost</td><td>εt&lt;0.5→αt&gt;0; reweight wi</td></tr>
-<tr><td>αt(j)=[Σαt-1(i)Aij]Bj(ot) [SUM]</td><td>HMM Forward</td><td>vs Viterbi: MAX→path Q*</td></tr>
+<tr><th style="width:36%">Công thức</th><th style="width:18%">Ký hiệu</th><th style="width:46%">Lưu ý</th></tr>
+<tr><td>Train Err(1)=0; Err(N)=\(1-\max P(c)\)</td><td>KNN</td><td>\(K^*\approx\sqrt{N}\); Test Err U-shape</td></tr>
+<tr><td>\(P(C|\mathbf{X})\propto P(C)\prod_k P(x_k|C)\)</td><td>Naive Bayes</td><td>Log-space; Laplace \(\alpha=1\)</td></tr>
+<tr><td>WCSS\(=\sum_k\sum\|\mathbf{x}-\boldsymbol{\mu}_k\|^2;\) monotone\(\downarrow\)</td><td>K-Means</td><td>Local min; K-Means++ seed</td></tr>
+<tr><td>\(\sigma(z)=\frac{1}{1+e^{-z}};\;\sigma'(z)\leq\frac{1}{4}\)</td><td>LR Sigmoid</td><td>Inverse of logit; max at \(z=0\)</td></tr>
+<tr><td>\(\partial\mathcal{L}_{CE}/\partial z=\hat{y}-y;\;\mathbf{H}\succeq 0\)</td><td>CE+Convex</td><td>\(\sigma'\) cancels; no vanish; global min</td></tr>
+<tr><td>L2:\(\mathcal{N}(0,\frac{1}{\lambda})\to\mathbf{w}\neq 0\); L1:Lap\(\to\)sparse</td><td>Regularization</td><td>\(C=1/\lambda\) in SVM</td></tr>
+<tr><td>Margin\(=\frac{2}{\|\mathbf{w}\|};\;\)dist\(=\frac{|f(\mathbf{x}_0)|}{\|\mathbf{w}\|}\)</td><td>SVM</td><td>SVs: \(\alpha_i>0\) (~5–20%)</td></tr>
+<tr><td>\(K_\text{RBF}=\exp(-\gamma\|\mathbf{x}-\mathbf{x}'\|^2)\)</td><td>RBF Kernel</td><td>\(\gamma\uparrow\):overfit; PSD Gram</td></tr>
+<tr><td>Hinge\(=\max(0,1-m)=0\) if \(m\geq 1\)</td><td>SVM Loss</td><td>Flat→sparse; CE always\(\neq 0\)</td></tr>
+<tr><td>\(\text{IG}=H(S)-\sum\frac{|S_v|}{|S|}H(S_v)\)</td><td>DT IG</td><td>GainRatio\(=\)IG/SplitInfo</td></tr>
+<tr><td>\(\boldsymbol{\delta}^l=(\mathbf{W}^{l+1})^\top\boldsymbol{\delta}^{l+1}\odot f'(\mathbf{z}^l)\)</td><td>Backprop</td><td>ReLU \(f'\in\{0,1\}\)</td></tr>
+<tr><td>\(\alpha_t=\frac{1}{2}\ln\frac{1-\varepsilon_t}{\varepsilon_t};\;\sum_t\alpha_t h_t(\mathbf{x})\)</td><td>AdaBoost</td><td>\(\varepsilon_t<0.5\Rightarrow\alpha_t>0\)</td></tr>
+<tr><td>\(\alpha_t(j)=[\sum_i\alpha_{t-1}(i)A_{ij}]B_j(o_t)\)</td><td>HMM Fwd [SUM]</td><td>vs Viterbi: MAX→\(Q^*\)</td></tr>
 </table>
 
 <div style="background:#0d9488;color:#fff;padding:1.2mm 2mm;border-radius:3px 3px 0 0;font-size:7px;font-weight:800">📐 Bias-Variance</div>
 <table class="tbl" style="font-size:5.5px;margin:0 0 1.5mm">
 <tr><th>Model</th><th>Bias</th><th>Var</th><th>Fix Bias</th><th>Fix Var</th></tr>
-<tr><td>KNN K=1</td><td>Low</td><td>High</td><td>—</td><td>Tăng K</td></tr>
-<tr><td>KNN K=N</td><td>High</td><td>Low</td><td>Giảm K</td><td>—</td></tr>
-<tr><td>SVM C lớn</td><td>Low</td><td>High</td><td>—</td><td>Giảm C</td></tr>
+<tr><td>KNN \(K=1\)</td><td>Low</td><td>High</td><td>—</td><td>\(\uparrow K\)</td></tr>
+<tr><td>KNN \(K=N\)</td><td>High</td><td>Low</td><td>\(\downarrow K\)</td><td>—</td></tr>
+<tr><td>SVM C lớn</td><td>Low</td><td>High</td><td>—</td><td>\(\downarrow C\)</td></tr>
 <tr><td>Deep DT</td><td>Low</td><td>High</td><td>—</td><td>Prune</td></tr>
-<tr><td>RF</td><td>Low</td><td>Med</td><td>—</td><td>↑n_trees</td></tr>
+<tr><td>RF</td><td>Low</td><td>Med</td><td>—</td><td>\(\uparrow\) n_trees</td></tr>
 </table>
 
 <div style="background:#6d28d9;color:#fff;padding:1.2mm 2mm;border-radius:3px 3px 0 0;font-size:7px;font-weight:800">📊 Metrics + Chuẩn hóa</div>
 <table class="tbl" style="font-size:5.5px;margin:0">
-<tr><th>Metric/Norm</th><th>Công thức</th><th>Dùng khi / Ghi chú</th></tr>
-<tr><td>Accuracy</td><td>(TP+TN)/N</td><td>Balanced classes</td></tr>
-<tr><td>Precision</td><td>TP/(TP+FP)</td><td>FP costly (spam)</td></tr>
-<tr><td>Recall</td><td>TP/(TP+FN)</td><td>FN costly (cancer)</td></tr>
-<tr><td>F1</td><td>2PR/(P+R)</td><td>Imbalanced</td></tr>
+<tr><th>Metric/Norm</th><th>Công thức</th><th>Dùng khi</th></tr>
+<tr><td>Accuracy</td><td>\(\frac{TP+TN}{N}\)</td><td>Balanced classes</td></tr>
+<tr><td>Precision</td><td>\(\frac{TP}{TP+FP}\)</td><td>FP costly (spam)</td></tr>
+<tr><td>Recall</td><td>\(\frac{TP}{TP+FN}\)</td><td>FN costly (cancer)</td></tr>
+<tr><td>\(F_1\)</td><td>\(\frac{2PR}{P+R}\)</td><td>Imbalanced</td></tr>
 <tr><td>AUC-ROC</td><td>Area under curve</td><td>Ranking quality</td></tr>
-<tr><td style="color:#15803d"><b>Cần normalize</b></td><td>KNN,SVM,LR,NN</td><td>Distance/margin phụ thuộc scale</td></tr>
-<tr><td style="color:#b91c1c"><b>Không cần</b></td><td>DT, RF, NB</td><td>Split thứ tự / P(xk|c) độc lập</td></tr>
+<tr><td style="color:#15803d"><b>Cần normalize</b></td><td>KNN, SVM, LR, NN</td><td>Distance/margin phụ thuộc scale</td></tr>
+<tr><td style="color:#b91c1c"><b>Không cần</b></td><td>DT, RF, NB</td><td>Split thứ tự / \(P(x_k|c)\) độc lập</td></tr>
 </table>
 </div><!-- col3 -->
 
