@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lý thuyết Nâng Cao | MLA HK252</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']], processEscapes: true, tags: 'ams' },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:0;left:0;width:258px;height:100vh;background:#0a1f10;overflow-y:auto;z-index:100;flex-shrink:0}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:#2d6a4f;border-radius:2px}
+.sb-title{padding:1.25rem 1rem .75rem;border-bottom:1px solid #1a3a20}
+.sb-title h1{color:#86efac;font-size:.95rem;font-weight:700;line-height:1.4}
+.sb-title p{color:#6ee7b7;font-size:.7rem;margin-top:.2rem}
+.sb-group{padding:.6rem 1rem .15rem;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#4ade80}
+.sb-link{display:flex;align-items:center;gap:.45rem;padding:.35rem 1rem;color:#bbf7d0;font-size:.8rem;text-decoration:none;border-left:3px solid transparent;transition:all .15s}
+.sb-link:hover{background:rgba(74,222,128,.1);border-left-color:#4ade80;color:#fff}
+.sb-link i{width:14px;font-size:.7rem;color:#4ade80;flex-shrink:0}
+
+/* MAIN */
+#main{margin-left:258px;min-height:100vh;padding:2rem 2.5rem;max-width:calc(100% - 258px)}
+
+/* HEADERS */
+.ch-hdr{color:#fff;padding:1.75rem 2rem;border-radius:10px;margin-bottom:1.5rem;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.ch-hdr .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;opacity:.8}
+.ch-hdr h2{font-size:1.75rem;font-weight:800;margin:.2rem 0 .4rem}
+.ch-hdr p{font-size:.9rem;opacity:.85}
+.hdr-slate{background:linear-gradient(135deg,#1e293b,#334155)}
+.hdr-violet{background:linear-gradient(135deg,#2d1b69,#5b21b6)}
+.hdr-teal{background:linear-gradient(135deg,#134e4a,#0d9488)}
+.hdr-rose{background:linear-gradient(135deg,#881337,#be185d)}
+
+/* TABS */
+.tab-bar{display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.tab-btn{padding:.6rem 1.25rem;border-radius:8px 8px 0 0;font-size:.82rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;border-bottom:3px solid transparent}
+.tab-btn.active{background:#fff;color:#1e293b;border-color:#475569;box-shadow:0 -2px 8px rgba(0,0,0,.1)}
+.tab-btn:not(.active){background:#e2e8f0;color:#475569}
+.tab-btn:not(.active):hover{background:#cbd5e1}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* SECTION */
+.s-title{font-size:1.15rem;font-weight:700;color:#1e293b;border-left:4px solid #475569;padding-left:.7rem;margin:2rem 0 .9rem}
+.ss-title{font-size:1rem;font-weight:700;color:#334155;margin:1.4rem 0 .5rem;display:flex;align-items:center;gap:.5rem}
+.ss-title::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:#64748b;flex-shrink:0}
+
+/* ALERTS */
+.alert{border-radius:0 8px 8px 0;padding:.85rem 1.1rem;margin:.85rem 0;font-size:.875rem;line-height:1.65}
+.alert-title{font-weight:700;margin-bottom:.3rem;font-size:.85rem}
+.al-blue{background:#eff6ff;border-left:4px solid #3b82f6}
+.al-blue .alert-title{color:#1d4ed8}
+.al-green{background:#f0fdf4;border-left:4px solid #22c55e}
+.al-green .alert-title{color:#15803d}
+.al-yellow{background:#fffbeb;border-left:4px solid #f59e0b}
+.al-yellow .alert-title{color:#b45309}
+.al-red{background:#fef2f2;border-left:4px solid #ef4444}
+.al-red .alert-title{color:#b91c1c}
+.al-purple{background:#faf5ff;border-left:4px solid #8b5cf6}
+.al-purple .alert-title{color:#6d28d9}
+.al-teal{background:#f0fdfa;border-left:4px solid #14b8a6}
+.al-teal .alert-title{color:#0f766e}
+.al-slate{background:#f8fafc;border-left:4px solid #64748b}
+.al-slate .alert-title{color:#334155}
+
+/* FORMULA */
+.flabel{display:inline-block;background:#1e293b;color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .65rem;border-radius:6px 6px 0 0;margin-bottom:-1px}
+.fbox{background:#f8fafc;border:1px solid #cbd5e1;border-top:3px solid #334155;border-radius:0 8px 8px 8px;padding:1.1rem 1.5rem;margin:.25rem 0 .85rem;overflow-x:auto}
+.fbox.center{text-align:center}
+.fbox.violet{border-top-color:#7c3aed}
+.fbox.teal{border-top-color:#0d9488}
+.fbox.rose{border-top-color:#be185d}
+
+/* DETAILS */
+details{border:1px solid #e2e8f0;border-radius:8px;margin:.75rem 0;overflow:hidden}
+details>summary{padding:.65rem 1.1rem;cursor:pointer;font-weight:600;font-size:.875rem;background:#f1f5f9;list-style:none;display:flex;align-items:center;gap:.45rem;user-select:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:'▶';font-size:.65rem;color:#64748b;transition:transform .2s}
+details[open]>summary::before{transform:rotate(90deg)}
+details[open]>summary{background:#e2e8f0}
+.dc{padding:1.1rem;font-size:.875rem;line-height:1.7}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.85rem}
+.tbl th{background:#1e293b;color:#fff;padding:.5rem .85rem;text-align:left}
+.tbl td{padding:.5rem .85rem;border:1px solid #e2e8f0;vertical-align:top}
+.tbl tr:nth-child(even) td{background:#f8fafc}
+.tbl .ok{color:#15803d;font-weight:600}
+.tbl .bad{color:#b91c1c;font-weight:600}
+
+/* STEPS */
+.step{display:flex;gap:.85rem;margin:.55rem 0}
+.step-n{background:#1e293b;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0;margin-top:.2rem}
+.step-c{flex:1;font-size:.875rem;line-height:1.65}
+
+/* COMPARE CARDS */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0}
+.cmp-card{border-radius:8px;padding:1rem;font-size:.85rem;line-height:1.65}
+.cmp-card h4{font-size:.9rem;font-weight:700;margin-bottom:.5rem}
+.cc-blue{background:#eff6ff;border:1px solid #bfdbfe}
+.cc-blue h4{color:#1d4ed8}
+.cc-green{background:#f0fdf4;border:1px solid #bbf7d0}
+.cc-green h4{color:#15803d}
+.cc-purple{background:#faf5ff;border:1px solid #ddd6fe}
+.cc-purple h4{color:#6d28d9}
+.cc-rose{background:#fff1f2;border:1px solid #fecdd3}
+.cc-rose h4{color:#be185d}
+.cc-teal{background:#f0fdfa;border:1px solid #99f6e4}
+.cc-teal h4{color:#0f766e}
+.cc-amber{background:#fffbeb;border:1px solid #fed7aa}
+.cc-amber h4{color:#b45309}
+
+/* HIGHLIGHT */
+.hl{background:#fef3c7;border-radius:3px;padding:0 .2rem}
+.tag{display:inline-block;padding:.1rem .5rem;border-radius:999px;font-size:.72rem;font-weight:700;margin:.1rem}
+.tag-blue{background:#dbeafe;color:#1d4ed8}
+.tag-green{background:#dcfce7;color:#15803d}
+.tag-red{background:#fee2e2;color:#b91c1c}
+.tag-purple{background:#ede9fe;color:#6d28d9}
+
+/* EQUATION BOX (named) */
+.eq-name{font-size:.72rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem}
+
+.divider{border:none;border-top:1px solid #e2e8f0;margin:2rem 0}
+#back-top{position:fixed;bottom:1.5rem;right:1.5rem;background:#1e293b;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.2);font-size:.85rem}
+p{font-size:.9rem;line-height:1.7;margin:.5rem 0}
+li{font-size:.875rem;line-height:1.7}
+ul,ol{padding-left:1.4rem;margin:.4rem 0}
+strong{color:#0f172a}
+code{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:.1rem .35rem;font-size:.82rem;font-family:'Courier New',monospace}
+@media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+</style>
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sb-title">
+    <h1><i class="fas fa-brain"></i> Học Máy &amp; Ứng Dụng</h1>
+    <p>Ôn thi Cuối Kỳ — HK252 | CO5175</p>
+  </div>
+  <div class="sb-group">Trang chủ</div>
+  <a href="index.html" class="sb-link"><i class="fas fa-home"></i>Tổng quan các chương</a>
+  <div class="sb-group">Phân loại có giám sát</div>
+  <a href="knn.html" class="sb-link"><i class="fas fa-map-marker-alt"></i>Ch.3 — K-Nearest Neighbors</a>
+  <a href="bayes.html" class="sb-link"><i class="fas fa-calculator"></i>Ch.4 — Naive Bayes</a>
+  <a href="dtree.html" class="sb-link"><i class="fas fa-tree"></i>Ch.5 — Decision Trees</a>
+  <a href="nn.html" class="sb-link"><i class="fas fa-network-wired"></i>Ch.7 — Neural Networks</a>
+  <a href="svm.html" class="sb-link"><i class="fas fa-compress-arrows-alt"></i>Ch.8 — Support Vector Machines</a>
+  <a href="ensemble.html" class="sb-link"><i class="fas fa-layer-group"></i>Ch.9 — Ensemble Methods</a>
+  <a href="deep.html" class="sb-link"><i class="fas fa-microchip"></i>Ch.12 — Deep Learning</a>
+  <div class="sb-group">Chuyên đề ôn thi</div>
+  <a href="hmm.html" class="sb-link"><i class="fas fa-random"></i>Hidden Markov Models</a>
+  <a href="kmeans.html" class="sb-link"><i class="fas fa-object-group"></i>K-Means Clustering</a>
+  <a href="logreg.html" class="sb-link"><i class="fas fa-chart-line"></i>Logistic Regression</a>
+  <div class="sb-group">Tổng hợp</div>
+  <a href="cheatsheet.html" class="sb-link"><i class="fas fa-print"></i>Cheat Sheet — 4 trang A4</a>
+  <a href="theory.html" class="sb-link" style="background:rgba(74,222,128,.15);border-left-color:#4ade80;color:#fff"><i class="fas fa-infinity"></i>Lý thuyết Nâng Cao</a>
+  <div class="sb-group">Thi thử</div>
+  <a href="mock.html" class="sb-link"><i class="fas fa-file-alt"></i>Đề Thi Thử 2026</a>
+  <a href="practice.html" class="sb-link"><i class="fas fa-flask"></i>Đề Nâng Cao (Giáo sư)</a>
+  <a href="exam2025.html" class="sb-link"><i class="fas fa-graduation-cap"></i>Đề CK Thật 2025</a>
+</nav>
+
+<main id="main">
+
+<div class="ch-hdr hdr-slate">
+  <div class="lbl"><i class="fas fa-infinity"></i> Lý thuyết Nâng Cao — Sau Đại Học</div>
+  <h2>Theory Deep Dive</h2>
+  <p>PAC Learning · VC Dimension · EM · Information Theory · Ensemble · Production ML</p>
+</div>
+
+<div class="alert al-slate">
+  <div class="alert-title"><i class="fas fa-map"></i> Cấu trúc trang</div>
+  <p>Bốn tab độc lập — mỗi tab là một chủ đề lý thuyết quan trọng vượt ra ngoài giáo trình chuẩn đại học. Mỗi chủ đề bao gồm trực giác, công thức chính xác, và ví dụ minh hoạ.</p>
+</div>
+
+<!-- TABS -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('t1',this)"><i class="fas fa-graduation-cap"></i> Lý thuyết Học Máy</button>
+  <button class="tab-btn" onclick="switchTab('t2',this)"><i class="fas fa-wave-square"></i> Lý thuyết Thông tin</button>
+  <button class="tab-btn" onclick="switchTab('t3',this)"><i class="fas fa-layer-group"></i> Ensemble Nâng Cao</button>
+  <button class="tab-btn" onclick="switchTab('t4',this)"><i class="fas fa-industry"></i> ML Production</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 1: LÝ THUYẾT HỌC MÁY -->
+<!-- ============================================================ -->
+<div id="t1" class="tab-content active">
+
+<div class="ch-hdr hdr-violet" style="margin-bottom:1.2rem">
+  <div class="lbl">Tab 1</div>
+  <h2 style="font-size:1.3rem">Lý thuyết Học Máy — PAC · VC · Bias-Variance · MAP · EM</h2>
+</div>
+
+<!-- ===== PAC LEARNING ===== -->
+<div class="s-title">1. PAC Learning &amp; Sample Complexity</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-lightbulb"></i> PAC = Probably Approximately Correct (Valiant, 1984)</div>
+  <p>Framework toán học đặt câu hỏi: <strong>cần bao nhiêu dữ liệu</strong> để học một concept class với độ tin cậy nhất định? PAC learning là nền tảng lý thuyết của toàn bộ supervised learning.</p>
+</div>
+
+<div class="ss-title">Định nghĩa chính thức</div>
+<p>Cho concept class \(\mathcal{C}\) và hypothesis class \(\mathcal{H}\). Thuật toán \(A\) là \((\varepsilon,\delta)\)-PAC learner nếu với mọi concept \(c\in\mathcal{C}\), mọi distribution \(\mathcal{D}\) trên \(\mathcal{X}\), với xác suất \(\geq 1-\delta\) (over random draw of training set):</p>
+<div class="fbox center violet">
+  \[\Pr_{S\sim\mathcal{D}^n}\!\left[L_{\mathcal{D}}(h_S)\leq\varepsilon\right]\;\geq\;1-\delta\]
+</div>
+<p>Trong đó \(L_{\mathcal{D}}(h)\) là true error (generalization error) của hypothesis \(h\) trả về bởi thuật toán khi cho training set \(S\).</p>
+
+<div class="cmp">
+<div class="cmp-card cc-blue">
+<h4>\(\varepsilon\) — Accuracy parameter</h4>
+<p>True error phải nhỏ hơn \(\varepsilon\). \(\varepsilon=0.05\) nghĩa là sai ít hơn 5% trên unseen data. Càng nhỏ → càng cần nhiều data.</p>
+</div>
+<div class="cmp-card cc-purple">
+<h4>\(\delta\) — Confidence parameter</h4>
+<p>Xác suất thất bại phải nhỏ hơn \(\delta\). \(\delta=0.01\) nghĩa là 99% lần sampling đều cho kết quả tốt. Càng nhỏ → càng cần nhiều data.</p>
+</div>
+</div>
+
+<div class="ss-title">Sample Complexity Theorem</div>
+<div class="alert al-green">
+  <div class="alert-title"><i class="fas fa-calculator"></i> Định lý cơ bản</div>
+  <p>Với finite hypothesis class \(|\mathcal{H}|&lt;\infty\), số samples \(n\) đủ để PAC learn là:</p>
+</div>
+<div class="fbox center violet">
+  \[n \;\geq\; \frac{1}{\varepsilon}\left(\ln|\mathcal{H}|+\ln\frac{1}{\delta}\right)\]
+</div>
+
+<details>
+<summary><i class="fas fa-flask"></i> Chứng minh (Union Bound)</summary>
+<div class="dc">
+<p>Gọi \(\mathcal{H}_{\text{bad}}=\{h\in\mathcal{H}:L_\mathcal{D}(h)>\varepsilon\}\) là tập hypotheses xấu. Ta cần bound xác suất thuật toán chọn \(h\in\mathcal{H}_{\text{bad}}\).</p>
+<p>Với \(h\in\mathcal{H}_{\text{bad}}\), xác suất nó không bị "phát hiện" trên sample \(S\) (tức là \(L_S(h)=0\)):</p>
+\[\Pr_S[L_S(h)=0\mid L_\mathcal{D}(h)>\varepsilon]\;\leq\;(1-\varepsilon)^n\;\leq\;e^{-\varepsilon n}\]
+<p>Union bound qua tất cả \(h\in\mathcal{H}_{\text{bad}}\):</p>
+\[\Pr_S[\exists h\in\mathcal{H}_{\text{bad}}: L_S(h)=0]\;\leq\;|\mathcal{H}|\cdot e^{-\varepsilon n}\]
+<p>Đặt vế phải \(\leq\delta\) → \(|\mathcal{H}|\cdot e^{-\varepsilon n}\leq\delta\) → giải ra \(n\):</p>
+\[n\geq\frac{\ln|\mathcal{H}|+\ln(1/\delta)}{\varepsilon}\quad\square\]
+</div>
+</details>
+
+<div class="ss-title">VC Dimension &amp; Agnostic PAC</div>
+<p>Với infinite hypothesis class, dùng VC dimension \(d_{VC}\):</p>
+<div class="fbox center violet">
+  \[n = O\!\left(\frac{d_{VC}+\ln(1/\delta)}{\varepsilon}\right)\quad\text{(realizability)}\qquad n = O\!\left(\frac{d_{VC}+\ln(1/\delta)}{\varepsilon^2}\right)\quad\text{(agnostic)}\]
+</div>
+<div class="alert al-yellow">
+  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> Realizability vs Agnostic</div>
+  <ul>
+    <li><strong>Realizability</strong>: giả sử \(c\in\mathcal{H}\) (true concept nằm trong hypothesis class) → \(1/\varepsilon\)</li>
+    <li><strong>Agnostic</strong>: không giả sử → phải bound excess risk → \(1/\varepsilon^2\) (harder)</li>
+  </ul>
+</div>
+
+<!-- ===== VC DIMENSION ===== -->
+<div class="s-title">2. VC Dimension</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-expand-arrows-alt"></i> VC Dimension = Vapnik–Chervonenkis Dimension</div>
+  <p><strong>Định nghĩa:</strong> \(d_{VC}(\mathcal{H})\) = cardinality của tập điểm lớn nhất mà \(\mathcal{H}\) có thể <em>shatter</em> (phân loại theo mọi cách có thể).</p>
+</div>
+
+<div class="ss-title">Shattering là gì?</div>
+<p>Tập \(C=\{x_1,\ldots,x_m\}\) được <strong>shattered</strong> bởi \(\mathcal{H}\) nếu với mọi labeling \((y_1,\ldots,y_m)\in\{0,1\}^m\), tồn tại \(h\in\mathcal{H}\) sao cho \(h(x_i)=y_i\) với mọi \(i\).</p>
+
+<div class="cmp">
+<div class="cmp-card cc-green">
+<h4>Linear classifiers trong \(\mathbb{R}^2\)</h4>
+<p>Có thể shatter 3 điểm không thẳng hàng (mọi \(2^3=8\) labeling). Không thể shatter 4 điểm bất kỳ (XOR). → \(d_{VC}=3=2+1\).</p>
+</div>
+<div class="cmp-card cc-blue">
+<h4>Linear classifiers trong \(\mathbb{R}^d\)</h4>
+<p>\(d_{VC}=d+1\). Có thể shatter \(d+1\) điểm ở general position. Không thể shatter \(d+2\) điểm bất kỳ (Radon's theorem).</p>
+</div>
+</div>
+
+<table class="tbl" style="margin:.75rem 0">
+<tr><th>Hypothesis Class</th><th>VC Dimension</th><th>Ghi chú</th></tr>
+<tr><td>Threshold functions \(\mathbb{R}\to\{0,1\}\)</td><td>1</td><td>shatter 1 point, không thể shatter 2</td></tr>
+<tr><td>Intervals \([a,b]\) trong \(\mathbb{R}\)</td><td>2</td><td>shatter 2 points, không thể shatter 3</td></tr>
+<tr><td>Linear (hyperplanes) trong \(\mathbb{R}^d\)</td><td>\(d+1\)</td><td>Radon's theorem</td></tr>
+<tr><td>Convex polygons với \(k\) cạnh</td><td>\(2k+1\)</td><td>—</td></tr>
+<tr><td>Sine functions \(\sin(\omega x)\)</td><td>\(\infty\)</td><td>infinitely expressive</td></tr>
+<tr><td>1-NN classifier</td><td>\(\infty\)</td><td>nhưng vẫn consistent learnable</td></tr>
+</table>
+
+<div class="alert al-purple">
+  <div class="alert-title"><i class="fas fa-chart-line"></i> Fundamental Theorem of Statistical Learning</div>
+  <p>Các điều sau đây là tương đương: (1) \(\mathcal{H}\) là PAC learnable; (2) \(\mathcal{H}\) có uniform convergence property; (3) \(d_{VC}(\mathcal{H})&lt;\infty\).</p>
+  <p>Tức là: <strong>infinite VC dimension = NOT PAC learnable</strong> (trong agnostic setting).</p>
+</div>
+
+<!-- ===== BIAS-VARIANCE ===== -->
+<div class="s-title">3. Bias-Variance Decomposition</div>
+
+<div class="ss-title">Công thức phân rã</div>
+<p>Với regression (target \(y=f^*(\mathbf{x})+\varepsilon\), \(\varepsilon\sim(0,\sigma^2)\)) và estimator \(\hat{f}\) trained trên dataset \(D\):</p>
+<div class="fbox center teal">
+  \[\mathbb{E}_{D,\varepsilon}\!\left[(y-\hat{f}(\mathbf{x}))^2\right] = \underbrace{\left(f^*(\mathbf{x})-\mathbb{E}_D[\hat{f}(\mathbf{x})]\right)^2}_{\text{Bias}^2} + \underbrace{\mathbb{E}_D\!\left[(\hat{f}(\mathbf{x})-\mathbb{E}_D[\hat{f}(\mathbf{x})])^2\right]}_{\text{Variance}} + \underbrace{\sigma^2}_{\text{Irreducible Noise}}\]
+</div>
+
+<div class="cmp" style="grid-template-columns:1fr 1fr 1fr">
+<div class="cmp-card cc-blue">
+<h4>Bias²</h4>
+<p>Error do sai lệch hệ thống: model không đủ flexible để capture true function. <em>Giảm bằng</em>: tăng complexity, bỏ regularization.</p>
+</div>
+<div class="cmp-card cc-purple">
+<h4>Variance</h4>
+<p>Error do nhạy cảm với training data cụ thể. <em>Giảm bằng</em>: regularization, bagging, more data.</p>
+</div>
+<div class="cmp-card cc-rose">
+<h4>Irreducible</h4>
+<p>Noise vốn có của data. <strong>Không thể giảm</strong> dù model perfect — là Bayes error.</p>
+</div>
+</div>
+
+<details>
+<summary><i class="fas fa-flask"></i> Chứng minh phân rã</summary>
+<div class="dc">
+<p>Ký hiệu \(\bar{f}=\mathbb{E}_D[\hat{f}(\mathbf{x})]\). Khai triển:</p>
+\begin{align}
+\mathbb{E}[(y-\hat{f})^2]&=\mathbb{E}[(y-f^*+f^*-\bar{f}+\bar{f}-\hat{f})^2]\\
+&=\mathbb{E}[(y-f^*)^2]+\mathbb{E}[(f^*-\bar{f})^2]+\mathbb{E}[(\bar{f}-\hat{f})^2]\\
+&\quad+2\mathbb{E}[(y-f^*)(f^*-\bar{f})]+2\mathbb{E}[(y-f^*)(\bar{f}-\hat{f})]+2\mathbb{E}[(f^*-\bar{f})(\bar{f}-\hat{f})]
+\end{align}
+<p>Các cross terms triệt tiêu: \(\mathbb{E}[\varepsilon]=0\), \(\varepsilon\perp\hat{f}\), \(\bar{f}-\hat{f}\) zero mean. Kết quả:</p>
+\[\mathbb{E}[(y-\hat{f})^2]=\underbrace{\sigma^2}_{\text{noise}}+\underbrace{(f^*-\bar{f})^2}_{\text{Bias}^2}+\underbrace{\mathbb{E}[(\hat{f}-\bar{f})^2]}_{\text{Variance}}\quad\square\]
+</div>
+</details>
+
+<div class="ss-title">Ví dụ: Polynomial Regression</div>
+<table class="tbl">
+<tr><th>Bậc đa thức</th><th>Bias</th><th>Variance</th><th>Tình trạng</th></tr>
+<tr><td>1 (linear)</td><td class="bad">Cao</td><td class="ok">Thấp</td><td>Underfit (nếu true \(f^*\) nonlinear)</td></tr>
+<tr><td>d* (đúng bậc)</td><td class="ok">Thấp</td><td class="ok">Thấp</td><td>Optimal</td></tr>
+<tr><td>n-1 (interpolate)</td><td class="ok">≈0</td><td class="bad">Cao</td><td>Overfit</td></tr>
+</table>
+
+<!-- ===== MAP ===== -->
+<div class="s-title">4. L2 Regularization ↔ Gaussian Prior (MAP)</div>
+
+<div class="ss-title">Khung Bayesian</div>
+<p>Thay vì MLE \(\hat{\mathbf{w}}_{MLE}=\arg\max_\mathbf{w} P(\mathcal{D}|\mathbf{w})\), MAP estimation thêm prior:</p>
+<div class="fbox center teal">
+  \[\hat{\mathbf{w}}_{MAP}=\arg\max_\mathbf{w}\,P(\mathbf{w}|\mathcal{D})\;=\;\arg\max_\mathbf{w}\,\underbrace{\log P(\mathcal{D}|\mathbf{w})}_{\text{log-likelihood}}+\underbrace{\log P(\mathbf{w})}_{\text{log-prior}}\]
+</div>
+
+<div class="cmp">
+<div class="cmp-card cc-blue">
+<h4>Gaussian Prior → L2 Regularization</h4>
+<p>\(P(\mathbf{w})=\mathcal{N}(\mathbf{0},\sigma_w^2\mathbf{I})\)</p>
+<p>\(\log P(\mathbf{w})=-\dfrac{1}{2\sigma_w^2}\|\mathbf{w}\|^2+C\)</p>
+<p><strong>MAP</strong> = MLE \(-\dfrac{\lambda}{2}\|\mathbf{w}\|^2\) với \(\lambda=\dfrac{\sigma_\varepsilon^2}{\sigma_w^2}\)</p>
+<span class="tag tag-blue">L2 / Ridge Regression</span>
+</div>
+<div class="cmp-card cc-purple">
+<h4>Laplace Prior → L1 Regularization</h4>
+<p>\(P(w_j)\propto\exp(-\lambda|w_j|)\)</p>
+<p>\(\log P(\mathbf{w})=-\lambda\|\mathbf{w}\|_1+C\)</p>
+<p><strong>MAP</strong> = MLE \(-\lambda\|\mathbf{w}\|_1\) → sparse solutions</p>
+<span class="tag tag-purple">L1 / Lasso</span>
+</div>
+</div>
+
+<div class="alert al-green">
+  <div class="alert-title"><i class="fas fa-key"></i> Insight quan trọng</div>
+  <p><strong>Regularization strength</strong> \(\lambda\) = ratio variance noise / variance prior. Khi \(\sigma_w^2\to\infty\) (vague prior) → \(\lambda\to 0\) → MAP = MLE. Khi có nhiều data → likelihood dominates → prior matters less. Prior = inductive bias về what weights look like.</p>
+</div>
+
+<div class="ss-title">Hình học của L1 vs L2</div>
+<p>Tối ưu hóa \(\mathcal{L}(\mathbf{w})+\Omega(\mathbf{w})\) = tìm điểm level set của loss "chạm" vào constraint set của penalty:</p>
+<ul>
+  <li><strong>L2</strong>: constraint set là hình cầu (ball) — mọi hướng như nhau → solution thường off-axis (nonzero weights)</li>
+  <li><strong>L1</strong>: constraint set là hình thoi (diamond) — góc nhọn tại trục tọa độ → level set của loss thường chạm góc → solution với \(w_j=0\) chính xác → <strong>sparse</strong></li>
+</ul>
+
+<!-- ===== EM ALGORITHM ===== -->
+<div class="s-title">5. EM Algorithm — Chứng minh qua Jensen's Inequality</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-sync-alt"></i> EM = Expectation-Maximization (Dempster et al., 1977)</div>
+  <p>Bài toán: tối đa hoá <strong>incomplete-data log-likelihood</strong> \(\log P(X|\theta)\) khi data có latent variables \(Z\).</p>
+</div>
+
+<div class="ss-title">Vấn đề: log-likelihood khó tối ưu trực tiếp</div>
+<div class="fbox center">
+  \[\log P(X|\theta)=\log\sum_Z P(X,Z|\theta)\]
+</div>
+<p>Log của sum không có closed-form gradient thuận tiện với mọi model. EM giải quyết bằng cách tạo lower bound và tối ưu lower bound đó.</p>
+
+<div class="ss-title">ELBO và Jensen's Inequality</div>
+<p>Với bất kỳ distribution \(q(Z)\) nào trên latent variables:</p>
+<div class="fbox center teal">
+\begin{align}
+\log P(X|\theta)&=\log\sum_Z P(X,Z|\theta)\\
+&=\log\sum_Z q(Z)\frac{P(X,Z|\theta)}{q(Z)}\\
+&\geq\sum_Z q(Z)\log\frac{P(X,Z|\theta)}{q(Z)}\quad\leftarrow\text{Jensen's inequality (log concave)}\\
+&=\underbrace{\mathbb{E}_{q}\!\left[\log P(X,Z|\theta)\right]-\mathbb{E}_q[\log q(Z)]}_{\mathcal{L}(q,\theta)\;=\;\text{ELBO}}
+\end{align}
+</div>
+
+<div class="alert al-green">
+  <div class="alert-title"><i class="fas fa-equals"></i> Khi nào bound tight?</div>
+  <p>ELBO = \(\log P(X|\theta)\) khi \(\text{KL}(q||P(Z|X,\theta))=0\) ↔ \(q(Z)=P(Z|X,\theta)\). Đây chính là E-step!</p>
+</div>
+
+<div class="ss-title">Thuật toán EM — 2 bước</div>
+<div class="step"><div class="step-n">E</div><div class="step-c"><strong>E-step</strong>: Fix \(\theta^{(t)}\), tính \(q(Z)=P(Z|X,\theta^{(t)})\) (posterior của latent variables). Bound trở thành tight: ELBO \(=\log P(X|\theta^{(t)})\).</div></div>
+<div class="step"><div class="step-n">M</div><div class="step-c"><strong>M-step</strong>: Fix \(q\), tối ưu \(\theta^{(t+1)}=\arg\max_\theta\mathcal{L}(q,\theta)=\arg\max_\theta\mathbb{E}_q[\log P(X,Z|\theta)]\). ELBO tăng → \(\log P(X|\theta)\) tăng.</div></div>
+
+<div class="ss-title">Chứng minh monotone increase</div>
+<div class="fbox">
+  \[\log P(X|\theta^{(t+1)})\;\geq\;\mathcal{L}(q^{(t)},\theta^{(t+1)})\;\geq\;\mathcal{L}(q^{(t)},\theta^{(t)})\;=\;\log P(X|\theta^{(t)})\]
+  <p style="font-size:.8rem;margin-top:.5rem;color:#64748b">Bất đẳng thức 1: ELBO là lower bound. Bất đẳng thức 2: M-step tối ưu ELBO. Đẳng thức: E-step make bound tight.</p>
+</div>
+
+<table class="tbl">
+<tr><th>Thuật toán</th><th>Model</th><th>E-step</th><th>M-step</th></tr>
+<tr><td><strong>GMM-EM</strong></td><td>Gaussian Mixture</td><td>Tính soft assignment \(\gamma_{ik}\)</td><td>Cập nhật \(\pi_k,\mu_k,\Sigma_k\)</td></tr>
+<tr><td><strong>Baum-Welch</strong></td><td>HMM</td><td>Forward-Backward (tính \(\xi,\gamma\))</td><td>Cập nhật \(A,B,\pi\)</td></tr>
+<tr><td><strong>K-Means</strong></td><td>Spherical GMM + hard</td><td>Assign mỗi point vào cluster (hard)</td><td>Tính centroid mới</td></tr>
+<tr><td><strong>PLSA</strong></td><td>Topic models</td><td>Tính topic posterior per word</td><td>Cập nhật word/doc-topic distributions</td></tr>
+</table>
+
+</div><!-- /t1 -->
+
+<!-- ============================================================ -->
+<!-- TAB 2: LÝ THUYẾT THÔNG TIN -->
+<!-- ============================================================ -->
+<div id="t2" class="tab-content">
+
+<div class="ch-hdr hdr-teal" style="margin-bottom:1.2rem">
+  <div class="lbl">Tab 2</div>
+  <h2 style="font-size:1.3rem">Lý thuyết Thông tin — KL Divergence · Mutual Information · Cross-Entropy</h2>
+</div>
+
+<!-- ===== KL DIVERGENCE ===== -->
+<div class="s-title">1. KL Divergence — Asymmetry &amp; Hệ quả</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-compress-arrows-alt"></i> Định nghĩa</div>
+  <p>KL Divergence (Kullback-Leibler) đo "sự khác biệt" từ distribution \(P\) đến \(Q\):</p>
+</div>
+<div class="fbox center teal">
+  \[\text{KL}(P\|Q)=\sum_x P(x)\log\frac{P(x)}{Q(x)}=\mathbb{E}_{x\sim P}\!\left[\log\frac{P(x)}{Q(x)}\right]\geq 0\]
+</div>
+
+<div class="ss-title">Tính chất quan trọng</div>
+<ul>
+  <li>\(\text{KL}(P\|Q)\geq 0\) (bằng 0 khi và chỉ khi \(P=Q\)) — từ <em>Jensen's inequality</em> với hàm \(-\log\) convex</li>
+  <li><strong>Asymmetric</strong>: \(\text{KL}(P\|Q)\neq\text{KL}(Q\|P)\) nói chung</li>
+  <li>Không phải metric (không thỏa tam giác bất đẳng thức)</li>
+  <li>Nếu \(Q(x)=0\) nhưng \(P(x)>0\) → \(\text{KL}(P\|Q)=\infty\)</li>
+</ul>
+
+<div class="ss-title">Forward KL vs Reverse KL — Mode Behavior</div>
+<div class="cmp">
+<div class="cmp-card cc-blue">
+<h4>\(\min_Q \text{KL}(P\|Q)\) — Forward / "Inclusive"</h4>
+<p>Q phải cover <em>tất cả nơi</em> P có mass. Nếu \(P(x)>0\) nhưng \(Q(x)=0\) → \(\infty\) penalty → Q bị buộc phải có mass ở khắp nơi P có mass.</p>
+<p><strong>Hệ quả</strong>: Q thường <em>over-dispersed</em>, covering nhiều modes của P dù P multimodal.</p>
+<span class="tag tag-blue">Mode-covering / Zero-avoiding</span>
+</div>
+<div class="cmp-card cc-purple">
+<h4>\(\min_Q \text{KL}(Q\|P)\) — Reverse / "Exclusive"</h4>
+<p>Q bị phạt nặng nếu đặt mass ở nơi P nhỏ. Nếu \(P(x)\approx 0\) → Q phải tránh \(x\) đó. Q tập trung vào regions P lớn.</p>
+<p><strong>Hệ quả</strong>: Q thường <em>mode-seeking</em> — collapse vào một mode của P dù P multimodal.</p>
+<span class="tag tag-purple">Mode-seeking / Zero-forcing</span>
+</div>
+</div>
+
+<div class="alert al-yellow">
+  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> Hệ quả với Variational Inference</div>
+  <p>VI minimize \(\text{KL}(Q\|P)\) (reverse KL — computationally tractable). Kết quả: \(Q\) thường <em>unimodal</em> (chọn 1 mode) dù posterior thật \(P\) multimodal. Đây là "mean-field variational Bayes" limitation — posterior được xấp xỉ không đầy đủ. GAN training dùng Jensen-Shannon divergence \(\text{JSD}(P\|Q)=\frac{1}{2}\text{KL}(P\|M)+\frac{1}{2}\text{KL}(Q\|M)\) với \(M=\frac{P+Q}{2}\) — symmetric, bounded trong \([0,\ln 2]\).</p>
+</div>
+
+<details>
+<summary><i class="fas fa-flask"></i> Chứng minh KL ≥ 0 (Gibbs inequality)</summary>
+<div class="dc">
+<p>Vì \(\ln x \leq x-1\) với mọi \(x>0\) (đẳng thức khi \(x=1\)):</p>
+\[-\text{KL}(P\|Q)=\sum_x P(x)\log\frac{Q(x)}{P(x)}\leq\sum_x P(x)\left(\frac{Q(x)}{P(x)}-1\right)=\sum_x Q(x)-\sum_x P(x)=1-1=0\]
+<p>Do đó \(\text{KL}(P\|Q)\geq 0\), bằng 0 khi \(Q(x)/P(x)=1\) với mọi \(x\), tức \(P=Q\). \(\square\)</p>
+</div>
+</details>
+
+<!-- ===== MUTUAL INFORMATION ===== -->
+<div class="s-title">2. Mutual Information</div>
+
+<div class="ss-title">Định nghĩa và các dạng tương đương</div>
+<div class="fbox center teal">
+\begin{align}
+I(X;Y)&=\sum_{x,y}P(x,y)\log\frac{P(x,y)}{P(x)P(y)}\\
+&=H(X)-H(X|Y)=H(Y)-H(Y|X)\\
+&=H(X)+H(Y)-H(X,Y)\\
+&=\text{KL}(P(X,Y)\|P(X)P(Y))
+\end{align}
+</div>
+
+<div class="ss-title">Tính chất</div>
+<table class="tbl">
+<tr><th>Tính chất</th><th>Phát biểu</th><th>Ý nghĩa</th></tr>
+<tr><td>Non-negativity</td><td>\(I(X;Y)\geq 0\)</td><td>Knowing Y never "hurts" knowledge of X</td></tr>
+<tr><td>Symmetry</td><td>\(I(X;Y)=I(Y;X)\)</td><td>Mutual — không phân biệt direction</td></tr>
+<tr><td>Zero iff independent</td><td>\(I(X;Y)=0\iff X\perp Y\)</td><td>Vì KL \(=0\) iff \(P(X,Y)=P(X)P(Y)\)</td></tr>
+<tr><td>Upper bound</td><td>\(I(X;Y)\leq\min(H(X),H(Y))\)</td><td>Cannot learn more about X than entropy of X</td></tr>
+<tr><td>Self-information</td><td>\(I(X;X)=H(X)\)</td><td>X tells everything about itself</td></tr>
+</table>
+
+<div class="ss-title">MI trong Machine Learning</div>
+<div class="cmp">
+<div class="cmp-card cc-green">
+<h4>Feature Selection</h4>
+<p>Information Gain trong Decision Tree = \(I(Y;X_j)\) — MI giữa label \(Y\) và feature \(X_j\). Feature nào có MI cao với label → chọn split theo feature đó. <span class="tag tag-green">ID3, C4.5</span></p>
+</div>
+<div class="cmp-card cc-teal">
+<h4>Representation Learning</h4>
+<p>InfoNCE loss (contrastive): maximize \(I(z_1;z_2)\) giữa hai views của cùng input. SimCLR, MoCo, CLIP dùng principle này. Bottleneck principle: \(I(T;X)\) nhỏ, \(I(T;Y)\) lớn.</p>
+</div>
+<div class="cmp-card cc-purple">
+<h4>Deep Information Bottleneck</h4>
+<p>Optimal representation \(T\) tối thiểu hóa \(I(T;X)\) (compress input) trong khi tối đa hóa \(I(T;Y)\) (preserve label info).</p>
+</div>
+</div>
+
+<!-- ===== CROSS ENTROPY ===== -->
+<div class="s-title">3. Cross-Entropy = KL Minimization</div>
+
+<div class="ss-title">Định nghĩa Cross-Entropy</div>
+<div class="fbox center teal">
+  \[H(p,q)=-\sum_x p(x)\log q(x)=H(p)+\text{KL}(p\|q)\]
+</div>
+<p>Trong đó \(H(p)=-\sum_x p(x)\log p(x)\) là entropy của true distribution (không phụ thuộc model).</p>
+
+<div class="ss-title">Tại sao minimize CE = minimize KL?</div>
+<div class="fbox center teal">
+  \[\min_\theta H(p,q_\theta)=\min_\theta\bigl[H(p)+\text{KL}(p\|q_\theta)\bigr]=\min_\theta\text{KL}(p\|q_\theta)\]
+</div>
+<p>Vì \(H(p)\) là constant (true labels, không phụ thuộc \(\theta\)). Huấn luyện với CE loss = đẩy model distribution \(q_\theta\) gần true distribution \(p\).</p>
+
+<div class="ss-title">Entropy, Cross-Entropy, KL — Quan hệ hình học</div>
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-project-diagram"></i> Venn Diagram thông tin</div>
+  <ul>
+    <li>\(H(p)\) = self-information (uncertainty về \(X\))</li>
+    <li>\(H(p,q)=H(p)+\text{KL}(p\|q)\): extra bits cần khi dùng code thiết kế cho \(q\) nhưng data thực sự từ \(p\)</li>
+    <li>Bayes optimal: \(q_\theta^*=p\) → \(\text{KL}=0\) → \(H(p,q^*)=H(p)\) = minimum achievable cross-entropy</li>
+    <li>Khoảng cách \(H(p,q)-H(p)=\text{KL}(p\|q)\geq 0\) là excess cost dùng wrong distribution</li>
+  </ul>
+</div>
+
+<div class="ss-title">Ứng dụng: Tại sao CE tốt hơn MSE cho classification?</div>
+<p>Với sigmoid output \(\hat{y}=\sigma(z)\) và label \(y\in\{0,1\}\):</p>
+<table class="tbl">
+<tr><th>Loss</th><th>Gradient \(\partial\mathcal{L}/\partial z\)</th><th>Vấn đề</th></tr>
+<tr><td>MSE: \(\frac{1}{2}(\hat{y}-y)^2\)</td><td>\((\hat{y}-y)\cdot\sigma'(z)=(\hat{y}-y)\cdot\hat{y}(1-\hat{y})\)</td><td class="bad">Saturate khi \(\hat{y}\approx 0\) hoặc \(1\): \(\sigma'\approx 0\) → gradient \(\approx 0\) dù sai nghiêm trọng</td></tr>
+<tr><td>CE: \(-y\log\hat{y}-(1-y)\log(1-\hat{y})\)</td><td>\(\hat{y}-y\)</td><td class="ok">Không có \(\sigma'\): gradient lớn khi sai, nhỏ khi đúng — learning signal tốt</td></tr>
+</table>
+
+<div class="ss-title">Các dạng Cross-Entropy thường gặp</div>
+<div class="cmp">
+<div class="cmp-card cc-blue">
+<h4>Binary CE (Sigmoid)</h4>
+\[\mathcal{L}=-y\log\sigma(z)-(1-y)\log(1-\sigma(z))\]
+<p>Gradient: \(\hat{y}-y\). 2 classes, sigmoid output.</p>
+</div>
+<div class="cmp-card cc-teal">
+<h4>Categorical CE (Softmax)</h4>
+\[\mathcal{L}=-\sum_{k=1}^K y_k\log\hat{p}_k=-\log\hat{p}_{y^*}\]
+<p>Gradient: \(\hat{p}_k-y_k\) với mọi \(k\). Multi-class, softmax output.</p>
+</div>
+<div class="cmp-card cc-purple">
+<h4>Label Smoothed CE</h4>
+\[\mathcal{L}=-\sum_k\tilde{y}_k\log\hat{p}_k,\quad\tilde{y}_k=(1-\varepsilon)y_k+\frac{\varepsilon}{K}\]
+<p>Ngăn overconfidence, cải thiện calibration.</p>
+</div>
+</div>
+
+</div><!-- /t2 -->
+
+<!-- ============================================================ -->
+<!-- TAB 3: ENSEMBLE NÂNG CAO -->
+<!-- ============================================================ -->
+<div id="t3" class="tab-content">
+
+<div class="ch-hdr hdr-rose" style="margin-bottom:1.2rem">
+  <div class="lbl">Tab 3</div>
+  <h2 style="font-size:1.3rem">Ensemble Nâng Cao — Gradient Boosting · AdaBoost · Stacking · XGBoost</h2>
+</div>
+
+<!-- ===== ADABOOST vs GBM ===== -->
+<div class="s-title">1. AdaBoost vs Gradient Boosting — Phân tích sâu</div>
+
+<div class="ss-title">AdaBoost — Exponential Loss + Sample Reweighting</div>
+<div class="alert al-blue">
+  <div class="alert-title">AdaBoost (Freund &amp; Schapire, 1997)</div>
+  <p>Build additive model \(F_T(\mathbf{x})=\sum_{t=1}^T\alpha_t h_t(\mathbf{x})\) bằng cách sequentially reweight training samples.</p>
+</div>
+
+<div class="flabel">Thuật toán AdaBoost</div>
+<div class="fbox rose">
+<div class="step"><div class="step-n">1</div><div class="step-c">Initialize: \(w_i^{(1)}=1/n\) với mọi \(i=1,\ldots,n\)</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c">For \(t=1,\ldots,T\):<br>
+  (a) Train weak learner \(h_t\) trên distribution \(\{w_i^{(t)}\}\)<br>
+  (b) Tính error: \(\varepsilon_t=\sum_i w_i^{(t)}\mathbf{1}[h_t(\mathbf{x}_i)\neq y_i]\)<br>
+  (c) Tính learner weight: \(\alpha_t=\frac{1}{2}\ln\frac{1-\varepsilon_t}{\varepsilon_t}\)<br>
+  (d) Update sample weights: \(w_i^{(t+1)}\propto w_i^{(t)}\exp(-\alpha_t y_i h_t(\mathbf{x}_i))\)</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c">Output: \(F(\mathbf{x})=\text{sign}\!\left(\sum_{t=1}^T\alpha_t h_t(\mathbf{x})\right)\)</div></div>
+</div>
+
+<div class="ss-title">AdaBoost = Coordinate Descent trên Exponential Loss</div>
+<p>Freund &amp; Schapire (1997) sau đó được hiểu là Breiman (1998): AdaBoost minimize:</p>
+<div class="fbox center">
+  \[\mathcal{L}_{\exp}=\sum_{i=1}^n\exp(-y_i F(\mathbf{x}_i))\]
+</div>
+<p>Sample weights \(w_i^{(t)}\propto\exp(-y_i F_{t-1}(\mathbf{x}_i))\) — automatically misclassified samples get higher weight vì \(\exp\) lớn khi \(y_i F<0\).</p>
+
+<div class="ss-title">Gradient Boosting — Functional Gradient Descent</div>
+<div class="alert al-green">
+  <div class="alert-title">Gradient Boosting (Friedman, 2001)</div>
+  <p>GBM tổng quát hoá AdaBoost: thay vì reweight samples, fit weak learner trực tiếp lên <strong>negative gradient</strong> của bất kỳ loss function nào.</p>
+</div>
+
+<div class="flabel">Thuật toán Gradient Boosting</div>
+<div class="fbox rose">
+<div class="step"><div class="step-n">1</div><div class="step-c">Initialize: \(F_0(\mathbf{x})=\arg\min_\gamma\sum_i\mathcal{L}(y_i,\gamma)\) (e.g., mean của \(y\))</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c">For \(m=1,\ldots,M\):<br>
+  (a) Tính pseudo-residuals: \(r_{im}=-\left[\frac{\partial\mathcal{L}(y_i,F(\mathbf{x}_i))}{\partial F(\mathbf{x}_i)}\right]_{F=F_{m-1}}\)<br>
+  (b) Fit weak learner (tree) \(h_m\) lên \(\{(\mathbf{x}_i,r_{im})\}\)<br>
+  (c) Optimal step: \(\rho_m=\arg\min_\rho\sum_i\mathcal{L}(y_i, F_{m-1}(\mathbf{x}_i)+\rho h_m(\mathbf{x}_i))\)<br>
+  (d) Update: \(F_m(\mathbf{x})=F_{m-1}(\mathbf{x})+\nu\rho_m h_m(\mathbf{x})\) (\(\nu\) = learning rate / shrinkage)</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c">Output: \(F_M(\mathbf{x})\)</div></div>
+</div>
+
+<div class="ss-title">Pseudo-residuals cho các loss functions khác nhau</div>
+<table class="tbl">
+<tr><th>Loss Function</th><th>Bài toán</th><th>Pseudo-residuals \(r_{im}\)</th></tr>
+<tr><td>MSE: \(\frac{1}{2}(y-F)^2\)</td><td>Regression</td><td>\(y_i - F_{m-1}(\mathbf{x}_i)\) (true residuals)</td></tr>
+<tr><td>MAE: \(|y-F|\)</td><td>Robust regression</td><td>\(\text{sign}(y_i-F_{m-1}(\mathbf{x}_i))\)</td></tr>
+<tr><td>Log-loss: \(-y\log p-(1-y)\log(1-p)\)</td><td>Classification</td><td>\(y_i-p_{m-1}(\mathbf{x}_i)\)</td></tr>
+<tr><td>Exponential: \(\exp(-yF)\)</td><td>AdaBoost</td><td>\(y_i\exp(-y_i F_{m-1}(\mathbf{x}_i))\propto\) sample weights</td></tr>
+</table>
+
+<div class="alert al-yellow">
+  <div class="alert-title"><i class="fas fa-lightbulb"></i> AdaBoost là special case của GBM</div>
+  <p>Với exponential loss + decision stumps, GBM step (a)-(d) recover chính xác AdaBoost update rules. GBM = <em>functional gradient descent</em> trong không gian các functions, không gian tham số.</p>
+</div>
+
+<div class="ss-title">So sánh trực tiếp</div>
+<table class="tbl">
+<tr><th>Đặc điểm</th><th>AdaBoost</th><th>Gradient Boosting</th></tr>
+<tr><td>Loss function</td><td>Exponential (fixed)</td><td>Arbitrary differentiable</td></tr>
+<tr><td>Cơ chế tập trung</td><td>Reweight samples</td><td>Fit residuals (pseudo-gradients)</td></tr>
+<tr><td>Sensitivity với outliers</td><td class="bad">Cao (exponential penalty)</td><td class="ok">Thấp hơn (MAE, Huber)</td></tr>
+<tr><td>Learning rate</td><td>Implicit qua \(\alpha_t\)</td><td>Explicit shrinkage \(\nu\)</td></tr>
+<tr><td>Expressiveness</td><td>Binary classification</td><td>Mọi bài toán (regression, multi-class, ranking)</td></tr>
+</table>
+
+<!-- ===== STACKING ===== -->
+<div class="s-title">2. Stacking — Out-of-Fold Predictions</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-layer-group"></i> Stacking = Stacked Generalization (Wolpert, 1992)</div>
+  <p>Dùng <strong>meta-learner</strong> học cách combine predictions của base models — thay vì simple averaging, meta-learner học optimal combination và có thể detect các pattern mà base models miss.</p>
+</div>
+
+<div class="ss-title">Tại sao cần Out-of-Fold?</div>
+<div class="alert al-red">
+  <div class="alert-title"><i class="fas fa-exclamation-circle"></i> Data Leakage nếu không dùng OOF</div>
+  <p>Nếu train meta-learner trên <em>in-sample predictions</em> của base models: base models đã overfit training data → predictions quá tốt (gần perfect) → meta-learner learns "trust base models always" → không generalize. Cần predictions trên data base models <strong>chưa thấy</strong>.</p>
+</div>
+
+<div class="flabel">Quy trình 5-fold OOF Stacking</div>
+<div class="fbox rose">
+<div class="step"><div class="step-n">1</div><div class="step-c">Split training data thành 5 folds: \(\mathcal{F}_1,\ldots,\mathcal{F}_5\)</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c">For each fold \(k=1,\ldots,5\):<br>
+  Train mỗi base model trên \(\bigcup_{j\neq k}\mathcal{F}_j\) (4 folds)<br>
+  Predict trên \(\mathcal{F}_k\) → lưu OOF predictions</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c">Sau 5 vòng: có OOF predictions cho <em>toàn bộ</em> training set (honest predictions — base models chưa thấy \(\mathcal{F}_k\) khi predict \(\mathcal{F}_k\))</div></div>
+<div class="step"><div class="step-n">4</div><div class="step-c">Train meta-learner trên OOF predictions + true labels</div></div>
+<div class="step"><div class="step-n">5</div><div class="step-c">Inference: train base models trên <em>full</em> training set, predict test set, feed predictions vào meta-learner</div></div>
+</div>
+
+<div class="ss-title">Lựa chọn meta-learner</div>
+<table class="tbl">
+<tr><th>Meta-learner</th><th>Ưu điểm</th><th>Khi nào dùng</th></tr>
+<tr><td>Linear Regression / LR</td><td>Interpretable, ít overfit</td><td>Base models diverse, signal clear</td></tr>
+<tr><td>XGBoost / LightGBM</td><td>Capture nonlinear interactions giữa base predictions</td><td>Nhiều base models, complex dataset</td></tr>
+<tr><td>Weighted Average</td><td>Simple, robust</td><td>Khi base models comparable</td></tr>
+<tr><td>Neural Network</td><td>Flexible</td><td>Rất nhiều base models, nhiều data</td></tr>
+</table>
+
+<!-- ===== XGBOOST ===== -->
+<div class="s-title">3. XGBoost — Regularized Gradient Boosting</div>
+
+<div class="alert al-green">
+  <div class="alert-title">XGBoost (Chen &amp; Guestrin, 2016)</div>
+  <p>Cải tiến GBDT với: (1) Regularized objective; (2) Newton boosting (second-order); (3) Efficient split finding; (4) Sparsity awareness.</p>
+</div>
+
+<div class="ss-title">Objective Function</div>
+<div class="fbox center rose">
+  \[\mathcal{L}^{(m)}=\sum_{i=1}^n\mathcal{L}(y_i,\hat{y}_i^{(m-1)}+f_m(\mathbf{x}_i))+\underbrace{\gamma T+\frac{1}{2}\lambda\sum_{j=1}^T w_j^2}_{\Omega(f_m)}\]
+</div>
+<p>Trong đó \(T\) = số lá, \(w_j\) = leaf weight (prediction) tại lá \(j\).</p>
+
+<div class="cmp">
+<div class="cmp-card cc-green">
+<h4>γ — Leaf Count Penalty</h4>
+<p>\(\gamma T\): penalize số lá → kiểm soát complexity của tree structure. Split được chấp nhận khi và chỉ khi Gain \(>\gamma\) (threshold pruning).</p>
+<p>\(\gamma=0\): không pruning. \(\gamma\) lớn: chỉ split khi rất useful.</p>
+</div>
+<div class="cmp-card cc-purple">
+<h4>λ — Leaf Weight Regularization</h4>
+<p>\(\frac{\lambda}{2}\sum_j w_j^2\): L2 trên leaf predictions → smooth các leaf values → prevent extreme predictions tại từng node.</p>
+<p>\(\lambda=0\): standard GBDT. \(\lambda\) lớn: leaf predictions shrink về 0.</p>
+</div>
+</div>
+
+<div class="ss-title">Newton Boosting — Second-Order Approximation</div>
+<p>Xấp xỉ Taylor bậc 2 của loss (thay vì bậc 1 như GBM thông thường):</p>
+<div class="fbox center rose">
+  \[\mathcal{L}^{(m)}\approx\sum_i\left[g_i f_m(\mathbf{x}_i)+\frac{1}{2}h_i f_m(\mathbf{x}_i)^2\right]+\Omega(f_m)\]
+</div>
+<p>Trong đó \(g_i=\partial_{\hat{y}}\mathcal{L}(y_i,\hat{y})|_{\hat{y}=\hat{y}^{(m-1)}}\) (gradient) và \(h_i=\partial^2_{\hat{y}}\mathcal{L}(y_i,\hat{y})|_{\hat{y}=\hat{y}^{(m-1)}}\) (Hessian).</p>
+
+<div class="ss-title">Optimal Leaf Weight &amp; Split Gain</div>
+<p>Với fixed tree structure, optimal leaf weight cho lá \(j\) (tập samples \(I_j\)):</p>
+<div class="fbox center rose">
+  \[w_j^*=-\frac{G_j}{H_j+\lambda},\quad G_j=\sum_{i\in I_j}g_i,\quad H_j=\sum_{i\in I_j}h_i\]
+</div>
+<p>Gain của một split (Left \(L\), Right \(R\)):</p>
+<div class="fbox center rose">
+  \[\text{Gain}=\frac{1}{2}\left[\frac{G_L^2}{H_L+\lambda}+\frac{G_R^2}{H_R+\lambda}-\frac{(G_L+G_R)^2}{H_L+H_R+\lambda}\right]-\gamma\]
+</div>
+<p>Split được thực hiện khi Gain \(>\gamma\) (ngược lại pruned).</p>
+
+<details>
+<summary><i class="fas fa-cogs"></i> Các tính năng nâng cao của XGBoost</summary>
+<div class="dc">
+<table class="tbl">
+<tr><th>Tính năng</th><th>Mô tả</th><th>Lợi ích</th></tr>
+<tr><td>Subsampling (rows)</td><td>Sample fraction \(\eta\) của data per tree</td><td>Giảm variance, tăng speed</td></tr>
+<tr><td>Column subsampling</td><td>Sample \(m\) features per split (như Random Forest)</td><td>Giảm correlation giữa trees</td></tr>
+<tr><td>Sparsity awareness</td><td>Default direction cho missing values</td><td>Handle NaN natively</td></tr>
+<tr><td>Cache-aware access</td><td>Block structure cho data access</td><td>10× faster split finding</td></tr>
+<tr><td>Monotone constraints</td><td>Enforce feature monotonicity</td><td>Business logic compliance</td></tr>
+</table>
+</div>
+</details>
+
+<div class="alert al-purple">
+  <div class="alert-title"><i class="fas fa-trophy"></i> So sánh GBDT variants</div>
+  <table class="tbl" style="margin:.5rem 0">
+    <tr><th>Framework</th><th>Split Finding</th><th>Speed</th><th>Đặc điểm nổi bật</th></tr>
+    <tr><td>XGBoost</td><td>Pre-sorted + histogram</td><td>Fast</td><td>Regularization, Newton, sparsity</td></tr>
+    <tr><td>LightGBM</td><td>Gradient-based One-Side Sampling (GOSS)</td><td>Very fast</td><td>Leaf-wise growth, categorical features</td></tr>
+    <tr><td>CatBoost</td><td>Symmetric trees, ordered boosting</td><td>Fast</td><td>Categorical encoding tự động, no leakage</td></tr>
+  </table>
+</div>
+
+</div><!-- /t3 -->
+
+<!-- ============================================================ -->
+<!-- TAB 4: ML PRODUCTION -->
+<!-- ============================================================ -->
+<div id="t4" class="tab-content">
+
+<div class="ch-hdr hdr-slate" style="margin-bottom:1.2rem">
+  <div class="lbl">Tab 4</div>
+  <h2 style="font-size:1.3rem">ML Production — Drift · Calibration · SHAP · t-SNE · Causality</h2>
+</div>
+
+<!-- ===== CONCEPT DRIFT ===== -->
+<div class="s-title">1. Concept Drift — Taxonomy &amp; Detection</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-water"></i> Định nghĩa</div>
+  <p>Concept drift là khi joint distribution \(P_t(X,Y)\) thay đổi theo thời gian \(t\). Model train trên \(P_0\) có thể fail khi deploy với \(P_t, t>0\).</p>
+</div>
+
+<div class="ss-title">Taxonomy đầy đủ</div>
+<table class="tbl">
+<tr><th>Loại drift</th><th>Gì thay đổi</th><th>Ví dụ</th><th>Xử lý</th></tr>
+<tr><td><strong>Covariate shift</strong></td><td>\(P(X)\) thay đổi, \(P(Y|X)\) giữ nguyên</td><td>Seasonal: Christmas shopping → khác distribution items. COVID: nhiều medical records hơn</td><td>Importance weighting: \(w(\mathbf{x})=P_{test}(\mathbf{x})/P_{train}(\mathbf{x})\)</td></tr>
+<tr><td><strong>Label shift</strong> (prior drift)</td><td>\(P(Y)\) thay đổi, \(P(X|Y)\) giữ nguyên</td><td>Disease prevalence thay đổi theo mùa; economic downturns làm tăng fraud rate</td><td>Estimate new \(P(Y)\), adjust prior</td></tr>
+<tr><td><strong>Concept drift</strong> (real)</td><td>\(P(Y|X)\) thay đổi — fundamental relationship</td><td>Spam tactics thay đổi; user behavior evolution; market regime changes</td><td>Retrain model với mới data, sliding window</td></tr>
+<tr><td><strong>Data drift</strong> (feature drift)</td><td>Cả \(P(X)\) và \(P(Y|X)\) thay đổi</td><td>Combination của các loại trên</td><td>Full model refresh</td></tr>
+</table>
+
+<div class="ss-title">Drift Detection Methods</div>
+<div class="cmp">
+<div class="cmp-card cc-blue">
+<h4>Statistical Tests trên Features</h4>
+<ul>
+  <li><strong>KS Test</strong> (Kolmogorov-Smirnov): so sánh CDFs</li>
+  <li><strong>Chi-squared Test</strong>: categorical features</li>
+  <li><strong>PSI</strong> (Population Stability Index): \(\text{PSI}=\sum(\%\text{actual}-\%\text{expected})\ln\frac{\%\text{actual}}{\%\text{expected}}\)</li>
+</ul>
+</div>
+<div class="cmp-card cc-teal">
+<h4>Model Performance Monitoring</h4>
+<ul>
+  <li>Monitor accuracy/F1 trên labeled production data</li>
+  <li>Prediction distribution shift (không cần labels)</li>
+  <li>ADWIN (Adaptive Windowing) — adaptive change detection</li>
+</ul>
+</div>
+</div>
+
+<div class="alert al-yellow">
+  <div class="alert-title"><i class="fas fa-ruler"></i> PSI Thresholds</div>
+  <p>PSI &lt; 0.1: stable; PSI 0.1–0.2: moderate shift, investigate; PSI &gt; 0.2: significant drift, consider retraining. PSI = KL symmetrized: \(\text{PSI}=\text{KL}(P_{new}\|P_{old})+\text{KL}(P_{old}\|P_{new})\) — lưu ý đây không chính xác, PSI có công thức riêng nhưng closely related to KL.</p>
+</div>
+
+<!-- ===== PLATT SCALING ===== -->
+<div class="s-title">2. Probability Calibration — Platt Scaling &amp; Alternatives</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-balance-scale"></i> Vấn đề calibration</div>
+  <p>Model có thể cho output \(\hat{p}=0.9\) nhưng thực tế chỉ 60% samples với \(\hat{p}\approx 0.9\) là positive → <strong>overconfident</strong>. Calibrated model: \(P(\text{positive}|\hat{p}=0.9)\approx 0.9\).</p>
+</div>
+
+<div class="ss-title">Kiểm tra calibration: Reliability Diagram</div>
+<p>Chia predictions thành bins (e.g., [0, 0.1), [0.1, 0.2), ...), tính actual positive rate trong mỗi bin. Plot actual rate vs. mean predicted probability — perfect calibration = diagonal line.</p>
+
+<div class="ss-title">Phương pháp calibration</div>
+<div class="cmp">
+<div class="cmp-card cc-blue">
+<h4>Platt Scaling (Platt, 1999)</h4>
+<p>Fit logistic regression trên model outputs:</p>
+\[P(y=1|f(\mathbf{x}))=\sigma(Af(\mathbf{x})+B)\]
+<p>Train \(A,B\) trên separate validation set (cross-validated). Parametric → ít data cần. Tốt cho SVM, neural nets.</p>
+<span class="tag tag-blue">Parametric</span>
+</div>
+<div class="cmp-card cc-teal">
+<h4>Isotonic Regression</h4>
+<p>Non-parametric monotone function \(g\): \(P(y=1|f(\mathbf{x}))=g(f(\mathbf{x}))\). Fit bằng Pool Adjacent Violators Algorithm — guarantee monotone output. Flexible hơn nhưng cần nhiều data hơn.</p>
+<span class="tag tag-green">Non-parametric</span>
+</div>
+<div class="cmp-card cc-purple">
+<h4>Temperature Scaling</h4>
+<p>Simple 1-parameter: \(\hat{p}_k=\text{softmax}(z_k/T)\). Tối ưu \(T\) trên validation bằng NLL. Không thay đổi accuracy (argmax không đổi), chỉ scale confidence. <strong>State-of-art</strong> cho neural networks (Guo et al. 2017).</p>
+<span class="tag tag-purple">Single parameter</span>
+</div>
+</div>
+
+<div class="alert al-green">
+  <div class="alert-title"><i class="fas fa-exclamation-circle"></i> Tại sao phải dùng separate validation set?</div>
+  <p>Nếu calibrate trên training set: model đã overfit → predictions too confident on train → calibration learns wrong correction. Cần independent validation data để get honest confidence estimates.</p>
+</div>
+
+<!-- ===== SHAP ===== -->
+<div class="s-title">3. SHAP Values — Game Theory &amp; Interpretability</div>
+
+<div class="alert al-purple">
+  <div class="alert-title"><i class="fas fa-gamepad"></i> Game Theory Connection</div>
+  <p>Shapley value (Lloyd Shapley, 1953 — Nobel Prize 2012): cách phân bổ "fair payoff" cho mỗi player trong cooperative game. SHAP (Lundberg &amp; Lee, 2017) áp dụng cho ML: features = players, prediction = payoff.</p>
+</div>
+
+<div class="ss-title">Định nghĩa chính thức</div>
+<p>SHAP value của feature \(i\) cho prediction \(f(\mathbf{x})\):</p>
+<div class="fbox center violet">
+  \[\phi_i=\sum_{S\subseteq\mathcal{F}\setminus\{i\}}\frac{|S|!(|\mathcal{F}|-|S|-1)!}{|\mathcal{F}|!}\underbrace{\left[f(S\cup\{i\})-f(S)\right]}_{\text{marginal contribution of }i}\]
+</div>
+<p>Average marginal contribution của feature \(i\) qua tất cả possible orderings (coalitions) của features.</p>
+
+<div class="ss-title">4 Axioms (tại sao SHAP unique và fair)</div>
+<table class="tbl">
+<tr><th>Axiom</th><th>Phát biểu</th><th>Ý nghĩa</th></tr>
+<tr><td><strong>Efficiency</strong></td><td>\(\sum_{i=1}^d\phi_i=f(\mathbf{x})-E[f(\mathbf{X})]\)</td><td>Tổng contributions = total effect so với baseline</td></tr>
+<tr><td><strong>Symmetry</strong></td><td>Nếu \(f(S\cup\{i\})=f(S\cup\{j\})\) với mọi \(S\), thì \(\phi_i=\phi_j\)</td><td>Hai features đóng góp như nhau → SHAP như nhau</td></tr>
+<tr><td><strong>Dummy</strong></td><td>Nếu \(f(S\cup\{i\})=f(S)\) với mọi \(S\), thì \(\phi_i=0\)</td><td>Feature không ảnh hưởng → SHAP = 0</td></tr>
+<tr><td><strong>Additivity</strong></td><td>\(\phi_i(f+g)=\phi_i(f)+\phi_i(g)\)</td><td>Ensemble: SHAP additive across trees</td></tr>
+</table>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-star"></i> Uniqueness theorem</div>
+  <p>Shapley value là <strong>unique</strong> attribution method thỏa mãn đồng thời cả 4 axioms trên. Các method khác (LIME, gradient × input, DeepLIFT) vi phạm ít nhất một axiom.</p>
+</div>
+
+<div class="ss-title">Các variants và complexity</div>
+<table class="tbl">
+<tr><th>Method</th><th>Model</th><th>Complexity</th><th>Ghi chú</th></tr>
+<tr><td>TreeSHAP</td><td>Tree-based (XGBoost, RF, LightGBM)</td><td>\(O(TLD^2)\)</td><td>Exact, polynomial time — key contribution</td></tr>
+<tr><td>KernelSHAP</td><td>Any black-box</td><td>\(O(2^d)\) → \(O(Md)\) với sampling</td><td>Model-agnostic, approximate</td></tr>
+<tr><td>LinearSHAP</td><td>Linear models</td><td>\(O(d)\)</td><td>Exact, equivalent to attribution via covariance</td></tr>
+<tr><td>DeepSHAP</td><td>Neural networks</td><td>Fast</td><td>Combines DeepLIFT với Shapley</td></tr>
+</table>
+
+<div class="ss-title">Visualizations</div>
+<div class="cmp">
+<div class="cmp-card cc-purple">
+<h4>Waterfall plot (per sample)</h4>
+<p>Baseline \(E[f]\) → stacked bars của từng feature SHAP → final prediction. Thấy rõ feature nào push prediction lên/xuống cho specific sample.</p>
+</div>
+<div class="cmp-card cc-blue">
+<h4>Beeswarm plot (global)</h4>
+<p>Mỗi dot = 1 sample. X = SHAP value, màu = feature value. Thấy distribution của importance và direction.</p>
+</div>
+<div class="cmp-card cc-teal">
+<h4>Dependence plot</h4>
+<p>SHAP của feature \(i\) vs. value của feature \(i\). Reveal nonlinear relationships và interactions.</p>
+</div>
+</div>
+
+<!-- ===== t-SNE ===== -->
+<div class="s-title">4. t-SNE — Cách hoạt động &amp; Limitations</div>
+
+<div class="ss-title">Cách hoạt động (high-level)</div>
+<div class="step"><div class="step-n">1</div><div class="step-c"><strong>High-dim similarities</strong>: \(p_{ij}=\frac{\exp(-\|\mathbf{x}_i-\mathbf{x}_j\|^2/2\sigma_i^2)}{\sum_{k\neq l}\exp(-\|\mathbf{x}_k-\mathbf{x}_l\|^2/2\sigma_k^2)}\) — Gaussian kernel với bandwidth \(\sigma_i\) per point (calibrated to match perplexity).</div></div>
+<div class="step"><div class="step-n">2</div><div class="step-c"><strong>Low-dim similarities</strong>: \(q_{ij}=\frac{(1+\|\mathbf{y}_i-\mathbf{y}_j\|^2)^{-1}}{\sum_{k\neq l}(1+\|\mathbf{y}_k-\mathbf{y}_l\|^2)^{-1}}\) — Student-t với 1 dof (heavy tail).</div></div>
+<div class="step"><div class="step-n">3</div><div class="step-c"><strong>Minimize KL(P||Q)</strong>: bằng gradient descent trên \(\mathbf{y}\) coordinates. Student-t heavy tail giải quyết "crowding problem" — medium-distance points trong high-d cần large gaps trong 2D.</div></div>
+
+<div class="ss-title">Limitations quan trọng</div>
+<table class="tbl">
+<tr><th>Limitation</th><th>Giải thích</th><th>Hệ quả</th></tr>
+<tr><td class="bad">Không có out-of-sample extension</td><td>t-SNE không học mapping \(f:\mathcal{X}\to\mathbb{R}^2\), chỉ tối ưu coordinates của specific points</td><td>Không project new points — phải rerun toàn bộ</td></tr>
+<tr><td class="bad">Global structure không preserve</td><td>KL(P||Q) focus on local neighborhoods; long-range distances không meaningful trong embedding</td><td>Distances giữa clusters không có ý nghĩa</td></tr>
+<tr><td class="bad">Non-deterministic</td><td>Random initialization → khác nhau mỗi lần run</td><td>Kết quả không reproducible (trừ khi fix seed)</td></tr>
+<tr><td class="bad">Perplexity sensitive</td><td>Perplexity ≈ số nearest neighbors mỗi point "chú ý đến"; ảnh hưởng lớn đến kết quả</td><td>Phải tune perplexity, không có rule chung</td></tr>
+<tr><td class="bad">Cluster sizes không meaningful</td><td>t-SNE expand compact clusters và compress diffuse clusters</td><td>Cluster size không phản ánh thực tế</td></tr>
+<tr><td class="bad">\(O(n^2)\) cơ bản</td><td>Barnes-Hut xấp xỉ → \(O(n\log n)\) nhưng vẫn chậm hơn UMAP</td><td>Không scale với large datasets</td></tr>
+</table>
+
+<div class="alert al-yellow">
+  <div class="alert-title"><i class="fas fa-exclamation-triangle"></i> Những gì t-SNE KHÔNG thể nói</div>
+  <ul>
+    <li>Cluster A lớn hơn cluster B trong embedding → không nghĩa gì</li>
+    <li>Cluster A gần cluster B hơn C → khoảng cách global không preserve</li>
+    <li>Point X nằm giữa cluster A và B → không có ý nghĩa thực tế</li>
+    <li>t-SNE features cho downstream ML → sẽ give misleading results</li>
+  </ul>
+</div>
+
+<div class="alert al-green">
+  <div class="alert-title"><i class="fas fa-arrow-right"></i> UMAP là alternative tốt hơn trong nhiều trường hợp</div>
+  <p>UMAP (McInnes et al., 2018): nhanh hơn, preserve global structure tốt hơn, có out-of-sample extension (\texttt{transform()}), reproducible, based on Riemannian geometry + topological data analysis. Cả t-SNE và UMAP: <strong>chỉ dùng cho visualization, không dùng features cho classifier</strong>.</p>
+</div>
+
+<!-- ===== CAUSALITY ===== -->
+<div class="s-title">5. Spurious Correlations &amp; Causality trong ML</div>
+
+<div class="alert al-red">
+  <div class="alert-title"><i class="fas fa-exclamation-circle"></i> Nguyên tắc cơ bản: Correlation ≠ Causation</div>
+  <p>ML models tìm patterns (correlations) trong training data. Những correlations này đúng trong training distribution nhưng có thể sai khi distribution thay đổi — đặc biệt nguy hiểm trong medical, financial, autonomous systems.</p>
+</div>
+
+<div class="ss-title">Spurious Correlations — Ví dụ nổi tiếng</div>
+<div class="cmp">
+<div class="cmp-card cc-red">
+<h4>Tank Detection (DARPA)</h4>
+<p>Neural net phân loại tanks vs. non-tanks từ aerial photos. Accuracy cao trong test. Thực tế: photos có tanks được chụp vào trời nắng; photos không có tanks vào trời mây. Model học "trời nắng = tank". Fail khi deploy.</p>
+</div>
+<div class="cmp-card cc-rose">
+<h4>COVID X-ray Classifier</h4>
+<p>Classifier detect COVID từ chest X-rays. Accuracy cao. Thực tế: model học hospital label (quality của X-ray equipment, font của annotations) thay vì disease features. Fail khi deploy ở hospitals khác.</p>
+</div>
+<div class="cmp-card cc-amber">
+<h4>Shortcut Learning (Geirhos 2020)</h4>
+<p>ImageNet CNNs rely on texture (Convolutional texture bias) thay vì shape. Adversarial: paste cat texture lên dog silhouette → model predicts "cat". Humans use shape.</p>
+</div>
+</div>
+
+<div class="ss-title">Causal Graph Framework</div>
+<div class="fbox">
+  <div class="eq-name">Ký hiệu</div>
+  <p>\(X\to Y\): X là cause của Y. \(X\leftarrow C\to Y\): C là confounder — gây spurious correlation giữa X và Y. \(X\to C\to Y\): C là mediator — cơ chế causal.</p>
+</div>
+
+<div class="ss-title">Loại spurious correlations</div>
+<table class="tbl">
+<tr><th>Dạng</th><th>Causal graph</th><th>Ví dụ</th><th>Xử lý</th></tr>
+<tr><td>Confounding</td><td>\(C\to X, C\to Y\)</td><td>Ice cream sales → drowning rates (confounder: summer/hot weather)</td><td>Control for confounders (regression, stratification)</td></tr>
+<tr><td>Selection bias</td><td>Conditioning on collider</td><td>Trong bệnh viện: hospital admission tạo negative correlation giữa severity và disease (Berkson's paradox)</td><td>Tránh conditioning on colliders</td></tr>
+<tr><td>Reverse causality</td><td>\(Y\to X\) thay vì \(X\to Y\)</td><td>Hospitals có nhiều sick people → nhiều hospitals → more hospitals = more sick? (reverse)</td><td>Instrumental variables, natural experiments</td></tr>
+</table>
+
+<div class="ss-title">Giải pháp — Hướng nghiên cứu</div>
+<div class="cmp">
+<div class="cmp-card cc-teal">
+<h4>Invariant Risk Minimization (IRM)</h4>
+<p>Arjovsky et al. (2019): learn representation \(\Phi\) sao cho optimal classifier trên \(\Phi\) <em>invariant</em> across multiple environments. Features invariant = likely causal.</p>
+<code>min_Φ Σ_e R^e(w∘Φ) + λ||∇_w R^e(w∘Φ)||²</code>
+</div>
+<div class="cmp-card cc-blue">
+<h4>Domain Invariant Features</h4>
+<p>Domain Adversarial Neural Networks (DANN): encoder làm cho features không phân biệt được domain → chỉ causal features preserve (vì chúng invariant).</p>
+</div>
+<div class="cmp-card cc-purple">
+<h4>Counterfactual Augmentation</h4>
+<p>Tạo training samples bằng cách thay đổi causal features (giữ spurious features) và ngược lại → model phải học causal features để classify correctly.</p>
+</div>
+</div>
+
+<div class="alert al-blue">
+  <div class="alert-title"><i class="fas fa-compass"></i> Do-calculus (Pearl, 2009)</div>
+  <p>Causal effect của intervention \(do(X=x)\) trên \(Y\): \(P(Y|do(X=x))\neq P(Y|X=x)\). Observational \(P(Y|X=x)\) bao gồm cả backdoor paths (confounding). Intervention (randomized experiment) blocks backdoor paths. Pearl's do-calculus cung cấp rules để tính causal effects từ observational data khi có causal graph.</p>
+</div>
+
+<div class="ss-title">Implication cho ML Practice</div>
+<ul>
+  <li><strong>Đa dạng training data</strong>: nhiều environments/contexts giúp model không learn environment-specific shortcuts</li>
+  <li><strong>Domain knowledge</strong>: feature engineering dựa trên causal understanding giúp model học right features</li>
+  <li><strong>OOD testing</strong>: test trên distributions khác training → detect spurious correlations trước khi deploy</li>
+  <li><strong>Model auditing</strong>: SHAP/LIME để check model dựa trên features "đúng" hay shortcuts</li>
+  <li><strong>A/B testing</strong>: randomized intervention để verify causal effect, không chỉ correlation</li>
+</ul>
+
+</div><!-- /t4 -->
+
+</main>
+
+<a href="#" id="back-top" title="Về đầu trang"><i class="fas fa-arrow-up"></i></a>
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+</script>
+</body>
+</html>

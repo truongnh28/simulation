@@ -140,6 +140,7 @@ strong{color:#1e293b}
   <a href="cheatsheet.html" class="sb-link"><i class="fas fa-print"></i>Cheat Sheet — 4 trang A4</a>
   <div class="sb-group">Thi thử</div>
   <a href="mock.html" class="sb-link"><i class="fas fa-file-alt"></i>Đề Thi Thử 2026</a>
+  <a href="theory.html" class="sb-link"><i class="fas fa-infinity"></i>Lý thuyết Nâng Cao</a>
   <a href="practice.html" class="sb-link"><i class="fas fa-flask"></i>Đề Nâng Cao (Giáo sư)</a>
   <a href="exam2025.html" class="sb-link"><i class="fas fa-graduation-cap"></i>Đề CK Thật 2025</a>
 </nav>
@@ -201,6 +202,455 @@ strong{color:#1e293b}
 <div class="step"><div class="step-n">4</div><div class="step-c"><strong>Update:</strong> \(w \leftarrow w - \eta \frac{\partial L}{\partial w}\)</div></div>
 </section>
 
+<hr class="divider">
+
+<!-- ========== SECTION 7: BACKPROP DEEP DIVE ========== -->
+<section id="backprop-deep">
+<div class="ch-hdr ch-hdr-blue">
+  <div class="lbl"><i class="fas fa-project-diagram"></i> Phân tích sâu</div>
+  <h2>7. Backpropagation — Chain Rule Toàn Phần</h2>
+  <p>Dẫn xuất gradient qua đồ thị tính toán, dạng ma trận và độ phức tạp.</p>
+</div>
+
+<div class="s-title">7.1 Đồ thị tính toán (Computational Graph)</div>
+<p>Mỗi phép toán là một <em>node</em>. Mỗi giá trị trung gian là một <em>edge</em>. Backprop chính là áp dụng Chain Rule trên đồ thị này từ output ngược về input.</p>
+
+<div class="alert al-blue">
+  <div class="alert-title">Cách tư duy cốt lõi</div>
+  Đặt câu hỏi: <em>"Nếu tôi thay đổi \(w_{ij}^{(l)}\) một lượng \(\epsilon\) nhỏ, loss thay đổi bao nhiêu?"</em> — đó chính là \(\partial L/\partial w_{ij}^{(l)}\). Backprop tính điều này hiệu quả bằng cách <strong>tái sử dụng</strong> các gradient đã tính ở lớp trên.
+</div>
+
+<div class="s-title">7.2 Ký hiệu cho mạng L lớp</div>
+<p>Với lớp \(l\): đầu vào \(\mathbf{a}^{(l-1)}\), trọng số \(\mathbf{W}^{(l)}\), pre-activation \(\mathbf{z}^{(l)} = \mathbf{W}^{(l)}\mathbf{a}^{(l-1)} + \mathbf{b}^{(l)}\), activation \(\mathbf{a}^{(l)} = f(\mathbf{z}^{(l)})\).</p>
+
+<p>Định nghĩa <strong>delta (error signal)</strong> tại lớp \(l\):</p>
+<div class="flabel">Delta — Error Signal</div>
+<div class="fbox">\[ \boldsymbol{\delta}^{(l)} \;\triangleq\; \frac{\partial L}{\partial \mathbf{z}^{(l)}} \]</div>
+
+<div class="s-title">7.3 Bốn phương trình cơ bản của Backprop</div>
+<table class="tbl">
+<tr><th>Phương trình</th><th>Công thức</th><th>Ý nghĩa</th></tr>
+<tr><td><strong>BP1</strong> — delta lớp cuối</td><td>\(\boldsymbol{\delta}^{(L)} = \nabla_{\mathbf{a}}L \odot f'(\mathbf{z}^{(L)})\)</td><td>Gradient qua hàm loss và activation cuối</td></tr>
+<tr><td><strong>BP2</strong> — lan truyền ngược</td><td>\(\boldsymbol{\delta}^{(l)} = \bigl[(\mathbf{W}^{(l+1)})^\top \boldsymbol{\delta}^{(l+1)}\bigr] \odot f'(\mathbf{z}^{(l)})\)</td><td>Delta lớp dưới = delta lớp trên "đi ngược" qua W, nhân với f'</td></tr>
+<tr><td><strong>BP3</strong> — gradient trọng số</td><td>\(\dfrac{\partial L}{\partial \mathbf{W}^{(l)}} = \boldsymbol{\delta}^{(l)} \bigl(\mathbf{a}^{(l-1)}\bigr)^\top\)</td><td>Outer product: delta × activation đầu vào</td></tr>
+<tr><td><strong>BP4</strong> — gradient bias</td><td>\(\dfrac{\partial L}{\partial \mathbf{b}^{(l)}} = \boldsymbol{\delta}^{(l)}\)</td><td>Gradient bias = delta</td></tr>
+</table>
+
+<details>
+<summary>Chứng minh BP2 (lan truyền ngược delta)</summary>
+<div class="dc">
+<p>Theo Chain Rule:</p>
+\[ \delta_j^{(l)} = \frac{\partial L}{\partial z_j^{(l)}} = \sum_k \frac{\partial L}{\partial z_k^{(l+1)}} \cdot \frac{\partial z_k^{(l+1)}}{\partial z_j^{(l)}} \]
+<p>Vì \(z_k^{(l+1)} = \sum_j W_{kj}^{(l+1)} a_j^{(l)} = \sum_j W_{kj}^{(l+1)} f(z_j^{(l)})\), nên:</p>
+\[ \frac{\partial z_k^{(l+1)}}{\partial z_j^{(l)}} = W_{kj}^{(l+1)} \cdot f'(z_j^{(l)}) \]
+<p>Suy ra: \(\delta_j^{(l)} = f'(z_j^{(l)}) \sum_k W_{kj}^{(l+1)} \delta_k^{(l+1)}\), viết dạng ma trận:</p>
+\[ \boldsymbol{\delta}^{(l)} = \bigl[(\mathbf{W}^{(l+1)})^\top \boldsymbol{\delta}^{(l+1)}\bigr] \odot f'(\mathbf{z}^{(l)}) \quad \blacksquare \]
+</div>
+</details>
+
+<div class="s-title">7.4 Độ phức tạp tính toán</div>
+<div class="alert al-green">
+  <div class="alert-title">Insight quan trọng: Backprop = 2× Forward Pass</div>
+  <p>Forward pass: \(O(\sum_l n_{l-1} \cdot n_l)\) — một lần nhân ma trận mỗi lớp.<br>
+  Backward pass: \(O(\sum_l n_{l-1} \cdot n_l)\) — cũng một lần nhân ma trận mỗi lớp (BP2, BP3).<br>
+  Tổng: <strong>khoảng 2× forward pass</strong>. Đây là lý do backprop hiệu quả hơn finite-difference \(O(|\theta| \times \text{forward})\) theo số lượng tham số.</p>
+</div>
+
+</section>
+
+<hr class="divider">
+
+<!-- ========== SECTION 8: VANISHING/EXPLODING GRADIENTS ========== -->
+<section id="vanishing">
+<div class="ch-hdr" style="background:linear-gradient(135deg,#7f1d1d,#dc2626)">
+  <div class="lbl"><i class="fas fa-exclamation-triangle"></i> Vấn đề sâu sắc</div>
+  <h2>8. Vanishing &amp; Exploding Gradients — Phân tích Toán học</h2>
+  <p>Tại sao mạng sâu khó học, và tại sao đây là vấn đề cấu trúc, không phải ngẫu nhiên.</p>
+</div>
+
+<div class="s-title">8.1 Dẫn xuất định lượng</div>
+<p>Xét gradient của loss tại lớp đầu tiên, dùng BP2 lặp đi lặp lại:</p>
+<div class="flabel">Gradient qua L lớp Sigmoid</div>
+<div class="fbox">\[ \frac{\partial L}{\partial \mathbf{W}^{(1)}} = \boldsymbol{\delta}^{(L)} \cdot \prod_{l=2}^{L} \bigl[(\mathbf{W}^{(l)})^\top \odot \sigma'(\mathbf{z}^{(l-1)})\bigr] \cdot \mathbf{a}^{(0)\top} \]</div>
+
+<p>Tích trên chứa <strong>L−1 lần nhân</strong> với \(\sigma'(\mathbf{z}^{(l)})\). Sigmoid thỏa:</p>
+<div class="flabel">Ràng buộc đạo hàm Sigmoid</div>
+<div class="fbox">\[ \sigma'(z) = \sigma(z)(1-\sigma(z)) \leq \frac{1}{4} \quad \forall z \]</div>
+
+<div class="alert al-red">
+  <div class="alert-title">Kết luận: Gradient tiêu biến theo hàm mũ</div>
+  <p>Với mạng L lớp dùng Sigmoid và trọng số chuẩn hóa \(|W| \sim 1\):</p>
+  \[ \left\|\frac{\partial L}{\partial \mathbf{W}^{(1)}}\right\| \lesssim \left(\frac{1}{4}\right)^{L-1} \]
+  <p>Với \(L=10\): gradient lớp đầu ≈ \((0.25)^9 \approx 3.8 \times 10^{-6}\) — gần như bằng 0. Lớp đầu không học được gì.</p>
+</div>
+
+<div class="s-title">8.2 Đối xứng hai phía: Exploding Gradient</div>
+<p>Nếu trọng số khởi tạo lớn, \(\|W^{(l)}\| > 1\), thì tích \(\prod_l \mathbf{W}^{(l)}\) tăng theo hàm mũ → gradient nổ, NaN, huấn luyện diverge.</p>
+
+<table class="tbl">
+<tr><th>Tình huống</th><th>Điều kiện</th><th>Hậu quả</th><th>Giải pháp</th></tr>
+<tr><td>Vanishing gradient</td><td>\(\|W\|\cdot|f'| \ll 1\)</td><td>Lớp sâu không học, mạng "cạn" hiệu quả</td><td>ReLU, Residual connections, BN</td></tr>
+<tr><td>Exploding gradient</td><td>\(\|W\|\cdot|f'| \gg 1\)</td><td>NaN, loss diverge, không hội tụ</td><td>Gradient clipping, BN, khởi tạo cẩn thận</td></tr>
+</table>
+
+<div class="s-title">8.3 Cách tư duy: "Gradient như tín hiệu truyền ngược"</div>
+<div class="alert al-blue">
+  <div class="alert-title">Mental Model</div>
+  <p>Hình dung gradient là <em>tín hiệu radio</em> truyền từ output về input. Mỗi lớp là một trạm khuếch đại/suy giảm. Nếu gain &lt; 1 ở mỗi trạm (Sigmoid), tín hiệu tắt dần. Nếu gain &gt; 1 (W quá lớn), tín hiệu khuếch đại thành nhiễu.<br><br>
+  <strong>ReLU</strong> giải quyết bằng cách đặt gain = 1 (nếu neuron active) hoặc = 0 (cut off). Không suy giảm, không khuếch đại.<br>
+  <strong>Residual connections</strong> (ResNet) tạo đường tắt cho gradient — tín hiệu đi thẳng qua mà không qua trạm.</p>
+</div>
+
+<div class="flabel">Gradient của Residual Block</div>
+<div class="fbox">\[ \frac{\partial L}{\partial \mathbf{x}} = \frac{\partial L}{\partial \mathbf{y}} \cdot \left(1 + \frac{\partial \mathcal{F}(\mathbf{x})}{\partial \mathbf{x}}\right) \]</div>
+<p>Số hạng \(\mathbf{1}\) trong ngoặc đảm bảo gradient <em>luôn có đường đi</em> dù \(\mathcal{F}'\) nhỏ đến đâu.</p>
+
+</section>
+
+<hr class="divider">
+
+<!-- ========== SECTION 9: ACTIVATION FUNCTIONS ========== -->
+<section id="activations">
+<div class="ch-hdr" style="background:linear-gradient(135deg,#1e1b4b,#4338ca)">
+  <div class="lbl"><i class="fas fa-wave-square"></i> Hàm kích hoạt</div>
+  <h2>9. Activation Functions — So sánh &amp; Lý do lựa chọn</h2>
+  <p>Không phải "dùng gì cũng được" — mỗi hàm mang một tập đánh đổi khác nhau.</p>
+</div>
+
+<table class="tbl">
+<tr><th>Hàm</th><th>Công thức</th><th>Range</th><th>f'(z) tối đa</th><th>Vấn đề</th><th>Dùng khi</th></tr>
+<tr><td>Sigmoid</td><td>\(\sigma(z)=\frac{1}{1+e^{-z}}\)</td><td>(0,1)</td><td>0.25</td><td>Vanishing grad, not zero-centered</td><td>Output layer nhị phân</td></tr>
+<tr><td>Tanh</td><td>\(\tanh(z)=\frac{e^z-e^{-z}}{e^z+e^{-z}}\)</td><td>(-1,1)</td><td>1.0</td><td>Vanishing grad (nhẹ hơn)</td><td>Hidden layer nếu cần zero-centered</td></tr>
+<tr><td>ReLU</td><td>\(\max(0,z)\)</td><td>[0,∞)</td><td>1 (z>0)</td><td>Dying ReLU, not zero-centered</td><td>Default cho hidden layers</td></tr>
+<tr><td>Leaky ReLU</td><td>\(\max(\alpha z,z),\ \alpha\approx0.01\)</td><td>(-∞,∞)</td><td>1</td><td>α là hyperparameter</td><td>Khi Dying ReLU xảy ra</td></tr>
+<tr><td>GELU</td><td>\(z\cdot\Phi(z)\)</td><td>(-∞,∞)</td><td>≈1.13</td><td>Đắt hơn để tính</td><td>Transformer, BERT, GPT</td></tr>
+</table>
+
+<div class="ss-title">Dying ReLU — Phân tích</div>
+<p>Khi \(z < 0\): ReLU = 0, gradient = 0. Nếu pre-activation của một neuron <em>luôn âm</em> (vì bias quá âm hoặc learning rate quá lớn), neuron đó không bao giờ được cập nhật nữa → <em>"chết"</em>. Với mạng lớn, có thể 40-50% neuron bị chết.</p>
+<div class="alert al-yellow">
+  <div class="alert-title">Cách tư duy: Tại sao ReLU vẫn là default?</div>
+  <p>Mặc dù Dying ReLU tồn tại, ReLU có 3 ưu điểm áp đảo: (1) gradient không bao giờ bị triệt tiêu với z>0, (2) sparse activation (50% neuron inactive) → biểu diễn tiết kiệm, (3) tính toán cực nhanh (so sánh với 0). Trong thực tế, Dying ReLU ít xảy ra nếu khởi tạo và learning rate hợp lý.</p>
+</div>
+
+<div class="ss-title">Tại sao Zero-Centered quan trọng?</div>
+<p>Sigmoid output ∈ (0,1) — <em>luôn dương</em>. Theo BP3: gradient \(\partial L/\partial W^{(l)} = \delta^{(l)}(a^{(l-1)})^\top\). Nếu tất cả \(a^{(l-1)} > 0\), thì gradient của toàn bộ hàng trong \(W^{(l)}\) cùng dấu với \(\delta^{(l)}\) → cập nhật chỉ đi theo một hướng duy nhất (zig-zag optimization, chậm).</p>
+
+</section>
+
+<hr class="divider">
+
+<!-- ========== SECTION 10: WEIGHT INITIALIZATION ========== -->
+<section id="init">
+<div class="ch-hdr" style="background:linear-gradient(135deg,#134e4a,#0d9488)">
+  <div class="lbl"><i class="fas fa-random"></i> Khởi tạo trọng số</div>
+  <h2>10. Weight Initialization — Phá vỡ Đối xứng &amp; Kiểm soát Variance</h2>
+  <p>Khởi tạo sai → mạng không học được gì dù kiến trúc hoàn hảo.</p>
+</div>
+
+<div class="s-title">10.1 Vấn đề Đối xứng (Symmetry Problem)</div>
+<div class="alert al-red">
+  <div class="alert-title">Nếu khởi tạo tất cả w = 0 (hoặc hằng số)...</div>
+  <p>Tất cả neuron trong cùng một lớp nhận <strong>cùng gradient</strong> (vì đầu vào như nhau, và theo BP3: gradient \(\propto \delta^{(l)} \cdot a^{(l-1)\top}\) — giống nhau cho mọi neuron). Sau mỗi bước update, chúng vẫn giống nhau. Mạng có \(n\) neuron hiệu quả như mạng 1 neuron — lãng phí hoàn toàn.</p>
+</div>
+
+<p><strong>Giải pháp:</strong> khởi tạo <em>ngẫu nhiên</em> để phá vỡ đối xứng. Nhưng scale của random cũng quan trọng:</p>
+
+<div class="s-title">10.2 Xavier / Glorot Initialization</div>
+<p><strong>Bài toán cần giải:</strong> chọn \(\mathrm{Var}(w)\) sao cho variance của activation không bị khuếch đại hoặc triệt tiêu qua nhiều lớp.</p>
+
+<details>
+<summary>Dẫn xuất Xavier từ đầu</summary>
+<div class="dc">
+<p>Xét lớp \(l\): \(z_j = \sum_{i=1}^{n_{in}} w_{ij} a_i\). Giả sử \(a_i\) và \(w_{ij}\) độc lập, \(\mathbb{E}[a_i]=0\), \(\mathbb{E}[w_{ij}]=0\):</p>
+\[ \mathrm{Var}(z_j) = n_{in} \cdot \mathrm{Var}(w) \cdot \mathrm{Var}(a_i) \]
+<p>Muốn \(\mathrm{Var}(z_j) = \mathrm{Var}(a_i)\) (giữ nguyên variance qua lớp forward):</p>
+\[ \mathrm{Var}(w) = \frac{1}{n_{in}} \]
+<p>Tương tự với backward pass, ta cần \(\mathrm{Var}(w) = 1/n_{out}\). Glorot (2010) chọn trung bình hài hòa:</p>
+\[ \boxed{\mathrm{Var}(w) = \frac{2}{n_{in} + n_{out}}} \quad \Leftrightarrow \quad w \sim \mathcal{U}\!\left[-\frac{\sqrt{6}}{\sqrt{n_{in}+n_{out}}},\, \frac{\sqrt{6}}{\sqrt{n_{in}+n_{out}}}\right] \]
+</div>
+</details>
+
+<div class="s-title">10.3 He Initialization (dành cho ReLU)</div>
+<p>Xavier giả định activation gần tuyến tính. ReLU loại bỏ một nửa (z<0) → variance bị giảm đi ½ so với tuyến tính. He (2015) bù lại:</p>
+<div class="flabel">He Initialization</div>
+<div class="fbox">\[ \mathrm{Var}(w) = \frac{2}{n_{in}} \quad \Leftrightarrow \quad w \sim \mathcal{N}\!\left(0,\, \frac{2}{n_{in}}\right) \]</div>
+
+<table class="tbl">
+<tr><th>Phương pháp</th><th>Công thức</th><th>Phù hợp với</th><th>Lý do</th></tr>
+<tr><td>Zeros</td><td>\(w=0\)</td><td>Không dùng</td><td>Symmetry không bị phá</td></tr>
+<tr><td>Small random</td><td>\(\mathcal{N}(0, 0.01^2)\)</td><td>Mạng nông</td><td>Có thể vanishing ở mạng sâu</td></tr>
+<tr><td>Xavier/Glorot</td><td>\(\mathcal{N}(0, 2/(n_{in}+n_{out}))\)</td><td>Sigmoid, Tanh</td><td>Cân bằng variance forward + backward</td></tr>
+<tr><td>He</td><td>\(\mathcal{N}(0, 2/n_{in})\)</td><td>ReLU, Leaky ReLU</td><td>Bù cho việc ReLU loại bỏ 50% activation</td></tr>
+</table>
+
+<div class="alert al-blue">
+  <div class="alert-title">Cách tư duy: Khởi tạo là "thiết lập trạng thái ban đầu"</div>
+  Tưởng tượng training là tối ưu hóa trong không gian tham số rất cao chiều. Khởi tạo xác định bạn bắt đầu ở đâu trong không gian đó. Khởi tạo tệ = bắt đầu ở vùng gradient cực nhỏ (plateaus) → gradient descent không tìm được hướng. Khởi tạo tốt = bắt đầu gần vùng gradient có ý nghĩa.
+</div>
+
+</section>
+
+<hr class="divider">
+
+<!-- ========== SECTION 11: BATCH NORMALIZATION ========== -->
+<section id="batchnorm">
+<div class="ch-hdr" style="background:linear-gradient(135deg,#1e3a5f,#0369a1)">
+  <div class="lbl"><i class="fas fa-balance-scale"></i> Kỹ thuật huấn luyện</div>
+  <h2>11. Batch Normalization — Internal Covariate Shift</h2>
+  <p>Tại sao normalize từng lớp giúp huấn luyện ổn định và nhanh hơn nhiều.</p>
+</div>
+
+<div class="s-title">11.1 Vấn đề: Internal Covariate Shift</div>
+<div class="alert al-yellow">
+  <div class="alert-title">Định nghĩa (Ioffe & Szegedy, 2015)</div>
+  <p><strong>Internal Covariate Shift</strong>: phân phối đầu vào của mỗi lớp thay đổi theo từng bước huấn luyện khi tham số của lớp trước được cập nhật. Lớp sau phải liên tục "thích nghi" với phân phối mới — giống như học với một moving target.</p>
+  <p>Hệ quả: phải dùng learning rate nhỏ, khởi tạo cẩn thận, huấn luyện chậm.</p>
+</div>
+
+<div class="s-title">11.2 Thuật toán Batch Normalization</div>
+<p>Với mini-batch \(\mathcal{B} = \{x_1,\ldots,x_m\}\), tại mỗi feature dimension:</p>
+
+<div class="flabel">BN — Training</div>
+<div class="fbox">\[
+\mu_\mathcal{B} = \frac{1}{m}\sum_{i=1}^m x_i, \quad
+\sigma^2_\mathcal{B} = \frac{1}{m}\sum_{i=1}^m (x_i-\mu_\mathcal{B})^2
+\]
+\[
+\hat{x}_i = \frac{x_i - \mu_\mathcal{B}}{\sqrt{\sigma^2_\mathcal{B}+\epsilon}}, \quad
+y_i = \gamma \hat{x}_i + \beta
+\]</div>
+
+<p>\(\gamma, \beta\) là <strong>learnable parameters</strong> — cho phép mạng học phân phối tối ưu (không nhất thiết phải là \(\mathcal{N}(0,1)\) sau BN).</p>
+
+<div class="s-title">11.3 Training vs Inference — Điểm dễ nhầm</div>
+<div class="alert al-red">
+  <div class="alert-title">Khác biệt quan trọng</div>
+  <p>Lúc <strong>training</strong>: \(\mu, \sigma^2\) tính trên mini-batch → stochastic, phụ thuộc batch size.</p>
+  <p>Lúc <strong>inference</strong>: không có batch → dùng <strong>running mean</strong> và <strong>running variance</strong> tích lũy trong training bằng exponential moving average:</p>
+  \[ \mu_{running} \leftarrow \alpha\,\mu_{running} + (1-\alpha)\,\mu_\mathcal{B} \]
+  <p>Đây là lý do tại sao BN layer có hai chế độ (model.train() vs model.eval() trong PyTorch). Quên chuyển chế độ → inference sử dụng sai statistics → model tệ hơn đột ngột.</p>
+</div>
+
+<div class="s-title">11.4 Cơ chế BN giúp huấn luyện — Đa dạng góc nhìn</div>
+<table class="tbl">
+<tr><th>Góc nhìn</th><th>Giải thích</th></tr>
+<tr><td>Phân phối ổn định</td><td>Mỗi lớp nhận đầu vào với \(\mu \approx 0, \sigma^2 \approx 1\) → không bị saturate, gradient không vanish</td></tr>
+<tr><td>Cho phép LR cao hơn</td><td>Gradient chuẩn hóa tốt hơn → có thể tăng LR 10-100× mà không diverge</td></tr>
+<tr><td>Regularization ngầm</td><td>Mỗi sample được normalize bằng batch statistics (có noise) → giống dropout nhẹ</td></tr>
+<tr><td>Landscape smoother</td><td>BN làm loss landscape phẳng hơn → gradient descent ổn định hơn</td></tr>
+</table>
+
+<div class="alert al-blue">
+  <div class="alert-title">Cách tư duy: BN như "căn chỉnh lại cân" sau mỗi lớp</div>
+  Khi bạn stack nhiều lớp, mỗi lớp biến đổi phân phối dữ liệu. BN "reset" phân phối về dạng chuẩn hóa trước mỗi lớp, nhưng dùng \(\gamma, \beta\) để giữ lại "thông tin đã học". Giống như sau mỗi bước đo lường, bạn zero lại cân — nhưng vẫn nhớ kết quả đo trước.
+</div>
+
+</section>
+
+<hr class="divider">
+
+<!-- ========== SECTION 12: DROPOUT ========== -->
+<section id="dropout">
+<div class="ch-hdr" style="background:linear-gradient(135deg,#4a044e,#7e22ce)">
+  <div class="lbl"><i class="fas fa-random"></i> Regularization</div>
+  <h2>12. Dropout — Cơ chế, Inverted Dropout, và Tại sao Nó Hoạt Động</h2>
+  <p>Một kỹ thuật đơn giản nhưng hiệu lực: huấn luyện mạng như một ensemble ngầm định.</p>
+</div>
+
+<div class="s-title">12.1 Cơ chế Dropout</div>
+<p>Với xác suất \(p\) (thường 0.5 cho hidden, 0.1-0.2 cho input/output), mỗi neuron được <em>tắt</em> (output = 0) độc lập tại mỗi bước training. Gradient qua neuron đó cũng = 0 → trọng số kết nối với nó không được cập nhật.</p>
+
+<div class="s-title">12.2 Inverted Dropout — Tại sao Cần Scale?</div>
+<div class="alert al-red">
+  <div class="alert-title">Vấn đề không scale</div>
+  <p>Training: kỳ vọng output của neuron = \((1-p) \cdot \text{output}\) (vì bị tắt với prob p).<br>
+  Inference: neuron luôn bật → output = output gốc.<br>
+  <strong>→ Không nhất quán:</strong> inference nhận tín hiệu lớn hơn \(1/(1-p)\) lần so với training.</p>
+</div>
+
+<div class="flabel">Inverted Dropout (chuẩn)</div>
+<div class="fbox">\[
+\text{Training: } \tilde{a}_i = \frac{a_i \cdot \text{Bernoulli}(1-p)}{1-p}
+\quad \Rightarrow \quad \mathbb{E}[\tilde{a}_i] = a_i
+\]
+\[
+\text{Inference: } \tilde{a}_i = a_i \quad \text{(không thay đổi gì)}
+\]</div>
+
+<p>Chia cho \((1-p)\) ngay trong training → inference không cần làm gì — đây là lý do tại sao PyTorch dùng inverted dropout mặc định.</p>
+
+<div class="s-title">12.3 Tại sao Dropout Hoạt Động?</div>
+<table class="tbl">
+<tr><th>Góc nhìn</th><th>Giải thích</th></tr>
+<tr><td>Co-adaptation prevention</td><td>Neuron không thể phụ thuộc vào một neuron cụ thể khác (nó có thể bị tắt bất kỳ lúc nào) → phải học các feature độc lập, robust</td></tr>
+<tr><td>Implicit ensemble</td><td>Mỗi bước training dùng một "thinned network" khác nhau. Inference ≈ trung bình hình học của \(2^n\) sub-networks (với n neurons)</td></tr>
+<tr><td>Noise injection</td><td>Thêm noise vào activations → regularization, giảm overfitting tương tự data augmentation</td></tr>
+<tr><td>Sparsity</td><td>Khuyến khích biểu diễn sparse — neuron chỉ fire khi thực sự cần thiết</td></tr>
+</table>
+
+<div class="alert al-blue">
+  <div class="alert-title">Cách tư duy: Dropout như "trộn team ngẫu nhiên"</div>
+  Tưởng tượng một công ty (mạng) với nhiều nhân viên (neurons). Nếu có một "ngôi sao" (neuron đặc biệt quan trọng), cả team phụ thuộc vào họ → fragile. Dropout buộc mỗi nhân viên phải có năng lực độc lập, vì họ không biết hôm nay team có ai. Kết quả: mỗi neuron học feature có giá trị độc lập.
+</div>
+
+</section>
+
+<hr class="divider">
+
+<!-- ========== SECTION 13: UNIVERSAL APPROXIMATION & DEPTH ========== -->
+<section id="uat">
+<div class="ch-hdr" style="background:linear-gradient(135deg,#1c3a2a,#15803d)">
+  <div class="lbl"><i class="fas fa-infinity"></i> Lý thuyết biểu diễn</div>
+  <h2>13. Universal Approximation Theorem &amp; Depth vs Width</h2>
+  <p>Một lớp ẩn đủ rộng có thể xấp xỉ bất kỳ hàm nào — nhưng điều đó có thực sự có nghĩa không?</p>
+</div>
+
+<div class="s-title">13.1 Universal Approximation Theorem (Cybenko, 1989)</div>
+<div class="alert al-green">
+  <div class="alert-title">Phát biểu chính thức (phiên bản đơn giản)</div>
+  <p>Với bất kỳ hàm liên tục \(f: \mathbb{R}^n \to \mathbb{R}\) và \(\epsilon > 0\), tồn tại một mạng nơ-ron <strong>một lớp ẩn</strong> với đủ nhiều neuron sao cho:</p>
+  \[ \sup_{x \in K} |F(x) - f(x)| < \epsilon \]
+  <p>với \(K\) compact và \(F\) là output của mạng dùng hàm kích hoạt <em>squashing</em> (e.g. sigmoid).</p>
+</div>
+
+<div class="s-title">13.2 Ba điều UAT KHÔNG nói</div>
+<div class="alert al-red">
+  <div class="alert-title">Những gì UAT im lặng về — quan trọng nhất</div>
+  <ol style="padding-left:1.2rem">
+    <li style="margin:.4rem 0"><strong>Không nói bao nhiêu neuron:</strong> có thể cần số neuron theo hàm mũ — bất khả thi trong thực tế.</li>
+    <li style="margin:.4rem 0"><strong>Không nói làm thế nào để tìm:</strong> gradient descent không đảm bảo hội tụ đến mạng optimal đó.</li>
+    <li style="margin:.4rem 0"><strong>Không nói về generalization:</strong> mạng xấp xỉ tốt trên training không có nghĩa tốt trên test. UAT là about expressiveness, không phải learnability.</li>
+  </ol>
+</div>
+
+<div class="s-title">13.3 Lợi thế của Depth (Mạng Sâu) vs Width (Mạng Rộng)</div>
+<table class="tbl">
+<tr><th>Khía cạnh</th><th>Mạng Rộng (1 lớp)</th><th>Mạng Sâu (nhiều lớp)</th></tr>
+<tr><td>Biểu diễn hàm</td><td>Cần hàm mũ neurons cho hàm phức tạp</td><td>Số neurons polynomial — hiệu quả hơn về mặt lý thuyết</td></tr>
+<tr><td>Cấu trúc phân cấp</td><td>Không thể tận dụng</td><td>Lớp 1: edges → lớp 2: shapes → lớp 3: objects (feature hierarchy)</td></tr>
+<tr><td>Tái sử dụng computation</td><td>Không</td><td>Sub-network ở lớp thấp được dùng cho nhiều mục đích khác nhau</td></tr>
+<tr><td>Optimization</td><td>Nhiều saddle points</td><td>Landscape tốt hơn (thực nghiệm)</td></tr>
+<tr><td>Generalization</td><td>Thường kém hơn với cùng tham số</td><td>Inductive bias tốt hơn cho dữ liệu có cấu trúc phân cấp</td></tr>
+</table>
+
+<div class="alert al-blue">
+  <div class="alert-title">Cách tư duy: Depth như "lập trình có hàm" vs "inline hết"</div>
+  <p>Mạng nông (1 lớp) giống như viết code với mọi thứ inline — có thể làm được nhưng rất dài. Mạng sâu giống như có functions: lớp thấp học "primitive operations" (edges, textures), lớp cao tái sử dụng và kết hợp thành "higher-level concepts". Điều này không chỉ tiết kiệm tham số mà còn tạo ra biểu diễn có tính compositional — phản ánh cấu trúc thật sự của thế giới.</p>
+</div>
+
+</section>
+
+<hr class="divider">
+
+<!-- ========== SECTION 14: OPTIMIZATION ALGORITHMS ========== -->
+<section id="optim">
+<div class="ch-hdr" style="background:linear-gradient(135deg,#1c1917,#78350f)">
+  <div class="lbl"><i class="fas fa-tachometer-alt"></i> Tối ưu hóa</div>
+  <h2>14. SGD → Momentum → Adam — Tiến hóa của Optimization</h2>
+  <p>Từ vanilla gradient descent đến adaptive learning rates — mỗi bước giải quyết một vấn đề cụ thể.</p>
+</div>
+
+<div class="s-title">14.1 Vấn đề của Vanilla SGD</div>
+<p>SGD cập nhật: \(w \leftarrow w - \eta \nabla L(w)\). Ba vấn đề chính:</p>
+<ul>
+  <li><strong>Oscillation:</strong> Trên "ravine" (hàm hẹp một chiều, rộng chiều kia), gradient dao động ngang nhiều trong khi tiến thẳng chậm.</li>
+  <li><strong>Saddle points:</strong> Gradient ≈ 0 nhưng không phải minimum — SGD bị kẹt.</li>
+  <li><strong>Cùng LR cho tất cả parameters:</strong> Parameter hiếm (sparse features) cần LR lớn hơn tham số dày đặc.</li>
+</ul>
+
+<div class="s-title">14.2 Momentum — Giải quyết Oscillation &amp; Saddle Points</div>
+<div class="flabel">SGD + Momentum</div>
+<div class="fbox">\[
+v_t = \beta v_{t-1} + (1-\beta)\nabla L(w_t), \quad w_{t+1} = w_t - \eta v_t
+\]</div>
+<p>\(v_t\) là <em>velocity</em> — exponential moving average của gradient. Với \(\beta \approx 0.9\):</p>
+<ul>
+  <li>Hướng gradient nhất quán → velocity tích lũy → đi nhanh hơn (exponential).</li>
+  <li>Hướng gradient dao động → velocity triệt tiêu nhau → giảm oscillation.</li>
+  <li>Tại saddle point: gradient ≈ 0 nhưng momentum mang theo velocity cũ → tiếp tục đi qua.</li>
+</ul>
+
+<div class="s-title">14.3 Adam — Adaptive Moment Estimation</div>
+<p>Adam = Momentum (1st moment) + RMSProp (2nd moment) + Bias Correction.</p>
+<div class="flabel">Adam Update Rules</div>
+<div class="fbox">\[
+m_t = \beta_1 m_{t-1} + (1-\beta_1)g_t \qquad \text{(1st moment — mean)}
+\]
+\[
+v_t = \beta_2 v_{t-1} + (1-\beta_2)g_t^2 \qquad \text{(2nd moment — uncentered variance)}
+\]
+\[
+\hat{m}_t = \frac{m_t}{1-\beta_1^t}, \quad \hat{v}_t = \frac{v_t}{1-\beta_2^t} \qquad \text{(bias correction)}
+\]
+\[
+w_{t+1} = w_t - \frac{\eta}{\sqrt{\hat{v}_t}+\epsilon}\,\hat{m}_t
+\]</div>
+
+<details>
+<summary>Tại sao cần Bias Correction?</summary>
+<div class="dc">
+<p>Ban đầu \(m_0 = v_0 = 0\). Tại bước \(t=1\): \(m_1 = (1-\beta_1)g_1\) — nếu \(\beta_1=0.9\) thì \(m_1 = 0.1 g_1\), nhỏ hơn gradient thật 10 lần. Điều này tạo ra bias lớn ở những bước đầu.</p>
+<p>Nhận thấy: \(\mathbb{E}[m_t] = (1-\beta_1^t)\,\mathbb{E}[g_t]\). Chia cho \((1-\beta_1^t)\) để hiệu chỉnh.</p>
+<p>Khi \(t\) lớn: \(\beta_1^t \to 0\) → correction factor \(\to 1\) → không còn quan trọng nữa. Bias correction chỉ ảnh hưởng mạnh trong 10-20 bước đầu.</p>
+</div>
+</details>
+
+<div class="s-title">14.4 So sánh Tổng quan</div>
+<table class="tbl">
+<tr><th>Optimizer</th><th>Ưu điểm</th><th>Nhược điểm</th><th>Dùng khi</th></tr>
+<tr><td>SGD</td><td>Đơn giản, thường tổng quát hóa tốt nhất</td><td>LR nhạy cảm, chậm hội tụ</td><td>CV (ResNet, với LR schedule)</td></tr>
+<tr><td>SGD + Momentum</td><td>Giảm oscillation, vượt saddle points</td><td>Vẫn cần tune LR</td><td>Phổ biến cho CV</td></tr>
+<tr><td>Adam</td><td>Hội tụ nhanh, ít tune, tốt cho sparse data</td><td>Có thể generalize kém hơn SGD, memory ×2</td><td>NLP, sparse data, prototyping</td></tr>
+<tr><td>AdamW</td><td>Sửa L2 regularization đúng cách cho Adam</td><td>Vẫn có vấn đề generalization</td><td>Transformer, BERT, GPT</td></tr>
+</table>
+
+<div class="alert al-blue">
+  <div class="alert-title">Cách tư duy: Adam như "người chạy có GPS &amp; nhớ tốc độ"</div>
+  <p><strong>SGD</strong>: chạy theo hướng dốc nhất hiện tại, không nhớ đã đi đâu.<br>
+  <strong>Momentum</strong>: nhớ hướng đang chạy, không đổi hướng đột ngột — như quán tính vật lý.<br>
+  <strong>Adam</strong>: ngoài quán tính, còn biết mỗi chiều đường dốc bao nhiêu (\(\hat{v}_t\) đo variance) → tự điều chỉnh tốc độ: chiều dốc nhiều → đi chậm (chia cho \(\sqrt{\hat{v}_t}\) lớn), chiều dốc ít → đi nhanh.<br>
+  Kết quả: Adam như xe có traction control — tự động thích nghi với địa hình.</p>
+</div>
+
+<div class="alert al-yellow" style="margin-top:1rem">
+  <div class="alert-title">Câu hỏi tư duy: Tại sao SGD vẫn được dùng cho CV mặc dù Adam nhanh hơn?</div>
+  <p>Thực nghiệm cho thấy SGD với LR schedule phù hợp thường đạt test accuracy cao hơn Adam ở cuối training. Lý do đề xuất: Adam step size bị "adaptive" → mỗi chiều tham số học ở tốc độ khác nhau → có thể fit những pattern rất specific trong training set mà không generalize. SGD đơn giản hơn, ít "nhớ quá nhiều" về gradient landscape → implicit regularization tốt hơn.</p>
+</div>
+
+</section>
+
+<hr class="divider">
+
+<!-- ========== SECTION 15: TỔNG KẾT TƯ DUY ========== -->
+<section id="summary">
+<div class="ch-hdr" style="background:linear-gradient(135deg,#0f172a,#334155)">
+  <div class="lbl"><i class="fas fa-brain"></i> Tổng kết</div>
+  <h2>15. Bản đồ Tư duy: Kết nối các Khái niệm</h2>
+  <p>Các vấn đề trong deep learning không tồn tại độc lập — chúng liên hệ chặt chẽ với nhau.</p>
+</div>
+
+<table class="tbl">
+<tr><th>Vấn đề</th><th>Nguyên nhân gốc</th><th>Giải pháp</th><th>Liên quan đến</th></tr>
+<tr><td>Gradient vanishing</td><td>σ'(z) ≤ 0.25, tích qua L lớp → 0</td><td>ReLU, Residual, BN</td><td>Activation choice, Architecture</td></tr>
+<tr><td>Symmetry không phá được</td><td>Khởi tạo uniform/zero</td><td>Xavier/He random init</td><td>Expressiveness, convergence</td></tr>
+<tr><td>Internal covariate shift</td><td>Phân phối input thay đổi theo training</td><td>Batch Normalization</td><td>Training stability, LR</td></tr>
+<tr><td>Co-adaptation / Overfitting</td><td>Neurons phụ thuộc quá vào nhau</td><td>Dropout</td><td>Generalization, ensemble</td></tr>
+<tr><td>Slow convergence / Oscillation</td><td>Gradient dao động, LR không phù hợp</td><td>Momentum, Adam</td><td>Optimization landscape</td></tr>
+<tr><td>Mạng không đủ biểu diễn</td><td>Quá nông hoặc quá hẹp</td><td>Depth + Width balance</td><td>UAT, inductive bias</td></tr>
+</table>
+
+<div class="alert al-green" style="margin-top:1rem">
+  <div class="alert-title">Nguyên tắc tư duy tổng quát cho Deep Learning</div>
+  <ol style="padding-left:1.2rem">
+    <li style="margin:.35rem 0"><strong>Gradient là "tiền tệ" của học:</strong> mọi kỹ thuật đều hướng đến việc giữ gradient có giá trị ở mọi lớp, mọi bước.</li>
+    <li style="margin:.35rem 0"><strong>Scale luôn quan trọng:</strong> activation, weight, gradient, learning rate — tất cả đều phải được kiểm soát scale để không vanish/explode.</li>
+    <li style="margin:.35rem 0"><strong>Stochasticity là tính năng, không phải lỗi:</strong> mini-batch noise, dropout randomness, BatchNorm variance đều có tác dụng regularization ngầm.</li>
+    <li style="margin:.35rem 0"><strong>Đánh đổi bias-variance xuyên suốt:</strong> depth ↑ → expressiveness ↑ nhưng optimization khó hơn; regularization ↑ → variance ↓ nhưng bias ↑.</li>
+  </ol>
+</div>
+
+</section>
 
 </main>
 
