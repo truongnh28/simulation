@@ -150,6 +150,8 @@ strong{color:#1e293b}
 <div class="tab-bar">
   <button class="tab-btn active" onclick="switchTab('t1',this)"><i class="fas fa-project-diagram"></i> Đề A — SVM · Neural Net · Ensemble · HMM</button>
   <button class="tab-btn" onclick="switchTab('t2',this)"><i class="fas fa-seedling"></i> Đề B — KNN · Naive Bayes · Cây · K-Means · LogReg</button>
+  <button class="tab-btn" onclick="switchTab('t3',this)"><i class="fas fa-fire"></i> Đề C — Deep Learning &amp; Tối ưu hóa</button>
+  <button class="tab-btn" onclick="switchTab('t4',this)"><i class="fas fa-atom"></i> Đề D — Đánh giá · Lý thuyết · Tổng hợp</button>
 </div>
 
 <!-- ==================== ĐỀ A ==================== -->
@@ -759,6 +761,746 @@ Tỷ số này có ý nghĩa trực quan là:</div>
 </div>
 
 </div><!-- /tab t2 -->
+
+<!-- ==================== ĐỀ C ==================== -->
+<div id="t3" class="tab-content">
+
+<div class="alert al-green">
+  <div class="alert-title"><i class="fas fa-check-circle"></i> ĐÁP ÁN NHANH — Đề C</div>
+  <p style="font-family:monospace;font-size:.9rem">
+  1.B | 2.B | 3.B | 4.B | 5.B | 6.B | 7.B | 8.B | 9.B | 10.B<br>
+  11.B | 12.B | 13.B | 14.B | 15.B | 16.B | 17.B | 18.B | 19.B | 20.B<br>
+  21.D | 22.B | 23.B | 24.B | 25.B
+  </p>
+</div>
+
+<div class="s-title">Phần 1 — Optimization &amp; Training (Câu 1–10)</div>
+
+<!-- C1 -->
+<div class="qcard">
+<div class="qhdr">Câu 1 — Mini-batch SGD: Noise như là Regularization</div>
+<div class="qbody">
+<div class="qq">Tại sao mini-batch SGD thường generalize tốt hơn full-batch GD, không chỉ vì tốc độ tính toán?</div>
+<div class="qopt qwrong">A. Full-batch GD luôn converge về global minimum nên tốt hơn.</div>
+<div class="qopt qok">B. Mini-batch gradient là noisy estimator → noise tạo "stochastic regularization" giúp escape sharp/narrow minima → converge đến flatter minima với lower test error. Full-batch có thể converge đến sharp minima gần initialization với high generalization gap. ✓</div>
+<div class="qopt qwrong">C. Mini-batch chỉ nhanh hơn, accuracy không khác gì full-batch.</div>
+<div class="qopt qwrong">D. Mini-batch dùng learning rate lớn hơn, đó là lý do duy nhất.</div>
+<div class="qexp"><strong>Giải thích:</strong> Keskar et al. (2017) chứng minh experimentally: large-batch training converge đến sharp minimizers (large eigenvalues of Hessian) → poor generalization; small-batch tìm flat minimizers → robust. Gradient noise trong mini-batch hoạt động như implicit regularizer. Đây là lý do "linear scaling rule" (tăng batch size → tăng lr tương ứng) không hoàn toàn preserve generalization.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Deep Learning &amp; Optimization</a></div>
+</div>
+</div>
+
+<!-- C2 -->
+<div class="qcard">
+<div class="qhdr">Câu 2 — Adam Optimizer: Bias Correction</div>
+<div class="qbody">
+<div class="qq">Adam dùng moment estimates \(\hat{m}_t=m_t/(1-\beta_1^t)\) và \(\hat{v}_t=v_t/(1-\beta_2^t)\). Tại sao cần bias correction?</div>
+<div class="qopt qwrong">A. Để normalize gradient về \([0,1]\) cho stability.</div>
+<div class="qopt qok">B. \(m_0=0, v_0=0\) → estimates bị biased về 0 trong bước đầu (đặc biệt với \(\beta_1=0.9\): \(m_1=0.1g_1\), thay vì \(g_1\)). Bias correction \(\hat{m}_t=m_t/(1-\beta_1^t)\) → expected value đúng với true moment. Sau nhiều steps, \(\beta^t\to 0\) → correction tự biến mất. ✓</div>
+<div class="qopt qwrong">C. Để đảm bảo effective learning rate không âm.</div>
+<div class="qopt qwrong">D. Là convention không có lý do toán học.</div>
+<div class="qexp"><strong>Giải thích:</strong> \(E[m_t]=E\left[\sum_{i=1}^t(1-\beta_1)\beta_1^{t-i}g_i\right]=(1-\beta_1^t)E[g]\). Chia \((1-\beta_1^t)\) cho \(\hat{m}_t=E[g]\) (unbiased). Tương tự với \(v_t\). Không có bias correction: Adam hiệu quả dùng lr rất nhỏ ban đầu → chậm warmup. Với correction: lr ổn định từ bước 1.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Optimizers</a></div>
+</div>
+</div>
+
+<!-- C3 -->
+<div class="qcard">
+<div class="qhdr">Câu 3 — Gradient Clipping: Explosion trong RNN</div>
+<div class="qbody">
+<div class="qq">Gradient explosion xảy ra phổ biến nhất trong RNN. Clipping by norm giải quyết như thế nào và tại sao không dùng clipping by value?</div>
+<div class="qopt qwrong">A. Explosion chỉ xảy ra trong RNN với sigmoid, không với tanh/ReLU.</div>
+<div class="qopt qok">B. RNN backprop qua T steps nhân Jacobian T lần: nếu eigenvalue max > 1, norm tăng theo hàm mũ. Clipping by norm: \(\mathbf{g}\leftarrow\mathbf{g}\cdot\frac{\text{threshold}}{\|\mathbf{g}\|}\) nếu \(\|\mathbf{g}\|>\text{threshold}\) — giữ nguyên hướng gradient, chỉ scale magnitude. Clipping by value thay đổi hướng → gradient không còn steepest descent direction. ✓</div>
+<div class="qopt qwrong">C. Clipping thay đổi hướng gradient để tránh vùng nguy hiểm trong loss landscape.</div>
+<div class="qopt qwrong">D. Gradient explosion chỉ xảy ra khi learning rate > 1.</div>
+<div class="qexp"><strong>Giải thích:</strong> BPTT (Backprop Through Time): gradient \(\propto \prod_{t=1}^T W_{rec}\). Nếu \(\rho(W_{rec})>1\) (spectral radius lớn hơn 1) → gradient explosion. Nếu \(<1\) → vanishing. LSTM giải quyết vanishing (qua cell state, constant error carousel), clipping giải quyết explosion. Clipping by value (clip từng element) thay đổi hướng → tệ hơn.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Recurrent Networks</a></div>
+</div>
+</div>
+
+<!-- C4 -->
+<div class="qcard">
+<div class="qhdr">Câu 4 — Residual Connections: Gradient Highway</div>
+<div class="qbody">
+<div class="qq">Skip connection trong ResNet: \(H(\mathbf{x})=F(\mathbf{x},W)+\mathbf{x}\). Tại sao điều này giải quyết vanishing gradient trong mạng rất sâu?</div>
+<div class="qopt qwrong">A. Skip connection giảm số layers cần backprop qua.</div>
+<div class="qopt qok">B. Gradient qua skip: \(\frac{\partial\mathcal{L}}{\partial\mathbf{x}}=\frac{\partial\mathcal{L}}{\partial H}\cdot\left(\frac{\partial F}{\partial\mathbf{x}}+\mathbf{I}\right)\). Số hạng \(\mathbf{I}\) đảm bảo gradient luôn có identity component → không vanish dù \(\partial F/\partial\mathbf{x}\approx\mathbf{0}\). Mạng học residual \(F(\mathbf{x})\approx 0\) dễ hơn học identity mapping \(H(\mathbf{x})=\mathbf{x}\). ✓</div>
+<div class="qopt qwrong">C. Skip connection tạo ensemble của shallow và deep networks tường minh.</div>
+<div class="qopt qwrong">D. Skip connection giảm số parameters cần optimize.</div>
+<div class="qexp"><strong>Giải thích:</strong> He et al. (2016): identity shortcut = "gradient highway" — signal truyền thẳng từ output về đầu mà không bị suy giảm. Đây là lý do ResNet-152 (152 layers) train được mà VGG-19 (19 layers, không có skip) đã khó. Cũng giải thích tại sao residual learning dễ hơn: if optimal H ≈ identity, F cần học ≈ 0 (dễ) thay vì mạng cần học identity mapping từ đầu (khó).
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — ResNet &amp; Skip Connections</a></div>
+</div>
+</div>
+
+<!-- C5 -->
+<div class="qcard">
+<div class="qhdr">Câu 5 — Scaled Dot-Product Attention: Tại sao chia √d_k?</div>
+<div class="qbody">
+<div class="qq">\(\text{Attention}(Q,K,V)=\text{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right)V\). Lý do chia \(\sqrt{d_k}\):</div>
+<div class="qopt qwrong">A. Để normalize attention weights về \([0,1]\) — softmax đã làm điều này.</div>
+<div class="qopt qok">B. Với \(q,k\sim\mathcal{N}(0,1)\), dot product \(q\cdot k=\sum_{i=1}^{d_k}q_ik_i\) có variance \(=d_k\). Khi \(d_k\) lớn: dot products lớn → softmax saturate (extreme values → gradients ≈ 0). Chia \(\sqrt{d_k}\) giảm variance về 1 → softmax hoạt động ở vùng non-saturated → gradient flow tốt. ✓</div>
+<div class="qopt qwrong">C. \(\sqrt{d_k}\) là số query heads, cần chia để tính mean.</div>
+<div class="qopt qwrong">D. Để đảm bảo attention weights tổng = 1 (softmax đã đảm bảo).</div>
+<div class="qexp"><strong>Giải thích:</strong> Vaswani et al. (2017) "Attention is All You Need". Với \(d_k=512\): \(\text{Var}(q\cdot k)=512\), standard deviation = \(\sqrt{512}\approx 22.6\). Softmax với logits range \(\pm 22\) → nearly one-hot → gradients ≈ 0. Chia \(\sqrt{512}\) → logits \(\sim\mathcal{N}(0,1)\) → softmax ở vùng smooth. Multi-head attention: \(h\) heads, mỗi head với \(d_k=d_{model}/h\) → chia \(\sqrt{d_{model}/h}\).
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Attention Mechanism</a></div>
+</div>
+</div>
+
+<!-- C6 -->
+<div class="qcard">
+<div class="qhdr">Câu 6 — Softmax Temperature: T→0 và T→∞</div>
+<div class="qbody">
+<div class="qq">Softmax với temperature: \(P(i)=\frac{\exp(z_i/T)}{\sum_j\exp(z_j/T)}\). Behavior khi \(T\to 0\) và \(T\to\infty\)?</div>
+<div class="qopt qwrong">A. \(T\to 0\): uniform; \(T\to\infty\): one-hot (argmax).</div>
+<div class="qopt qok">B. \(T\to 0\): one-hot (argmax — distribution cực "peaky" tập trung vào class có logit lớn nhất); \(T\to\infty\): uniform distribution (mọi class ngang nhau, entropy tối đa). ✓</div>
+<div class="qopt qwrong">C. \(T\) không ảnh hưởng đến argmax, chỉ scale magnitude.</div>
+<div class="qopt qwrong">D. \(T=1\) là optimal; \(T\neq 1\) gây undefined behavior.</div>
+<div class="qexp"><strong>Giải thích:</strong> Khi \(T\to 0\): \(z_i/T\to\pm\infty\) → softmax → one-hot với \(P(\text{argmax})=1\). Khi \(T\to\infty\): \(z_i/T\to 0\) với mọi \(i\) → softmax \(\to 1/K\). Ứng dụng: (1) Knowledge Distillation dùng \(T>1\) để "soft labels" từ teacher carry more information; (2) Language model sampling dùng \(T\) để control diversity (T thấp → greedy/conservative, T cao → creative/random).
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Deep Learning Techniques</a></div>
+</div>
+</div>
+
+<!-- C7 -->
+<div class="qcard">
+<div class="qhdr">Câu 7 — Transfer Learning: Tại sao lớp đầu transfer được?</div>
+<div class="qbody">
+<div class="qq">Tại sao CNN pretrained trên ImageNet transfer tốt sang domains rất khác (medical imaging, satellite) — ngay cả lớp đầu?</div>
+<div class="qopt qwrong">A. Vì ImageNet chứa đủ variety để cover mọi domain ảnh.</div>
+<div class="qopt qok">B. Lớp đầu học low-level features (edges, Gabor-like filters, color blobs) — universal properties của natural images do shared statistics (not domain-specific). Lớp cuối học high-level, class-specific features → cần fine-tune. Yosinski et al. (2014) đo transferability giảm dần từ lớp 1 đến lớp cuối. ✓</div>
+<div class="qopt qwrong">C. Transfer learning chỉ hoạt động khi source và target domain tương tự nhau.</div>
+<div class="qopt qwrong">D. Lớp cuối transfer tốt hơn lớp đầu vì chứa abstract knowledge.</div>
+<div class="qexp"><strong>Giải thích:</strong> Zeiler &amp; Fergus (2014) visualize CNN features: lớp 1 = oriented edges; lớp 2 = textures; lớp 3 = patterns; lớp 4 = parts; lớp 5 = objects. Edges và textures là universal. Medical images cũng có edges (boundaries of organs). Thực hành: freeze lớp đầu, fine-tune lớp cuối. Với very different domain, unfreeze thêm lớp. Với ít data: freeze nhiều hơn.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Transfer Learning</a></div>
+</div>
+</div>
+
+<!-- C8 -->
+<div class="qcard">
+<div class="qhdr">Câu 8 — Data Augmentation: Tác động lý thuyết</div>
+<div class="qbody">
+<div class="qq">Data augmentation (flip, rotate, crop, color jitter...) giảm test error. Về mặt lý thuyết, tác động chính là gì?</div>
+<div class="qopt qwrong">A. Augmentation tăng training data → giảm bias của model.</div>
+<div class="qopt qok">B. Augmentation encode invariances của task trực tiếp vào training distribution. Với augmentation: mô hình học \(P(y|\text{transform}(x))=P(y|x)\) → giảm variance với transformations. Cũng hoạt động như regularizer (model không thể memorize augmented data dễ dàng) → giảm overfitting. ✓</div>
+<div class="qopt qwrong">C. Augmentation chỉ useful với CNNs; MLP không hưởng lợi.</div>
+<div class="qopt qwrong">D. Augmentation tăng training error → prevents memorization (như label noise).</div>
+<div class="qexp"><strong>Giải thích:</strong> Hai cơ chế: (1) Invariance injection: rotated cat = cat, model phải agree. (2) Regularization: training set lớn hơn (artifically) → khó overfit. Augmentation tốt nhất khi align với true invariances của task: horizontal flip tốt cho ImageNet (đối xứng trái-phải), không tốt cho digit recognition (6 ≠ 9 flipped). MixUp, CutMix, AutoAugment là advanced techniques.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Regularization</a></div>
+</div>
+</div>
+
+<!-- C9 -->
+<div class="qcard">
+<div class="qhdr">Câu 9 — Early Stopping: Implicit Regularization</div>
+<div class="qbody">
+<div class="qq">Early stopping được xem là form of regularization. Nó implicit control hyperparameter nào?</div>
+<div class="qopt qwrong">A. Learning rate — dừng sớm ≈ dùng lr nhỏ hơn.</div>
+<div class="qopt qok">B. Effective model complexity / distance of weights from initialization. Với gradient descent từ \(\mathbf{w}_0\), dừng ở bước \(t\) → weights trong ball bán kính \(O(\eta t)\) quanh \(\mathbf{w}_0\). Tương đương L2 regularization với \(\lambda\propto 1/(\eta t)\). ✓</div>
+<div class="qopt qwrong">C. Batch size — dừng sớm = implicit larger batch training.</div>
+<div class="qopt qwrong">D. Số lớp — dừng sớm làm lớp cuối không được train đủ.</div>
+<div class="qexp"><strong>Giải thích:</strong> Bishop (1995) &amp; Sjöberg-Ljung: với gradient flow (continuous-time GD), early stopping tương đương L2 regularization với strength tỷ lệ nghịch với training time. Thực hành: monitor validation loss, dừng khi validation loss bắt đầu tăng, restore best checkpoint. Cần separate validation set (không dùng test set) để quyết định khi nào dừng — nếu không là data leakage.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Regularization &amp; Overfitting</a></div>
+</div>
+</div>
+
+<!-- C10 -->
+<div class="qcard">
+<div class="qhdr">Câu 10 — Learning Rate: Quá lớn vs Quá nhỏ</div>
+<div class="qbody">
+<div class="qq">Điều gì xảy ra về mặt toán học khi learning rate \(\eta\) quá lớn trong gradient descent: \(\mathbf{w}_{t+1}=\mathbf{w}_t-\eta\nabla\mathcal{L}\)?</div>
+<div class="qopt qwrong">A. Converge về wrong local minimum vì gradient step quá lớn.</div>
+<div class="qopt qok">B. Loss diverge hoặc oscillate: quadratic loss \(\mathcal{L}(w)=\frac{1}{2}Lw^2\) → GD converge iff \(\eta<2/L\) (Lipschitz smoothness condition). Khi \(\eta>2/L\): mỗi bước overshoot minimum, amplitudes tăng → diverge. Với non-convex loss: escape local minimum nhưng có thể không ổn định. ✓</div>
+<div class="qopt qwrong">C. Gradient về 0 nhanh → mô hình overfit do quá ít bước cập nhật.</div>
+<div class="qopt qwrong">D. Model trở nên sparse vì nhiều gradients bị cancel khi oscillate.</div>
+<div class="qexp"><strong>Giải thích:</strong> Với convex quadratic: \(w_{t+1}=(1-\eta L)w_t\). Converge iff \(|1-\eta L|<1\) iff \(0<\eta<2/L\). Optimal \(\eta=1/L\) (fastest convergence). Cyclical learning rates (Smith 2017) exploit this: oscillate between bounds → explore different parts of loss landscape. Learning rate warmup: start small, ramp up → stability early training + fast convergence later.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Optimization</a></div>
+</div>
+</div>
+
+<div class="s-title">Phần 2 — Architecture &amp; Advanced Techniques (Câu 11–20)</div>
+
+<!-- C11 -->
+<div class="qcard">
+<div class="qhdr">Câu 11 — Loss Landscape của Deep Networks</div>
+<div class="qbody">
+<div class="qq">Điều nào sau đây mô tả chính xác nhất về loss landscape của deep neural networks (theo research hiện đại)?</div>
+<div class="qopt qwrong">A. Có rất nhiều local minima "xấu" (high loss) — đây là thách thức chính.</div>
+<div class="qopt qok">B. Phần lớn local minima có quality tương đương (low loss); thách thức chính đến từ saddle points (số chiều bằng 0 curvature lớn trong high-dimensional space) và flat plateaus. SGD thường tìm được "good enough" local minima. ✓</div>
+<div class="qopt qwrong">C. Loss landscape là convex nếu dùng ReLU activations.</div>
+<div class="qopt qwrong">D. Deeper networks có nhiều local minima xấu hơn shallow networks.</div>
+<div class="qexp"><strong>Giải thích:</strong> Dauphin et al. (2014), Goodfellow et al.: trong high-dimensional spaces, saddle points (not local minima) là main obstacle. A saddle point có \(d\) directions — xác suất tất cả đều concave (= local minima) là \((1/2)^d\to 0\) khi \(d\) lớn. Hầu hết "local minima" thực ra là saddle points với rất nhiều escape directions. SGD noise giúp escape saddle points. Batch GD có thể stuck lâu hơn tại saddle.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Loss Landscape</a></div>
+</div>
+</div>
+
+<!-- C12 -->
+<div class="qcard">
+<div class="qhdr">Câu 12 — BatchNorm: Inference Time</div>
+<div class="qbody">
+<div class="qq">BatchNorm dùng \(\mu_B, \sigma_B^2\) từ mini-batch khi training. Khi inference với 1 sample, làm thế nào để tránh phụ thuộc vào batch?</div>
+<div class="qopt qwrong">A. Tính \(\mu, \sigma\) từ chính 1 sample đó.</div>
+<div class="qopt qok">B. Dùng running statistics: exponential moving average \(\mu_{pop}\leftarrow(1-\alpha)\mu_{pop}+\alpha\mu_B\) và \(\sigma_{pop}^2\leftarrow(1-\alpha)\sigma_{pop}^2+\alpha\sigma_B^2\) tích lũy trong training → normalize bằng \(\mu_{pop}, \sigma_{pop}^2\) đại diện toàn training distribution. ✓</div>
+<div class="qopt qwrong">C. Tắt BatchNorm hoàn toàn tại inference (identity transform).</div>
+<div class="qopt qwrong">D. Dùng \(\mu=0, \sigma^2=1\) mặc định.</div>
+<div class="qexp"><strong>Giải thích:</strong> BatchNorm có 2 modes: train (dùng batch stats) và eval (dùng running stats). Quan trọng: phải call \(\text{model.eval()}\) trong PyTorch trước inference — nếu không, model vẫn dùng batch stats của 1 sample → normalize bằng mean và std của 1 điểm → output có thể rất khác. Đây là lỗi phổ biến khi deploy models. Layer Norm (dùng trong Transformer) không có vấn đề này vì normalize per-sample.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Batch Normalization</a></div>
+</div>
+</div>
+
+<!-- C13 -->
+<div class="qcard">
+<div class="qhdr">Câu 13 — Max vs Average Pooling</div>
+<div class="qbody">
+<div class="qq">Khi nào Max Pooling tốt hơn Average Pooling trong CNN?</div>
+<div class="qopt qwrong">A. Max Pooling luôn tốt hơn; Average Pooling không được dùng trong practice.</div>
+<div class="qopt qok">B. Max Pooling tốt khi <em>presence</em> (có hay không) của feature quan trọng hơn magnitude (vd: edge detection, object recognition — bất kỳ activation mạnh nào trong vùng receptive field đều quan trọng). Average Pooling tốt hơn khi overall distribution/texture matters (vd: global average pooling ở cuối CNN trước classification). ✓</div>
+<div class="qopt qwrong">C. Average Pooling tốt hơn vì smooth output → gradient flow tốt hơn.</div>
+<div class="qopt qwrong">D. Không có sự khác biệt thực tế; chọn ngẫu nhiên cũng được.</div>
+<div class="qexp"><strong>Giải thích:</strong> Max Pooling sparse gradient: chỉ element lớn nhất có gradient = 1, còn lại = 0 → chỉ một location per filter được update. Điều này forced sparsity có thể có lợi. Global Average Pooling (GAP) thay fully-connected layer ở cuối: average toàn spatial → feature map 7×7 → 1 value per channel → compact, ít overfit. GAP được dùng trong ResNet, MobileNet thay thế FC layers.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — CNN Architecture</a></div>
+</div>
+</div>
+
+<!-- C14 -->
+<div class="qcard">
+<div class="qhdr">Câu 14 — 1×1 Convolution: Channel Mixing</div>
+<div class="qbody">
+<div class="qq">Convolution 1×1 (pointwise convolution) trong CNN (Inception, MobileNet) thực hiện gì?</div>
+<div class="qopt qwrong">A. Không có ý nghĩa — 1×1 không học spatial patterns.</div>
+<div class="qopt qok">B. Linear combination across channels (channel mixing) giữ nguyên spatial dimensions \((H\times W)\). Dùng để: (1) Reduce/increase số channels (bottleneck) tiết kiệm params trước conv 3×3; (2) Học cross-channel interactions; (3) Tăng depth với params nhỏ. Inception block dùng 1×1 để reduce channels trước conv 3×3 và 5×5. ✓</div>
+<div class="qopt qwrong">C. Tương đương flatten + dense layer trên toàn spatial map.</div>
+<div class="qopt qwrong">D. Dùng để tăng spatial resolution (upsampling).</div>
+<div class="qexp"><strong>Giải thích:</strong> Input \(H\times W\times C_{in}\), conv 1×1 với \(C_{out}\) filters → output \(H\times W\times C_{out}\). Params: \(C_{in}\times C_{out}\) (so với \(3\times 3\times C_{in}\times C_{out}=9C_{in}C_{out}\) của conv 3×3). MobileNet depthwise separable: depthwise conv (spatial, per-channel) + pointwise conv (channel mixing) = ~8-9× fewer params với similar accuracy. Bottleneck ResNet: 1×1 reduce → 3×3 conv → 1×1 expand.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Efficient Architectures</a></div>
+</div>
+</div>
+
+<!-- C15 -->
+<div class="qcard">
+<div class="qhdr">Câu 15 — LSTM vs GRU: Khi nào nào dùng GRU?</div>
+<div class="qbody">
+<div class="qq">GRU (Gated Recurrent Unit) có 2 gates (reset, update) so với LSTM (input, forget, output). Khi nào ưu tiên GRU?</div>
+<div class="qopt qwrong">A. GRU luôn kém LSTM vì ít capacity hơn.</div>
+<div class="qopt qok">B. GRU ít params hơn (~75% LSTM): train faster, less prone to overfit với small datasets, thường comparable performance với sequences vừa. LSTM có lợi thế với sequences dài cần selective memory qua output gate. Với compute budget hạn chế: GRU. Với nhiều data và sequence rất dài: LSTM. ✓</div>
+<div class="qopt qwrong">C. GRU và LSTM identical, chỉ khác implementation detail.</div>
+<div class="qopt qwrong">D. GRU không model được long-term dependencies.</div>
+<div class="qexp"><strong>Giải thích:</strong> LSTM: cell state \(c_t\) + hidden state \(h_t\), 3 gates. GRU: chỉ hidden state \(h_t\), merge forget+input thành update gate, không có output gate (expose full hidden state). Chung Bahdanau (2014): GRU comparable với LSTM trên nhiều tasks với ít params. Empirically: không có clear winner — cross-validate. Bidirectional versions (Bi-LSTM, Bi-GRU) thường better cho NLP.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Recurrent Networks</a></div>
+</div>
+</div>
+
+<!-- C16 -->
+<div class="qcard">
+<div class="qhdr">Câu 16 — Pretrained Embeddings: Tại sao Transfer được?</div>
+<div class="qbody">
+<div class="qq">Word embeddings (Word2Vec, GloVe) pretrained trên large corpus transfer tốt sang downstream NLP tasks. Tại sao?</div>
+<div class="qopt qwrong">A. Vì word embeddings cố định không thay đổi → stable input representation.</div>
+<div class="qopt qok">B. Embeddings encode semantic/syntactic relationships từ co-occurrence statistics: "king - man + woman ≈ queen" (Word2Vec), "Paris - France + Italy ≈ Rome" (GloVe). Pretrained trên billions of words → linguistic knowledge. Transfer này giảm data requirements cho downstream task vì model nhận input đã "meaning-aware". ✓</div>
+<div class="qopt qwrong">C. Embeddings là one-hot encoding dày đặc, không có ý nghĩa semantic.</div>
+<div class="qopt qwrong">D. Pretrained embeddings chỉ useful khi task là language modeling.</div>
+<div class="qexp"><strong>Giải thích:</strong> Distributional hypothesis (Harris 1954): "You shall know a word by the company it keeps." Word2Vec CBOW/Skip-gram, GloVe minimize reconstruction loss từ co-occurrence matrix → similar context = similar embedding. BERT (2018) và sau đó: contextual embeddings (cùng word, different contexts, different embeddings) → even better transfer. Fine-tuning toàn bộ pretrained LM tốt hơn fixed embeddings.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — NLP &amp; Embeddings</a></div>
+</div>
+</div>
+
+<!-- C17 -->
+<div class="qcard">
+<div class="qhdr">Câu 17 — ROC-AUC vs PR-AUC: Khi nào PR-AUC tốt hơn?</div>
+<div class="qbody">
+<div class="qq">Khi nào PR-AUC (Precision-Recall) tốt hơn ROC-AUC để đánh giá classifier?</div>
+<div class="qopt qwrong">A. ROC-AUC luôn tốt hơn vì không phụ thuộc threshold.</div>
+<div class="qopt qok">B. Với heavily imbalanced datasets (e.g., fraud detection: 0.1% positive): ROC-AUC cao vì TN rất nhiều → TPR/FPR ratio tốt vẻ ngoài. PR-AUC tập trung vào positive class (minority) → phản ánh thực sự performance trên class quan tâm. Chọn ROC khi: balanced classes; PR khi: class imbalance &amp; minority class quan trọng. ✓</div>
+<div class="qopt qwrong">C. PR-AUC luôn tốt hơn trong mọi trường hợp.</div>
+<div class="qopt qwrong">D. Hai metrics cho cùng ranking classifier.</div>
+<div class="qexp"><strong>Giải thích:</strong> ROC curve: TPR vs FPR. FPR = FP/(FP+TN) — với nhiều TN (imbalanced), FPR luôn nhỏ → ROC curve "optimistic". Classifier predict all negative: FPR=0, TPR=0 → (0,0) point trên ROC. PR curve: Precision vs Recall. Predict all negative: Recall=0 → (0,?) → PR-AUC nhỏ. Davis &amp; Goadrich (2006): ROC và PR convey different information; PR better cho imbalanced.
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Metrics &amp; Evaluation</a></div>
+</div>
+</div>
+
+<!-- C18 -->
+<div class="qcard">
+<div class="qhdr">Câu 18 — F1 Score: Khi nào dùng thay Accuracy?</div>
+<div class="qbody">
+<div class="qq">Khi nào nên dùng F1 thay vì Accuracy?</div>
+<div class="qopt qwrong">A. Luôn dùng F1; accuracy không có ý nghĩa thống kê.</div>
+<div class="qopt qok">B. Khi class distribution imbalanced: với 99% negative, classifier "predict all negative" đạt accuracy=99% nhưng F1=0 (Precision=undefined hay 0, Recall=0). F1 penalize cả false positives lẫn false negatives. Với balanced classes, accuracy là đủ và dễ interpret hơn. ✓</div>
+<div class="qopt qwrong">C. F1 chỉ dùng được với binary classification problems.</div>
+<div class="qopt qwrong">D. Dùng F1 khi precision và recall đều > 0.5.</div>
+<div class="qexp"><strong>Giải thích:</strong> F1 = harmonic mean của Precision và Recall: \(F1=\frac{2PR}{P+R}\). Harmonic mean nặng hơn giá trị nhỏ → nếu một trong hai (P hoặc R) thấp, F1 thấp. Macro-F1 (average per class), Micro-F1 (global TP/FP/FN), Weighted-F1 (weighted by class frequency). Với severe imbalance: xem xét thêm balanced accuracy = \(\frac{1}{K}\sum_k\text{Recall}_k\).
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Evaluation Metrics</a></div>
+</div>
+</div>
+
+<!-- C19 -->
+<div class="qcard">
+<div class="qhdr">Câu 19 — Label Smoothing: Chống Overconfidence</div>
+<div class="qbody">
+<div class="qq">Label smoothing thay \(y\in\{0,1\}\) bằng \(\tilde{y}=(1-\varepsilon)y+\varepsilon/K\). Tác dụng regularization là gì?</div>
+<div class="qopt qwrong">A. Giảm training accuracy nhưng không ảnh hưởng test accuracy.</div>
+<div class="qopt qok">B. Hard labels đẩy logits \(\to\pm\infty\) (softmax saturation): model trở nên overconfident. Smooth labels cap tại finite target → model không push logits đến extreme → (1) Implicit regularization: weights smaller; (2) Better calibration: output probabilities phản ánh thực tế hơn; (3) Prevent overfitting đến một class cụ thể. ✓</div>
+<div class="qopt qwrong">C. Label smoothing là data augmentation, không phải regularization.</div>
+<div class="qopt qwrong">D. Chỉ useful khi \(K>1000\) classes (ImageNet level).</div>
+<div class="qexp"><strong>Giải thích:</strong> Với hard label \(y=1\): optimal logit = \(\infty\) (CE loss → 0 chỉ khi softmax → 1). Với smooth label \(\tilde{y}=0.9\): optimal logit = finite value. Szegedy et al. (2016) dùng \(\varepsilon=0.1\) cho Inception-v4 — cải thiện accuracy và calibration. Knowledge Distillation cũng dùng soft labels từ teacher (tương tự label smoothing nhưng với actual teacher predictions).
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Training Techniques</a></div>
+</div>
+</div>
+
+<!-- C20 -->
+<div class="qcard">
+<div class="qhdr">Câu 20 — Large Batch Training: Tại sao Generalize Kém?</div>
+<div class="qbody">
+<div class="qq">Empirically, large batch training generalize kém hơn small batch (dù cùng số epochs). Lý do được research chấp nhận nhất là:</div>
+<div class="qopt qwrong">A. Large batch cần học rate nhỏ hơn → không converge đủ.</div>
+<div class="qopt qok">B. Small batch gradient có noise → giúp escape sharp minima → converge đến flatter minima với lower curvature (larger basin of attraction). Large batch gradient quá chính xác → converge đến sharp minima gần initialization → sharp minima generalize kém (nhạy với perturbation). Keskar et al. (2017): large batch converge đến "sharp minimizers". ✓</div>
+<div class="qopt qwrong">C. Large batch không phải vấn đề; chỉ cần tăng epochs tương ứng.</div>
+<div class="qopt qwrong">D. Large batch gây BatchNorm statistics không chính xác → inference gap.</div>
+<div class="qexp"><strong>Giải thích:</strong> Flat minimum: perturbation nhỏ trong weights → loss thay đổi ít → generalize tốt (test distribution ≈ train distribution, robust). Sharp minimum: perturbation nhỏ → loss tăng mạnh → test error cao hơn. Giải pháp cho large batch: linear scaling rule (tăng lr với batch size), warmup, layer-wise adaptive rate scaling (LARS). Facebook (2017) train ImageNet trong 1h với batch=8192 bằng warmup + linear scaling.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Optimization</a></div>
+</div>
+</div>
+
+<div class="s-title">Phần 3 — Metrics, Normalization &amp; Practical (Câu 21–25)</div>
+
+<!-- C21 -->
+<div class="qcard">
+<div class="qhdr">Câu 21 — Class Imbalance: Sai lầm cần tránh</div>
+<div class="qbody">
+<div class="qq">Tập training: 950 negative, 50 positive (19:1). Chiến lược nào là SAI và NGUY HIỂM nhất?</div>
+<div class="qopt qwrong">A. Oversampling minority class bằng SMOTE (synthetic minority oversampling).</div>
+<div class="qopt qwrong">B. Class-weighted loss: \(w_{pos}=19, w_{neg}=1\) trong cross-entropy.</div>
+<div class="qopt qwrong">C. Undersampling majority class về 50:50.</div>
+<div class="qopt qok">D. Dùng Accuracy là metric chính: classifier "predict all negative" đạt accuracy=95% nhưng Recall=0, hoàn toàn vô dụng. ✓</div>
+<div class="qexp"><strong>Giải thích:</strong> D là trap phổ biến nhất: accuracy cao nhưng model không phát hiện được minority class (thường là class quan trọng: fraud, disease). Giải pháp: SMOTE tạo synthetic positive samples; class weights re-scale loss; threshold tuning (lower threshold → higher recall). Metric đúng: F1, ROC-AUC, PR-AUC, balanced accuracy. Với 19:1, ROC-AUC vẫn có thể mislead (dùng PR-AUC hoặc F1 là an toàn hơn).
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Imbalanced Data</a></div>
+</div>
+</div>
+
+<!-- C22 -->
+<div class="qcard">
+<div class="qhdr">Câu 22 — Cosine vs Euclidean: Text Retrieval</div>
+<div class="qbody">
+<div class="qq">Trong text retrieval với TF-IDF vectors, cosine similarity thường tốt hơn Euclidean distance. Lý do chính:</div>
+<div class="qopt qwrong">A. Cosine tính nhanh hơn \(O(d)\) so với Euclidean \(O(d^2)\) — cả hai đều \(O(d)\).</div>
+<div class="qopt qok">B. Cosine đo angular distance → invariant to document length. Cùng topic nhưng một document dài hơn 2× → TF-IDF vector lớn hơn 2× → Euclidean distance lớn → không similar theo Euclidean. Cosine = dot product / product of norms → chuẩn hóa độ dài document tự động. ✓</div>
+<div class="qopt qwrong">C. Euclidean distance không xác định trong high-dimensional sparse space.</div>
+<div class="qopt qwrong">D. Cosine luôn trong \([0,1]\) nên dễ interpret — nhưng với TF-IDF, cosine \(\in[-1,1]\).</div>
+<div class="qexp"><strong>Giải thích:</strong> \(\cos(\mathbf{u},\mathbf{v})=\frac{\mathbf{u}\cdot\mathbf{v}}{\|\mathbf{u}\|\|\mathbf{v}\|}\). Document A: 100 words về ML. Document B: 1000 words về ML (same topics). Với TF-IDF: B có vectors ~10× lớn hơn A → \(\|A-B\|\) lớn → Euclidean: khác nhau. \(\cos(A,B)\approx 1\) → cosine: rất giống nhau (đúng). L2 normalize vectors trước Euclidean → equivalent cosine. Ngoài ra, sparse high-d vectors: concentration of measure làm Euclidean kém phân biệt.
+<a href="knn.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.3 — Distance Metrics</a></div>
+</div>
+</div>
+
+<!-- C23 -->
+<div class="qcard">
+<div class="qhdr">Câu 23 — Standardization vs Min-Max: Khi nào dùng cái nào?</div>
+<div class="qbody">
+<div class="qq">Standardization \((x-\mu)/\sigma\) vs Min-Max normalization \((x-x_{min})/(x_{max}-x_{min})\). Trade-off chính là:</div>
+<div class="qopt qwrong">A. Luôn dùng Min-Max vì đảm bảo output trong \([0,1]\).</div>
+<div class="qopt qok">B. Min-Max nhạy với outliers: 1 outlier extreme thay đổi min/max → compress phần lớn data vào range nhỏ. Standardization robust hơn (outliers ảnh hưởng mean/std ít hơn, đặc biệt với nhiều samples). Min-Max tốt khi: bounded distribution, no outliers (pixel values 0-255). Standardization tốt khi: unbounded, outliers, Gaussian-like. ✓</div>
+<div class="qopt qwrong">C. Cả hai cho kết quả identical sau scaling.</div>
+<div class="qopt qwrong">D. Chỉ cần normalize khi dùng distance-based algorithms.</div>
+<div class="qexp"><strong>Giải thích:</strong> Outlier ảnh hưởng Min-Max: nếu salary range là [30K, 200K] nhưng có 1 outlier là $2M → max=2M → tất cả normal salaries bị compress vào [0, 0.1]. Robust alternatives: RobustScaler (dùng IQR thay vì std), QuantileTransformer. Khi nào không cần normalize: tree-based models (CART, Random Forest, XGBoost) vì splits dựa trên threshold, không sensitive với scale.
+<a href="knn.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.3 — Feature Preprocessing</a></div>
+</div>
+</div>
+
+<!-- C24 -->
+<div class="qcard">
+<div class="qhdr">Câu 24 — Multicollinearity trong Logistic Regression</div>
+<div class="qbody">
+<div class="qq">Trong LR, hai features hoàn toàn correlated: \(X_2=2X_1\). Điều gì xảy ra với optimization?</div>
+<div class="qopt qwrong">A. Model crash vì Gram matrix \(X^\top X\) singular → không invertible.</div>
+<div class="qopt qok">B. Weights không unique: \(w_1X_1+w_2X_2=(w_1+c)X_1+(w_2-c/2)X_2\) với mọi \(c\). Infinite solutions với cùng loss. Gradient descent converge đến one solution phụ thuộc initialization. L2 regularization chọn minimum-norm solution (unique). Coefficients không interpretable riêng lẻ. ✓</div>
+<div class="qopt qwrong">C. Model tự loại bỏ 1 feature vì redundant.</div>
+<div class="qopt qwrong">D. Multicollinearity chỉ ảnh hưởng linear regression, không ảnh hưởng LR.</div>
+<div class="qexp"><strong>Giải thích:</strong> Perfect multicollinearity: infinite solutions, không converge ổn định (oscillate). Near-multicollinearity: solutions nhạy cảm với training data → high variance coefficients. L2 regularization (Ridge): thêm \(\lambda\|\mathbf{w}\|^2\) → Gram matrix \((X^\top X+\lambda I)\) luôn invertible → unique minimum-norm solution. L1 (Lasso): chọn 1 trong 2 correlated features, cho 0 weight cho cái kia → implicit feature selection.
+<a href="logreg.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Logistic Regression — Regularization</a></div>
+</div>
+</div>
+
+<!-- C25 -->
+<div class="qcard">
+<div class="qhdr">Câu 25 — Linear Autoencoder ≡ PCA</div>
+<div class="qbody">
+<div class="qq">Autoencoder với activation tuyến tính và bottleneck \(k\) neurons. Tại sao nghiệm tối ưu tương đương PCA?</div>
+<div class="qopt qwrong">A. Vì cả hai đều minimize MSE reconstruction error — nhưng PCA thêm orthogonality constraint.</div>
+<div class="qopt qok">B. Linear autoencoder tối thiểu hóa \(\|\mathbf{X}-\mathbf{X}\mathbf{W}_e\mathbf{W}_d\|_F^2\) với \(\mathbf{W}_e\in\mathbb{R}^{d\times k}\). Baldi &amp; Hornik (1989): global minimum có column space = span of top-\(k\) eigenvectors của \(\mathbf{X}^\top\mathbf{X}\) = PCA components. Weights không nhất thiết orthogonal (nhiều solutions) nhưng reconstruction space giống nhau. ✓</div>
+<div class="qopt qwrong">C. Linear autoencoder và PCA hoàn toàn khác về toán học.</div>
+<div class="qopt qwrong">D. Tương đương chỉ khi dùng ReLU không phải linear activation.</div>
+<div class="qexp"><strong>Giải thích:</strong> Linear AE: encoder \(E=\mathbf{W}_e\), decoder \(D=\mathbf{W}_d\). Optimal: \(\mathbf{W}_d\mathbf{W}_e\) = projection lên PCA subspace. Nhưng \(\mathbf{W}_e\) không nhất thiết orthogonal rows (khác PCA). Nonlinear AE: có thể học curved manifold (nonlinear PCA), biểu diễn richer. Variational AE (VAE): thêm probabilistic bottleneck → generative model. Connection: PCA là closed-form solution cho linear case, SVD của centered data matrix.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Autoencoders</a></div>
+</div>
+</div>
+
+</div><!-- /tab t3 -->
+
+<!-- ==================== ĐỀ D ==================== -->
+<div id="t4" class="tab-content">
+
+<div class="alert al-green">
+  <div class="alert-title"><i class="fas fa-check-circle"></i> ĐÁP ÁN NHANH — Đề D</div>
+  <p style="font-family:monospace;font-size:.9rem">
+  1.B | 2.B | 3.B | 4.B | 5.B | 6.B | 7.B | 8.A | 9.B | 10.B<br>
+  11.B | 12.B | 13.B | 14.B | 15.B | 16.B | 17.B | 18.B | 19.B | 20.B<br>
+  21.A | 22.B | 23.B | 24.B | 25.B
+  </p>
+</div>
+
+<div class="s-title">Phần 1 — Lý thuyết Học Máy (Câu 1–8)</div>
+
+<!-- D1 -->
+<div class="qcard">
+<div class="qhdr">Câu 1 — PAC Learning: Sample Complexity</div>
+<div class="qbody">
+<div class="qq">Trong PAC learning, hypothesis class \(\mathcal{H}\) có VC dimension \(d\). Cần bao nhiêu training samples để \((\varepsilon,\delta)\)-PAC learn \(\mathcal{H}\)?</div>
+<div class="qopt qwrong">A. \(n=O(d)\) — linear trong VC dimension.</div>
+<div class="qopt qok">B. \(n=O\!\left(\frac{d+\ln(1/\delta)}{\varepsilon}\right)\) — VC bound: linear trong \(d\), linear trong \(1/\varepsilon\), logarithmic trong \(1/\delta\). ✓</div>
+<div class="qopt qwrong">C. \(n=O(1/\varepsilon^2)\) bất kể \(\mathcal{H}\).</div>
+<div class="qopt qwrong">D. Không xác định được từ VC dimension.</div>
+<div class="qexp"><strong>Giải thích:</strong> PAC (Probably Approximately Correct): với probability \(\geq 1-\delta\), học hypothesis với true error \(\leq\varepsilon\). Fundamental theorem (Blumer et al.): \(n=\Theta\!\left(\frac{d+\ln(1/\delta)}{\varepsilon}\right)\) là đủ và cần thiết. \(d\) = VC dimension đo complexity của \(\mathcal{H}\). Linear classifier trong \(\mathbb{R}^d\): VC dim = \(d+1\). Finite \(\mathcal{H}\): VC dim \(\leq\log_2|\mathcal{H}|\). Vô hạn nhưng infinite VC dim → not PAC learnable (e.g., 1-NN on continuous space has VC dim \(\infty\) but still learnable under realizability).
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Learning Theory</a></div>
+</div>
+</div>
+
+<!-- D2 -->
+<div class="qcard">
+<div class="qhdr">Câu 2 — VC Dimension của Linear Classifiers</div>
+<div class="qbody">
+<div class="qq">VC dimension của linear classifiers (hyperplanes) trong \(\mathbb{R}^d\) là bao nhiêu?</div>
+<div class="qopt qwrong">A. \(d\)</div>
+<div class="qopt qok">B. \(d+1\) — có thể shatter mọi tập \(d+1\) điểm ở vị trí general position; không thể shatter tập \(d+2\) điểm bất kỳ. ✓</div>
+<div class="qopt qwrong">C. \(2^d\)</div>
+<div class="qopt qwrong">D. \(\infty\) vì linear classifiers có vô số tham số.</div>
+<div class="qexp"><strong>Giải thích:</strong> "Shattering" d+1 điểm: với affine hyperplane \(\mathbf{w}\cdot\mathbf{x}+b=0\), có thể achieve mọi \(2^{d+1}\) labeling của \(d+1\) điểm ở general position (Radon's theorem). Với \(d+2\) điểm: luôn tồn tại labeling không separable → không shatter. VC dim = số points có thể shatter. Kernel SVM với RBF: VC dim = \(\infty\) (infinite feature space) — nhưng vẫn PAC learnable vì control qua margin/\(C\) (margin-based bound).
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — VC Dimension</a></div>
+</div>
+</div>
+
+<!-- D3 -->
+<div class="qcard">
+<div class="qhdr">Câu 3 — Bias-Variance: Irreducible Noise</div>
+<div class="qbody">
+<div class="qq">\(\mathbb{E}[(y-\hat{f}(\mathbf{x}))^2]=\text{Bias}^2+\text{Variance}+\sigma^2_\varepsilon\). "Irreducible noise" \(\sigma^2_\varepsilon\) là gì và tại sao không thể giảm bằng bất kỳ model nào?</div>
+<div class="qopt qwrong">A. Là error do missing features — thêm features sẽ giảm.</div>
+<div class="qopt qok">B. Là variance của \(y\) quanh true conditional mean \(f^*(\mathbf{x})=\mathbb{E}[y|\mathbf{x}]\) — inherent randomness của data generation process. Dù model biết \(f^*\) hoàn hảo, noise ngẫu nhiên \(\varepsilon=y-f^*(\mathbf{x})\) không thể predict → lower bound không thể vượt qua. ✓</div>
+<div class="qopt qwrong">C. Là variance của training set — giảm bằng tăng \(n\).</div>
+<div class="qopt qwrong">D. Là bias của model — giảm bằng tăng complexity.</div>
+<div class="qexp"><strong>Giải thích:</strong> Decomposition: \(\mathbb{E}_{D,\varepsilon}[(y-\hat{f})^2]=\underbrace{(f^*-\mathbb{E}_D[\hat{f}])^2}_{\text{Bias}^2}+\underbrace{\mathbb{E}_D[(\hat{f}-\mathbb{E}_D[\hat{f}])^2]}_{\text{Variance}}+\underbrace{\sigma^2_\varepsilon}_{\text{Irreducible}}\). Với \(y=f^*(\mathbf{x})+\varepsilon\), \(\varepsilon\sim(0,\sigma^2)\): ngay cả oracle model \(\hat{f}=f^*\) có MSE = \(\sigma^2\). Ý nghĩa thực tế: Bayes error = irreducible noise; mọi model đều bị giới hạn bởi nó. Label noise trong training data tăng irreducible noise.
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Bias-Variance</a></div>
+</div>
+</div>
+
+<!-- D4 -->
+<div class="qcard">
+<div class="qhdr">Câu 4 — Regularization như MAP Estimation</div>
+<div class="qbody">
+<div class="qq">L2 regularization tương đương MAP estimation với prior nào trên weights?</div>
+<div class="qopt qwrong">A. Uniform prior — tương đương MLE.</div>
+<div class="qopt qok">B. Gaussian prior: \(P(\mathbf{w})=\mathcal{N}(\mathbf{0},\sigma_w^2\mathbf{I})\). MAP: \(\hat{\mathbf{w}}=\arg\max[\log P(\mathcal{D}|\mathbf{w})+\log P(\mathbf{w})]=\arg\max[\text{log-likelihood}-\frac{\lambda}{2}\|\mathbf{w}\|^2]\) với \(\lambda=\sigma^2_{noise}/\sigma^2_w\). ✓</div>
+<div class="qopt qwrong">C. Laplace prior \(\propto\exp(-\lambda|\mathbf{w}|)\) — tương đương L1.</div>
+<div class="qopt qwrong">D. Student-t prior — tương đương Elastic Net.</div>
+<div class="qexp"><strong>Giải thích:</strong> MAP = \(\arg\max P(\mathbf{w}|\mathcal{D})\propto P(\mathcal{D}|\mathbf{w})P(\mathbf{w})\). Log: \(\log P(\mathcal{D}|\mathbf{w})+\log P(\mathbf{w})\). Gaussian prior: \(\log P(\mathbf{w})=-\frac{1}{2\sigma_w^2}\|\mathbf{w}\|^2+C\) = \(-\frac{\lambda}{2}\|\mathbf{w}\|^2\). L1 ↔ Laplace prior \(P(w)\propto e^{-\lambda|w|}\). Bộ đôi: Bayesian prior đặt inductive bias; regularization strength = strength of prior belief. Khi data nhiều → likelihood dominates → prior matters less.
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Regularization &amp; Bayesian ML</a></div>
+</div>
+</div>
+
+<!-- D5 -->
+<div class="qcard">
+<div class="qhdr">Câu 5 — EM Algorithm: Tại sao Likelihood Không Giảm?</div>
+<div class="qbody">
+<div class="qq">EM đảm bảo \(\log P(X|\theta^{(t+1)})\geq\log P(X|\theta^{(t)})\). Chứng minh dựa trên:</div>
+<div class="qopt qwrong">A. M-step tối ưu globally trên toàn parameter space.</div>
+<div class="qopt qok">B. Jensen's inequality: \(\log P(X|\theta)=\log\sum_Z P(X,Z|\theta)\geq\sum_Z q(Z)\log\frac{P(X,Z|\theta)}{q(Z)}\) (ELBO). E-step: \(q(Z)=P(Z|X,\theta^{(t)})\) → ELBO = \(\log P(X|\theta^{(t)})\). M-step: tăng ELBO → tăng \(\log P(X|\theta)\). ✓</div>
+<div class="qopt qwrong">C. E-step tính posterior chính xác → M-step có closed-form solution.</div>
+<div class="qopt qwrong">D. P(X|θ) là monotone function của Q(θ|θ^t).</div>
+<div class="qexp"><strong>Giải thích:</strong> ELBO (Evidence Lower BOund): \(\log P(X|\theta)=\underbrace{\text{ELBO}(\theta,q)}_{\mathcal{L}}+\text{KL}(q||P(Z|X,\theta))\geq\mathcal{L}\). E-step: fix \(\theta\), tối ưu \(q\) → KL=0 → ELBO tight = \(\log P(X|\theta^{(t)})\). M-step: fix \(q\), tối ưu \(\theta\) → tăng ELBO → vì KL \(\geq 0\), \(\log P(X|\theta^{(t+1)})\geq\) ELBO mới \(\geq\) ELBO cũ \(=\log P(X|\theta^{(t)})\). Đây là cũng là cơ sở của Variational Inference.
+<a href="hmm.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: HMM — EM &amp; Baum-Welch</a></div>
+</div>
+</div>
+
+<!-- D6 -->
+<div class="qcard">
+<div class="qhdr">Câu 6 — KL Divergence: Asymmetry &amp; Hệ quả</div>
+<div class="qbody">
+<div class="qq">KL(P||Q) ≠ KL(Q||P). Trong variational inference, dùng \(\min_Q\text{KL}(Q||P)\) thay vì \(\min_Q\text{KL}(P||Q)\). Hệ quả thực tế:</div>
+<div class="qopt qwrong">A. Cả hai cho cùng kết quả — chỉ là convention.</div>
+<div class="qopt qok">B. \(\text{KL}(P||Q)\): Q phải cover nơi P có mass (zero-avoiding/inclusive) → over-dispersed estimate; \(\text{KL}(Q||P)\): Q tập trung vào modes của P (zero-forcing/exclusive) → Q thường unimodal dù P multimodal. VI dùng \(\text{KL}(Q||P)\) vì computationally tractable (đạo hàm theo Q). ✓</div>
+<div class="qopt qwrong">C. \(\text{KL}(P||Q)\geq\text{KL}(Q||P)\) luôn đúng.</div>
+<div class="qopt qwrong">D. Asymmetry chỉ là convention toán học, không có hệ quả thực tế.</div>
+<div class="qexp"><strong>Giải thích:</strong> Mode-seeking (KL(Q||P)): nếu Q(z) > 0 ở nơi P(z) = 0 → \(\infty\) penalty → Q tránh nơi P=0 → Q collapse vào 1 mode. Mode-covering (KL(P||Q)): nếu P(z) > 0 ở nơi Q(z) = 0 → \(\infty\) penalty → Q must cover all modes của P → Q broader. Ví dụ: P là bimodal Gaussian, VI với KL(Q||P): Q approx chỉ 1 mode; EV với KL(P||Q): Q trải rộng giữa 2 modes.
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Information Theory</a></div>
+</div>
+</div>
+
+<!-- D7 -->
+<div class="qcard">
+<div class="qhdr">Câu 7 — Mutual Information: Tính chất</div>
+<div class="qbody">
+<div class="qq">Mutual Information \(I(X;Y)=H(X)-H(X|Y)=H(Y)-H(Y|X)\). Tính chất nào sau đây ĐÚNG?</div>
+<div class="qopt qwrong">A. \(I(X;Y)\) có thể âm khi X và Y anti-correlated.</div>
+<div class="qopt qok">B. \(I(X;Y)\geq 0\) luôn; \(I(X;Y)=0\iff X\perp Y\); \(I(X;Y)=H(X)\) khi Y xác định hoàn toàn X; \(I(X;Y)=I(Y;X)\) (symmetric). ✓</div>
+<div class="qopt qwrong">C. \(I(X;Y)=I(Y;X)\) chỉ đúng khi \(P(X)=P(Y)\).</div>
+<div class="qopt qwrong">D. \(I(X;Y)\leq\min(H(X),H(Y))\) là không đúng.</div>
+<div class="qexp"><strong>Giải thích:</strong> \(I(X;Y)=\sum_{x,y}P(x,y)\log\frac{P(x,y)}{P(x)P(y)}=\text{KL}(P(X,Y)||P(X)P(Y))\geq 0\) (vì KL \(\geq 0\)). Bằng 0 iff \(P(X,Y)=P(X)P(Y)\). \(I(X;X)=H(X)\) (X xác định X hoàn toàn). Ứng dụng trong ML: InfoGain = \(I(Y;X_i)\) (feature selection), MI Estimation cho deep learning (MINE, DIM). Anti-correlation: vẫn MI cao! (correlation âm vẫn là thông tin về nhau).
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Information Theory</a></div>
+</div>
+</div>
+
+<!-- D8 -->
+<div class="qcard">
+<div class="qhdr">Câu 8 — PCA: Eigenvalue và Variance Explained</div>
+<div class="qbody">
+<div class="qq">Trong PCA, eigenvalue \(\lambda_i\) của covariance matrix \(\Sigma\) tương ứng với eigenvector \(\mathbf{v}_i\). Tỷ lệ \(\lambda_i/\sum_j\lambda_j\) là:</div>
+<div class="qopt qok">A. Tỷ lệ variance của data giải thích bởi principal component \(i\) so với total variance. ✓</div>
+<div class="qopt qwrong">B. Correlation giữa feature \(i\) và component \(i\).</div>
+<div class="qopt qwrong">C. Số samples cần để estimate component \(i\) chính xác.</div>
+<div class="qopt qwrong">D. L2 norm của eigenvector \(i\).</div>
+<div class="qexp"><strong>Giải thích:</strong> PCA projecting data lên \(\mathbf{v}_i\): \(\text{Var}(\mathbf{v}_i^\top\mathbf{x})=\mathbf{v}_i^\top\Sigma\mathbf{v}_i=\lambda_i\) (vì \(\Sigma\mathbf{v}_i=\lambda_i\mathbf{v}_i\), \(\|\mathbf{v}_i\|=1\)). Total variance: \(\sum_i\lambda_i=\text{tr}(\Sigma)\). Proportion explained by PC\(i\): \(\lambda_i/\sum_j\lambda_j\). Scree plot: \(\lambda_i\) vs \(i\) → "elbow" để chọn số components. Cumulative variance ≥ 95% là rule of thumb.
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Dimensionality Reduction</a></div>
+</div>
+</div>
+
+<div class="s-title">Phần 2 — Ensemble Nâng Cao &amp; Model Selection (Câu 9–16)</div>
+
+<!-- D9 -->
+<div class="qcard">
+<div class="qhdr">Câu 9 — Gradient Boosting vs AdaBoost: Điểm khác biệt</div>
+<div class="qbody">
+<div class="qq">Gradient Boosting tổng quát hơn AdaBoost. Sự khác biệt cốt lõi trong cơ chế:</div>
+<div class="qopt qwrong">A. AdaBoost dùng deep trees; Gradient Boosting dùng stumps.</div>
+<div class="qopt qok">B. AdaBoost reweight samples để focus on mistakes (implicit residuals); Gradient Boosting fit new learner trực tiếp trên negative gradient \(-\partial\mathcal{L}/\partial\hat{y}\) của arbitrary loss function → tổng quát cho mọi differentiable loss. AdaBoost là special case với exponential loss và sample reweighting formulation. ✓</div>
+<div class="qopt qwrong">C. Gradient Boosting không dùng decision trees — dùng linear models.</div>
+<div class="qopt qwrong">D. Cả hai đều minimize squared error; chỉ khác tốc độ hội tụ.</div>
+<div class="qexp"><strong>Giải thích:</strong> GBM (Friedman 2001): tại step \(m\), fit tree \(h_m\) lên pseudo-residuals \(r_{im}=-\frac{\partial\mathcal{L}(y_i,F(\mathbf{x}_i))}{\partial F(\mathbf{x}_i)}\). Với MSE loss: \(r_i=y_i-\hat{y}_i\) (true residuals). Với log-loss: \(r_i=y_i-p_i\). XGBoost thêm regularization + second-order Taylor expansion (Newton step thay vì gradient step). LightGBM, CatBoost là GBM variants với optimization tricks khác nhau.
+<a href="ensemble.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.9 — Gradient Boosting</a></div>
+</div>
+</div>
+
+<!-- D10 -->
+<div class="qcard">
+<div class="qhdr">Câu 10 — Stacking: Tại sao Out-of-Fold Predictions?</div>
+<div class="qbody">
+<div class="qq">Model stacking (meta-learner trên base model outputs). Tại sao PHẢI dùng out-of-fold predictions cho meta-learner, không phải in-sample predictions?</div>
+<div class="qopt qwrong">A. Out-of-fold predictions chứa nhiều thông tin hơn in-sample.</div>
+<div class="qopt qok">B. Nếu meta-learner train trên in-sample predictions của base models (cùng data), base models đã overfit → predictions quá tốt → meta-learner learns "trust base models always" → overfit và không generalize. Out-of-fold: base models không thấy validation data → predictions honest, meta-learner learns từ actual generalization patterns. ✓</div>
+<div class="qopt qwrong">C. Out-of-fold predictions nhanh hơn tính toán hơn.</div>
+<div class="qopt qwrong">D. Requirement chỉ với linear meta-learners, không phải tree-based.</div>
+<div class="qexp"><strong>Giải thích:</strong> Data leakage trong stacking: base model thấy data → overfit → in-sample predictions ≈ 100% correct → meta-learner không học được gì meaningful. 5-fold OOF stacking: split data 5 folds, mỗi fold: train base trên 4 folds, predict trên fold thứ 5 → sau 5 rounds, có OOF predictions cho toàn training set. Meta-learner trains trên OOF predictions. Final: train base models trên full training set, predict test, meta-learner predict.
+<a href="ensemble.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.9 — Ensemble &amp; Stacking</a></div>
+</div>
+</div>
+
+<!-- D11 -->
+<div class="qcard">
+<div class="qhdr">Câu 11 — Concept Drift: Các loại</div>
+<div class="qbody">
+<div class="qq">Trong ML production, "concept drift" nghĩa là \(P(X,Y)\) thay đổi theo thời gian. Phân loại nào sau đây ĐÚNG?</div>
+<div class="qopt qwrong">A. Drift là khi model weights thay đổi theo thời gian do continued training.</div>
+<div class="qopt qok">B. (1) Covariate shift: \(P(X)\) thay đổi, \(P(Y|X)\) không đổi → same model, different input distribution; (2) Label drift: \(P(Y)\) thay đổi; (3) Concept drift (real): \(P(Y|X)\) thay đổi → cần retrain fundamental model. Detecting: monitor model metrics, statistical tests (KS test on features, PSI). ✓</div>
+<div class="qopt qwrong">C. Drift chỉ xảy ra trong streaming data, không với batch learning.</div>
+<div class="qopt qwrong">D. Chỉ có một loại drift — không cần phân loại.</div>
+<div class="qexp"><strong>Giải thích:</strong> Covariate shift (P(X) thay đổi): COVID → nhiều documents về disease → distribution của text data shift. P(Y|X) vẫn đúng → có thể compensate bằng importance weighting. Real concept drift (P(Y|X) thay đổi): email spam tactics thay đổi → từ "FREE" không còn indicative nữa → phải retrain. Data drift monitoring: feature distribution (PSI, KS), prediction drift, label drift. Model performance monitoring: accuracy drops cần investigation.
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Production ML</a></div>
+</div>
+</div>
+
+<!-- D12 -->
+<div class="qcard">
+<div class="qhdr">Câu 12 — Filter vs Wrapper Feature Selection</div>
+<div class="qbody">
+<div class="qq">Filter methods (correlation, MI) vs Wrapper methods (RFE). Trade-off chính:</div>
+<div class="qopt qwrong">A. Filter tốt hơn vì luôn cho kết quả chính xác hơn Wrapper.</div>
+<div class="qopt qok">B. Filter: nhanh \(O(d)\), model-agnostic, đánh giá features independently → bỏ qua interactions (XOR problem: A và B đều vô nghĩa riêng lẻ). Wrapper: dùng model performance để score feature subsets → capture interactions nhưng \(O(2^d)\) subsets; prone to overfit small datasets. Trade-off: speed &amp; independence vs quality &amp; interaction capture. ✓</div>
+<div class="qopt qwrong">C. Wrapper chỉ dùng được với linear models.</div>
+<div class="qopt qwrong">D. Cả hai cho identical kết quả nếu features independent.</div>
+<div class="qexp"><strong>Giải thích:</strong> Phân loại thực tế: (1) Filter: Pearson correlation, MI, chi-squared, ANOVA F-test — không dùng model; (2) Wrapper: RFE (Recursive Feature Elimination), Forward/Backward selection — dùng model accuracy; (3) Embedded: Lasso (L1), Decision Tree feature importance, ElasticNet — feature selection trong training. Embedded là best of both: tích hợp với model training, capture interactions, không cần separate search. Lasso thường preferred khi linear, tree importance khi nonlinear.
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Feature Selection</a></div>
+</div>
+</div>
+
+<!-- D13 -->
+<div class="qcard">
+<div class="qhdr">Câu 13 — MDI vs Permutation Importance</div>
+<div class="qbody">
+<div class="qq">Random Forest Feature Importance: MDI (Mean Decrease Impurity) có bias gì so với Permutation Importance?</div>
+<div class="qopt qwrong">A. MDI đánh giá cao features với ít unique values.</div>
+<div class="qopt qok">B. MDI bị biased về high-cardinality features (nhiều splits → nhiều Gini/entropy decrease, dù feature kém); với correlated features: cây chọn ngẫu nhiên một → importance bị chia đôi không đều, không phản ánh true importance. Permutation Importance: shuffle feature, đo drop in accuracy → model-agnostic, less biased nhưng \(O(n\cdot d)\) per evaluation. ✓</div>
+<div class="qopt qwrong">C. MDI và Permutation Importance identical về mặt toán học.</div>
+<div class="qopt qwrong">D. Permutation Importance không applicable với tree-based models.</div>
+<div class="qexp"><strong>Giải thích:</strong> MDI trong sklearn: tính tổng giảm Gini/entropy qua mọi nodes và mọi cây, normalized. Problem: (1) continuous features bị ưu tiên hơn categorical có ít values (Strobl et al.); (2) correlated features: importance "diluted". Permutation Importance (Breiman 2001): shuffle feature \(j\), measure \(\Delta\text{accuracy}\) — thực sự đo "importance nếu feature này không accessible". Cũng có limitation với correlated features (shuffling một feature nhưng correlated feature còn nguyên → underestimate).
+<a href="ensemble.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.9 — Feature Importance</a></div>
+</div>
+</div>
+
+<!-- D14 -->
+<div class="qcard">
+<div class="qhdr">Câu 14 — Stratified k-fold: Tại sao Quan Trọng?</div>
+<div class="qbody">
+<div class="qq">Stratified k-fold vs regular k-fold với class imbalance nặng (1% positive). Tại sao stratification quan trọng?</div>
+<div class="qopt qwrong">A. Stratified k-fold nhanh hơn vì ít computation per fold.</div>
+<div class="qopt qok">B. Regular k-fold có thể tạo fold không chứa positive samples (vì imbalanced). Fold đó: Recall=0 → evaluation metric vô nghĩa; training fold thiếu positive examples → model không học minority class. Stratified ensures mỗi fold có ~1% positive → representative distribution → stable, unbiased CV estimate. ✓</div>
+<div class="qopt qwrong">C. Stratification chỉ quan trọng cho regression, không phải classification.</div>
+<div class="qopt qwrong">D. Stratified k-fold luôn cho lower test error.</div>
+<div class="qexp"><strong>Giải thích:</strong> Ví dụ: 1000 samples, 10 positive, k=10 fold. Regular: each fold 100 samples. Với xác suất: fold có thể có 0 positive (binom(10, 0.01)^10 events). Stratified: each fold chính xác 1 positive → guaranteed representative. Quan trọng nhất khi: class imbalance, small dataset. sklearn: \texttt{StratifiedKFold} vs \texttt{KFold}. Tương tự: Stratified train-test split (\texttt{train\_test\_split(..., stratify=y)}).
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Model Evaluation</a></div>
+</div>
+</div>
+
+<!-- D15 -->
+<div class="qcard">
+<div class="qhdr">Câu 15 — Platt Scaling: Calibration cho SVM</div>
+<div class="qbody">
+<div class="qq">Platt Scaling calibrate probability từ SVM decision scores. Nó thực hiện:</div>
+<div class="qopt qwrong">A. Retrain SVM với different hyperparameters để get calibrated output.</div>
+<div class="qopt qok">B. Fit logistic regression trên SVM decision scores trên validation set: \(P(y=1|f(\mathbf{x}))=\sigma(Af(\mathbf{x})+B)\). \(A,B\) fitted bằng MLE trên separate validation set → maps SVM scores vào calibrated probabilities. ✓</div>
+<div class="qopt qwrong">C. Min-max normalize SVM output \([-1,1]\to[0,1]\).</div>
+<div class="qopt qwrong">D. Platt Scaling = Temperature Scaling với fixed A=1.</div>
+<div class="qexp"><strong>Giải thích:</strong> SVM output f(x) không phải probability (unbounded, arbitrary scale). Platt (1999): fit sigmoid trên validation fold scores. Tại sao cần separate validation: nếu dùng training data → SVM đã overfit → scores too confident → sigmoid learns wrong calibration. Alternatives: Isotonic Regression (non-parametric, more flexible); Temperature Scaling (post-hoc calibration cho neural nets: divide logits by T). Calibration check: reliability diagram (binned predictions vs actual frequencies).
+<a href="svm.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.8 — SVM &amp; Probability Calibration</a></div>
+</div>
+</div>
+
+<!-- D16 -->
+<div class="qcard">
+<div class="qhdr">Câu 16 — XGBoost: γ và λ Regularization</div>
+<div class="qbody">
+<div class="qq">XGBoost objective thêm: \(\Omega(f)=\gamma T+\frac{1}{2}\lambda\sum_j w_j^2\). \(\gamma\) và \(\lambda\) control gì?</div>
+<div class="qopt qwrong">A. \(\gamma\) = learning rate, \(\lambda\) = max depth.</div>
+<div class="qopt qok">B. \(\gamma\) = minimum loss reduction cần thiết để tạo split (threshold — split bị pruned nếu không đủ useful; control số lá \(T\)); \(\lambda\) = L2 regularization trên leaf weights \(w_j\) (shrinks predictions, prevents extreme values). Hai cơ chế regularize khác nhau: \(\gamma\) prune unnecessary splits, \(\lambda\) smooth leaf predictions. ✓</div>
+<div class="qopt qwrong">C. \(\gamma\) và \(\lambda\) là momentum parameters của Adam trong XGBoost.</div>
+<div class="qopt qwrong">D. \(\gamma\) = max leaves, \(\lambda\) = min child weight.</div>
+<div class="qexp"><strong>Giải thích:</strong> XGBoost optimal split gain: \(\text{Gain}=\frac{1}{2}\left[\frac{G_L^2}{H_L+\lambda}+\frac{G_R^2}{H_R+\lambda}-\frac{(G_L+G_R)^2}{H_L+H_R+\lambda}\right]-\gamma\). Split accepted iff Gain \(>\gamma\) (pre-pruning). \(\lambda\) trong denominator: smooths leaf weight \(w_j^*=-G_j/(H_j+\lambda)\). Cũng có \(\alpha\) (L1 regularization trên leaf weights). XGBoost hyperparameters: \(\gamma\in[0,\infty)\), \(\lambda>0\) (default=1), max\_depth, subsample, colsample\_bytree.
+<a href="ensemble.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.9 — Gradient Boosting &amp; XGBoost</a></div>
+</div>
+</div>
+
+<div class="s-title">Phần 3 — Interpretability, Production &amp; Tổng hợp (Câu 17–25)</div>
+
+<!-- D17 -->
+<div class="qcard">
+<div class="qhdr">Câu 17 — Generalization Bound: Hàm ý thực tế</div>
+<div class="qbody">
+<div class="qq">Uniform convergence: test error \(\leq\) train error \(+O\!\left(\sqrt{\frac{\log|\mathcal{H}|}{n}}\right)\). Nếu tăng training data \(4\times\), generalization gap thay đổi thế nào?</div>
+<div class="qopt qwrong">A. Gap giảm \(4\times\) (linear với \(n\)).</div>
+<div class="qopt qok">B. Gap giảm \(2\times\) (vì \(\sqrt{n}\) → \(\sqrt{4n}=2\sqrt{n}\) → gap \(\propto 1/\sqrt{n}\) giảm 2 lần). Ý nghĩa: phải tăng data theo bậc hai để halve generalization gap — đây là lý do data cực kỳ đắt trong practice. ✓</div>
+<div class="qopt qwrong">C. Gap giảm \(\log 4\) lần (logarithmic).</div>
+<div class="qopt qwrong">D. Gap không đổi vì \(\log|\mathcal{H}|\) dominant.</div>
+<div class="qexp"><strong>Giải thích:</strong> \(\text{gap}\propto\sqrt{\frac{\log|\mathcal{H}|+\log(1/\delta)}{n}}\). Tăng \(n\to 4n\): gap \(\to\) gap\(/2\). Tăng \(|\mathcal{H}|\to|\mathcal{H}|^2\): gap \(\to\) gap \(\times\sqrt{(2\log|\mathcal{H}|)/\log|\mathcal{H}|}=\sqrt{2}\) — chỉ tăng \(\sqrt{2}\) lần dù model space bình phương! Này giải thích tại sao overfitting không catastrophic khi \(n\) lớn. VC bound tight cho worst case, Rademacher complexity cho tighter bound phụ thuộc distribution.
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Learning Theory</a></div>
+</div>
+</div>
+
+<!-- D18 -->
+<div class="qcard">
+<div class="qhdr">Câu 18 — Multi-label vs Multi-class: Architecture</div>
+<div class="qbody">
+<div class="qq">Phân biệt multi-class (exactly 1 of K) và multi-label (any subset of K). Thay đổi architecture/loss cần thiết:</div>
+<div class="qopt qwrong">A. Multi-label dùng softmax; multi-class dùng sigmoid.</div>
+<div class="qopt qok">B. Multi-label: K independent sigmoid outputs + binary cross-entropy per label (labels independent) + per-label threshold tuning. Softmax (multi-class) enforce \(\sum P_k=1\) — sai cho multi-label vì labels không exclusive. ✓</div>
+<div class="qopt qwrong">C. Không có sự khác biệt về architecture; chỉ khác post-processing.</div>
+<div class="qopt qwrong">D. Multi-label cần separate binary classifier cho mỗi label.</div>
+<div class="qexp"><strong>Giải thích:</strong> Multi-class: \(\text{softmax}(\mathbf{z})\in\Delta^{K-1}\) (simplex) + categorical cross-entropy. Multi-label: \(\sigma(z_k)\in(0,1)\) independently + binary cross-entropy \(\sum_k\text{BCE}(y_k,\hat{y}_k)\). Threshold per label: có thể tune \(\tau_k\) per label độc lập (khác nhau optimal threshold cho mỗi label). Challenges: label correlation (label A thường đi với B), extreme label sparsity. Methods: Binary Relevance, Classifier Chains (capture label correlation), Label Powerset.
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Classification Problems</a></div>
+</div>
+</div>
+
+<!-- D19 -->
+<div class="qcard">
+<div class="qhdr">Câu 19 — Online Learning: Perceptron Convergence</div>
+<div class="qbody">
+<div class="qq">Perceptron algorithm update: if \(y_i\hat{y}_i\leq 0\): \(\mathbf{w}\leftarrow\mathbf{w}+y_i\mathbf{x}_i\). Perceptron Convergence Theorem đảm bảo gì?</div>
+<div class="qopt qwrong">A. Converge về global minimum như GD trong hữu hạn bước.</div>
+<div class="qopt qok">B. Nếu data linearly separable với margin \(\gamma\) và \(\|\mathbf{x}_i\|\leq R\), số mistakes tối đa là \((R/\gamma)^2\) — hữu hạn. Không converge nếu data không separable → Pocket Algorithm: keep best weights seen so far. ✓</div>
+<div class="qopt qwrong">C. Luôn converge bất kể data có linearly separable hay không.</div>
+<div class="qopt qwrong">D. Perceptron và logistic regression cho identical decision boundary sau khi converge.</div>
+<div class="qexp"><strong>Giải thích:</strong> Rosenblatt (1962) Convergence Theorem: mistakes \(\leq(R/\gamma)^2\) với \(R=\max\|\mathbf{x}_i\|\), \(\gamma\) = functional margin. Proof: track \(\mathbf{w}_t\cdot\mathbf{w}^*\) tăng ít nhất \(\gamma\) mỗi mistake, \(\|\mathbf{w}_t\|^2\) tăng nhiều nhất \(R^2\) → sau hữu hạn mistakes, phải stop. Không separable: Pocket Algorithm (Gallant 1990) — perceptron update + lưu lại weights tốt nhất. Online learning: 1 sample/batch → perceptron; good for streaming, large-scale data.
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Online Learning</a></div>
+</div>
+</div>
+
+<!-- D20 -->
+<div class="qcard">
+<div class="qhdr">Câu 20 — SHAP Values: Game Theory &amp; Properties</div>
+<div class="qbody">
+<div class="qq">SHAP (SHapley Additive exPlanations) values. Tính chất nào makes SHAP đặc biệt hơn đơn giản là gradient?</div>
+<div class="qopt qwrong">A. Là gradient của output với respect đến mỗi input feature.</div>
+<div class="qopt qok">B. SHAP = Shapley values từ game theory: phân bổ fair contribution của mỗi feature dựa trên marginal contribution trong mọi possible feature coalitions. Thỏa mãn axioms: (1) Efficiency (\(\sum_i\phi_i=f(x)-E[f]\)); (2) Symmetry; (3) Dummy (irrelevant feature → SHAP=0); (4) Additivity. Unique explanation method satisfying all 4. ✓</div>
+<div class="qopt qwrong">C. SHAP chỉ applicable với tree models.</div>
+<div class="qopt qwrong">D. SHAP = permutation importance scaled per-sample.</div>
+<div class="qexp"><strong>Giải thích:</strong> Shapley value: \(\phi_i=\sum_{S\subseteq N\setminus\{i\}}\frac{|S|!(|N|-|S|-1)!}{|N|!}[v(S\cup\{i\})-v(S)]\) — average marginal contribution over all orderings. Lundberg &amp; Lee (2017): SHAP unifies LIME, DeepLIFT, Integrated Gradients. TreeSHAP: \(O(TLD^2)\) cho tree models (polynomial, not exponential). KernelSHAP: model-agnostic, slower. SHAP bitmaps: feature contribution per sample → identify what pushed prediction up/down.
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Interpretability</a></div>
+</div>
+</div>
+
+<!-- D21 -->
+<div class="qcard">
+<div class="qhdr">Câu 21 — Cross-Entropy &amp; KL Divergence</div>
+<div class="qbody">
+<div class="qq">Cross-entropy loss \(H(p,q)=-\sum_x p(x)\log q(x)\). Trong classification training, minimizing cross-entropy tương đương minimizing gì?</div>
+<div class="qopt qok">A. KL divergence \(\text{KL}(p||q)=H(p,q)-H(p)\): vì \(H(p)\) là entropy của true labels (constant w.r.t. model params), \(\min H(p,q)=\min\text{KL}(p||q)\). ✓</div>
+<div class="qopt qwrong">B. Entropy \(H(p)\) — entropy của true distribution.</div>
+<div class="qopt qwrong">C. Absolute difference \(|p(x)-q(x)|\) — Total Variation Distance.</div>
+<div class="qopt qwrong">D. JS Divergence — symmetric version of KL.</div>
+<div class="qexp"><strong>Giải thích:</strong> \(H(p,q)=H(p)+\text{KL}(p||q)\). Với true labels \(p\) fixed (not model-dependent): \(\min_\theta H(p,q_\theta)=\min_\theta\text{KL}(p||q_\theta)\) (minimize divergence between model distribution và true distribution). Bayes-optimal classifier: khi \(q_\theta=p\), CE = H(p) = entropy của labels = irreducible noise. \(\text{KL}(p||q)\geq 0\) → \(H(p,q)\geq H(p)\) — cross-entropy luôn ≥ true entropy. GAN training dùng Jensen-Shannon divergence (average of two KL divergences).
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Information Theory</a></div>
+</div>
+</div>
+
+<!-- D22 -->
+<div class="qcard">
+<div class="qhdr">Câu 22 — Bayesian Optimization cho Hyperparameters</div>
+<div class="qbody">
+<div class="qq">Bayesian Optimization (BO) tốt hơn Grid Search vì lý do gì chủ yếu?</div>
+<div class="qopt qwrong">A. BO không cần evaluate mọi grid point (random search cũng vậy).</div>
+<div class="qopt qok">B. BO xây surrogate model (Gaussian Process) của objective \(f(\lambda)\), chọn next \(\lambda\) bằng acquisition function (Expected Improvement, UCB) — <em>học từ past evaluations</em> để focus vào promising regions. Grid/Random search là "memoryless" (không dùng kết quả trước để guide next evaluation). ✓</div>
+<div class="qopt qwrong">C. Grid Search không thể handle continuous hyperparameters.</div>
+<div class="qopt qwrong">D. BO chỉ work với ≤ 3 hyperparameters.</div>
+<div class="qexp"><strong>Giải thích:</strong> BO framework: (1) Prior: GP trên objective function; (2) Observe f(λ_1),...,f(λ_t); (3) Posterior: GP conditioning on observations; (4) Acquisition function: EI = \(E[\max(f(\lambda)-f^*, 0)]\) → select \(\lambda_{t+1}=\arg\max\text{EI}\). GP surrogate: smooth function approximation, uncertainty estimates. Effective với expensive evaluations (neural network training). Limitations: BO scales poorly với d>20 hyperparameters (GP computationally expensive). Optuna, Hyperopt, SMAC là BO libraries.
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Hyperparameter Tuning</a></div>
+</div>
+</div>
+
+<!-- D23 -->
+<div class="qcard">
+<div class="qhdr">Câu 23 — t-SNE: Limitations</div>
+<div class="qbody">
+<div class="qq">t-SNE cho visualization 2D đẹp. Limitations quan trọng nhất khi dùng cho downstream ML:</div>
+<div class="qopt qwrong">A. t-SNE là lossless dimensionality reduction.</div>
+<div class="qopt qok">B. (1) Không có out-of-sample extension: không project new points vào đã fitted embedding; (2) Không preserve global structure (chỉ local neighborhoods); (3) Kết quả non-deterministic và sensitive với perplexity; (4) Cluster distances/sizes không meaningful; (5) NOT suitable cho downstream ML features. Dùng chỉ cho visualization. ✓</div>
+<div class="qopt qwrong">C. t-SNE nhanh hơn PCA nên không có limitations.</div>
+<div class="qopt qwrong">D. t-SNE luôn tốt hơn PCA cho mọi mục đích.</div>
+<div class="qexp"><strong>Giải thích:</strong> t-SNE (van der Maaten &amp; Hinton 2008): minimize KL(P||Q) với P = pairwise similarities trong high-d (Gaussian), Q = pairwise similarities trong low-d (Student-t với 1 dof). Student-t heavy tail → resolve crowding problem (Gaussian quá sparse trong low-d). UMAP (2018): faster, preserves more global structure, has out-of-sample extension → better alternative cho nhiều cases. Cả t-SNE và UMAP: chỉ cho visualization, không dùng features cho classifier.
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — Dimensionality Reduction</a></div>
+</div>
+</div>
+
+<!-- D24 -->
+<div class="qcard">
+<div class="qhdr">Câu 24 — GMM vs K-Means: Ưu điểm probabilistic</div>
+<div class="qbody">
+<div class="qq">Gaussian Mixture Model (GMM) là probabilistic version của K-Means. Ưu điểm quan trọng nhất của GMM:</div>
+<div class="qopt qwrong">A. GMM nhanh hơn K-Means do dùng closed-form EM updates.</div>
+<div class="qopt qok">B. GMM: (1) Soft assignment — \(P(\text{cluster }k|\mathbf{x}_i)\) → model uncertainty về cluster membership; (2) Arbitrary covariance shapes (spherical, diagonal, full) → không bị giới hạn spherical clusters như K-Means; (3) Model selection bằng BIC/AIC; (4) Generative model — có thể sample new points. ✓</div>
+<div class="qopt qwrong">C. GMM luôn tốt hơn K-Means về cluster quality.</div>
+<div class="qopt qwrong">D. GMM không cần biết số clusters trước — tự học từ data.</div>
+<div class="qexp"><strong>Giải thích:</strong> K-Means = EM với spherical Gaussian components + hard assignment (responsibility = 0 hoặc 1). GMM: soft assignment \(\gamma_{ik}=P(k|\mathbf{x}_i)\), covariance \(\Sigma_k\) learned. Full covariance: \(d(d+1)/2\) params per component → nhiều params, cần nhiều data, prone to overfit. Covariance type: 'full' > 'tied' > 'diag' > 'spherical' (decreasing params). BIC = \(-2\log\mathcal{L}+p\log n\) để chọn số components K.
+<a href="kmeans.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: K-Means &amp; Clustering</a></div>
+</div>
+</div>
+
+<!-- D25 -->
+<div class="qcard">
+<div class="qhdr">Câu 25 — Causality vs Correlation trong ML Production</div>
+<div class="qbody">
+<div class="qq">ML models học statistical correlations. Tại sao điều này nguy hiểm khi deployment distribution khác training distribution?</div>
+<div class="qopt qwrong">A. Correlations hiếm khi giữ nguyên trong test data.</div>
+<div class="qopt qok">B. Models học spurious correlations (shortcuts) đúng trong training distribution nhưng fail khi distribution thay đổi. Causal features stable across distributions; correlational features chỉ stable khi confounders unchanged. Ví dụ: COVID X-ray classifier học "hospital label" (X-ray quality) thay vì disease features → fail khi deploy ở hospital khác. ✓</div>
+<div class="qopt qwrong">C. ML models thực sự học causal relationships thông qua sufficient data.</div>
+<div class="qopt qwrong">D. Chỉ là vấn đề lý thuyết, không ảnh hưởng production systems.</div>
+<div class="qexp"><strong>Giải thích:</strong> Spurious correlations: "tank detection" (DARPA) — model học ảnh chụp khi có mây (training tanks) vs không mây (training non-tanks). "Shortcut learning" (Geirhos et al. 2020): ImageNet models rely on texture not shape. Giải pháp: (1) Causal feature engineering; (2) Domain invariant learning; (3) Data collection từ diverse distributions; (4) Invariant Risk Minimization (IRM, Arjovsky 2019); (5) Counterfactual data augmentation. OOD (Out-of-Distribution) detection cũng quan trọng: biết khi nào input outside training distribution.
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi — ML trong thực tế</a></div>
+</div>
+</div>
+
+</div><!-- /tab t4 -->
 
 </main>
 
