@@ -111,6 +111,11 @@ ul,ol{padding-left:1.4rem;margin:.4rem 0}
 strong{color:#1e293b}
 
 @media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+
+/* FIGURES */
+.fig-wrap{text-align:center;margin:1.4rem 0}
+.fig-wrap img{max-width:100%;width:100%;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.5);display:block;margin:0 auto}
+.fig-cap{font-size:.78rem;color:#64748b;margin-top:.5rem;font-style:italic}
 </style>
 </head>
 
@@ -137,7 +142,7 @@ strong{color:#1e293b}
   <a href="kmeans.html" class="sb-link"><i class="fas fa-object-group"></i>K-Means Clustering</a>
   <a href="logreg.html" class="sb-link"><i class="fas fa-chart-line"></i>Logistic Regression</a>
   <div class="sb-group">Tổng hợp</div>
-  <a href="cheatsheet.html" class="sb-link"><i class="fas fa-print"></i>Cheat Sheet — 4 trang A4</a>
+  <a href="cheatsheet.html" class="sb-link"><i class="fas fa-print"></i>Cheat Sheet — 6 trang A4</a>
   <div class="sb-group">Thi thử</div>
   <a href="mock.html" class="sb-link"><i class="fas fa-file-alt"></i>Đề Thi Thử 2026</a>
   <a href="theory.html" class="sb-link"><i class="fas fa-infinity"></i>Lý thuyết Nâng Cao</a>
@@ -200,6 +205,11 @@ strong{color:#1e293b}
 <div class="step"><div class="step-n">2</div><div class="step-c"><strong>Compute loss:</strong> Tính L từ đầu ra cuối và nhãn đúng.</div></div>
 <div class="step"><div class="step-n">3</div><div class="step-c"><strong>Backward pass:</strong> Chain Rule lan truyền ngược gradient, tính \(\partial L/\partial w\) cho từng trọng số.</div></div>
 <div class="step"><div class="step-n">4</div><div class="step-c"><strong>Update:</strong> \(w \leftarrow w - \eta \frac{\partial L}{\partial w}\)</div></div>
+
+<div class="fig-wrap">
+  <img src="imgs/mlp_architecture.png" alt="MLP Architecture — Forward & Backpropagation">
+  <p class="fig-cap">Hình 1 — Kiến trúc MLP: luồng Forward pass (xanh lá) và Backpropagation (đỏ). Mỗi lớp tính z⁽ˡ⁾ = W⁽ˡ⁾a⁽ˡ⁻¹⁾ + b⁽ˡ⁾, sau đó a⁽ˡ⁾ = f(z⁽ˡ⁾).</p>
+</div>
 </section>
 
 <hr class="divider">
@@ -305,6 +315,10 @@ strong{color:#1e293b}
 <div class="fbox">\[ \frac{\partial L}{\partial \mathbf{x}} = \frac{\partial L}{\partial \mathbf{y}} \cdot \left(1 + \frac{\partial \mathcal{F}(\mathbf{x})}{\partial \mathbf{x}}\right) \]</div>
 <p>Số hạng \(\mathbf{1}\) trong ngoặc đảm bảo gradient <em>luôn có đường đi</em> dù \(\mathcal{F}'\) nhỏ đến đâu.</p>
 
+<div class="fig-wrap">
+  <img src="imgs/vanishing_gradient.png" alt="Vanishing Gradient per Layer Depth">
+  <p class="fig-cap">Hình 2 — Gradient magnitude giảm theo chiều sâu lớp (log scale). Sigmoid: (0.25)ᴸ → cực nhỏ sau 5 lớp. ReLU duy trì gradient ≈ 1. ResNet tạo "gradient highway" không bị suy giảm.</p>
+</div>
 </section>
 
 <hr class="divider">
@@ -325,6 +339,11 @@ strong{color:#1e293b}
 <tr><td>Leaky ReLU</td><td>\(\max(\alpha z,z),\ \alpha\approx0.01\)</td><td>(-∞,∞)</td><td>1</td><td>α là hyperparameter</td><td>Khi Dying ReLU xảy ra</td></tr>
 <tr><td>GELU</td><td>\(z\cdot\Phi(z)\)</td><td>(-∞,∞)</td><td>≈1.13</td><td>Đắt hơn để tính</td><td>Transformer, BERT, GPT</td></tr>
 </table>
+
+<div class="fig-wrap">
+  <img src="imgs/activation_functions.png" alt="Activation Functions and Derivatives">
+  <p class="fig-cap">Hình 3 — Trái: giá trị hàm kích hoạt. Phải: đạo hàm (gradient). Lưu ý σ'(z) ≤ 0.25 — đây là nguồn gốc của vanishing gradient khi chain rule nhân nhiều lớp.</p>
+</div>
 
 <div class="ss-title">Dying ReLU — Phân tích</div>
 <p>Khi \(z < 0\): ReLU = 0, gradient = 0. Nếu pre-activation của một neuron <em>luôn âm</em> (vì bias quá âm hoặc learning rate quá lớn), neuron đó không bao giờ được cập nhật nữa → <em>"chết"</em>. Với mạng lớn, có thể 40-50% neuron bị chết.</p>
@@ -383,6 +402,11 @@ strong{color:#1e293b}
 <tr><td>Xavier/Glorot</td><td>\(\mathcal{N}(0, 2/(n_{in}+n_{out}))\)</td><td>Sigmoid, Tanh</td><td>Cân bằng variance forward + backward</td></tr>
 <tr><td>He</td><td>\(\mathcal{N}(0, 2/n_{in})\)</td><td>ReLU, Leaky ReLU</td><td>Bù cho việc ReLU loại bỏ 50% activation</td></tr>
 </table>
+
+<div class="fig-wrap">
+  <img src="imgs/weight_init.png" alt="Weight Initialization: Zero vs Xavier vs He">
+  <p class="fig-cap">Hình 4 — Phân phối trọng số sau khởi tạo (n_in=512). Zero init: toàn bộ bằng 0 → symmetry problem. Xavier: phân phối Gaussian rộng vừa. He: rộng hơn Xavier (compensate 50% zeros của ReLU).</p>
+</div>
 
 <div class="alert al-blue">
   <div class="alert-title">Cách tư duy: Khởi tạo là "thiết lập trạng thái ban đầu"</div>
@@ -446,6 +470,11 @@ y_i = \gamma \hat{x}_i + \beta
   Khi bạn stack nhiều lớp, mỗi lớp biến đổi phân phối dữ liệu. BN "reset" phân phối về dạng chuẩn hóa trước mỗi lớp, nhưng dùng \(\gamma, \beta\) để giữ lại "thông tin đã học". Giống như sau mỗi bước đo lường, bạn zero lại cân — nhưng vẫn nhớ kết quả đo trước.
 </div>
 
+<div class="fig-wrap">
+  <img src="imgs/batchnorm.png" alt="Batch Normalization: Before, Normalize, Scale & Shift">
+  <p class="fig-cap">Hình 5 — BN 3 bước: (1) Phân phối activation trước BN — mean bị shift, variance không đều. (2) Sau normalize: μ≈0, σ²≈1. (3) Sau γ, β: mạng học lại scale và shift tối ưu, nhưng bắt đầu từ điểm chuẩn hóa.</p>
+</div>
+
 </section>
 
 <hr class="divider">
@@ -492,6 +521,11 @@ y_i = \gamma \hat{x}_i + \beta
 <div class="alert al-blue">
   <div class="alert-title">Cách tư duy: Dropout như "trộn team ngẫu nhiên"</div>
   Tưởng tượng một công ty (mạng) với nhiều nhân viên (neurons). Nếu có một "ngôi sao" (neuron đặc biệt quan trọng), cả team phụ thuộc vào họ → fragile. Dropout buộc mỗi nhân viên phải có năng lực độc lập, vì họ không biết hôm nay team có ai. Kết quả: mỗi neuron học feature có giá trị độc lập.
+</div>
+
+<div class="fig-wrap">
+  <img src="imgs/dropout.png" alt="Dropout: Standard vs Inverted Scaling">
+  <p class="fig-cap">Hình 6 — Inverted Dropout với p=0.5. Trái: không scale → E[ã] = 0.5a ≠ a, mismatch khi inference. Phải: chia (1−p) trong training → E[ã] = a, inference không cần thay đổi. Màu xanh = neuron active, đỏ = bị tắt.</p>
 </div>
 
 </section>
@@ -618,6 +652,11 @@ w_{t+1} = w_t - \frac{\eta}{\sqrt{\hat{v}_t}+\epsilon}\,\hat{m}_t
   <p>Thực nghiệm cho thấy SGD với LR schedule phù hợp thường đạt test accuracy cao hơn Adam ở cuối training. Lý do đề xuất: Adam step size bị "adaptive" → mỗi chiều tham số học ở tốc độ khác nhau → có thể fit những pattern rất specific trong training set mà không generalize. SGD đơn giản hơn, ít "nhớ quá nhiều" về gradient landscape → implicit regularization tốt hơn.</p>
 </div>
 
+<div class="fig-wrap">
+  <img src="imgs/optimization_paths.png" alt="SGD vs Momentum vs Adam on ravine loss landscape">
+  <p class="fig-cap">Hình 7 — Ba thuật toán tối ưu trên "ravine" (loss landscape kéo dài theo 1 chiều). SGD: zig-zag nặng dọc trục nhanh. Momentum: quỹ đạo mượt hơn nhờ velocity. Adam: hội tụ nhanh và thẳng nhờ adaptive step size trên mỗi chiều. Dấu ★ = điểm tối ưu.</p>
+</div>
+
 </section>
 
 <hr class="divider">
@@ -648,6 +687,16 @@ w_{t+1} = w_t - \frac{\eta}{\sqrt{\hat{v}_t}+\epsilon}\,\hat{m}_t
     <li style="margin:.35rem 0"><strong>Stochasticity là tính năng, không phải lỗi:</strong> mini-batch noise, dropout randomness, BatchNorm variance đều có tác dụng regularization ngầm.</li>
     <li style="margin:.35rem 0"><strong>Đánh đổi bias-variance xuyên suốt:</strong> depth ↑ → expressiveness ↑ nhưng optimization khó hơn; regularization ↑ → variance ↓ nhưng bias ↑.</li>
   </ol>
+</div>
+
+<div class="fig-wrap">
+  <img src="imgs/bias_variance.png" alt="Bias-Variance Tradeoff">
+  <p class="fig-cap">Hình 8 — Đánh đổi Bias-Variance. Total Error = Bias² + Variance + σ²ε (noise không thể giảm). Underfitting (trái): model quá đơn giản → high bias. Overfitting (phải): quá phức tạp → high variance. Điểm vàng: minimum total error.</p>
+</div>
+
+<div class="fig-wrap">
+  <img src="imgs/learning_curves.png" alt="Learning Curves: Overfitting vs Good Fit">
+  <p class="fig-cap">Hình 9 — Learning Curves để chẩn đoán model. Trái: Overfitting — train loss giảm đều nhưng val loss tăng lại sau epoch 30 (khoảng cách đỏ = generalization gap). Phải: Good fit — train/val loss song song, hội tụ cùng nhau.</p>
 </div>
 
 </section>

@@ -93,6 +93,9 @@ ul,ol{padding-left:1.4rem;margin:.4rem 0}
 strong{color:#1e293b}
 
 @media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+.fig-wrap{text-align:center;margin:1.4rem 0}
+.fig-wrap img{max-width:100%;width:100%;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.35);display:block;margin:0 auto}
+.fig-cap{font-size:.78rem;color:#64748b;margin-top:.5rem;font-style:italic}
 </style>
 </head>
 <body>
@@ -117,7 +120,7 @@ strong{color:#1e293b}
   <a href="kmeans.html" class="sb-link"><i class="fas fa-object-group"></i>K-Means Clustering</a>
   <a href="logreg.html" class="sb-link"><i class="fas fa-chart-line"></i>Logistic Regression</a>
   <div class="sb-group">Tổng hợp</div>
-  <a href="cheatsheet.html" class="sb-link"><i class="fas fa-print"></i>Cheat Sheet — 4 trang A4</a>
+  <a href="cheatsheet.html" class="sb-link"><i class="fas fa-print"></i>Cheat Sheet — 6 trang A4</a>
   <div class="sb-group">Thi thử</div>
   <a href="mock.html" class="sb-link"><i class="fas fa-file-alt"></i>Đề Thi Thử 2026</a>
   <a href="theory.html" class="sb-link"><i class="fas fa-infinity"></i>Lý thuyết Nâng Cao</a>
@@ -205,21 +208,9 @@ strong{color:#1e293b}
 <p>Tung đồng xu: nếu xác suất ngửa = 0.5 (entropy=1), bạn hoàn toàn không chắc kết quả — cần hỏi để biết. Nếu xác suất ngửa = 0.99 (entropy≈0.08), bạn hầu như biết kết quả rồi — không cần hỏi thêm. <strong>Entropy đo lượng thông tin còn cần để biết kết quả.</strong></p>
 </div>
 
-<div class="fbox no-top-radius" style="text-align:left;padding:.85rem 1.5rem">
-<pre style="font-family:monospace;font-size:.82rem;line-height:1.9">H (bits)
-  1.0 |        *
-      |      *   *
-  0.8 |    *       *
-      |  *           *
-  0.5 | *               *
-      |*                   *
-  0.0 +─────────────────────── P(+)
-      0   0.2  0.4  0.6  0.8  1.0
-      ^                         ^
-    Thuần                     Thuần
-    khiết                     khiết
-   (H=0)                     (H=0)
-              Max tại P=0.5 (H=1 bit)</pre>
+<div class="fig-wrap">
+  <img src="imgs/entropy_gini.png" alt="Entropy vs Gini Impurity">
+  <p class="fig-cap">Hình 1 — Entropy và Gini đều đạt max khi P(+)=0.5 (hoàn toàn hỗn hợp) và về 0 khi node thuần khiết. Entropy nhạy hơn với sự không thuần khiết; Gini tính nhanh hơn (tránh log). CART dùng Gini; ID3/C4.5 dùng Entropy.</p>
 </div>
 
 <div class="ss-title">2.2 Gini Impurity — Dùng trong CART</div>
@@ -540,22 +531,60 @@ Rain → Wind=Weak → <span class="tag-yes">Yes</span> &nbsp;|&nbsp; Rain → W
 
 <div class="ss-title">4.4 Kết quả — Cây quyết định ID3 hoàn chỉnh</div>
 
-<div class="fbox no-top-radius" style="text-align:left;padding:1rem 1.5rem">
-<pre style="font-family:monospace;font-size:.85rem;line-height:2">
-                  [ Outlook? ]
-                 /      |      \
-         Sunny  /   Overcast    \ Rain
-               /        |        \
-        [Humidity?]    YES      [Wind?]
-        /        \              /     \
-     High       Normal       Weak   Strong
-       |           |           |        |
-      NO          YES         YES       NO</pre>
-</div>
+<svg viewBox="0 0 620 300" width="100%" style="max-width:100%;background:#1e293b;border-radius:10px;margin:.5rem 0;box-shadow:0 4px 16px rgba(0,0,0,.4)" font-family="'Segoe UI',system-ui,sans-serif">
+  <!-- Root -->
+  <rect x="220" y="12" width="120" height="38" rx="8" fill="#1d4ed8"/>
+  <text x="280" y="36" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">Outlook?</text>
+  <!-- Edges from root -->
+  <line x1="250" y1="50" x2="90"  y2="108" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="280" y1="50" x2="280" y2="108" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="310" y1="50" x2="490" y2="108" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="135" y="86" text-anchor="middle" fill="#94a3b8" font-size="11">Sunny</text>
+  <text x="296" y="86" text-anchor="middle" fill="#94a3b8" font-size="11">Overcast</text>
+  <text x="415" y="86" text-anchor="middle" fill="#94a3b8" font-size="11">Rain</text>
+  <!-- Humidity node -->
+  <rect x="30" y="108" width="120" height="38" rx="8" fill="#0369a1"/>
+  <text x="90" y="132" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">Humidity?</text>
+  <!-- Overcast YES -->
+  <rect x="240" y="108" width="80" height="38" rx="8" fill="#166534"/>
+  <text x="280" y="132" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">YES ✓</text>
+  <!-- Wind node -->
+  <rect x="430" y="108" width="120" height="38" rx="8" fill="#0369a1"/>
+  <text x="490" y="132" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">Wind?</text>
+  <!-- Humidity edges -->
+  <line x1="70"  y1="146" x2="50"  y2="210" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="110" y1="146" x2="130" y2="210" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="43"  y="186" text-anchor="middle" fill="#94a3b8" font-size="11">High</text>
+  <text x="130" y="186" text-anchor="middle" fill="#94a3b8" font-size="11">Normal</text>
+  <!-- Wind edges -->
+  <line x1="465" y1="146" x2="430" y2="210" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="515" y1="146" x2="550" y2="210" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="433" y="186" text-anchor="middle" fill="#94a3b8" font-size="11">Weak</text>
+  <text x="560" y="186" text-anchor="middle" fill="#94a3b8" font-size="11">Strong</text>
+  <!-- Leaves -->
+  <rect x="20"  y="210" width="60" height="34" rx="7" fill="#7f1d1d"/>
+  <text x="50"  y="232" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">NO ✗</text>
+  <rect x="100" y="210" width="60" height="34" rx="7" fill="#166534"/>
+  <text x="130" y="232" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">YES ✓</text>
+  <rect x="400" y="210" width="60" height="34" rx="7" fill="#166534"/>
+  <text x="430" y="232" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">YES ✓</text>
+  <rect x="520" y="210" width="60" height="34" rx="7" fill="#7f1d1d"/>
+  <text x="550" y="232" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">NO ✗</text>
+  <!-- Depth labels -->
+  <text x="10" y="22" fill="#475569" font-size="10">Depth 0</text>
+  <text x="10" y="130" fill="#475569" font-size="10">Depth 1</text>
+  <text x="10" y="232" fill="#475569" font-size="10">Depth 2</text>
+</svg>
+<p class="fig-cap">Hình 2 — Cây ID3 hoàn chỉnh cho bài toán Play Tennis. 5 leaf nodes, depth=2. Feature Temperature không được dùng vì Information Gain quá thấp.</p>
 
 <div class="alert al-green">
 <div class="alert-title">Cây hoàn chỉnh — 5 leaf nodes, depth = 2, zero training error</div>
 Toàn bộ 14 records được phân loại đúng. Cây sâu 2 cấp (không tính root). Feature Temperature không được dùng vì IG quá thấp.
+</div>
+
+<div class="fig-wrap">
+  <img src="imgs/dtree_split.png" alt="Decision Tree: Information Gain for split selection">
+  <p class="fig-cap">Hình 3 — Trái: Tập dữ liệu và đường split tốt nhất (Humidity≤72%). Phải: Information Gain cho mọi ngưỡng split — CART tìm kiếm exhaustive qua mọi feature và threshold, chọn split maximise IG (hoặc Gini reduction).</p>
 </div>
 
 <!-- ============================================================
@@ -676,19 +705,9 @@ Toàn bộ 14 records được phân loại đúng. Cây sâu 2 cấp (không t�
 
 <div class="ss-title">6.3 Bias-Variance Tradeoff trong Decision Tree</div>
 
-<div class="fbox no-top-radius" style="text-align:left;padding:.85rem 1.5rem">
-<pre style="font-family:monospace;font-size:.82rem;line-height:1.9">Error
-  ^
-  |  ___________________________________________  Test Error (high variance)
-  | /                                          \
-  |/                 ___________________________\ ← optimal depth
-  |       __________/
-  |______/ Training Error (low, always decreasing)
-  +─────────────────────────────────────────────→ Tree Depth / Complexity
-  1    3    5    7    9    11  ...          max
-  ^                   ^                    ^
-Underfit           Optimal             Overfit
-(max_depth=1)   (balance)         (no pruning)</pre>
+<div class="fig-wrap">
+  <img src="imgs/bias_variance.png" alt="Bias-Variance tradeoff for Decision Tree depth">
+  <p class="fig-cap">Hình 4 — Bias-Variance tradeoff: cây quá cạn (underfitting, high bias), quá sâu (overfitting, high variance). Pruning tìm điểm tối ưu giữa hai thái cực. Cross-validation chọn α (cost-complexity) để prune về đúng độ sâu.</p>
 </div>
 
 <!-- ============================================================

@@ -126,6 +126,9 @@ strong{color:#1e293b}
 
 .svg-wrap{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:1rem;margin:.85rem 0;overflow-x:auto;text-align:center}
 .svg-caption{font-size:.78rem;color:#64748b;margin-top:.4rem;text-align:center;font-style:italic}
+.fig-wrap{text-align:center;margin:1.4rem 0}
+.fig-wrap img{max-width:100%;width:100%;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.35);display:block;margin:0 auto}
+.fig-cap{font-size:.78rem;color:#64748b;margin-top:.5rem;font-style:italic}
 </style>
 </head>
 
@@ -152,7 +155,7 @@ strong{color:#1e293b}
   <a href="kmeans.html" class="sb-link"><i class="fas fa-object-group"></i>K-Means Clustering</a>
   <a href="logreg.html" class="sb-link"><i class="fas fa-chart-line"></i>Logistic Regression</a>
   <div class="sb-group">Tổng hợp</div>
-  <a href="cheatsheet.html" class="sb-link"><i class="fas fa-print"></i>Cheat Sheet — 4 trang A4</a>
+  <a href="cheatsheet.html" class="sb-link"><i class="fas fa-print"></i>Cheat Sheet — 6 trang A4</a>
   <div class="sb-group">Thi thử</div>
   <a href="mock.html" class="sb-link"><i class="fas fa-file-alt"></i>Đề Thi Thử 2026</a>
   <a href="theory.html" class="sb-link"><i class="fas fa-infinity"></i>Lý thuyết Nâng Cao</a>
@@ -204,6 +207,11 @@ strong{color:#1e293b}
 <p>p=1 → Manhattan; p=2 → Euclidean.</p>
 </div>
 </details>
+
+<div class="fig-wrap">
+  <img src="imgs/distance_metrics.png" alt="Unit ball for L1, L2, Linf distance metrics">
+  <p class="fig-cap">Hình 4 — "Unit ball" (tập hợp mọi điểm cách gốc đúng 1 đơn vị) cho L₁ (diamond), L₂ (circle), L∞ (square). Hình dạng quyết định cách KNN "nhìn" láng giềng: L₁ ưu tiên theo trục, L₂ đẳng hướng, L∞ ưu tiên chiều xa nhất.</p>
+</div>
 
 <div class="s-title">3. Chuẩn hóa dữ liệu (Normalization)</div>
 
@@ -270,7 +278,7 @@ strong{color:#1e293b}
 <div class="ss-title">6.3 KD-Tree — Binary Search Tree trên không gian D chiều</div>
 
 <div class="svg-wrap">
-<svg viewBox="0 0 450 320" width="100%" style="max-width:450px" font-family="'Segoe UI',system-ui,sans-serif">
+<svg viewBox="0 0 450 320" width="100%" style="max-width:100%" font-family="'Segoe UI',system-ui,sans-serif">
   <!-- Background -->
   <rect width="450" height="320" fill="#fff" rx="6" stroke="#e2e8f0" stroke-width="1"/>
   <!-- Title -->
@@ -358,21 +366,9 @@ strong{color:#1e293b}
 <div class="step"><div class="step-n">1</div><div class="step-c"><strong>Chọn chiều chia:</strong> chọn chiều \(d^* = \arg\max_d \,\text{Var}(\text{data theo chiều }d)\). Chiều có phương sai lớn nhất đảm bảo split phân chia dữ liệu cân bằng nhất.</div></div>
 <div class="step"><div class="step-n">2</div><div class="step-c"><strong>Split tại median:</strong> điểm trung vị → hai nửa bằng nhau → cây cân bằng → độ sâu \(\mathcal{O}(\log N)\).</div></div>
 <div class="step"><div class="step-n">3</div><div class="step-c"><strong>Đệ quy:</strong> mỗi node con lại áp dụng lại hai bước trên trên tập con của mình, xoay vòng qua các chiều.</div></div>
-<div class="fbox no-top-radius" style="text-align:left;padding:.9rem 1.4rem">
-<pre style="font-family:monospace;font-size:.78rem;line-height:1.75">
-  Không gian 2D ban đầu (6 điểm):
-  ┌──────────────────────────────┐
-  │  B         A                 │  ← split d=x tại x=5 (median)
-  │         │                   │
-  │    C    │  D     F          │
-  │         │                   │
-  │      E  │                   │
-  └──────────────────────────────┘
-            x=5
-
-  Sau split:   Node gốc [x ≤ 5 | x > 5]
-               ├── Trái {B, C, E}: split d=y tại y=median
-               └── Phải {A, D, F}: split d=y tại y=median</pre>
+<div class="fig-wrap">
+  <img src="imgs/kdtree.png" alt="KD-Tree: space partitioning and tree structure">
+  <p class="fig-cap">Hình 1 — Trái: Không gian 2D bị chia bởi KD-Tree. Đường thẳng xanh (x=6): split cấp 1 theo trục x. Đường ngang (y=4, y=6): split cấp 2 theo trục y. Phải: Cấu trúc cây tương ứng — mỗi node là một điểm dữ liệu, leaf không có con.</p>
 </div>
 <p>Kết quả: không gian bị chia nhỏ thành các hình chữ nhật (hyperrectangles). Mỗi leaf node chứa một tập nhỏ điểm.</p>
 </div>
@@ -484,34 +480,15 @@ strong{color:#1e293b}
 
 <div class="ss-title">7.4 Tiến trình biên quyết định từ K=1 đến K=N</div>
 
-<div class="fbox no-top-radius" style="text-align:left;padding:1rem 1.5rem">
-<pre style="font-family:monospace;font-size:.79rem;line-height:1.9">
-  K=1 (Voronoi, phức tạp tối đa)
-  ┌──────────────────────────────┐
-  │ ●A│●A      │  ●B  │●B       │ ← Biên bám sát từng điểm.
-  │   │  ●B    │       │        │   Có "đảo" nhỏ của lớp B
-  │   │    ●A  │ ●A   ●B       │   giữa vùng lớp A → dấu hiệu
-  └──────────────────────────────┘   overfit noise
-
-  K=√N (cân bằng tốt)
-  ┌──────────────────────────────┐
-  │ ●A  ●A            ●B  ●B   │ ← Biên mượt. "Đảo" nhỏ bị
-  │          ╱‾‾‾‾╲            │   nuốt vào vùng đa số xung
-  │   ●A  ●A╱       ╲●B  ●B   │   quanh. Tổng quát hóa tốt.
-  └──────────────────────────────┘
-
-  K=N (không có biên, một màu)
-  ┌──────────────────────────────┐
-  │  A   A   A   A   A   A   A  │ ← Toàn bộ không gian = A
-  │  A   A   A   A   A   A   A  │   (majority class). Không
-  │  A   A   A   A   A   A   A  │   còn tính "phân loại" nữa.
-  └──────────────────────────────┘</pre>
+<div class="fig-wrap">
+  <img src="imgs/knn_decision_boundary.png" alt="KNN Decision Boundaries: K=1 vs K=15">
+  <p class="fig-cap">Hình 2 — Biên quyết định KNN với K=1 và K=15 trên cùng dataset. K=1: biên cực kỳ phức tạp, mỗi điểm tạo "đảo" riêng → overfit noise. K=15: biên mượt mà hơn, tổng quát hóa tốt hơn. Đường xanh = decision boundary.</p>
 </div>
 
 <div class="ss-title">7.5 Đường cong Training/Test Error và Bias-Variance Tradeoff</div>
 
 <div class="svg-wrap">
-<svg viewBox="0 0 550 210" width="100%" style="max-width:550px" font-family="'Segoe UI',system-ui,sans-serif">
+<svg viewBox="0 0 550 210" width="100%" style="max-width:100%" font-family="'Segoe UI',system-ui,sans-serif">
   <!-- Panel 1: K=1 (x=10..180) -->
   <rect x="10" y="10" width="160" height="155" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" rx="4"/>
   <text x="90" y="26" text-anchor="middle" font-size="11" font-weight="700" fill="#14532d">K = 1</text>
@@ -618,7 +595,7 @@ strong{color:#1e293b}
 </table>
 
 <div class="svg-wrap">
-<svg viewBox="0 0 480 250" width="100%" style="max-width:480px" font-family="'Segoe UI',system-ui,sans-serif">
+<svg viewBox="0 0 480 250" width="100%" style="max-width:100%" font-family="'Segoe UI',system-ui,sans-serif">
   <defs>
     <marker id="arrowX" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
       <path d="M1,1 L7,4 L1,7 Z" fill="#1e293b"/>
@@ -704,24 +681,9 @@ strong{color:#1e293b}
 <details open>
 <summary><i class="fas fa-chart-line"></i> Đường cong lỗi theo K — Đọc hiểu từng vùng</summary>
 <div class="dc">
-<div class="fbox no-top-radius" style="text-align:left;padding:1rem 1.5rem">
-<pre style="font-family:monospace;font-size:.79rem;line-height:1.9">
-Error (%)
-    │
-    │● K=1: Train=0, Test cao (variance cao = nhạy với noise)
- Hi │╲
-    │ ╲  Test Error    ╭─────────── high bias plateau
-    │  ╲     ────────╮╱ (tiệm cận minority% = K=N baseline)
-    │   ╲  ╭─────────╯
-    │    ╲╱
-    │     ╲___Training Error (tăng đơn điệu theo K)
- Lo │          ═══════════════════════════════════════
-    └──────────────────────────────────────────────→ K
-    1    3   √N              …                     N
-    ↑         ↑                                    ↑
- Train=0   Elbow:                              Train = minority%
- Test↑↑   min Test Error                      Test ≈ Train ≈ minority%
-           (optimal K)</pre>
+<div class="fig-wrap">
+  <img src="imgs/bias_variance.png" alt="KNN Bias-Variance: effect of K">
+  <p class="fig-cap">Hình 3 — Đường cong lỗi theo K. K=1: Train Error=0, Test Error cao (variance cao). K=N: cả hai hội tụ về minority% (high bias). Điểm tối ưu ở "elbow" — K ≈ √N trong thực hành.</p>
 </div>
 <div class="insight">
   <div class="insight-title"><i class="fas fa-lightbulb"></i> Ba điểm cần nhớ để suy luận</div>
