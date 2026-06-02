@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đề Thi Thử Nâng Cao | MLA HK252</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']], processEscapes: true },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:0;left:0;width:258px;height:100vh;background:#0a1f10;overflow-y:auto;z-index:100;flex-shrink:0}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:#2d6a4f;border-radius:2px}
+.sb-title{padding:1.25rem 1rem .75rem;border-bottom:1px solid #1a3a20}
+.sb-title h1{color:#86efac;font-size:.95rem;font-weight:700;line-height:1.4}
+.sb-title p{color:#6ee7b7;font-size:.7rem;margin-top:.2rem}
+.sb-group{padding:.6rem 1rem .15rem;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#4ade80}
+.sb-link{display:flex;align-items:center;gap:.45rem;padding:.35rem 1rem;color:#bbf7d0;font-size:.8rem;text-decoration:none;border-left:3px solid transparent;transition:all .15s}
+.sb-link:hover{background:rgba(74,222,128,.1);border-left-color:#4ade80;color:#fff}
+.sb-link i{width:14px;font-size:.7rem;color:#4ade80;flex-shrink:0}
+
+/* MAIN */
+#main{margin-left:258px;min-height:100vh;padding:2rem 2.5rem;max-width:calc(100% - 258px)}
+
+/* CHAPTER HEADER */
+.ch-hdr{background:linear-gradient(135deg,#14532d,#16a34a);color:#fff;padding:1.75rem 2rem;border-radius:10px;margin-bottom:1.75rem;box-shadow:0 4px 12px rgba(20,83,45,.3)}
+.ch-hdr .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#86efac;font-weight:700}
+.ch-hdr h2{font-size:1.75rem;font-weight:800;margin:.2rem 0 .4rem}
+.ch-hdr p{color:#d1fae5;font-size:.9rem}
+.ch-hdr-indigo{background:linear-gradient(135deg,#312e81,#4338ca)}
+.ch-hdr-indigo .lbl{color:#c7d2fe}
+.ch-hdr-indigo p{color:#e0e7ff}
+.ch-hdr-rose{background:linear-gradient(135deg,#881337,#be185d)}
+.ch-hdr-rose .lbl{color:#fecdd3}
+.ch-hdr-rose p{color:#fce7f3}
+
+/* TABS */
+.tab-bar{display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.tab-btn{padding:.6rem 1.4rem;border-radius:8px 8px 0 0;font-size:.875rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;border-bottom:3px solid transparent}
+.tab-btn.active{background:#fff;color:#312e81;border-color:#4338ca;box-shadow:0 -2px 8px rgba(67,56,202,.15)}
+.tab-btn:not(.active){background:#e2e8f0;color:#475569}
+.tab-btn:not(.active):hover{background:#cbd5e1}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* SECTION TITLES */
+.s-title{font-size:1.2rem;font-weight:700;color:#14532d;border-left:4px solid #16a34a;padding-left:.7rem;margin:1.75rem 0 .9rem}
+
+/* ALERTS */
+.alert{border-radius:0 8px 8px 0;padding:.85rem 1.1rem;margin:.85rem 0;font-size:.875rem}
+.alert-title{font-weight:700;margin-bottom:.3rem;font-size:.85rem}
+.al-blue{background:#eff6ff;border-left:4px solid #3b82f6}
+.al-blue .alert-title{color:#1d4ed8}
+.al-green{background:#f0fdf4;border-left:4px solid #22c55e}
+.al-green .alert-title{color:#15803d}
+.al-yellow{background:#fffbeb;border-left:4px solid #f59e0b}
+.al-yellow .alert-title{color:#b45309}
+.al-red{background:#fef2f2;border-left:4px solid #ef4444}
+.al-red .alert-title{color:#b91c1c}
+.al-indigo{background:#eef2ff;border-left:4px solid #6366f1}
+.al-indigo .alert-title{color:#4338ca}
+
+/* QUIZ */
+.qcard{background:#fff;border:1px solid #e2e8f0;border-radius:8px;margin:1.1rem 0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.qhdr{background:#312e81;color:#fff;padding:.55rem 1.1rem;font-size:.82rem;font-weight:600}
+.qhdr-b2{background:#7c2d12}
+.qbody{padding:1.1rem}
+.qq{font-size:.875rem;line-height:1.7;margin-bottom:.7rem;font-weight:500}
+.qopt{padding:.35rem .75rem;border-radius:5px;margin:.2rem 0;font-size:.855rem;line-height:1.6}
+.qok{background:#dcfce7;color:#14532d;font-weight:700;border-left:3px solid #16a34a}
+.qwrong{color:#64748b}
+.qexp{background:#fffbeb;border-left:3px solid #f59e0b;padding:.7rem 1rem;border-radius:0 6px 6px 0;margin-top:.7rem;font-size:.84rem;line-height:1.7}
+.ref-link{display:inline-block;margin-top:.5rem;font-size:.8rem;color:#4338ca;text-decoration:none;font-weight:600}
+.ref-link:hover{text-decoration:underline}
+.ref-link i{margin-right:.25rem}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.85rem}
+.tbl th{background:#14532d;color:#fff;padding:.5rem .85rem;text-align:left}
+.tbl td{padding:.5rem .85rem;border:1px solid #e2e8f0}
+.tbl tr:nth-child(even){background:#f0fdf4}
+
+.divider{border:none;border-top:1px solid #e2e8f0;margin:2.25rem 0}
+#back-top{position:fixed;bottom:1.5rem;right:1.5rem;background:#312e81;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.2);font-size:.85rem}
+#back-top:hover{background:#4338ca}
+
+p{font-size:.9rem;line-height:1.65;margin:.5rem 0}
+li{font-size:.875rem;line-height:1.65}
+ul,ol{padding-left:1.4rem;margin:.4rem 0}
+strong{color:#1e293b}
+
+@media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+</style>
+</head>
+
+<body>
+
+<nav id="sidebar">
+  <div class="sb-title">
+    <h1><i class="fas fa-brain"></i> Học Máy &amp; Ứng Dụng</h1>
+    <p>Ôn thi Cuối Kỳ — HK252 | CO5175</p>
+  </div>
+  <div class="sb-group">Trang chủ</div>
+  <a href="index.html" class="sb-link"><i class="fas fa-home"></i>Tổng quan các chương</a>
+  <div class="sb-group">Phân loại có giám sát</div>
+  <a href="knn.html" class="sb-link"><i class="fas fa-map-marker-alt"></i>Ch.3 — K-Nearest Neighbors</a>
+  <a href="bayes.html" class="sb-link"><i class="fas fa-calculator"></i>Ch.4 — Naive Bayes</a>
+  <a href="dtree.html" class="sb-link"><i class="fas fa-tree"></i>Ch.5 — Decision Trees</a>
+  <a href="nn.html" class="sb-link"><i class="fas fa-network-wired"></i>Ch.7 — Neural Networks</a>
+  <a href="svm.html" class="sb-link"><i class="fas fa-compress-arrows-alt"></i>Ch.8 — Support Vector Machines</a>
+  <a href="ensemble.html" class="sb-link"><i class="fas fa-layer-group"></i>Ch.9 — Ensemble Methods</a>
+  <a href="deep.html" class="sb-link"><i class="fas fa-microchip"></i>Ch.12 — Deep Learning</a>
+  <div class="sb-group">Chuyên đề ôn thi</div>
+  <a href="hmm.html" class="sb-link"><i class="fas fa-random"></i>Hidden Markov Models</a>
+  <a href="kmeans.html" class="sb-link"><i class="fas fa-object-group"></i>K-Means Clustering</a>
+  <a href="logreg.html" class="sb-link"><i class="fas fa-chart-line"></i>Logistic Regression</a>
+  <div class="sb-group">Tổng hợp</div>
+  <a href="cheatsheet.html" class="sb-link"><i class="fas fa-print"></i>Cheat Sheet — 4 trang A4</a>
+  <div class="sb-group">Thi thử</div>
+  <a href="mock.html" class="sb-link"><i class="fas fa-file-alt"></i>Đề Thi Thử 2026</a>
+  <a href="practice.html" class="sb-link" style="background:rgba(74,222,128,.15);border-left-color:#4ade80;color:#fff"><i class="fas fa-flask"></i>Đề Nâng Cao (Giáo sư)</a>
+  <a href="exam2025.html" class="sb-link"><i class="fas fa-graduation-cap"></i>Đề CK Thật 2025</a>
+</nav>
+
+<main id="main">
+
+<div class="ch-hdr ch-hdr-indigo">
+  <div class="lbl"><i class="fas fa-flask"></i> Đề Thi Thử Nâng Cao — Cấp Sau Đại Học</div>
+  <h2>20 Câu Hỏi Trắc Nghiệm Độ Khó Cao × 2 Đề</h2>
+  <p>Thiết kế theo tiêu chí giáo sư sau đại học — tập trung thấu hiểu sâu &amp; ứng dụng nâng cao, không hỏi định nghĩa cơ bản</p>
+</div>
+
+<div class="alert al-indigo">
+  <div class="alert-title"><i class="fas fa-info-circle"></i> Hướng dẫn</div>
+  <p>Mỗi đề gồm 20 câu. Đọc câu hỏi, tự chọn đáp án <strong>trước</strong> khi nhìn vào màu xanh (đáp án đúng). Đáp án kèm giải thích chặt chẽ và link tới chương liên quan.</p>
+</div>
+
+<!-- TAB NAV -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('t1',this)"><i class="fas fa-project-diagram"></i> Đề A — SVM · Neural Net · Ensemble · HMM</button>
+  <button class="tab-btn" onclick="switchTab('t2',this)"><i class="fas fa-seedling"></i> Đề B — KNN · Naive Bayes · Cây · K-Means · LogReg</button>
+</div>
+
+<!-- ==================== ĐỀ A ==================== -->
+<div id="t1" class="tab-content active">
+
+<div class="alert al-green">
+  <div class="alert-title"><i class="fas fa-check-circle"></i> ĐÁP ÁN NHANH — Đề A</div>
+  <p style="font-family:monospace;font-size:.9rem">
+  1.A | 2.B | 3.B | 4.B | 5.A | 6.B | 7.B | 8.A | 9.A | 10.B<br>
+  11.C | 12.B | 13.B | 14.B | 15.C | 16.A | 17.C | 18.B | 19.B | 20.B
+  </p>
+</div>
+
+<div class="s-title">Phần 1 — Support Vector Machines (Câu 1–5)</div>
+
+<!-- Q1 -->
+<div class="qcard">
+<div class="qhdr">Câu 1 — Support Vectors &amp; Decision Boundary</div>
+<div class="qbody">
+<div class="qq">Sau khi huấn luyện SVM, điểm \(\mathbf{x}_i\) trong tập training có \(\alpha_i = 0\). Phát biểu nào sau đây là ĐÚNG về điểm này và hệ quả khi xóa nó khỏi tập training?</div>
+<div class="qopt qok">A. \(\alpha_i=0\) nên đóng góp của điểm vào \(\mathbf{w}=\sum_i\alpha_i y_i\mathbf{x}_i\) bằng 0; xóa điểm này không thay đổi decision boundary. ✓</div>
+<div class="qopt qwrong">B. Điểm nằm trên margin (support vector), không thể xóa mà không thay đổi \(\mathbf{w}\).</div>
+<div class="qopt qwrong">C. Điểm này bị misclassified, xóa đi sẽ làm giảm training error.</div>
+<div class="qopt qwrong">D. \(\alpha_i=0\) có nghĩa điểm ở phía sai của hyperplane, cần giữ lại để stabilize training.</div>
+<div class="qexp"><strong>Giải thích:</strong> Theo dual SVM, vector trọng số \(\mathbf{w}=\sum_{i:\alpha_i>0}\alpha_i y_i\mathbf{x}_i\). Điểm có \(\alpha_i=0\) không phải support vector (nằm xa margin, correctly classified), đóng góp bằng 0. Decision boundary được hoàn toàn xác định bởi các support vectors — tính chất tuyệt vời của SVM: đa số điểm training là "thừa" sau khi train.
+<a href="svm.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.8 — Support Vector Machines</a></div>
+</div>
+</div>
+
+<!-- Q2 -->
+<div class="qcard">
+<div class="qhdr">Câu 2 — Kernel Validity (Điều kiện Mercer)</div>
+<div class="qbody">
+<div class="qq">Một researcher đề xuất hàm kernel \(K(\mathbf{x},\mathbf{x}') = \cos(\mathbf{x}\cdot\mathbf{x}')\). Điều kiện THIẾT YẾU &amp; ĐỦ để \(K\) là kernel hợp lệ (valid Mercer kernel) là:</div>
+<div class="qopt qwrong">A. \(K\) phải cho giá trị trong \([0,1]\) và đối xứng.</div>
+<div class="qopt qok">B. Ma trận Gram \(\mathbf{K}_{ij}=K(\mathbf{x}_i,\mathbf{x}_j)\) phải là symmetric positive semi-definite (SPSD) với mọi tập điểm hữu hạn bất kỳ. ✓</div>
+<div class="qopt qwrong">C. Phải tồn tại mapping tường minh \(\phi\) sao cho \(K(\mathbf{x},\mathbf{x}')=\phi(\mathbf{x})^\top\phi(\mathbf{x}')\).</div>
+<div class="qopt qwrong">D. \(K\) phải tính được trong \(O(d)\) với \(d\) là số chiều feature gốc.</div>
+<div class="qexp"><strong>Giải thích:</strong> Định lý Mercer: \(K\) là kernel hợp lệ ⟺ Gram matrix luôn SPSD. Đây là điều kiện cần và đủ. Mapping \(\phi\) tường minh (C) là <em>hệ quả</em>, không phải điều kiện cần phải kiểm tra trực tiếp. \(\cos(\mathbf{x}\cdot\mathbf{x}')\) thực ra không là kernel hợp lệ vì Gram matrix không đảm bảo SPSD — đây là bẫy hay gặp.
+<a href="svm.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.8 — SVM &amp; Kernel Methods</a></div>
+</div>
+</div>
+
+<!-- Q3 -->
+<div class="qcard">
+<div class="qhdr">Câu 3 — Soft Margin SVM: Khi C → ∞</div>
+<div class="qbody">
+<div class="qq">Trong soft-margin SVM: \(\min_{\mathbf{w},b,\xi}\frac{1}{2}\|\mathbf{w}\|^2+C\sum_i\xi_i\) subject to \(y_i(\mathbf{w}\cdot\mathbf{x}_i+b)\geq 1-\xi_i,\;\xi_i\geq 0\). Khi \(C\to\infty\), mô hình thay đổi như thế nào?</div>
+<div class="qopt qwrong">A. Margin tối đa hoá, mô hình cực kỳ robust với outliers.</div>
+<div class="qopt qok">B. Tiến về hard-margin SVM: không chấp nhận misclassification, có thể chọn margin rất nhỏ; bài toán infeasible nếu data không linearly separable. ✓</div>
+<div class="qopt qwrong">C. \(\mathbf{w}\to\mathbf{0}\), mô hình trở thành hằng số (constant predictor).</div>
+<div class="qopt qwrong">D. Mô hình tự chuyển sang dùng RBF kernel để đảm bảo separability.</div>
+<div class="qexp"><strong>Giải thích:</strong> Tham số \(C\) là penalty của misclassification. \(C\to\infty\) = phạt vô cùng nặng mỗi slack \(\xi_i>0\) → optimizer buộc \(\xi_i=0\) cho mọi \(i\) = không có điểm nào vi phạm margin = hard-margin SVM. Ngược lại \(C\to 0\) = bỏ qua misclassification, maximize margin mà không care data. \(C\) là hyperparameter quan trọng nhất cần tune.
+<a href="svm.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.8 — SVM Soft Margin</a></div>
+</div>
+</div>
+
+<!-- Q4 -->
+<div class="qcard">
+<div class="qhdr">Câu 4 — RBF Kernel: Khi γ → ∞</div>
+<div class="qbody">
+<div class="qq">RBF kernel: \(K(\mathbf{x},\mathbf{x}')=\exp(-\gamma\|\mathbf{x}-\mathbf{x}'\|^2)\). Khi \(\gamma\to\infty\), hành vi của mô hình SVM-RBF là gì?</div>
+<div class="qopt qwrong">A. Tiến về linear SVM vì kernel trở nên tuyến tính.</div>
+<div class="qopt qwrong">B. Margin mở rộng, mô hình trở nên rất smooth và underfit.</div>
+<div class="qopt qok">C. Kernel trở nên cực kỳ local: \(K(\mathbf{x},\mathbf{x}')\approx\mathbf{1}[\mathbf{x}=\mathbf{x}']\). Mỗi điểm training tự trở thành support vector riêng, mô hình memorize training set → overfit nghiêm trọng. ✓</div>
+<div class="qopt qwrong">D. Số support vectors giảm về 0 vì mọi điểm đều bị loại khỏi margin.</div>
+<div class="qexp"><strong>Giải thích:</strong> Khi \(\gamma\to\infty\), hàm kernel chỉ bằng 1 khi \(\mathbf{x}=\mathbf{x}'\) và xấp xỉ 0 ở mọi nơi khác. Decision boundary uốn khớp qua từng điểm training → zero training error, nhưng hoàn toàn không tổng quát hóa. Mỗi training point trở thành một "ngọn đảo" ảnh hưởng cực nhỏ. Ngược lại \(\gamma\to 0\): RBF \(\approx\) 1 với mọi cặp → linear decision boundary.
+<a href="svm.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.8 — Kernel &amp; Hyperparameters</a></div>
+</div>
+</div>
+
+<!-- Q5 -->
+<div class="qcard">
+<div class="qhdr">Câu 5 — SVM Dual &amp; Kernel Trick</div>
+<div class="qbody">
+<div class="qq">Tại sao Kernel Trick hiệu quả hơn về tính toán so với explicit feature mapping \(\phi(\mathbf{x})\)?</div>
+<div class="qopt qok">A. Hàm kernel \(K(\mathbf{x}_i,\mathbf{x}_j)\) tính trực tiếp \(\phi(\mathbf{x}_i)^\top\phi(\mathbf{x}_j)\) từ không gian gốc mà không cần tính hoặc lưu \(\phi(\mathbf{x})\). Với RBF, feature space vô hạn chiều nhưng kernel tính được trong \(O(d)\). ✓</div>
+<div class="qopt qwrong">B. Kernel Trick dùng sparse representations để giảm bộ nhớ.</div>
+<div class="qopt qwrong">C. Kernel Trick cho phép dùng gradient descent trong feature space gốc, bỏ qua duality.</div>
+<div class="qopt qwrong">D. Kernel Trick chỉ efficient khi số support vectors nhỏ hơn \(\sqrt{n}\).</div>
+<div class="qexp"><strong>Giải thích:</strong> Trong dual SVM, ta chỉ cần tính dot products \(\phi(\mathbf{x}_i)^\top\phi(\mathbf{x}_j)\) — không bao giờ cần \(\phi\) tường minh. Kernel \(K\) <em>là</em> dot product đó, được tính trực tiếp từ \(\mathbf{x}_i,\mathbf{x}_j\). Ví dụ: polynomial kernel bậc 2 trên \(\mathbb{R}^d\) tương đương feature space \(O(d^2)\) chiều, nhưng chỉ cần \(O(d)\) phép tính.
+<a href="svm.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.8 — Dual Formulation &amp; Kernel Trick</a></div>
+</div>
+</div>
+
+<div class="s-title">Phần 2 — Neural Networks &amp; Deep Learning (Câu 6–11)</div>
+
+<!-- Q6 -->
+<div class="qcard">
+<div class="qhdr">Câu 6 — Vanishing Gradient với Sigmoid</div>
+<div class="qbody">
+<div class="qq">Mạng nơ-ron sâu \(L\) lớp dùng sigmoid \(\sigma(z)=\frac{1}{1+e^{-z}}\). Tại sao gradient \(\frac{\partial\mathcal{L}}{\partial\mathbf{W}^{(1)}}\) gần bằng 0 ngay cả khi loss \(\mathcal{L}\) lớn?</div>
+<div class="qopt qwrong">A. Vì sigmoid output \(\in(0,1)\), nhân nhiều lần về 0.</div>
+<div class="qopt qok">B. \(\sigma'(z)=\sigma(z)(1-\sigma(z))\leq\frac{1}{4}\). Backprop nhân \(L\) đạo hàm: \(\|\nabla\|\leq\left(\frac{1}{4}\right)^L\to 0\) khi \(L\) lớn. ✓</div>
+<div class="qopt qwrong">C. Weight matrix \(\mathbf{W}^{(1)}\) nằm gần 0 do weight decay.</div>
+<div class="qopt qwrong">D. Learning rate quá nhỏ làm gradient appear nhỏ trong log-scale.</div>
+<div class="qexp"><strong>Giải thích:</strong> Chain rule qua \(L\) lớp: \(\frac{\partial\mathcal{L}}{\partial z^{(1)}}\propto\prod_{l=1}^{L}\sigma'(z^{(l)})\). Vì \(\sigma'\leq 1/4\), tích \(L\) thừa số \(\leq(1/4)^L\): tại \(L=10\), đây là \(\approx 10^{-6}\). ReLU giải quyết bằng \(f'(z)=1\) với \(z>0\) → gradient không bị scale down qua các lớp.
+<a href="nn.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.7 — Neural Networks &amp; Backpropagation</a></div>
+</div>
+</div>
+
+<!-- Q7 -->
+<div class="qcard">
+<div class="qhdr">Câu 7 — Cross-Entropy vs MSE với Sigmoid Output</div>
+<div class="qbody">
+<div class="qq">Dùng MSE loss \(\mathcal{L}=\frac{1}{2}(\hat{y}-y)^2\) với sigmoid output thay vì cross-entropy. Vấn đề cốt lõi trong quá trình học là gì?</div>
+<div class="qopt qwrong">A. MSE không phải convex function với sigmoid → nhiều local minima không giải được.</div>
+<div class="qopt qok">B. Gradient \(\frac{\partial\mathcal{L}}{\partial z}=(\hat{y}-y)\cdot\sigma'(z)\). Khi mô hình sai nghiêm trọng (\(\hat{y}\approx 1\) nhưng \(y=0\)), \(\sigma'(z)\approx 0\) → gradient ≈ 0 → learning cực chậm dù loss cao (saturation problem). ✓</div>
+<div class="qopt qwrong">C. MSE tạo ra giá trị âm gây numerical instability với log.</div>
+<div class="qopt qwrong">D. MSE và cross-entropy cho gradient giống nhau, không có sự khác biệt thực tế.</div>
+<div class="qexp"><strong>Giải thích:</strong> Cross-entropy gradient: \(\frac{\partial\mathcal{L}_{CE}}{\partial z}=\hat{y}-y\) — không có \(\sigma'(z)\), nên khi sai nghiêm trọng gradient lớn, học nhanh. MSE gradient nhân thêm \(\sigma'(z)\leq 1/4\) và gần 0 tại vùng bão hòa. Đây là lý do thiết kế CE loss cho classification — nó "khớp" với sigmoid bằng cách triệt tiêu đạo hàm sigmoid.
+<a href="nn.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.7 — Loss Functions</a></div>
+</div>
+</div>
+
+<!-- Q8 -->
+<div class="qcard">
+<div class="qhdr">Câu 8 — Weight Initialization: Tại sao không khởi tạo 0?</div>
+<div class="qbody">
+<div class="qq">Nếu khởi tạo tất cả weights của một neural network về 0, điều gì xảy ra trong training?</div>
+<div class="qopt qok">A. Symmetry breaking không xảy ra: tất cả neurons trong cùng lớp nhận gradient giống nhau → update giống nhau → mãi mãi giống nhau. Mạng nhiều neurons behave như mạng 1 neuron per layer. ✓</div>
+<div class="qopt qwrong">B. Gradient explosion vì weights nhỏ × inputs lớn = large normalized gradient.</div>
+<div class="qopt qwrong">C. Loss = 0 từ đầu vì output layer với weights 0 cho logit 0 → σ(0)=0.5.</div>
+<div class="qopt qwrong">D. Network vẫn train được nhưng chậm; chỉ cần tăng learning rate để compensate.</div>
+<div class="qexp"><strong>Giải thích:</strong> "Symmetry problem": nếu \(W^{(l)}_{ij}=0\) với mọi \(i,j\), thì \(\frac{\partial\mathcal{L}}{\partial W^{(l)}_{ij}}\) như nhau với mọi \(j\) trong cùng lớp. Neurons identical → luôn identical → effective width = 1. Xavier/He initialization phá vỡ symmetry bằng cách random-initialize với variance phù hợp.
+<a href="nn.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.7 — Initialization &amp; Training</a></div>
+</div>
+</div>
+
+<!-- Q9 -->
+<div class="qcard">
+<div class="qhdr">Câu 9 — Dropout như Ensemble Approximation</div>
+<div class="qbody">
+<div class="qq">Dropout tắt ngẫu nhiên mỗi neuron với xác suất \(p\). Tại sao inference time cần scale weights bằng \((1-p)\) (hoặc dùng inverted dropout scale \(1/(1-p)\) khi training)?</div>
+<div class="qopt qok">A. Trong training, expected output của neuron \(= (1-p)\cdot\text{output thật}\) (vì bị tắt \(p\) fraction). Inference dùng all neurons → output lớn hơn \(1/(1-p)\) lần → cần scale down để match expected value. ✓</div>
+<div class="qopt qwrong">B. Scaling là để giữ gradient magnitude ổn định qua các lớp.</div>
+<div class="qopt qwrong">C. Weight scaling compensate cho việc mất batchnorm statistics.</div>
+<div class="qopt qwrong">D. \(p\) thường = 0.5 nên scale \(\times 0.5\) là convention, không có lý do toán học.</div>
+<div class="qexp"><strong>Giải thích:</strong> Dropout training: mỗi forward pass chỉ có \((1-p)\) fraction neurons active → expected activation = \((1-p)\cdot a\). Inference: tất cả neurons on → activation = \(a\). Để match: inference phải scale xuống \(\times(1-p)\) (hoặc tương đương, training scale up \(\times 1/(1-p)\) — inverted dropout). Nếu không scale, test activations lớn hơn train → predictions shift.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Regularization &amp; Dropout</a></div>
+</div>
+</div>
+
+<!-- Q10 -->
+<div class="qcard">
+<div class="qhdr">Câu 10 — Batch Normalization: Internal Covariate Shift</div>
+<div class="qbody">
+<div class="qq">Batch Normalization chuẩn hóa pre-activation: \(\hat{z}=\frac{z-\mu_B}{\sqrt{\sigma_B^2+\varepsilon}}\), rồi học \(\gamma\hat{z}+\beta\). Tham số \(\gamma,\beta\) có vai trò gì mà normalization đơn thuần không thể thực hiện?</div>
+<div class="qopt qwrong">A. \(\gamma,\beta\) giới hạn activation trong range an toàn để tránh explosion.</div>
+<div class="qopt qok">B. Normalization cứng buộc mean=0, std=1 — có thể phá huỷ representation đã học (e.g., nếu mạng cần mean≠0). \(\gamma,\beta\) cho phép mạng <em>học</em> optimal scale và shift per layer, phục hồi expressive power bị mất. ✓</div>
+<div class="qopt qwrong">C. \(\gamma,\beta\) là bias terms thay thế bias \(b\) trong linear layer, không cần thiết có cả hai.</div>
+<div class="qopt qwrong">D. \(\gamma=1,\beta=0\) là giá trị tối ưu; chúng chỉ khởi tạo ở đó và không được cập nhật.</div>
+<div class="qexp"><strong>Giải thích:</strong> Nếu chỉ normalize cứng về \(\mathcal{N}(0,1)\), layer trước mất khả năng kiểm soát scale của output. Ví dụ: lớp trước cần output với large magnitude để sigmoid ở lớp sau hoạt động ở vùng bão hòa (intentionally). \(\gamma,\beta\) là learnable → mạng tự quyết định scale/shift tối ưu cho mỗi lớp, trong khi vẫn hưởng lợi từ normalized gradients.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Batch Normalization</a></div>
+</div>
+</div>
+
+<!-- Q11 -->
+<div class="qcard">
+<div class="qhdr">Câu 11 — Depth vs Width (Universal Approximation)</div>
+<div class="qbody">
+<div class="qq">Universal Approximation Theorem (Cybenko, 1989) chứng minh 1 lớp ẩn đủ lớn có thể xấp xỉ mọi hàm liên tục. Tại sao trong thực tế người ta vẫn dùng mạng sâu thay vì mạng rộng 1 lớp?</div>
+<div class="qopt qwrong">A. Theorem chỉ valid với activation sigmoid, không áp dụng cho ReLU.</div>
+<div class="qopt qwrong">B. Training 1 lớp rộng gây gradient explosion không kiểm soát được.</div>
+<div class="qopt qok">C. Theorem đảm bảo <em>sự tồn tại</em> của mạng rộng, nhưng số neurons cần có thể là exponential theo complexity của hàm. Mạng sâu biểu diễn hierarchical composition với số params polynomial; optimization landscape của mạng sâu cũng thường tốt hơn cho SGD. ✓</div>
+<div class="qopt qwrong">D. Mạng 1 lớp không converge vì là non-convex problem.</div>
+<div class="qexp"><strong>Giải thích:</strong> Theorem chỉ nói "có thể xấp xỉ" — không nói "học được hiệu quả". Ví dụ: tính parity của \(n\) bits cần \(2^n\) neurons trong 1 lớp nhưng chỉ \(O(n)\) neurons trong \(O(\log n)\) lớp. Depth cung cấp <em>compositional expressiveness</em>: lớp 1 học edges, lớp 2 học shapes, lớp 3 học objects — điều này impossible với 1 lớp flat.
+<a href="deep.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.12 — Deep Learning Architecture</a></div>
+</div>
+</div>
+
+<div class="s-title">Phần 3 — Ensemble Methods (Câu 12–14)</div>
+
+<!-- Q12 -->
+<div class="qcard">
+<div class="qhdr">Câu 12 — AdaBoost: Khi Weak Learner ε = 0.5</div>
+<div class="qbody">
+<div class="qq">Trong AdaBoost, trọng số learner \(\alpha_t=\frac{1}{2}\ln\frac{1-\varepsilon_t}{\varepsilon_t}\). Khi \(\varepsilon_t=0.5\) (random guessing), hệ quả với toàn bộ thuật toán là:</div>
+<div class="qopt qwrong">A. \(\alpha_t<0\), learner đóng góp nghịch chiều prediction.</div>
+<div class="qopt qok">B. \(\alpha_t=0\), learner bị bỏ qua hoàn toàn trong ensemble; sample weights không thay đổi (\(\exp(-\alpha_t y_i h_t)=\exp(0)=1\)) → iteration này vô ích (wasted round). ✓</div>
+<div class="qopt qwrong">C. Thuật toán reset về uniform distribution và restart.</div>
+<div class="qopt qwrong">D. \(\alpha_t=\infty\) vì \(\ln(1/0)=\infty\) ở trường hợp biên.</div>
+<div class="qexp"><strong>Giải thích:</strong> \(\alpha_t=\frac{1}{2}\ln\frac{0.5}{0.5}=\frac{1}{2}\ln 1=0\). Weight update: \(w_i^{(t+1)}\propto w_i^{(t)}\cdot e^{-\alpha_t y_i h_t(\mathbf{x}_i)}=w_i^{(t)}\cdot e^0=w_i^{(t)}\). Distribution không đổi → vòng tiếp theo cùng gặp khó khăn như vòng này. AdaBoost yêu cầu \(\varepsilon_t<0.5\) (better than random) — đây là assumption "weak learner" không phải ngẫu nhiên.
+<a href="ensemble.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.9 — Boosting &amp; AdaBoost</a></div>
+</div>
+</div>
+
+<!-- Q13 -->
+<div class="qcard">
+<div class="qhdr">Câu 13 — Random Forest: Feature Subsampling per Split</div>
+<div class="qbody">
+<div class="qq">Random Forest chọn \(m=\sqrt{d}\) features ngẫu nhiên tại mỗi split. Nếu bỏ feature subsampling (\(m=d\)), Random Forest trở thành gì và hiệu quả thay đổi như thế nào?</div>
+<div class="qopt qwrong">A. Trở thành AdaBoost vì các cây đều dùng full features.</div>
+<div class="qopt qwrong">B. Trở thành Gradient Boosting vì các cây liên kết với nhau.</div>
+<div class="qopt qok">C. Trở thành Bagging với full decision trees. Các cây vẫn khác nhau do bootstrap sampling, nhưng tương quan giữa cây tăng (đặc biệt khi có dominant feature) → phương sai của trung bình \(\text{Var}\left(\frac{1}{B}\sum T_b\right)=\frac{\rho\sigma^2}{1}+\frac{(1-\rho)\sigma^2}{B}\) không giảm nhiều khi \(\rho\) cao → mất lợi thế. ✓</div>
+<div class="qopt qwrong">D. Trở thành single decision tree vì không còn randomness.</div>
+<div class="qexp"><strong>Giải thích:</strong> Variance của trung bình \(B\) cây tương quan \(\rho\) là \(\rho\sigma^2+\frac{(1-\rho)\sigma^2}{B}\). Feature subsampling giảm \(\rho\) — key insight của Random Forest. Khi \(m=d\), các cây có xu hướng chọn cùng dominant feature ở split đầu → cây rất tương quan → variance reduction ít. Đây là lý do tại sao RF tốt hơn Bagging trên hầu hết datasets.
+<a href="ensemble.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.9 — Random Forest</a></div>
+</div>
+</div>
+
+<!-- Q14 -->
+<div class="qcard">
+<div class="qhdr">Câu 14 — Boosting vs Bagging: Chọn chiến lược nào?</div>
+<div class="qbody">
+<div class="qq">Weak learner là decision stump (1-level tree) với high bias, low variance. Chiến lược ensemble nào phù hợp nhất và tại sao?</div>
+<div class="qopt qwrong">A. Bagging — averaging stumps giảm variance vốn đã thấp.</div>
+<div class="qopt qok">B. Boosting — stump có high bias (underfitting), boosting sequential corrects bias bằng cách tập trung vào samples bị sai. Kết quả là ensemble với bias thấp hơn nhiều. ✓</div>
+<div class="qopt qwrong">C. Cả hai như nhau vì bias không ảnh hưởng ensemble strategy.</div>
+<div class="qopt qwrong">D. Không ensemble nào giúp ích khi learner có high bias.</div>
+<div class="qexp"><strong>Giải thích:</strong> Bagging reduces <em>variance</em> — vô ích khi variance đã thấp. Boosting reduces <em>bias</em> — đây là trường hợp phù hợp. AdaBoost với stumps là combination cực kỳ phổ biến vì: stump đơn giản (tránh overfit per tree), boosting sequential thêm complexity của ensemble → final classifier có thể complex dù từng stump rất đơn giản.
+<a href="ensemble.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.9 — Bias-Variance &amp; Ensemble</a></div>
+</div>
+</div>
+
+<div class="s-title">Phần 4 — Hidden Markov Models (Câu 15–20)</div>
+
+<!-- Q15 -->
+<div class="qcard">
+<div class="qhdr">Câu 15 — Forward vs Viterbi: Phép toán cốt lõi</div>
+<div class="qbody">
+<div class="qq">Forward algorithm và Viterbi đều duyệt trellis từ \(t=1\) đến \(T\). Điểm khác biệt cốt lõi duy nhất trong công thức đệ quy là:</div>
+<div class="qopt qwrong">A. Forward tính emission probability, Viterbi tính transition probability.</div>
+<div class="qopt qwrong">B. Viterbi dùng log-probabilities, Forward dùng raw probabilities.</div>
+<div class="qopt qok">C. Forward: \(\alpha_t(j)=\left[\sum_i\alpha_{t-1}(i)A_{ij}\right]B_j(o_t)\) — tổng (marginalize). Viterbi: \(\delta_t(j)=\left[\max_i\delta_{t-1}(i)A_{ij}\right]B_j(o_t)\) — max (optimize). ✓</div>
+<div class="qopt qwrong">D. Forward duyệt từ \(t=T\) về \(1\), Viterbi duyệt từ \(1\) đến \(T\).</div>
+<div class="qexp"><strong>Giải thích:</strong> Forward: tính \(P(O_1\ldots O_t, q_t=j|\lambda)\) bằng cách tổng hợp tất cả đường đi có thể đến state \(j\) lúc \(t\) → cho \(P(O|\lambda)\). Viterbi: tính \(\max_{q_1\ldots q_{t-1}}P(O_1\ldots O_t, q_t=j|\lambda)\) → cho most likely state sequence. Viterbi cần thêm traceback matrix \(\psi_t(j)\) để reconstruct path sau khi tính xong.
+<a href="hmm.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: HMM — Forward &amp; Viterbi Algorithms</a></div>
+</div>
+</div>
+
+<!-- Q16 -->
+<div class="qcard">
+<div class="qhdr">Câu 16 — Baum-Welch là EM: Tại sao chỉ Local Maximum?</div>
+<div class="qbody">
+<div class="qq">Baum-Welch là thuật toán EM áp dụng cho HMM. Nó đảm bảo log-likelihood không giảm sau mỗi iteration, nhưng chỉ hội tụ về local maximum. Lý do căn bản là:</div>
+<div class="qopt qok">A. Log-likelihood của HMM \(\log P(O|\lambda)\) là hàm <em>non-convex</em> của tham số \((\pi,A,B)\); EM monotonically tăng likelihood nhưng không có cơ chế nhảy qua local maxima. Điểm hội tụ phụ thuộc khởi tạo. ✓</div>
+<div class="qopt qwrong">B. Vì E-step chỉ tính xấp xỉ posterior, không chính xác.</div>
+<div class="qopt qwrong">C. Vì số trạng thái \(N\) bị giới hạn, không thể represent đủ complexity.</div>
+<div class="qopt qwrong">D. Vì EM chỉ hội tụ với Gaussian emissions, không phải discrete.</div>
+<div class="qexp"><strong>Giải thích:</strong> EM đảm bảo \(\log P(O|\lambda^{(t+1)})\geq\log P(O|\lambda^{(t)})\) (Jensen's inequality trong M-step). Nhưng với hàm non-convex, "không giảm" chỉ đảm bảo local không phải global. Thực tế: chạy Baum-Welch nhiều lần với random initialization khác nhau, chọn solution có highest likelihood — đây là best practice cho HMM training.
+<a href="hmm.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: HMM — Baum-Welch &amp; EM</a></div>
+</div>
+</div>
+
+<!-- Q17 -->
+<div class="qcard">
+<div class="qhdr">Câu 17 — HMM: Supervised vs Unsupervised Training</div>
+<div class="qbody">
+<div class="qq">HMM có thể train supervised (có nhãn trạng thái ẩn) hoặc unsupervised (Baum-Welch, chỉ có chuỗi quan sát). Trường hợp nào mô hình unsupervised (Baum-Welch) có thể cho kết quả TỐT HƠN supervised?</div>
+<div class="qopt qwrong">A. Khi số trạng thái ẩn \(N\) rất lớn (>100).</div>
+<div class="qopt qwrong">B. Không bao giờ — supervised luôn tốt hơn hoặc bằng.</div>
+<div class="qopt qok">C. Khi nhãn trạng thái ẩn trong training data bị gán sai (noisy labels): supervised học theo nhãn sai → sai hệ thống. Baum-Welch tối ưu trực tiếp \(P(O|\lambda)\) từ đầu → có thể tìm parameter set tốt hơn nếu khởi tạo ngẫu nhiên may mắn. ✓</div>
+<div class="qopt qwrong">D. Khi tập training rất lớn (>10,000 chuỗi).</div>
+<div class="qexp"><strong>Giải thích:</strong> Supervised HMM = maximum likelihood estimation với complete data. Nếu labels đúng, đây là optimal. Nhưng nếu annotation của human labeler sai (e.g., ranh giới trạng thái mơ hồ trong speech), MLE trên sai labels → biased parameters. Baum-Welch tối ưu likelihood trực tiếp, có thể tìm latent structure phù hợp với data hơn là phù hợp với noisy labels. Điều này xảy ra nhiều trong NLP và speech processing.
+<a href="hmm.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: HMM — Training &amp; Parameter Estimation</a></div>
+</div>
+</div>
+
+<!-- Q18 -->
+<div class="qcard">
+<div class="qhdr">Câu 18 — HMM: Generative vs Discriminative</div>
+<div class="qbody">
+<div class="qq">HMM là mô hình generative, model hóa \(P(O,Q|\lambda)\) và suy ra \(P(Q|O)\). Hạn chế cơ bản của cách tiếp cận này so với discriminative models (CRF, Bi-LSTM-CRF) trong sequence labeling là:</div>
+<div class="qopt qwrong">A. HMM không thể xử lý chuỗi quan sát dài hơn 100 bước.</div>
+<div class="qopt qok">B. HMM model hóa joint \(P(O,Q)\) — cần giả định về phân phối của \(O\) (e.g., Gaussian, discrete). Discriminative models trực tiếp model \(P(Q|O)\) → không cần giả định về \(O\), có thể dùng bất kỳ features phức tạp nào (overlapping, correlated) mà không vi phạm independence. ✓</div>
+<div class="qopt qwrong">C. HMM không có closed-form training, discriminative models có.</div>
+<div class="qopt qwrong">D. HMM overfit nhiều hơn vì có ít tham số hơn.</div>
+<div class="qexp"><strong>Giải thích:</strong> Naive Bayes có limitation tương tự: independence assumption on features cho phép tính \(P(O|Q)\) nhưng làm mất thông tin phụ thuộc feature. CRF model \(P(Q|O)\) trực tiếp → features có thể arbitrary (không cần independence), features có thể overlap — tại sao CRF/Bi-LSTM-CRF thay thế HMM trong NLP. HMM vẫn tốt cho: chuỗi ngắn, dataset nhỏ, khi cần generate sequences.
+<a href="hmm.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: HMM — Ứng dụng &amp; Giới hạn</a></div>
+</div>
+</div>
+
+<!-- Q19 -->
+<div class="qcard">
+<div class="qhdr">Câu 19 — HMM: Xác suất Observation với 3 bước thời gian</div>
+<div class="qbody">
+<div class="qq">HMM 2 trạng thái. Initial: \(\pi=(0.6,0.4)\). Transition: \(A=\begin{pmatrix}0.7&0.3\\0.4&0.6\end{pmatrix}\). Emissions: \(B_1(\text{H})=0.8,B_1(\text{T})=0.2; B_2(\text{H})=0.3,B_2(\text{T})=0.7\). Với \(O=(H,T)\) tại \(t=1,2\), \(\alpha_1(1)\) và \(\alpha_1(2)\) là:</div>
+<div class="qopt qwrong">A. \(\alpha_1(1)=0.8,\;\alpha_1(2)=0.3\)</div>
+<div class="qopt qok">B. \(\alpha_1(1)=0.6\times0.8=0.48,\;\alpha_1(2)=0.4\times0.3=0.12\) ✓</div>
+<div class="qopt qwrong">C. \(\alpha_1(1)=0.6\times0.7=0.42,\;\alpha_1(2)=0.4\times0.6=0.24\)</div>
+<div class="qopt qwrong">D. \(\alpha_1(1)=0.8\times0.7=0.56,\;\alpha_1(2)=0.3\times0.4=0.12\)</div>
+<div class="qexp"><strong>Tính toán:</strong> Forward algorithm: \(\alpha_1(j)=\pi_j\cdot B_j(o_1)\). \(o_1=H\): \(\alpha_1(1)=0.6\times 0.8=0.48\); \(\alpha_1(2)=0.4\times 0.3=0.12\). Đây là base case của forward recursion — chỉ dùng initial probability × emission, không có transition nào ở \(t=1\).
+<a href="hmm.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: HMM — Forward Algorithm</a></div>
+</div>
+</div>
+
+<!-- Q20 -->
+<div class="qcard">
+<div class="qhdr">Câu 20 — HMM: Baum-Welch M-step Ý nghĩa</div>
+<div class="qbody">
+<div class="qq">Trong M-step của Baum-Welch, công thức cập nhật transition parameter là:
+\[\bar{A}_{ij}=\frac{\sum_{t=1}^{T-1}\xi_t(i,j)}{\sum_{t=1}^{T-1}\gamma_t(i)}\]
+Tỷ số này có ý nghĩa trực quan là:</div>
+<div class="qopt qwrong">A. Xác suất nhảy từ state \(i\) sang state \(j\) tại bước \(t\) cụ thể.</div>
+<div class="qopt qok">B. Expected number of transitions \(i\to j\) / Expected total time in state \(i\) — xác suất "soft" chuyển từ \(i\) sang \(j\) tính trung bình có trọng số posterior. ✓</div>
+<div class="qopt qwrong">C. Maximum likelihood estimate từ Viterbi path (hard assignment).</div>
+<div class="qopt qwrong">D. KL divergence giữa state \(i\) và state \(j\).</div>
+<div class="qexp"><strong>Giải thích:</strong> \(\xi_t(i,j)=P(q_t=i,q_{t+1}=j|O,\lambda)\) là posterior probability của transition \(i\to j\) tại thời điểm \(t\). \(\gamma_t(i)=P(q_t=i|O,\lambda)\) là posterior probability ở state \(i\) tại \(t\). Tỷ số = expected frequency of going \(i\to j\) / expected time spent in \(i\) = MLE của \(A_{ij}\) với soft (expected) counts thay vì hard counts. Đây là "soft EM" đặc trưng của Baum-Welch.
+<a href="hmm.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: HMM — Baum-Welch M-step</a></div>
+</div>
+</div>
+
+</div><!-- /tab t1 -->
+
+<!-- ==================== ĐỀ B ==================== -->
+<div id="t2" class="tab-content">
+
+<div class="alert al-green">
+  <div class="alert-title"><i class="fas fa-check-circle"></i> ĐÁP ÁN NHANH — Đề B</div>
+  <p style="font-family:monospace;font-size:.9rem">
+  1.B | 2.B | 3.A | 4.A | 5.B | 6.A | 7.B | 8.B | 9.B | 10.C<br>
+  11.B | 12.A | 13.A | 14.B | 15.B | 16.B | 17.B | 18.B | 19.B | 20.B
+  </p>
+</div>
+
+<div class="s-title">Phần 1 — K-Nearest Neighbors (Câu 1–3)</div>
+
+<!-- B-Q1 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 1 — KNN: k tăng dần, Bias-Variance thay đổi thế nào?</div>
+<div class="qbody">
+<div class="qq">Trong KNN, khi \(k\) tăng từ 1 đến \(n\) (toàn tập training), bias và variance thay đổi như thế nào? Tại \(k=1\) và \(k=n\) có đặc điểm gì đặc biệt?</div>
+<div class="qopt qwrong">A. Tăng \(k\) → variance tăng, bias giảm; \(k=1\): zero training error; \(k=n\): predict random class.</div>
+<div class="qopt qok">B. Tăng \(k\) → variance giảm, bias tăng; \(k=1\): zero training error (perfect memorization); \(k=n\): predict majority class cho mọi điểm (maximum underfit). ✓</div>
+<div class="qopt qwrong">C. Bias và variance đều giảm đến \(k=\sqrt{n}\) rồi tăng.</div>
+<div class="qopt qwrong">D. \(k\) không ảnh hưởng bias-variance nếu data đã normalized.</div>
+<div class="qexp"><strong>Giải thích:</strong> \(k=1\): boundary uốn theo từng điểm → zero train error, high variance (nhạy với noise). \(k\) lớn: averaging nhiều điểm → smoother boundary (low variance) nhưng bỏ qua local structure (high bias). \(k=n\): classify tất cả theo majority class = cực kỳ high bias. Optimal \(k\) nằm ở tradeoff này, thường tìm bằng cross-validation.
+<a href="knn.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.3 — K-Nearest Neighbors</a></div>
+</div>
+</div>
+
+<!-- B-Q2 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 2 — KNN: Curse of Dimensionality</div>
+<div class="qbody">
+<div class="qq">Curse of dimensionality ảnh hưởng đến KNN như thế nào? Tại sao "nearest neighbor" mất ý nghĩa trong không gian chiều cao?</div>
+<div class="qopt qwrong">A. KNN cần \(O(nd)\) time per query, quá chậm khi \(d\) lớn.</div>
+<div class="qopt qok">B. <em>Concentration of measure</em>: khi \(d\to\infty\), khoảng cách giữa mọi cặp điểm ngẫu nhiên hội tụ về cùng một giá trị (\(\max/\min\to 1\)) → nearest và farthest neighbor gần như không phân biệt được. ✓</div>
+<div class="qopt qwrong">C. Trong \(d\)-chiều, cần \(2^d\) training points để có đủ coverage.</div>
+<div class="qopt qwrong">D. Euclidean distance không xác định trong không gian \(d>3\).</div>
+<div class="qexp"><strong>Giải thích:</strong> Với \(n\) điểm uniform trong \([0,1]^d\), khoảng cách đến nearest neighbor \(\propto n^{-1/d}\) → tiến về hằng số khi \(d\) lớn. Hơn nữa, ratio \(\frac{d_{\max}-d_{\min}}{d_{\min}}\to 0\) (Beyer et al. 1999) — mọi điểm "cách nhau như nhau". Giải pháp: PCA/t-SNE giảm chiều, dùng cosine similarity, kernel methods.
+<a href="knn.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.3 — KNN &amp; Feature Normalization</a></div>
+</div>
+</div>
+
+<!-- B-Q3 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 3 — KNN: Weighted vs Uniform Voting</div>
+<div class="qbody">
+<div class="qq">\(k=5\) nearest neighbors của điểm test \(\mathbf{x}\): neighbor 1 ở class A, khoảng cách \(d_1=0.1\); neighbors 2-5 ở class B, khoảng cách \(d_{2..5}=4.0\). Uniform voting cho class B (4-1). Weighted voting (\(w_i=1/d_i^2\)) cho kết quả nào?</div>
+<div class="qopt qok">A. Class A thắng: \(w_A=1/0.01=100\), \(w_B=4\times1/16=0.25\), tổng A ≫ tổng B. ✓</div>
+<div class="qopt qwrong">B. Class B vẫn thắng: 4 voters không thể bị 1 voter gần override.</div>
+<div class="qopt qwrong">C. Tie vì \(k\) lẻ không xảy ra với weighted voting.</div>
+<div class="qopt qwrong">D. Undefined — weighted voting cần \(k\) chẵn để tính trung bình.</div>
+<div class="qexp"><strong>Tính toán:</strong> \(w_A=1/(0.1)^2=100\). \(w_B=4\times 1/(4.0)^2=4/16=0.25\). Tỷ lệ \(100:0.25=400:1\) → class A áp đảo. Đây là ví dụ điển hình khi weighted KNN hơn hẳn uniform: một neighbor cực gần rất đáng tin cậy nhưng bị outvote bởi nhiều neighbor xa. Weighted KNN quan trọng khi có outliers về spatial distribution.
+<a href="knn.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.3 — K-Nearest Neighbors</a></div>
+</div>
+</div>
+
+<div class="s-title">Phần 2 — Naive Bayes (Câu 4–6)</div>
+
+<!-- B-Q4 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 4 — Naive Bayes: Khi Independence Assumption Đúng</div>
+<div class="qbody">
+<div class="qq">Naive Bayes giả định \(P(X_1,\ldots,X_n|C)=\prod_i P(X_i|C)\). Nếu features THỰC SỰ độc lập với nhau có điều kiện trên \(C\), mô hình NB trở thành:</div>
+<div class="qopt qok">A. Bayes Optimal Classifier — không có mô hình nào có thể đạt error rate thấp hơn về mặt lý thuyết trên bài toán này. ✓</div>
+<div class="qopt qwrong">B. Vẫn là xấp xỉ vì NB không estimate posterior chính xác.</div>
+<div class="qopt qwrong">C. Overfit vì independence assumption quá strict.</div>
+<div class="qopt qwrong">D. Tương đương với logistic regression.</div>
+<div class="qexp"><strong>Giải thích:</strong> Khi independence assumption đúng, NB tính \(P(C|X)\) chính xác theo Bayes theorem. Bayes Optimal Classifier tối thiểu hóa expected error bằng cách chọn \(\arg\max_C P(C|\mathbf{X})\). NB làm đúng điều này → Bayes optimal. Điều thú vị: ngay cả khi assumption không hoàn toàn đúng, NB vẫn cho kết quả tốt về accuracy vì classification chỉ cần argmax đúng, không cần probability calibrated chính xác.
+<a href="bayes.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.4 — Naive Bayes</a></div>
+</div>
+</div>
+
+<!-- B-Q5 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 5 — Naive Bayes: Zero-Frequency Problem</div>
+<div class="qbody">
+<div class="qq">Phân loại email spam với NB. Từ "blockchain" không xuất hiện trong training emails nào thuộc class "Spam". Không có smoothing, điều gì xảy ra khi classify email test chứa "blockchain"?</div>
+<div class="qopt qwrong">A. Từ "blockchain" bị bỏ qua (zero weight), không ảnh hưởng classification.</div>
+<div class="qopt qok">B. \(P(\text{blockchain}|\text{Spam})=0\) → \(P(\text{Spam}|\text{email})=0\), class Spam bị loại hoàn toàn dù các từ khác hỗ trợ mạnh → classification luôn là Not Spam bất kể nội dung còn lại. ✓</div>
+<div class="qopt qwrong">C. Model phân loại bằng remaining words, "blockchain" không gây vấn đề.</div>
+<div class="qopt qwrong">D. \(P(\text{email}|\text{Spam})\) trở thành NaN, model crash.</div>
+<div class="qexp"><strong>Giải thích:</strong> \(P(\text{Spam}|\text{email})\propto P(\text{Spam})\cdot\prod_w P(w|\text{Spam})\). Nếu bất kỳ \(P(w|\text{Spam})=0\), tích cả chuỗi = 0. Giải pháp: Laplace smoothing — \(\hat{P}(w|C)=\frac{n_w+\alpha}{N+\alpha|V|}\) với \(\alpha=1\), đảm bảo mọi probability >0. Add-\(\alpha\) smoothing là standard trong text classification.
+<a href="bayes.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.4 — Naive Bayes &amp; Laplace Smoothing</a></div>
+</div>
+</div>
+
+<!-- B-Q6 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 6 — Naive Bayes: Log-Probabilities vs Raw Products</div>
+<div class="qbody">
+<div class="qq">Tại sao trong implementation Naive Bayes người ta tính \(\sum_i\log P(x_i|C)\) thay vì \(\prod_i P(x_i|C)\)?</div>
+<div class="qopt qok">A. Phép nhân nhiều xác suất nhỏ \(\in(0,1)\) gây <em>numerical underflow</em> (floating-point → 0); log-sum tương đương về mặt toán học (\(\arg\max\) không đổi) nhưng cho giá trị representable. ✓</div>
+<div class="qopt qwrong">B. Log transform làm model trở thành linear → dễ optimize hơn bằng gradient descent.</div>
+<div class="qopt qwrong">C. Log-probabilities cho xác suất calibrated chính xác hơn trong [0,1].</div>
+<div class="qopt qwrong">D. Vì prior \(P(C)\) thường log-normal, log transform normalize nó.</div>
+<div class="qexp"><strong>Giải thích:</strong> Với 1000 words và \(P(w_i|C)\approx 0.001\), raw product \(\approx 10^{-3000}\) — nhỏ hơn minimum float64 (\(\approx 10^{-308}\)) → underflow thành 0. \(\log(10^{-3000})=-3000\) hoàn toàn representable. Vì \(\log\) là monotone, \(\arg\max_C P(C|\mathbf{X}) = \arg\max_C\left[\log P(C)+\sum_i\log P(x_i|C)\right]\) — kết quả classification giống nhau.
+<a href="bayes.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.4 — Naive Bayes Implementation</a></div>
+</div>
+</div>
+
+<div class="s-title">Phần 3 — Decision Trees (Câu 7–10)</div>
+
+<!-- B-Q7 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 7 — Decision Tree: ID3 Bias với High-Cardinality Features</div>
+<div class="qbody">
+<div class="qq">ID3 dùng Information Gain; C4.5 dùng Gain Ratio \(=\frac{IG(S,A)}{SplitInfo(S,A)}\). Tại sao ID3 có systematic bias về features nhiều giá trị (high cardinality), và SplitInfo corrects điều này như thế nào?</div>
+<div class="qopt qwrong">A. ID3 ưu tiên features với ít values vì chúng tạo splits cân bằng.</div>
+<div class="qopt qok">B. Feature nhiều values tạo nhiều subsets nhỏ → mỗi subset nearly pure → IG cao giả tạo (extreme case: ID field với \(n\) unique values có IG tối đa). SplitInfo = entropy của partition → nhiều subsets nhỏ = SplitInfo cao → GainRatio thấp → penalize high-cardinality. ✓</div>
+<div class="qopt qwrong">C. ID3 bias về feature ít values vì Gini impurity thấp hơn với splits ít nhánh.</div>
+<div class="qopt qwrong">D. Gain Ratio không giải quyết được vấn đề này; C4.5 dùng cơ chế khác.</div>
+<div class="qexp"><strong>Giải thích:</strong> Extreme case: feature "Customer ID" unique per row tạo \(n\) subsets, mỗi subset 1 điểm → entropy 0 → IG tối đa. Nhưng đây là useless split! \(\text{SplitInfo}=-\sum_{v}\frac{|S_v|}{|S|}\log_2\frac{|S_v|}{|S|}\). Với \(n\) subsets 1 điểm: SplitInfo \(=\log_2 n\) (maximum entropy) → GainRatio \(=\frac{IG}{\log_2 n}\approx 1/n\to 0\). C4.5 effectively bỏ qua features như Customer ID.
+<a href="dtree.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.5 — Decision Trees &amp; C4.5</a></div>
+</div>
+</div>
+
+<!-- B-Q8 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 8 — Decision Tree: Tính toán Information Gain</div>
+<div class="qbody">
+<div class="qq">Tập \(S\): 5 Yes, 5 No. Feature \(A\) chia thành: \(S_1\)=\{4 Yes, 1 No\}, \(S_2\)=\{1 Yes, 4 No\}. \(IG(S,A)\) (log₂) gần nhất với:</div>
+<div class="qopt qwrong">A. IG ≈ 0.610 bits</div>
+<div class="qopt qwrong">B. IG ≈ 0.531 bits</div>
+<div class="qopt qok">C. IG ≈ 0.278 bits ✓</div>
+<div class="qopt qwrong">D. IG = 1 bit (pure split)</div>
+<div class="qexp"><strong>Tính toán:</strong> \(H(S)=-0.5\log_2 0.5-0.5\log_2 0.5=1\) bit. \(H(S_1)=-\frac{4}{5}\log_2\frac{4}{5}-\frac{1}{5}\log_2\frac{1}{5}\approx 0.722\) bits. \(H(S_2)=H(S_1)=0.722\) bits (symmetric). \(IG=1-(\frac{5}{10}\times 0.722+\frac{5}{10}\times 0.722)=1-0.722=0.278\) bits. Lưu ý: IG = 0.278 bits, không phải 0 (có giảm entropy) nhưng cũng không lớn vì split chỉ cải thiện khiêm tốn.
+<a href="dtree.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.5 — Entropy &amp; Information Gain</a></div>
+</div>
+</div>
+
+<!-- B-Q9 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 9 — Decision Tree: Pre-pruning vs Post-pruning</div>
+<div class="qbody">
+<div class="qq">Pre-pruning dừng grow sớm khi split không đạt ngưỡng. Post-pruning (Reduced Error Pruning) grow đầy đủ rồi mới cắt. Nhược điểm tiềm ẩn của pre-pruning là gì?</div>
+<div class="qopt qwrong">A. Pre-pruning tốn nhiều tính toán hơn vì phải evaluate nhiều splits.</div>
+<div class="qopt qok">B. "Horizon effect" (myopia): split hiện tại có vẻ vô ích (IG thấp) nhưng có thể dẫn đến split rất tốt ở phía sau. Pre-pruning terminate sớm → bỏ lỡ feature interaction. Ví dụ: feature XOR (A, B riêng lẻ vô ích, nhưng A+B mới phân biệt được). ✓</div>
+<div class="qopt qwrong">C. Pre-pruning không thể áp dụng với numerical features.</div>
+<div class="qopt qwrong">D. Pre-pruning overfit hơn post-pruning vì dừng sớm.</div>
+<div class="qexp"><strong>Giải thích:</strong> Pre-pruning là greedy: nhìn 1 bước, không thấy lợi ích dài hạn. XOR example: \(P(y=1|A=0)=P(y=1|A=1)=0.5\) — A vô nghĩa! Nhưng sau khi split theo A, split theo B cho pure nodes. Post-pruning tránh được điều này bằng cách luôn grow đầy đủ. Trade-off: post-pruning tốn gấp đôi tính toán (grow + prune) và cần validation set.
+<a href="dtree.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.5 — Pruning Strategies</a></div>
+</div>
+</div>
+
+<!-- B-Q10 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 10 — Decision Tree: Gini vs Entropy (khi nào khác nhau?)</div>
+<div class="qbody">
+<div class="qq">Gini impurity \(G=1-\sum_c p_c^2\) và Entropy \(H=-\sum_c p_c\log_2 p_c\) đều đo "impurity". Trường hợp nào hai chỉ số này có thể chọn KHÁC NHAU feature để split?</div>
+<div class="qopt qwrong">A. Không bao giờ — chúng toán học tương đương.</div>
+<div class="qopt qwrong">B. Luôn khác nhau vì Gini là quadratic, Entropy là logarithmic.</div>
+<div class="qopt qok">C. Khi so sánh một split tạo ra 2 tập con hơi mất cân bằng vs. một split hoàn toàn thuần khiết 1 bên: Entropy nhạy hơn với minority class (log phạt nặng hơn xác suất nhỏ), còn Gini ưu tiên purity ở largest class. Trường hợp biên có thể cho thứ tự feature khác nhau. ✓</div>
+<div class="qopt qwrong">D. Chỉ khác khi có hơn 2 classes.</div>
+<div class="qexp"><strong>Giải thích:</strong> Cả hai đều đạt maximum tại uniform và 0 tại pure — highly correlated. Nhưng Entropy phạt nặng hơn khi \(p\) nhỏ (vì \(p\log p\) → 0 nhanh hơn \(p^2\) khi \(p\to 0\)). Trong thực tế chúng chọn cùng feature >99% trường hợp. Gini thường faster (không cần log). Sự khác biệt chỉ quan trọng với class imbalance mạnh và nhiều classes.
+<a href="dtree.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ch.5 — Decision Trees, Gini vs Entropy</a></div>
+</div>
+</div>
+
+<div class="s-title">Phần 4 — K-Means Clustering (Câu 11–13)</div>
+
+<!-- B-Q11 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 11 — K-Means: Tại sao Hội tụ nhưng không Global Optimum?</div>
+<div class="qbody">
+<div class="qq">K-Means đảm bảo hội tụ trong hữu hạn bước. Chứng minh hội tụ dựa trên lập luận nào? Tại sao không đảm bảo global optimum?</div>
+<div class="qopt qwrong">A. WCSS là convex function → hội tụ về global minimum duy nhất.</div>
+<div class="qopt qok">B. Số cách gán \(n\) điểm vào \(k\) cụm là \(k^n\) (hữu hạn). WCSS giảm nghiêm ngặt sau mỗi iteration trừ khi đã ở fixed point → không thể lặp lại cùng assignment → hội tụ sau tối đa \(k^n\) bước. Không global optimum vì \(k^n\) quá lớn để explore và objective non-convex (nhiều local minima). ✓</div>
+<div class="qopt qwrong">C. K-Means là gradient descent trên WCSS → hội tụ do learning rate giảm.</div>
+<div class="qopt qwrong">D. Hội tụ vì centroids chỉ di chuyển trong bounded region.</div>
+<div class="qexp"><strong>Giải thích:</strong> Chứng minh hội tụ: (1) Assignment step giảm WCSS (mỗi điểm gán vào centroid gần nhất), (2) Update step giảm WCSS (mean minimizes sum of squared distances). Cả hai steps monotone → tổng monotone giảm → hội tụ. Không global: NP-hard vì \(k^n\) assignments. Giải pháp: K-Means++ initialization (seeding thông minh), chạy nhiều lần, ELKAN algorithm.
+<a href="kmeans.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: K-Means Clustering</a></div>
+</div>
+</div>
+
+<!-- B-Q12 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 12 — K-Means: Khi nào thất bại?</div>
+<div class="qbody">
+<div class="qq">K-Means dùng Euclidean distance tìm spherical clusters. Cấu trúc dữ liệu nào sau đây khiến K-Means thất bại NẶNG NHẤT?</div>
+<div class="qopt qok">A. Hai cụm đồng tâm (concentric rings): cluster trong là vòng nhỏ, cluster ngoài bao quanh. K-Means không thể tách vì Voronoi partition dùng linear boundary trong feature space. ✓</div>
+<div class="qopt qwrong">B. Ba cụm hình cầu tách biệt với kích thước bằng nhau.</div>
+<div class="qopt qwrong">C. Hai cụm hình ellipse song song, hơi chồng chéo.</div>
+<div class="qopt qwrong">D. Dữ liệu 2D có 4 cụm tại 4 góc hình vuông.</div>
+<div class="qexp"><strong>Giải thích:</strong> K-Means decision boundary = perpendicular bisector giữa hai centroids (linear). Concentric rings: centroid ring trong ở tâm, centroid ring ngoài ở vành ngoài → Voronoi partition cắt theo đường thẳng đứng qua giữa → không match với ring structure. Giải pháp: Spectral Clustering hoặc kernel K-Means (dùng RBF kernel để map non-linear structure thành spherical trong feature space).
+<a href="kmeans.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: K-Means — Limitations</a></div>
+</div>
+</div>
+
+<!-- B-Q13 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 13 — Chọn k: Gap Statistic vs Elbow Method</div>
+<div class="qbody">
+<div class="qq">Elbow method chọn \(k\) tại điểm "gãy" của đồ thị WCSS vs \(k\). Phương pháp nào có nền tảng thống kê vững hơn?</div>
+<div class="qopt qok">A. Gap Statistic: so sánh \(\ln(\text{WCSS}_k)\) với \(E[\ln(\text{WCSS}_k^*])\) dưới null distribution (dữ liệu uniform ngẫu nhiên), chọn \(k\) nhỏ nhất sao cho \(\text{Gap}(k)\geq\text{Gap}(k+1)-s_{k+1}\). ✓</div>
+<div class="qopt qwrong">B. Silhouette score luôn tốt hơn cả Elbow và Gap Statistic.</div>
+<div class="qopt qwrong">C. BIC/AIC chỉ applicable với Gaussian Mixture Models, không dùng được với K-Means.</div>
+<div class="qopt qwrong">D. Chọn \(k=\sqrt{n/2}\) là công thức tối ưu cho mọi dataset.</div>
+<div class="qexp"><strong>Giải thích:</strong> Gap Statistic (Tibshirani et al. 2001): \(\text{Gap}(k)=E^*[\ln W_k]-\ln W_k\). Null distribution là dữ liệu uniform trong bounding box. Lý do: nếu không có cluster structure thật, WCSS sẽ giảm theo rate giống null; nếu có structure, WCSS giảm nhanh hơn → Gap lớn. Elbow method chủ quan (người ta thường không thống nhất được "điểm gãy"). Silhouette cũng tốt nhưng \(O(n^2)\).
+<a href="kmeans.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: K-Means — Chọn k</a></div>
+</div>
+</div>
+
+<div class="s-title">Phần 5 — Logistic Regression (Câu 14–17)</div>
+
+<!-- B-Q14 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 14 — Logistic Regression: MLE và Linearly Separable Data</div>
+<div class="qbody">
+<div class="qq">Logistic Regression trained bằng MLE (tối đa log-likelihood). Nếu training data là linearly separable (tồn tại hyperplane tách hoàn toàn hai class), điều gì xảy ra với nghiệm tối ưu?</div>
+<div class="qopt qwrong">A. Tìm được nghiệm unique tốt nhất với margin tối đa (như SVM).</div>
+<div class="qopt qok">B. \(\|\mathbf{w}\|\to\infty\): LR có thể tăng \(\mathbf{w}\) vô hạn, pushing sigmoid đến 0/1 trên training set → log-likelihood tiến về 0 nhưng không bao giờ đạt (supremum, không là maximum). MLE không bounded → không tồn tại nghiệm hữu hạn. ✓</div>
+<div class="qopt qwrong">C. Convergence rate chậm hơn vì data quá tách biệt.</div>
+<div class="qopt qwrong">D. Bài toán infeasible, gradient descent không converge.</div>
+<div class="qexp"><strong>Giải thích:</strong> Với data separable, tồn tại \(\mathbf{w}\) classify đúng tất cả. Khi scale \(\mathbf{w}\to\lambda\mathbf{w}\) với \(\lambda\to\infty\), sigmoid output \(\to\{0,1\}\), cross-entropy loss \(\to 0\). Vì gradient luôn nonzero (loss chưa = 0), \(\mathbf{w}\) tiếp tục tăng. Giải pháp: L2 regularization — thêm \(\frac{\lambda}{2}\|\mathbf{w}\|^2\) làm objective bounded dưới từ trên, đảm bảo nghiệm hữu hạn.
+<a href="logreg.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Logistic Regression</a></div>
+</div>
+</div>
+
+<!-- B-Q15 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 15 — L1 vs L2 Regularization: Sparsity</div>
+<div class="qbody">
+<div class="qq">L1 (Lasso) tạo ra sparse solutions (\(w_i=0\) chính xác); L2 (Ridge) tạo ra small nhưng nonzero weights. Sự khác biệt này xuất phát từ đặc tính hình học nào?</div>
+<div class="qopt qwrong">A. L1 là convex, L2 là non-convex nên L2 không có global minimum duy nhất.</div>
+<div class="qopt qok">B. Level sets của L1 penalty là hình thoi (diamond) với đỉnh nhọn tại các trục tọa độ; level sets của L2 là hình cầu. Optimal solution là nơi level set của loss tiếp xúc level set của penalty → nhiều khả năng L1 tiếp xúc tại đỉnh nhọn (axis-aligned corners) nơi có coordinate bằng 0. ✓</div>
+<div class="qopt qwrong">C. L1 có subgradient tại 0, L2 có gradient tại 0; cả hai về 0 như nhau về mặt optimization.</div>
+<div class="qopt qwrong">D. L1 và L2 cho cùng kết quả khi \(\lambda\) đủ lớn.</div>
+<div class="qexp"><strong>Giải thích:</strong> Hình học 2D: loss contour là ellipse, L2 constraint là circle (smooth everywhere), L1 constraint là diamond (sharp corners at axes). Ellipse tiếp xúc circle → solution off-axis (both nonzero). Ellipse tiếp xúc diamond → solution rất thường tại corner (one coordinate = 0). Analytical: L1 subdifferential tại \(w=0\) là \([-\lambda,\lambda]\) → nghiệm có thể stuck tại 0; L2 gradient tại \(w=0\) = 0 → luôn có force pulling away from 0 but never crossing.
+<a href="logreg.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Logistic Regression — Regularization</a></div>
+</div>
+</div>
+
+<!-- B-Q16 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 16 — Logistic Regression: Multinomial (Softmax) — Tại sao K-1 Vectors?</div>
+<div class="qbody">
+<div class="qq">Multinomial LR (Softmax): \(P(y=k|\mathbf{x})=\frac{\exp(\mathbf{w}_k^\top\mathbf{x})}{\sum_j\exp(\mathbf{w}_j^\top\mathbf{x})}\). Tại sao chỉ cần \(K-1\) weight vectors thay vì \(K\)?</div>
+<div class="qopt qwrong">A. Vì class cuối cùng được tính là \(1-\sum_{k=1}^{K-1}P(y=k|\mathbf{x})\).</div>
+<div class="qopt qok">B. Model là overparameterized: thêm hằng số \(\mathbf{c}\) vào tất cả \(\mathbf{w}_k\) không thay đổi softmax output (numerator và denominator cancel). Cố định \(\mathbf{w}_K=\mathbf{0}\) (reference class) giải quyết identifiability problem — chỉ cần \(K-1\) free vectors. ✓</div>
+<div class="qopt qwrong">C. Vì \(K\) vectors gây vanishing gradient trong lớp softmax.</div>
+<div class="qopt qwrong">D. Vì cross-entropy loss chỉ đạo hàm được với \(K-1\) outputs.</div>
+<div class="qexp"><strong>Giải thích:</strong> \(P(y=k|\mathbf{x};W)\) invariant to adding constant: \(\frac{\exp((\mathbf{w}_k+\mathbf{c})^\top\mathbf{x})}{\sum_j\exp((\mathbf{w}_j+\mathbf{c})^\top\mathbf{x})}=\frac{e^c\exp(\mathbf{w}_k^\top\mathbf{x})}{e^c\sum_j\exp(\mathbf{w}_j^\top\mathbf{x})}\) — same. Model có \(K\) vectors nhưng chỉ \(K-1\) degrees of freedom. Fixing \(\mathbf{w}_K=\mathbf{0}\): log-odds relative to class \(K\) là \(\mathbf{w}_k^\top\mathbf{x}\) — same as binary LR logit.
+<a href="logreg.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Logistic Regression — Multinomial</a></div>
+</div>
+</div>
+
+<!-- B-Q17 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 17 — Logistic Regression: Interpretation Output là Probability</div>
+<div class="qbody">
+<div class="qq">\(\sigma(\mathbf{w}^\top\mathbf{x})\in(0,1)\), vậy nó luôn là xác suất hợp lệ \(P(y=1|\mathbf{x})\)? Điều kiện nào cần thiết để interpretation này có cơ sở thống kê?</div>
+<div class="qopt qwrong">A. Luôn valid vì output \(\in(0,1)\) là điều kiện cần và đủ cho probability.</div>
+<div class="qopt qok">B. LR là MLE với Bernoulli distribution và logit link function. Output là calibrated probability <em>nếu</em> true log-odds thực sự linear trong features: \(\log\frac{P(y=1|\mathbf{x})}{P(y=0|\mathbf{x})}=\mathbf{w}^\top\mathbf{x}\). Nếu model misspecified, output chỉ là monotone mapping vào (0,1), không nhất thiết là probability. ✓</div>
+<div class="qopt qwrong">C. Output là probability khi và chỉ khi dùng L2 regularization.</div>
+<div class="qopt qwrong">D. Output là probability khi training accuracy \(\geq 95\%\).</div>
+<div class="qexp"><strong>Giải thích:</strong> Nằm trong (0,1) là điều kiện CẦN cho probability nhưng chưa đủ — mọi sigmoid có thể transform output bất kỳ vào (0,1). "Calibration" là khái niệm quan trọng hơn: \(P(\hat{y}=c|f(\mathbf{x})=p)\) có thực sự bằng \(p\) không? LR well-calibrated khi model đúng. Trong thực tế, dùng Platt scaling hoặc isotonic regression để post-hoc calibrate nếu cần probability estimates chính xác.
+<a href="logreg.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Logistic Regression</a></div>
+</div>
+</div>
+
+<div class="s-title">Phần 6 — Tổng hợp Cross-Topic (Câu 18–20)</div>
+
+<!-- B-Q18 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 18 — Bias-Variance: Đánh giá 3 mô hình</div>
+<div class="qbody">
+<div class="qq">Mô hình A: train error=5%, test error=6%. Mô hình B: train error=1%, test error=15%. Mô hình C: train error=20%, test error=21%. Phân tích bias-variance đúng là:</div>
+<div class="qopt qwrong">A. A: optimal; B: high bias; C: high variance.</div>
+<div class="qopt qok">B. A: low bias, low variance (best generalization); B: low bias, HIGH variance (overfit — gap lớn); C: HIGH bias, low variance (underfit — cả hai đều cao nhưng gap nhỏ). ✓</div>
+<div class="qopt qwrong">C. B là best vì training error thấp nhất.</div>
+<div class="qopt qwrong">D. C underfit nhưng gap nhỏ nên variance thấp không phải vấn đề.</div>
+<div class="qexp"><strong>Giải thích:</strong> Nhận biết overfit/underfit qua train-test gap: B có gap 14% → high variance (overfit). C có high train error (20%) → high bias, gap chỉ 1% → low variance. A là best vì cả train error thấp (low bias) và gap nhỏ (low variance). Underfit (C) cần: thêm features, model phức tạp hơn, bỏ regularization. Overfit (B) cần: more data, regularization, simpler model.
+<a href="logreg.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Bias-Variance Tradeoff</a></div>
+</div>
+</div>
+
+<!-- B-Q19 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 19 — Cross-Validation: Khi nào k-fold tốt hơn Holdout?</div>
+<div class="qbody">
+<div class="qq">Khi dataset nhỏ (n=50), k-fold cross-validation (\(k=10\)) tốt hơn holdout validation (80/20 split) vì lý do nào?</div>
+<div class="qopt qwrong">A. k-fold tính nhanh hơn vì mỗi fold nhỏ hơn holdout.</div>
+<div class="qopt qok">B. k-fold dùng 100% data cho validation (mỗi fold được validate một lần) và 90% cho training mỗi fold → estimate generalization error có lower variance và ít bias hơn với n nhỏ. Holdout: chỉ 10 samples (50×0.2) validate → variance estimate cao. ✓</div>
+<div class="qopt qwrong">C. k-fold tránh được data leakage tốt hơn holdout.</div>
+<div class="qopt qwrong">D. k-fold cho kết quả optimistic hơn vì training set lớn hơn.</div>
+<div class="qexp"><strong>Giải thích:</strong> Với \(n=50\), holdout 80/20 cho validation set 10 điểm — quá nhỏ để estimate generalization error chính xác (variance cao, kết quả sensitive với random split). k=10 fold: mỗi fold 5 điểm test, nhưng kết quả average qua 10 folds → estimate ổn định hơn. Leave-One-Out (k=n) là extreme — unbiased nhưng high variance của estimate và tốn compute. k=10 là sweet spot.
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi tổng hợp — Model Selection</a></div>
+</div>
+</div>
+
+<!-- B-Q20 -->
+<div class="qcard">
+<div class="qhdr qhdr-b2">Câu 20 — No Free Lunch Theorem: Hàm ý thực tế</div>
+<div class="qbody">
+<div class="qq">No Free Lunch (NFL) Theorem (Wolpert, 1996) phát biểu: averaged over all possible problems, all algorithms perform equally. Hàm ý THỰC TIỄN đúng nhất là:</div>
+<div class="qopt qwrong">A. Random guessing và Random Forest có performance giống nhau nếu chạy đủ nhiều problems.</div>
+<div class="qopt qok">B. Không có algorithm "universally best" cho mọi dataset; performance ưu thế của một method trên problem P phải trả bằng kém hơn trên problems khác. Trong thực tế, ta không làm ML trên "all problems" mà chỉ quan tâm distribution của real-world problems → inductive bias phù hợp với domain mới giúp ích. ✓</div>
+<div class="qopt qwrong">C. NFL không áp dụng cho deep learning vì neural networks có đủ expressive power.</div>
+<div class="qopt qwrong">D. NFL có nghĩa là model selection không quan trọng — random choice là ok.</div>
+<div class="qexp"><strong>Giải thích:</strong> NFL là lý do căn bản tại sao "best algorithm" không tồn tại globally. Thực hành: chọn algorithm dựa trên domain knowledge (inductive bias). Ví dụ: CNN tốt cho image vì translational equivariance; HMM tốt cho sequences vì Markov assumption; LR tốt khi log-odds linear. NFL không nói "đừng cố gắng chọn algorithm" mà nói "lý do chọn algorithm phải đến từ hiểu biết về bài toán cụ thể, không phải claim universal superiority".
+<a href="on-thi-MLA.html" class="ref-link"><i class="fas fa-arrow-right"></i>Xem lại: Ôn thi tổng hợp — Lý thuyết ML</a></div>
+</div>
+</div>
+
+</div><!-- /tab t2 -->
+
+</main>
+
+<a href="#" id="back-top" title="Về đầu trang"><i class="fas fa-arrow-up"></i></a>
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+</body>
+</html>
