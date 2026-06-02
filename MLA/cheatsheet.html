@@ -113,6 +113,31 @@ b{ font-weight:700; color:#0f172a; }
 .sn{ background:#334155; color:#fff; min-width:9px; height:9px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:5.5px; font-weight:800; flex-shrink:0; margin-top:.3mm; }
 .sc{ font-size:6.5px; line-height:1.5; flex:1; }
 
+.blk-opt  { border-color:#fed7aa; }
+.blk-reg  { border-color:#99f6e4; }
+.blk-math { border-color:#ddd6fe; }
+.blk-pca  { border-color:#f0abfc; }
+.blk-arch { border-color:#a5f3fc; }
+.blk-prod { border-color:#fda4af; }
+.blk-opt  .blk-hdr { background:#9a3412; }
+.blk-reg  .blk-hdr { background:#134e4a; }
+.blk-math .blk-hdr { background:#3b0764; }
+.blk-pca  .blk-hdr { background:#701a75; }
+.blk-arch .blk-hdr { background:#075985; }
+.blk-prod .blk-hdr { background:#881337; }
+.blk-opt  .sec { background:#7c2d12; }
+.blk-reg  .sec { background:#0d3b38; }
+.blk-math .sec { background:#2e1065; }
+.blk-pca  .sec { background:#581c7b; }
+.blk-arch .sec { background:#0c4a6e; }
+.blk-prod .sec { background:#6a0726; }
+.blk-opt  .f { color:#9a3412; }
+.blk-reg  .f { color:#134e4a; }
+.blk-math .f { color:#3b0764; }
+.blk-pca  .f { color:#701a75; }
+.blk-arch .f { color:#075985; }
+.blk-prod .f { color:#881337; }
+
 /* KaTeX scales with font-size automatically */
 .katex { font-size: 1em; }
 
@@ -125,7 +150,7 @@ b{ font-weight:700; color:#0f172a; }
 
 <!-- ===== PAGE 1 ===== -->
 <div class="page">
-<div class="pg-hdr">📄 Trang 1/4 — K-Nearest Neighbors · Naive Bayes · K-Means Clustering<span>MLA HK252 | CO5175 — landscape A4</span></div>
+<div class="pg-hdr">📄 Trang 1/6 — K-Nearest Neighbors · Naive Bayes · K-Means Clustering<span>MLA HK252 | CO5175 — landscape A4</span></div>
 <div class="g3">
 
 <!-- COL 1: KNN -->
@@ -275,7 +300,7 @@ GMM thay thế: Soft assignment \(\gamma_{ik}=P(z_k|\mathbf{x}_i)\) → xử lý
 
 <!-- ===== PAGE 2 ===== -->
 <div class="page">
-<div class="pg-hdr">📄 Trang 2/4 — Logistic Regression · Support Vector Machines (SVM)<span>MLA HK252 | CO5175</span></div>
+<div class="pg-hdr">📄 Trang 2/6 — Logistic Regression · Support Vector Machines (SVM)<span>MLA HK252 | CO5175</span></div>
 <div class="g3">
 
 <!-- COL 1: LR -->
@@ -431,7 +456,7 @@ CE: \(\log(1+e^{-m})\) — smooth, gradient \(\neq 0\) mọi lúc → DENSE
 
 <!-- ===== PAGE 3 ===== -->
 <div class="page">
-<div class="pg-hdr">📄 Trang 3/4 — Decision Trees · Neural Networks · Ensemble Methods · HMM<span>MLA HK252 | CO5175</span></div>
+<div class="pg-hdr">📄 Trang 3/6 — Decision Trees · Neural Networks · Ensemble Methods · HMM<span>MLA HK252 | CO5175</span></div>
 <div class="g3">
 
 <!-- COL 1: DT -->
@@ -609,7 +634,7 @@ Viterbi: \(\delta_t(j)=\!\left[\max_i\delta_{t-1}(i)A_{ij}\right]\!B_j(o_t)\) [<
 
 <!-- ===== PAGE 4 ===== -->
 <div class="page">
-<div class="pg-hdr">📄 Trang 4/4 — Bẫy Thi · Ví dụ Tính · Siêu Tham Số · Công Thức Nhanh<span>MLA HK252 | CO5175</span></div>
+<div class="pg-hdr">📄 Trang 4/6 — Bẫy Thi · Ví dụ Tính · Siêu Tham Số · Công Thức Nhanh<span>MLA HK252 | CO5175</span></div>
 <div class="g3">
 
 <!-- COL 1: EXAM TRAPS + SVM EXAMPLE -->
@@ -767,6 +792,359 @@ L2↔Gaussian MAP: minimize \(-\log P(w|\text{data})\) = minimize CE+\(\lambda\|
 
 </div><!-- g3 -->
 </div><!-- page 4 -->
+
+
+<!-- ===== PAGE 5 ===== -->
+<div class="page">
+<div class="pg-hdr">📄 Trang 5/6 — Tối ưu hóa · Regularization Nâng cao · Nền tảng Toán học<span>MLA HK252 | CO5175</span></div>
+<div class="g3">
+
+<!-- COL 1: OPTIMIZATION -->
+<div class="gcol">
+<div class="blk blk-opt">
+<div class="blk-hdr">⚡ Tối ưu hóa — SGD, Momentum, Adam, Newton</div>
+<div class="blk-body">
+<span class="sec">▶ Gradient Descent — Ba chế độ</span>
+<table class="tbl">
+<tr><th>Chế độ</th><th>Batch size</th><th>Gradient</th><th>Đặc điểm</th></tr>
+<tr><td>Batch GD</td><td>N (toàn bộ)</td><td>Chính xác</td><td>Chậm/epoch, ổn định</td></tr>
+<tr><td>SGD</td><td>1</td><td>Noisy</td><td>Nhanh, thoát local min</td></tr>
+<tr><td>Mini-batch</td><td>B (32–512)</td><td>Ước lượng</td><td>GPU-efficient, cân bằng</td></tr>
+</table>
+<span class="sec">▶ Momentum — Tích lũy Velocity</span>
+<div class="f">
+\(v_t=\beta v_{t-1}+(1-\beta)g_t\quad w_{t+1}=w_t-\eta v_t\)<br>
+\(\beta\approx0.9\): trung bình \(\approx\dfrac{1}{1-0.9}=10\) gradient gần nhất<br>
+Oscillation: gradient ngược chiều → velocity triệt tiêu → nhỏ hơn<br>
+Cùng chiều liên tục → velocity tích lũy → đi nhanh hơn (exponential)
+</div>
+<span class="sec">▶ Adam — Adaptive + Momentum + Bias Correction</span>
+<div class="f">
+\(m_t=\beta_1 m_{t-1}+(1-\beta_1)g_t\quad\) [1st moment, momentum]<br>
+\(v_t=\beta_2 v_{t-1}+(1-\beta_2)g_t^2\quad\) [2nd moment, scale]<br>
+\(\hat{m}_t=\dfrac{m_t}{1-\beta_1^t},\;\hat{v}_t=\dfrac{v_t}{1-\beta_2^t}\quad\) [bias correction]<br>
+\(w_{t+1}=w_t-\dfrac{\eta}{\sqrt{\hat{v}_t}+\varepsilon}\hat{m}_t\)<br>
+Defaults: \(\beta_1=0.9,\;\beta_2=0.999,\;\varepsilon=10^{-8}\)
+</div>
+<div class="tip">💡 Bias correction chỉ quan trọng ~10-20 bước đầu (khi \(\beta^t\approx\beta\)). Sau đó \(\to 1\).</div>
+<span class="sec">▶ Learning Rate Schedules</span>
+<div class="f">
+Step decay: \(\eta\leftarrow\eta\cdot\gamma\) mỗi \(k\) epochs, \(\gamma\approx0.1\)<br>
+Cosine: \(\eta(t)=\eta_{min}+\tfrac{1}{2}(\eta_{max}-\eta_{min})\bigl(1+\cos\tfrac{\pi t}{T}\bigr)\)<br>
+Warmup: tăng linear 0→\(\eta_{max}\) trong \(T_{warm}\) bước, rồi decay
+</div>
+<span class="sec">▶ Newton's Method</span>
+<div class="f">
+\(w\leftarrow w-\mathbf{H}^{-1}\nabla\mathcal{L}(w)\quad\) [\(\mathbf{H}=\nabla^2\mathcal{L}\) = Hessian]<br>
+Convergence: <b>quadratic</b> gần minimum (2× digits per step)<br>
+Cost: \(\mathcal{O}(D^3)\) để invert Hessian → không khả thi cho DNN<br>
+L-BFGS: xấp xỉ Hessian, \(\mathcal{O}(D)\) memory — dùng cho logistic/SVM nhỏ
+</div>
+<span class="sec">▶ Convergence Rates</span>
+<table class="tbl">
+<tr><th>Method</th><th>Rate (convex)</th><th>Rate (strongly cvx)</th></tr>
+<tr><td>GD (fixed η)</td><td>\(\mathcal{O}(1/t)\)</td><td>\(\mathcal{O}(\rho^t)\) linear</td></tr>
+<tr><td>SGD (decay η)</td><td>\(\mathcal{O}(1/\sqrt{t})\)</td><td>\(\mathcal{O}(1/t)\)</td></tr>
+<tr><td>Newton</td><td>—</td><td>Quadratic (\(\mathcal{O}(\log\log(1/\varepsilon))\))</td></tr>
+</table>
+<div class="err">⚠️ Saddle points phổ biến hơn local minima trong deep networks. Momentum giúp vượt qua. Adam thích nghi với curvature.</div>
+</div></div>
+</div><!-- col1 -->
+
+<!-- COL 2: REGULARIZATION + CV -->
+<div class="gcol">
+<div class="blk blk-reg">
+<div class="blk-hdr">🛡️ Regularization Nâng cao · Cross-Validation · Chọn mô hình</div>
+<div class="blk-body">
+<span class="sec">▶ Elastic Net — Kết hợp L1 + L2</span>
+<div class="f">
+\(\mathcal{L}+\lambda_1\|\mathbf{w}\|_1+\lambda_2\|\mathbf{w}\|^2\)<br>
+L1 alone: chọn 1 feature ngẫu nhiên từ nhóm correlated → unstable<br>
+L2 alone: shrink đều → không sparse<br>
+Elastic Net: sparse <b>nhưng</b> group correlated features cùng nhau<br>
+\(\rho=\lambda_1/(\lambda_1+\lambda_2)\in[0,1]\): mixing ratio
+</div>
+<span class="sec">▶ Early Stopping — Implicit Regularization</span>
+<div class="f">
+Monitor val loss; dừng khi không cải thiện \(k\) epochs liên tiếp (patience)<br>
+Cho linear models: tương đương L2 regularization lý thuyết<br>
+Hiệu quả: không cần tính thêm regularization term trong loss
+</div>
+<span class="sec">▶ Data Augmentation — Regularization qua Data</span>
+<div class="f">
+Tăng effective training set size mà không cần label thêm<br>
+Images: flip, crop, rotate, color jitter, cutout, mixup<br>
+Text: synonym replacement, back-translation, EDA<br>
+Buộc model học invariances thực sự (thay vì memorize artifacts)
+</div>
+<span class="sec">▶ Cross-Validation — Taxonomy</span>
+<table class="tbl">
+<tr><th>Loại</th><th>Cơ chế</th><th>Khi dùng</th></tr>
+<tr><td>k-Fold (k=5,10)</td><td>k vòng, mỗi vòng 1/k test</td><td>Default; N trung bình</td></tr>
+<tr><td>Stratified k-Fold</td><td>Giữ phân phối class trong mỗi fold</td><td>Imbalanced classes</td></tr>
+<tr><td>LOO-CV</td><td>N vòng, test 1 sample</td><td>N rất nhỏ; đắt \(\mathcal{O}(N^2)\)</td></tr>
+<tr><td>Nested CV</td><td>Outer: eval; Inner: hyperparam</td><td>Báo cáo unbiased performance</td></tr>
+<tr><td>Time-series CV</td><td>Walk-forward: train [1..t], test t+1</td><td>Sequential data — no future leakage</td></tr>
+</table>
+<div class="err">⚠️ Sai lầm: tune hyperparams trên toàn bộ fold trước → nested CV bắt buộc khi báo cáo chính thức.</div>
+<span class="sec">▶ Chọn Mô Hình — AIC / BIC / Complexity</span>
+<div class="f">
+AIC: \(-2\log\hat{\mathcal{L}}+2k\) [\(k\) = số params; penalize nhẹ]<br>
+BIC: \(-2\log\hat{\mathcal{L}}+k\ln N\) [penalize mạnh hơn; consistent]<br>
+Smaller = better. BIC chọn model parsimonious hơn AIC<br><br>
+Structural Risk Min: chọn \(h\) minimize \(\text{Emp.Risk}+\Omega(\mathcal{H})\)<br>
+\(\text{Emp.Risk}+\sqrt{\dfrac{\text{VC}(\mathcal{H})+\ln(1/\delta)}{2N}}\)
+</div>
+<span class="sec">▶ Bias-Variance Formal Decomposition</span>
+<div class="f">
+\(\mathbb{E}[(y-\hat{f}(\mathbf{x}))^2]=\underbrace{(\mathbb{E}[\hat{f}]-f^*)^2}_{\text{Bias}^2}+\underbrace{\mathbb{E}[(\hat{f}-\mathbb{E}[\hat{f}])^2]}_{\text{Variance}}+\underbrace{\sigma^2_\varepsilon}_{\text{Irreducible}}\)<br>
+Bias²: khoảng cách trung bình từ \(f^*\) — phụ thuộc model capacity<br>
+Variance: độ scatter của \(\hat{f}\) theo training set — giảm với N↑<br>
+\(\sigma^2\): Bayes error — không thể giảm hơn (noise trong data)
+</div>
+<div class="tip">💡 Double descent: khi overparameterized (params ≫ N), test error có thể giảm lại! Modern DNN sống trong vùng này.</div>
+</div></div>
+</div><!-- col2 -->
+
+<!-- COL 3: MATH FOUNDATIONS -->
+<div class="gcol">
+<div class="blk blk-math">
+<div class="blk-hdr">📐 Nền tảng Toán học — Convexity, Lagrangian, Probability</div>
+<div class="blk-body">
+<span class="sec">▶ Convexity — Định nghĩa &amp; Hệ quả</span>
+<div class="f">
+\(f\) convex \(\Leftrightarrow f(\lambda\mathbf{x}+(1-\lambda)\mathbf{y})\leq\lambda f(\mathbf{x})+(1-\lambda)f(\mathbf{y})\)\; \(\forall\lambda\in[0,1]\)<br>
+Equivalent: \(\nabla^2 f\succeq\mathbf{0}\) (Hessian PSD)<br>
+<b>Key property:</b> local minimum = global minimum<br>
+Strongly convex (\(\nabla^2\geq\mu\mathbf{I}\)): unique global minimum<br><br>
+Convex functions: \(\|\cdot\|\), \(e^x\), \(-\log x\), CE loss (LR)<br>
+Non-convex: MSE+sigmoid (NN), K-Means WCSS, HMM likelihood
+</div>
+<span class="sec">▶ Lagrangian &amp; KKT Conditions</span>
+<div class="f">
+Primal: \(\min f(\mathbf{x})\;\text{s.t.}\;g_i(\mathbf{x})\leq 0,\;h_j(\mathbf{x})=0\)<br>
+Lagrangian: \(\mathcal{L}(\mathbf{x},\boldsymbol{\alpha},\boldsymbol{\nu})=f(\mathbf{x})+\sum_i\alpha_i g_i(\mathbf{x})+\sum_j\nu_j h_j(\mathbf{x})\)<br>
+</div>
+<table class="tbl">
+<tr><th>KKT Điều kiện</th><th>Phát biểu</th></tr>
+<tr><td>Stationarity</td><td>\(\nabla_\mathbf{x}\mathcal{L}(\mathbf{x}^*,\boldsymbol{\alpha}^*,\boldsymbol{\nu}^*)=\mathbf{0}\)</td></tr>
+<tr><td>Primal feasibility</td><td>\(g_i(\mathbf{x}^*)\leq 0,\;h_j(\mathbf{x}^*)=0\)</td></tr>
+<tr><td>Dual feasibility</td><td>\(\alpha_i^*\geq 0\)</td></tr>
+<tr><td>Compl. slackness</td><td>\(\alpha_i^*\cdot g_i(\mathbf{x}^*)=0\) ← SVM \(\alpha_i>0\Leftrightarrow\) SV!</td></tr>
+</table>
+<div class="ok">✓ KKT cần &amp; đủ cho convex program với Slater's condition (\(\exists\mathbf{x}:\) g_i strict < 0).</div>
+<span class="sec">▶ MLE vs MAP vs Bayesian</span>
+<div class="f">
+MLE: \(\hat{\theta}=\arg\max_\theta P(\mathcal{D}|\theta)=\arg\min_\theta -\log P(\mathcal{D}|\theta)\)<br>
+MAP: \(\hat{\theta}=\arg\max_\theta P(\theta|\mathcal{D})\propto P(\mathcal{D}|\theta)P(\theta)\)<br>
+\(=-\log P(\mathcal{D}|\theta)-\log P(\theta)\) = MLE + regularizer<br>
+Gaussian prior \(\Rightarrow\) L2 reg. Laplace prior \(\Rightarrow\) L1 reg.<br>
+Full Bayes: \(P(\theta|\mathcal{D})=\dfrac{P(\mathcal{D}|\theta)P(\theta)}{P(\mathcal{D})}\) — posterior dist.
+</div>
+<span class="sec">▶ Bayes' Theorem &amp; Conjugate Priors</span>
+<div class="f">
+Conjugate prior: posterior có cùng dạng với prior<br>
+Beta-Binomial: \(\text{Beta}(\alpha,\beta)\) prior → posterior \(\text{Beta}(\alpha+H,\beta+T)\)<br>
+Dirichlet-Categorical: Laplace smoothing = \(\text{Dir}(\mathbf{1})\) prior<br>
+Gaussian-Gaussian: Gaussian prior + Gaussian likelihood → Gaussian posterior
+</div>
+<span class="sec">▶ Xác suất cơ bản</span>
+<div class="f">
+Chain rule: \(P(A,B,C)=P(A)P(B|A)P(C|A,B)\)<br>
+Marginalization: \(P(A)=\sum_B P(A,B)=\sum_B P(A|B)P(B)\)<br>
+Bayes: \(P(A|B)=\dfrac{P(B|A)P(A)}{P(B)}\)<br>
+Independence: \(P(A,B)=P(A)P(B)\Leftrightarrow P(A|B)=P(A)\)<br>
+Cond. indep.: \(A\perp B|C\Leftrightarrow P(A,B|C)=P(A|C)P(B|C)\)
+</div>
+<span class="sec">▶ Các phân phối quan trọng</span>
+<table class="tbl">
+<tr><th>Phân phối</th><th>PDF/PMF</th><th>ML context</th></tr>
+<tr><td>Bernoulli</td><td>\(p^x(1-p)^{1-x}\)</td><td>LR output, NB feature</td></tr>
+<tr><td>Categorical</td><td>\(\prod_k p_k^{x_k}\)</td><td>Softmax, HMM states</td></tr>
+<tr><td>Gaussian</td><td>\(\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}\)</td><td>Gaussian NB, noise model</td></tr>
+<tr><td>Dirichlet</td><td>\(\propto\prod_k\theta_k^{\alpha_k-1}\)</td><td>Prior cho Categorical</td></tr>
+</table>
+</div></div>
+</div><!-- col3 -->
+
+</div><!-- g3 -->
+</div><!-- page 5 -->
+
+
+<!-- ===== PAGE 6 ===== -->
+<div class="page">
+<div class="pg-hdr">📄 Trang 6/6 — Giảm chiều (PCA/LDA) · Kiến trúc sâu (CNN/RNN/Attention) · Production ML<span>MLA HK252 | CO5175</span></div>
+<div class="g3">
+
+<!-- COL 1: DIMENSIONALITY REDUCTION -->
+<div class="gcol">
+<div class="blk blk-pca">
+<div class="blk-hdr">🔬 Giảm Chiều — PCA, LDA, t-SNE, UMAP</div>
+<div class="blk-body">
+<span class="sec">▶ PCA — Thuật toán &amp; Chứng minh</span>
+<div class="f">
+Mục tiêu: tìm hướng \(\mathbf{v}_1\) maximize \(\mathrm{Var}(\mathbf{v}_1^\top\mathbf{X})\)<br>
+\(\mathrm{Var}(\mathbf{v}^\top\mathbf{X})=\mathbf{v}^\top\boldsymbol{\Sigma}\mathbf{v}\) s.t. \(\|\mathbf{v}\|=1\)<br>
+Lagrangian: \(\mathbf{v}^\top\boldsymbol{\Sigma}\mathbf{v}-\lambda(\mathbf{v}^\top\mathbf{v}-1)\)<br>
+\(\Rightarrow\boldsymbol{\Sigma}\mathbf{v}=\lambda\mathbf{v}\) → \(\mathbf{v}_1\) = eigenvector của \(\boldsymbol{\Sigma}\) ứng với \(\lambda_1\) lớn nhất ✓
+</div>
+<div class="step"><div class="sn">1</div><div class="sc">Center: \(\tilde{\mathbf{X}}=\mathbf{X}-\bar{\mathbf{x}}\mathbf{1}^\top\)</div></div>
+<div class="step"><div class="sn">2</div><div class="sc">Covariance: \(\boldsymbol{\Sigma}=\tilde{\mathbf{X}}^\top\tilde{\mathbf{X}}/(N-1)\)</div></div>
+<div class="step"><div class="sn">3</div><div class="sc">Eigendecomp: \(\boldsymbol{\Sigma}=\mathbf{V}\boldsymbol{\Lambda}\mathbf{V}^\top\), sort \(\lambda\) desc</div></div>
+<div class="step"><div class="sn">4</div><div class="sc">Project: \(\mathbf{Z}=\tilde{\mathbf{X}}\mathbf{V}_K\) [\(K\) principal components]</div></div>
+<div class="step"><div class="sn">5</div><div class="sc">Reconstruct: \(\hat{\mathbf{X}}=\mathbf{Z}\mathbf{V}_K^\top+\bar{\mathbf{x}}\)</div></div>
+<div class="f">
+EVR: \(\text{Explained Variance Ratio}_k=\dfrac{\lambda_k}{\sum_i\lambda_i}\)<br>
+PCA = SVD: \(\tilde{\mathbf{X}}=\mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top\), PC = columns of \(\mathbf{V}\)<br>
+Whitening: \(z_k\leftarrow z_k/\sqrt{\lambda_k}\) → \(\mathrm{Cov}(\mathbf{Z})=\mathbf{I}\)
+</div>
+<span class="sec">▶ LDA vs PCA</span>
+<table class="tbl">
+<tr><th>Tiêu chí</th><th>PCA</th><th>LDA</th></tr>
+<tr><td>Giám sát</td><td>Không</td><td>Có (labels)</td></tr>
+<tr><td>Maximize</td><td>Variance tổng</td><td>\(S_B/S_W\) (between/within class)</td></tr>
+<tr><td>Max dims</td><td>\(\min(D,N)-1\)</td><td>\(K-1\) (K classes)</td></tr>
+<tr><td>Assumption</td><td>—</td><td>Gaussian, equal covariance</td></tr>
+</table>
+<div class="f">
+LDA Fisher criterion: \(\mathbf{w}^*=\arg\max\dfrac{\mathbf{w}^\top S_B\mathbf{w}}{\mathbf{w}^\top S_W\mathbf{w}}\)<br>
+\(S_W=\sum_c\sum_{i\in c}(\mathbf{x}_i-\boldsymbol{\mu}_c)(\mathbf{x}_i-\boldsymbol{\mu}_c)^\top\)<br>
+\(S_B=\sum_c N_c(\boldsymbol{\mu}_c-\boldsymbol{\mu})(\boldsymbol{\mu}_c-\boldsymbol{\mu})^\top\)
+</div>
+<span class="sec">▶ t-SNE — 6 Giới hạn</span>
+<div class="f">
+t-SNE: Gaussian pairwise sim (high-dim) → Student-t (low-dim)<br>
+Gradient minimize KL(high-dim \| low-dim). Perplexity ≈ n_neighbors.
+</div>
+<table class="tbl">
+<tr><th>#</th><th>Giới hạn</th></tr>
+<tr><td>1</td><td>Không embed được điểm mới (no out-of-sample)</td></tr>
+<tr><td>2</td><td>Không bảo tồn cấu trúc global — chỉ local neighborhoods</td></tr>
+<tr><td>3</td><td>Kích thước cluster không có ý nghĩa (artifact của thuật toán)</td></tr>
+<tr><td>4</td><td>Nhạy với perplexity — kết quả khác nhau mạnh</td></tr>
+<tr><td>5</td><td>Non-deterministic — chạy nhiều lần ra kết quả khác</td></tr>
+<tr><td>6</td><td>Chậm \(\mathcal{O}(N^2)\); Barnes-Hut ≈ \(\mathcal{O}(N\log N)\)</td></tr>
+</table>
+<div class="tip">💡 UMAP khắc phục (1),(2),(6) và bảo tồn tốt hơn cả local + global structure.</div>
+</div></div>
+</div><!-- col1 -->
+
+<!-- COL 2: DEEP ARCHITECTURES -->
+<div class="gcol">
+<div class="blk blk-arch">
+<div class="blk-hdr">🏗️ Kiến trúc Sâu — CNN, RNN/LSTM, Attention, ResNet</div>
+<div class="blk-body">
+<span class="sec">▶ Convolutional Neural Network (CNN)</span>
+<div class="f">
+\((\mathbf{f}*\mathbf{k})[i,j]=\sum_{u,v}f[i+u,j+v]\cdot k[u,v]\) [cross-correlation]<br>
+Params conv: \(k\times k\times C_{in}\times C_{out}\) — <b>weight sharing</b> theo vị trí<br>
+vs FC: \(H\times W\times C_{in}\times C_{out}\) — không weight sharing<br>
+Pooling: max/avg → down-sample → translation invariance nhẹ<br>
+Receptive field tăng theo depth: lớp sâu "thấy" vùng rộng hơn
+</div>
+<table class="tbl">
+<tr><th>Lớp</th><th>Học gì</th></tr>
+<tr><td>Lớp 1 (conv)</td><td>Edges, gradients, textures cơ bản</td></tr>
+<tr><td>Lớp 2–3</td><td>Shapes, corners, patterns</td></tr>
+<tr><td>Lớp cuối</td><td>High-level semantic features (face, wheel...)</td></tr>
+</table>
+<span class="sec">▶ RNN — Vanishing Gradient Theo Thời Gian</span>
+<div class="f">
+\(\mathbf{h}_t=\tanh(\mathbf{W}_h\mathbf{h}_{t-1}+\mathbf{W}_x\mathbf{x}_t+\mathbf{b})\)<br>
+BPTT: \(\dfrac{\partial\mathbf{h}_T}{\partial\mathbf{h}_1}=\prod_{t=1}^{T}\mathbf{W}_h^\top\cdot\text{diag}(\tanh'(\cdot))\)<br>
+\(\|\tanh'\|\leq 1\) → tích T ma trận → \(\to\mathbf{0}\) (hoặc \(\to\infty\))
+</div>
+<span class="sec">▶ LSTM — Gradient Highway qua Cell State</span>
+<div class="f">
+\(\mathbf{f}_t=\sigma(\mathbf{W}_f[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_f)\quad\) [forget gate]<br>
+\(\mathbf{i}_t=\sigma(\mathbf{W}_i[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_i)\quad\) [input gate]<br>
+\(\tilde{\mathbf{c}}_t=\tanh(\mathbf{W}_c[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_c)\quad\) [candidate]<br>
+\(\mathbf{c}_t=\mathbf{f}_t\odot\mathbf{c}_{t-1}+\mathbf{i}_t\odot\tilde{\mathbf{c}}_t\quad\) [cell state — highway!]<br>
+\(\mathbf{h}_t=\mathbf{o}_t\odot\tanh(\mathbf{c}_t)\quad\) [hidden state]<br>
+Gradient: \(\partial\mathbf{c}_t/\partial\mathbf{c}_{t-1}=\mathbf{f}_t\) — adaptive, không cố định như RNN
+</div>
+<span class="sec">▶ Attention Mechanism &amp; Transformer</span>
+<div class="f">
+Query, Key, Value: \(\mathbf{Q},\mathbf{K},\mathbf{V}=\mathbf{X}\mathbf{W}^Q,\;\mathbf{X}\mathbf{W}^K,\;\mathbf{X}\mathbf{W}^V\)<br>
+\(\text{Attn}(\mathbf{Q},\mathbf{K},\mathbf{V})=\text{softmax}\!\left(\dfrac{\mathbf{Q}\mathbf{K}^\top}{\sqrt{d_k}}\right)\mathbf{V}\)<br>
+\(\sqrt{d_k}\): scaling — ngăn dot product quá lớn → softmax saturation<br>
+Self-attention: \(\mathbf{Q}\!=\!\mathbf{K}\!=\!\mathbf{V}\) từ cùng sequence (\(O(N^2)\) pairs)<br>
+Multi-head: chạy \(h\) attention song song với \(d_k=d_{model}/h\)
+</div>
+<span class="sec">▶ Residual Networks (ResNet)</span>
+<div class="f">
+Skip connection: \(\mathbf{y}=\mathcal{F}(\mathbf{x},\mathbf{W})+\mathbf{x}\)<br>
+\(\dfrac{\partial\mathcal{L}}{\partial\mathbf{x}}=\dfrac{\partial\mathcal{L}}{\partial\mathbf{y}}\cdot\!\left(1+\dfrac{\partial\mathcal{F}}{\partial\mathbf{x}}\right)\)<br>
+Số 1 → gradient luôn có đường đi dù \(\mathcal{F}'\) nhỏ đến đâu<br>
+ResNet-50: 50 layers không vanish; ResNet-1202 đã được train thành công
+</div>
+<div class="err">⚠️ Attention \(\mathcal{O}(N^2)\) theo sequence length — bottleneck cho long sequences. Flash Attention giải quyết về memory.</div>
+</div></div>
+</div><!-- col2 -->
+
+<!-- COL 3: PRODUCTION ML -->
+<div class="gcol">
+<div class="blk blk-prod">
+<div class="blk-hdr">🚀 Production ML — Leakage, Drift, Calibration, SHAP</div>
+<div class="blk-body">
+<span class="sec">▶ Data Leakage — Taxonomy</span>
+<table class="tbl">
+<tr><th>Loại</th><th>Mô tả</th><th>Ví dụ</th></tr>
+<tr><td>Target leakage</td><td>Feature đo <em>sau</em> khi target xảy ra</td><td>Hospital bill → disease diagnosis</td></tr>
+<tr><td>Train-test contamination</td><td>Preprocessing dùng test data stats</td><td>StandardScaler fit trên toàn bộ</td></tr>
+<tr><td>Temporal leakage</td><td>Dùng future data để predict past</td><td>Rolling avg không shift đúng</td></tr>
+<tr><td>Group leakage</td><td>Cùng entity trong train &amp; test</td><td>Cùng bệnh nhân split ngẫu nhiên</td></tr>
+</table>
+<div class="err">⚠️ Dấu hiệu: validation accuracy quá cao (≫ baseline) → nghi ngờ ngay.</div>
+<span class="sec">▶ Concept Drift — 4 Loại</span>
+<table class="tbl">
+<tr><th>Loại</th><th>\(P(\cdot)\) thay đổi</th><th>Ví dụ</th></tr>
+<tr><td>Covariate shift</td><td>\(P(\mathbf{X})\uparrow\), \(P(Y|\mathbf{X})\) ổn</td><td>Demographics thay đổi</td></tr>
+<tr><td>Label shift</td><td>\(P(Y)\uparrow\), \(P(\mathbf{X}|Y)\) ổn</td><td>Prevalence of disease changes</td></tr>
+<tr><td>Real concept drift</td><td>\(P(Y|\mathbf{X})\) thay đổi</td><td>User behavior shifts (pandemic)</td></tr>
+<tr><td>Virtual drift</td><td>\(P(\mathbf{X})\uparrow\), boundary stable</td><td>Seasonal feature distribution</td></tr>
+</table>
+<div class="f">
+Detection: KS test (\(P(\mathbf{X})\)), \(\chi^2\) test (categorical), PSI (Population Stability Index)<br>
+\(\text{PSI}=\sum_i(A_i-E_i)\ln(A_i/E_i)\): PSI&lt;0.1 stable, &gt;0.2 significant drift
+</div>
+<span class="sec">▶ Calibration — Platt Scaling &amp; Isotonic</span>
+<div class="f">
+Reliability diagram: bin predictions [0,1], plot \(\bar{p}\) vs \(\bar{y}\) mỗi bin<br>
+Platt scaling: \(P(y=1|f)=\sigma(Af+B)\), fit \(A,B\) trên separate val set<br>
+Temperature scaling: \(\sigma(f/T)\), 1 param; T&gt;1 → softer (calibrate)<br>
+Isotonic regression: non-parametric, monotone mapping (overfit risk)
+</div>
+<div class="ok">✓ Tốt nhất: calibrate trên val set riêng biệt (không dùng test). SVM cần calibration; LR đã calibrated.</div>
+<span class="sec">▶ SHAP — Shapley Values</span>
+<div class="f">
+\(\phi_i=\sum_{S\subseteq F\setminus\{i\}}\dfrac{|S|!(|F|-|S|-1)!}{|F|!}\bigl[f(S\cup\{i\})-f(S)\bigr]\)<br>
+Trung bình marginal contribution của feature \(i\) qua mọi coalitions \(S\)
+</div>
+<table class="tbl">
+<tr><th>Axiom</th><th>Ý nghĩa</th></tr>
+<tr><td>Efficiency</td><td>\(\sum_i\phi_i=f(\mathbf{x})-f(\emptyset)\) (sum = prediction gap)</td></tr>
+<tr><td>Symmetry</td><td>Đóng góp như nhau → \(\phi\) như nhau</td></tr>
+<tr><td>Dummy</td><td>Không đóng góp gì → \(\phi_i=0\)</td></tr>
+<tr><td>Additivity</td><td>\(\phi_i(f+g)=\phi_i(f)+\phi_i(g)\) (ensemble)</td></tr>
+</table>
+<div class="f">
+TreeSHAP: \(\mathcal{O}(TLD^2)\) — T trees, L leaves, D depth. Exact, fast.<br>
+Visualizations: force plot (single prediction), beeswarm (global), dependence
+</div>
+<span class="sec">▶ Evaluation Pitfalls</span>
+<ul style="font-size:6px;line-height:1.45;padding-left:2mm">
+<li><b>Class imbalance:</b> Accuracy misleading → dùng F₁, PR-AUC, MCC</li>
+<li><b>Threshold selection:</b> Chọn dựa trên business cost, không mặc định 0.5</li>
+<li><b>Multiple testing:</b> So sánh nhiều models → dùng Bonferroni correction</li>
+<li><b>Data snooping:</b> Xem test data trước → biased estimation → strict holdout</li>
+<li><b>p-hacking:</b> Tune cho đến khi p&lt;0.05 → statistical sin</li>
+</ul>
+</div></div>
+</div><!-- col3 -->
+
+</div><!-- g3 -->
+</div><!-- page 6 -->
 
 </body>
 </html>
