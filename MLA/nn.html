@@ -141,6 +141,7 @@ strong{color:#1e293b}
   <a href="hmm.html" class="sb-link"><i class="fas fa-random"></i>Hidden Markov Models</a>
   <a href="kmeans.html" class="sb-link"><i class="fas fa-object-group"></i>K-Means Clustering</a>
   <a href="logreg.html" class="sb-link"><i class="fas fa-chart-line"></i>Logistic Regression</a>
+  <a href="linreg.html" class="sb-link"><i class="fas fa-chart-bar"></i>Linear Regression</a>
   <div class="sb-group">Tổng hợp</div>
   <a href="cheatsheet.html" class="sb-link"><i class="fas fa-print"></i>Cheat Sheet — 7 trang A4</a>
   <div class="sb-group">Thi thử</div>
@@ -264,6 +265,145 @@ strong{color:#1e293b}
   <p>Forward pass: \(O(\sum_l n_{l-1} \cdot n_l)\) — một lần nhân ma trận mỗi lớp.<br>
   Backward pass: \(O(\sum_l n_{l-1} \cdot n_l)\) — cũng một lần nhân ma trận mỗi lớp (BP2, BP3).<br>
   Tổng: <strong>khoảng 2× forward pass</strong>. Đây là lý do backprop hiệu quả hơn finite-difference \(O(|\theta| \times \text{forward})\) theo số lượng tham số.</p>
+</div>
+
+</section>
+
+<hr class="divider">
+
+<!-- ========== SECTION 7B: COMPUTATIONAL GRAPH — DIAGRAMS & WORKED EXAMPLES ========== -->
+<section id="compgraph">
+<div class="ch-hdr ch-hdr-blue">
+  <div class="lbl"><i class="fas fa-sitemap"></i> Hình ảnh hóa</div>
+  <h2>7B. Đồ Thị Tính Toán — Ví Dụ Số & Cách Tư Duy</h2>
+  <p>Từ ví dụ đơn giản đến MLP 2 lớp — mỗi bước forward/backward đều được trực quan hóa.</p>
+</div>
+
+<div class="s-title">7B.1 Đồ thị tính toán là gì?</div>
+<p>Mỗi <strong>node</strong> = một phép toán (cộng, nhân, sigmoid…). Mỗi <strong>edge</strong> = một giá trị trung gian chảy qua. <strong>Forward pass</strong> tính giá trị từ trái sang phải. <strong>Backward pass</strong> (backprop) tính gradient bằng chain rule từ phải sang trái — mỗi node chỉ cần biết gradient đến từ output và local gradient của chính nó.</p>
+
+<div class="alert al-blue">
+  <div class="alert-title">Nguyên lý cốt lõi</div>
+  Tại mỗi node \(v\) với input \(u\): &nbsp; \(\dfrac{\partial L}{\partial u} = \dfrac{\partial L}{\partial v} \cdot \dfrac{\partial v}{\partial u}\)
+  <br><br>
+  <strong>upstream gradient</strong> × <strong>local gradient</strong> = <strong>downstream gradient</strong>
+</div>
+
+<div class="s-title">7B.2 Ví dụ 1 — f = (x + y) × z</div>
+<p>Cho \(x=3,\; y=2,\; z=-4\). Tính \(f\) và gradient \(\partial f/\partial x,\; \partial f/\partial y,\; \partial f/\partial z\).</p>
+
+<div class="fig-wrap">
+  <img src="imgs/compgraph_simple.png" alt="Computational graph f=(x+y)*z forward and backward pass">
+  <div class="fig-cap">Panel trái: Forward pass (giá trị xanh). Panel phải: Backward pass — gradient đỏ lan ngược từ output về input theo chain rule.</div>
+</div>
+
+<p><strong>Đọc hình:</strong></p>
+<ul>
+  <li>Node <em>add</em>: \(q = x+y = 5\). Local gradient: \(\partial q/\partial x = 1\), \(\partial q/\partial y = 1\).</li>
+  <li>Node <em>mul</em>: \(f = q \times z = -20\). Local gradient: \(\partial f/\partial q = z = -4\), \(\partial f/\partial z = q = 5\).</li>
+  <li>Backward: upstream đến mul = 1. \(\partial f/\partial z = 5\), \(\partial f/\partial q = -4\).</li>
+  <li>Upstream đến add = −4. \(\partial f/\partial x = -4 \times 1 = -4\), \(\partial f/\partial y = -4 \times 1 = -4\).</li>
+</ul>
+
+<div class="s-title">7B.3 Quy tắc gradient cho các loại cổng (Gates)</div>
+<p>Mỗi loại phép toán có một "tính cách" gradient đặc trưng. Nhớ những quy tắc này giúp tính nhanh backprop trong đầu:</p>
+
+<div class="fig-wrap">
+  <img src="imgs/compgraph_gates.png" alt="Gate gradient rules: ADD, MUL, MAX, SIGMOID">
+  <div class="fig-cap">Bốn loại cổng và hành vi gradient. ADD = phân phối đều; MUL = hoán đổi; MAX = người thắng lấy hết; SIGMOID = bóp gradient ≤ 0.25.</div>
+</div>
+
+<table class="tbl">
+<tr><th>Cổng</th><th>Phép toán</th><th>Local gradient</th><th>Hành vi</th></tr>
+<tr><td><strong>ADD</strong></td><td>\(z = x + y\)</td><td>\(\partial z/\partial x = 1,\; \partial z/\partial y = 1\)</td><td>Phân phối gradient đều cho tất cả input — <em>gradient distributor</em></td></tr>
+<tr><td><strong>MUL</strong></td><td>\(z = x \cdot y\)</td><td>\(\partial z/\partial x = y,\; \partial z/\partial y = x\)</td><td>Hoán đổi giá trị input làm hệ số — <em>gradient swapper</em></td></tr>
+<tr><td><strong>MAX</strong></td><td>\(z = \max(x,y)\)</td><td>\(1\) cho winner, \(0\) cho loser</td><td>Gradient chỉ chảy qua input lớn hơn — <em>gradient router</em></td></tr>
+<tr><td><strong>SIGMOID</strong></td><td>\(z = \sigma(x)\)</td><td>\(\sigma(x)(1-\sigma(x)) \leq 0.25\)</td><td>Bóp gradient tối đa 4× mỗi lớp — nguồn gốc <em>vanishing gradient</em></td></tr>
+</table>
+
+<div class="s-title">7B.4 Ví dụ 2 — Một neuron đầy đủ (Sigmoid + BCE Loss)</div>
+<p>Cho: \(x_1=2,\; x_2=3,\; w_1=0.5,\; w_2=-1,\; b=1,\; y=1\).</p>
+<p>Mô hình: \(\hat{y} = \sigma(w_1 x_1 + w_2 x_2 + b)\), loss: \(L = -y\ln\hat{y} - (1-y)\ln(1-\hat{y})\).</p>
+
+<div class="fig-wrap">
+  <img src="imgs/compgraph_neuron.png" alt="Single neuron full computational graph with BCE loss">
+  <div class="fig-cap">Đồ thị đầy đủ từ weights/inputs → pre-activation z → sigmoid → BCE loss. Panel trái: forward pass. Panel phải: backward pass với gradient từng bước.</div>
+</div>
+
+<p><strong>Forward pass:</strong></p>
+<ul>
+  <li>\(t_1 = w_1 x_1 = 0.5 \times 2 = 1.0\)</li>
+  <li>\(t_2 = w_2 x_2 = (-1) \times 3 = -3.0\)</li>
+  <li>\(z = t_1 + t_2 + b = 1.0 - 3.0 + 1.0 = -1.0\)</li>
+  <li>\(a = \sigma(-1) \approx 0.269\)</li>
+  <li>\(L = -\ln(0.269) \approx 1.312\)</li>
+</ul>
+
+<p><strong>Backward pass — dùng CE+Sigmoid shortcut:</strong></p>
+<div class="alert al-green">
+  <div class="alert-title">Trick: CE Loss + Sigmoid kết hợp</div>
+  Khi output layer dùng sigmoid + binary cross-entropy, gradient pre-activation cực kỳ đơn giản:<br>
+  \[\frac{\partial L}{\partial z} = a - y = 0.269 - 1 = -0.731\]
+  Không cần tính \(\sigma'\) riêng! Chứng minh: \(\partial L/\partial a \cdot \partial a/\partial z = \frac{a-y}{a(1-a)} \cdot a(1-a) = a-y\).
+</div>
+<ul>
+  <li>\(\partial L/\partial w_1 = \frac{\partial L}{\partial z} \cdot x_1 = -0.731 \times 2 = -1.462\) → cập nhật \(w_1\) tăng lên (giảm loss)</li>
+  <li>\(\partial L/\partial w_2 = \frac{\partial L}{\partial z} \cdot x_2 = -0.731 \times 3 = -2.193\) → cập nhật \(w_2\) tăng lên</li>
+  <li>\(\partial L/\partial b \;\;= \frac{\partial L}{\partial z} \cdot 1 \;\;\;= -0.731\)</li>
+</ul>
+
+<div class="s-title">7B.5 Ví dụ 3 — MLP 2 lớp: Dying ReLU trong thực tế</div>
+<p>Cấu trúc: input \(x=1\), lớp 1 có 2 neuron (ReLU), lớp 2 có 1 neuron (Sigmoid), loss BCE.</p>
+<p>\(\mathbf{W}^{(1)} = \begin{bmatrix}0.5\\-1.0\end{bmatrix},\; \mathbf{b}^{(1)} = \begin{bmatrix}0.3\\-0.2\end{bmatrix},\; \mathbf{W}^{(2)} = [0.6,\; -0.4],\; b^{(2)} = 0.1,\; y = 1\)</p>
+
+<div class="fig-wrap">
+  <img src="imgs/compgraph_2layer.png" alt="2-layer MLP computational graph showing dying ReLU">
+  <div class="fig-cap">MLP 2 lớp với ReLU. Neuron 2 ở lớp 1 bị "chết" (z₁₂ &lt; 0, ReLU=0) — gradient W₁₂ = 0, weight không bao giờ được cập nhật.</div>
+</div>
+
+<p><strong>Forward pass:</strong></p>
+<ul>
+  <li>\(\mathbf{z}^{(1)} = \mathbf{W}^{(1)} x + \mathbf{b}^{(1)} = [0.5+0.3,\; -1.0+(-0.2)] = [0.8,\; -1.2]\)</li>
+  <li>\(\mathbf{a}^{(1)} = \text{ReLU}(\mathbf{z}^{(1)}) = [0.8,\; 0.0]\) ← <strong>neuron 2 chết!</strong></li>
+  <li>\(z^{(2)} = 0.6 \times 0.8 + (-0.4) \times 0.0 + 0.1 = 0.58\)</li>
+  <li>\(a^{(2)} = \sigma(0.58) \approx 0.641\)</li>
+  <li>\(L = -\ln(0.641) \approx 0.444\)</li>
+</ul>
+
+<p><strong>Backward pass:</strong></p>
+<ul>
+  <li>\(\partial L/\partial z^{(2)} = a^{(2)} - y = 0.641 - 1 = -0.359\) (CE+Sigmoid shortcut)</li>
+  <li>\(\partial L/\partial \mathbf{W}^{(2)} = \partial L/\partial z^{(2)} \cdot \mathbf{a}^{(1)T} = [-0.359 \times 0.8,\; -0.359 \times 0.0] = [-0.287,\; 0]\)</li>
+  <li>\(\partial L/\partial \mathbf{a}^{(1)} = (\mathbf{W}^{(2)})^T \cdot \partial L/\partial z^{(2)} = [0.6 \times (-0.359),\; -0.4 \times (-0.359)] = [-0.215,\; 0.144]\)</li>
+  <li>\(\partial L/\partial \mathbf{z}^{(1)} = \partial L/\partial \mathbf{a}^{(1)} \odot \text{ReLU}'(\mathbf{z}^{(1)}) = [-0.215 \times 1,\; 0.144 \times \mathbf{0}] = [-0.215,\; 0]\)</li>
+  <li>\(\partial L/\partial \mathbf{W}^{(1)} = \partial L/\partial \mathbf{z}^{(1)} \cdot x = [-0.215,\; 0]\)</li>
+</ul>
+
+<div class="alert al-red">
+  <div class="alert-title">Dying ReLU — tại sao nguy hiểm</div>
+  Vì \(z^{(1)}_2 = -1.2 < 0\), ReLU trả về 0. Khi backprop, \(\text{ReLU}'(-1.2) = 0\) nên <strong>toàn bộ gradient về \(W_{12}^{(1)}\) bị khóa = 0</strong>. Weight không bao giờ được cập nhật — neuron "chết" vĩnh viễn. Giải pháp: dùng <em>Leaky ReLU</em> (\(\alpha=0.01\)) hoặc <em>ELU</em>.
+</div>
+
+<div class="s-title">7B.6 Tổng quát — Backprop dạng Ma Trận</div>
+<p>Với batch size \(m\), các công thức vectorize hoàn toàn:</p>
+<table class="tbl">
+<tr><th>Đại lượng</th><th>Công thức</th><th>Shape</th></tr>
+<tr><td>\(\boldsymbol{\delta}^{(L)}\)</td><td>\(\mathbf{A}^{(L)} - \mathbf{Y}\)</td><td>\((n_L, m)\)</td></tr>
+<tr><td>\(\boldsymbol{\delta}^{(l)}\)</td><td>\((\mathbf{W}^{(l+1)})^T \boldsymbol{\delta}^{(l+1)} \odot g'(\mathbf{Z}^{(l)})\)</td><td>\((n_l, m)\)</td></tr>
+<tr><td>\(\partial L/\partial \mathbf{W}^{(l)}\)</td><td>\(\frac{1}{m}\boldsymbol{\delta}^{(l)}(\mathbf{A}^{(l-1)})^T\)</td><td>\((n_l, n_{l-1})\)</td></tr>
+<tr><td>\(\partial L/\partial \mathbf{b}^{(l)}\)</td><td>\(\frac{1}{m}\sum_i \boldsymbol{\delta}^{(l)}\)</td><td>\((n_l, 1)\)</td></tr>
+</table>
+
+<div class="alert al-yellow">
+  <div class="alert-title">Checklist tính backprop nhanh</div>
+  <ol style="margin:.3rem 0;padding-left:1.2rem">
+    <li>Vẽ đồ thị, đánh số các node từ input → output</li>
+    <li>Forward pass: tính từng giá trị, lưu lại (cần cho backward)</li>
+    <li>Backward pass: bắt đầu từ \(\partial L/\partial L = 1\), nhân local gradient tại mỗi node</li>
+    <li>Tại lớp ReLU: nhân thêm mask \(\mathbb{1}[z > 0]\)</li>
+    <li>CE+Sigmoid: dùng shortcut \(\partial L/\partial z = a - y\)</li>
+    <li>Kiểm tra shape: gradient phải cùng shape với parameter</li>
+  </ol>
 </div>
 
 </section>

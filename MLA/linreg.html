@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linear Regression | MLA HK252</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']], processEscapes: true },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;display:flex}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:0;left:0;width:258px;height:100vh;background:#0a1f10;overflow-y:auto;z-index:100;flex-shrink:0}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:#2d6a4f;border-radius:2px}
+.sb-title{padding:1.25rem 1rem .75rem;border-bottom:1px solid #1a3a20}
+.sb-title h1{color:#86efac;font-size:.95rem;font-weight:700;line-height:1.4}
+.sb-title p{color:#6ee7b7;font-size:.7rem;margin-top:.2rem}
+.sb-group{padding:.6rem 1rem .15rem;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#4ade80}
+.sb-link{display:flex;align-items:center;gap:.45rem;padding:.35rem 1rem;color:#bbf7d0;font-size:.8rem;text-decoration:none;border-left:3px solid transparent;transition:all .15s}
+.sb-link:hover{background:rgba(74,222,128,.1);border-left-color:#4ade80;color:#fff}
+.sb-link i{width:14px;font-size:.7rem;color:#4ade80;flex-shrink:0}
+
+/* MAIN */
+#main{margin-left:258px;min-height:100vh;padding:2rem 2.5rem;max-width:calc(100% - 258px)}
+
+/* CHAPTER HEADER */
+.ch-hdr{background:linear-gradient(135deg,#14532d,#16a34a);color:#fff;padding:1.75rem 2rem;border-radius:10px;margin-bottom:1.75rem;box-shadow:0 4px 12px rgba(20,83,45,.3)}
+.ch-hdr .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#86efac;font-weight:700}
+.ch-hdr h2{font-size:1.75rem;font-weight:800;margin:.2rem 0 .4rem}
+.ch-hdr p{color:#d1fae5;font-size:.9rem}
+.ch-hdr-blue{background:linear-gradient(135deg,#1e3a5f,#1e4d8c)}
+.ch-hdr-blue .lbl{color:#93c5fd}
+.ch-hdr-blue p{color:#bfdbfe}
+.ch-hdr-orange{background:linear-gradient(135deg,#7c2d12,#ea580c)}
+.ch-hdr-orange .lbl{color:#fed7aa}
+.ch-hdr-orange p{color:#ffedd5}
+.ch-hdr-purple{background:linear-gradient(135deg,#4a1d96,#7c3aed)}
+.ch-hdr-purple .lbl{color:#e9d5ff}
+.ch-hdr-purple p{color:#ddd6fe}
+
+/* SECTION TITLES */
+.s-title{font-size:1.2rem;font-weight:700;color:#14532d;border-left:4px solid #16a34a;padding-left:.7rem;margin:1.75rem 0 .9rem}
+.ss-title{font-size:1rem;font-weight:600;color:#166534;margin:1.25rem 0 .6rem}
+
+/* ALERTS */
+.alert{border-radius:0 8px 8px 0;padding:.85rem 1.1rem;margin:.85rem 0;font-size:.875rem}
+.alert-title{font-weight:700;margin-bottom:.3rem;font-size:.85rem}
+.al-blue{background:#eff6ff;border-left:4px solid #3b82f6}
+.al-blue .alert-title{color:#1d4ed8}
+.al-green{background:#f0fdf4;border-left:4px solid #22c55e}
+.al-green .alert-title{color:#15803d}
+.al-yellow{background:#fffbeb;border-left:4px solid #f59e0b}
+.al-yellow .alert-title{color:#b45309}
+.al-red{background:#fef2f2;border-left:4px solid #ef4444}
+.al-red .alert-title{color:#b91c1c}
+.al-purple{background:#faf5ff;border-left:4px solid #9333ea}
+.al-purple .alert-title{color:#7e22ce}
+
+/* FORMULA */
+.flabel{display:inline-block;background:#16a34a;color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .65rem;border-radius:6px 6px 0 0;margin-bottom:-1px}
+.fbox{background:#f8fafc;border:1px solid #cbd5e1;border-top:3px solid #16a34a;border-radius:0 8px 8px 8px;padding:1.1rem 1.5rem;margin:.25rem 0 .85rem;overflow-x:auto;text-align:center}
+
+/* DETAILS */
+details{border:1px solid #e2e8f0;border-radius:8px;margin:.65rem 0;overflow:hidden}
+details>summary{padding:.65rem 1.1rem;cursor:pointer;font-weight:600;font-size:.875rem;background:#f1f5f9;list-style:none;display:flex;align-items:center;gap:.45rem;user-select:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:'▶';font-size:.65rem;color:#64748b;transition:transform .2s;margin-right:.1rem}
+details[open]>summary::before{transform:rotate(90deg)}
+details[open]>summary{background:#e2e8f0}
+.dc{padding:1.1rem}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.85rem}
+.tbl th{background:#14532d;color:#fff;padding:.5rem .85rem;text-align:left}
+.tbl td{padding:.5rem .85rem;border:1px solid #e2e8f0}
+.tbl tr:nth-child(even){background:#f0fdf4}
+
+/* CODE */
+.code{background:#1e293b;color:#e2e8f0;padding:.9rem 1.1rem;border-radius:8px;font-family:'Courier New',monospace;font-size:.82rem;margin:.75rem 0;overflow-x:auto;line-height:1.7}
+.kw{color:#7dd3fc}
+.cmt{color:#64748b}
+
+.divider{border:none;border-top:1px solid #e2e8f0;margin:2.25rem 0}
+#back-top{position:fixed;bottom:1.5rem;right:1.5rem;background:#14532d;color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.2);font-size:.85rem}
+#back-top:hover{background:#15803d}
+
+p{font-size:.9rem;line-height:1.65;margin:.5rem 0}
+li{font-size:.875rem;line-height:1.65}
+ul,ol{padding-left:1.4rem;margin:.4rem 0}
+strong{color:#1e293b}
+
+@media(max-width:768px){#sidebar{display:none}#main{margin-left:0;max-width:100%;padding:1rem}}
+
+/* FIGURES */
+.fig-wrap{text-align:center;margin:1.4rem 0}
+.fig-wrap img{max-width:66.67%;width:66.67%;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.5);display:block;margin:0 auto}
+.fig-cap{font-size:.78rem;color:#64748b;margin-top:.5rem;font-style:italic}
+</style>
+</head>
+<body>
+
+<nav id="sidebar">
+  <div class="sb-title">
+    <h1><i class="fas fa-brain"></i> Học Máy &amp; Ứng Dụng</h1>
+    <p>Ôn thi Cuối Kỳ — HK252 | CO5175</p>
+  </div>
+  <div class="sb-group">Trang chủ</div>
+  <a href="index.html" class="sb-link"><i class="fas fa-home"></i>Tổng quan các chương</a>
+  <div class="sb-group">Phân loại có giám sát</div>
+  <a href="knn.html" class="sb-link"><i class="fas fa-map-marker-alt"></i>Ch.3 — K-Nearest Neighbors</a>
+  <a href="bayes.html" class="sb-link"><i class="fas fa-calculator"></i>Ch.4 — Naive Bayes</a>
+  <a href="dtree.html" class="sb-link"><i class="fas fa-tree"></i>Ch.5 — Decision Trees</a>
+  <a href="nn.html" class="sb-link"><i class="fas fa-network-wired"></i>Ch.7 — Neural Networks</a>
+  <a href="svm.html" class="sb-link"><i class="fas fa-compress-arrows-alt"></i>Ch.8 — Support Vector Machines</a>
+  <a href="ensemble.html" class="sb-link"><i class="fas fa-layer-group"></i>Ch.9 — Ensemble Methods</a>
+  <a href="deep.html" class="sb-link"><i class="fas fa-microchip"></i>Ch.12 — Deep Learning</a>
+  <div class="sb-group">Chuyên đề ôn thi</div>
+  <a href="hmm.html" class="sb-link"><i class="fas fa-random"></i>Hidden Markov Models</a>
+  <a href="kmeans.html" class="sb-link"><i class="fas fa-object-group"></i>K-Means Clustering</a>
+  <a href="logreg.html" class="sb-link"><i class="fas fa-chart-line"></i>Logistic Regression</a>
+  <a href="linreg.html" class="sb-link" style="background:rgba(74,222,128,.15);border-left-color:#4ade80;color:#fff"><i class="fas fa-chart-bar"></i>Linear Regression</a>
+  <div class="sb-group">Tổng hợp</div>
+  <a href="cheatsheet.html" class="sb-link"><i class="fas fa-print"></i>Cheat Sheet — 7 trang A4</a>
+  <div class="sb-group">Thi thử</div>
+  <a href="mock.html" class="sb-link"><i class="fas fa-file-alt"></i>Đề Thi Thử 2026</a>
+  <a href="theory.html" class="sb-link"><i class="fas fa-infinity"></i>Lý thuyết Nâng Cao</a>
+  <a href="practice.html" class="sb-link"><i class="fas fa-flask"></i>Đề Nâng Cao (Giáo sư)</a>
+  <a href="exam2025.html" class="sb-link"><i class="fas fa-graduation-cap"></i>Đề CK Thật 2025</a>
+</nav>
+
+<main id="main">
+
+<!-- ========== LINEAR REGRESSION: OVERVIEW ========== -->
+<section id="linreg">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-book-open"></i> Hồi quy tuyến tính</div>
+  <h2>Linear Regression — Hồi Quy Tuyến Tính</h2>
+  <p>Từ OLS và Normal Equation đến Gradient Descent, Polynomial Regression và Regularization.</p>
+</div>
+
+<div class="s-title">1. Mô hình tuyến tính</div>
+<p>Cho tập dữ liệu \(\{(\mathbf{x}^{(i)}, y^{(i)})\}_{i=1}^m\) với \(\mathbf{x} \in \mathbb{R}^n\). Mô hình dự đoán:</p>
+<div class="flabel">Hypothesis</div>
+<div class="fbox">\[ \hat{y} = \mathbf{w}^T \mathbf{x} + b = w_1 x_1 + w_2 x_2 + \cdots + w_n x_n + b \]</div>
+
+<p>Viết gọn bằng cách augment: thêm \(x_0 = 1\) vào \(\mathbf{x}\), khi đó \(\hat{y} = \boldsymbol{\theta}^T \mathbf{x}\) với \(\boldsymbol{\theta} = [b, w_1, \ldots, w_n]^T\).</p>
+
+<div class="s-title">2. Hàm mất mát — Mean Squared Error</div>
+<div class="flabel">MSE Loss</div>
+<div class="fbox">\[ J(\boldsymbol{\theta}) = \frac{1}{2m} \sum_{i=1}^m \bigl(\hat{y}^{(i)} - y^{(i)}\bigr)^2 = \frac{1}{2m}\|\mathbf{X}\boldsymbol{\theta} - \mathbf{y}\|^2 \]</div>
+
+<p>Hệ số \(1/2\) chỉ để đơn giản hoá đạo hàm (triệt tiêu số 2). Không ảnh hưởng vị trí cực tiểu.</p>
+
+<div class="fig-wrap">
+  <img src="imgs/linreg_fit.png" alt="Linear regression fit and residuals">
+  <div class="fig-cap">Trái: dữ liệu + đường hồi quy tối ưu. Phải trên: mặt MSE theo 2 tham số (w, b) — hình bát. Phải dưới: gradient descent hội tụ về cực tiểu.</div>
+</div>
+
+<div class="s-title">3. Normal Equation — Nghiệm giải tích</div>
+<p>Đặt đạo hàm \(\nabla_{\boldsymbol{\theta}} J = 0\):</p>
+<div class="flabel">Normal Equation</div>
+<div class="fbox">\[ \boldsymbol{\theta}^* = (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T \mathbf{y} \]</div>
+
+<details>
+<summary>Chứng minh Normal Equation</summary>
+<div class="dc">
+<p>Viết \(J = \frac{1}{2m}(\mathbf{X}\boldsymbol{\theta} - \mathbf{y})^T(\mathbf{X}\boldsymbol{\theta} - \mathbf{y})\). Khai triển:</p>
+\[ J = \frac{1}{2m}\bigl(\boldsymbol{\theta}^T \mathbf{X}^T \mathbf{X}\boldsymbol{\theta} - 2\boldsymbol{\theta}^T \mathbf{X}^T \mathbf{y} + \mathbf{y}^T\mathbf{y}\bigr) \]
+<p>Đạo hàm theo \(\boldsymbol{\theta}\):</p>
+\[ \nabla_{\boldsymbol{\theta}} J = \frac{1}{m}\bigl(\mathbf{X}^T \mathbf{X}\boldsymbol{\theta} - \mathbf{X}^T \mathbf{y}\bigr) = 0 \]
+<p>Suy ra: \(\mathbf{X}^T \mathbf{X}\boldsymbol{\theta} = \mathbf{X}^T \mathbf{y}\) — gọi là <em>normal equations</em>. Nếu \(\mathbf{X}^T\mathbf{X}\) khả nghịch: \(\boldsymbol{\theta}^* = (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T \mathbf{y}\). \(\blacksquare\)</p>
+</div>
+</details>
+
+<table class="tbl">
+<tr><th>Phương pháp</th><th>Độ phức tạp</th><th>Ưu điểm</th><th>Nhược điểm</th></tr>
+<tr><td>Normal Equation</td><td>\(O(n^3)\) — nghịch ma trận</td><td>Giải chính xác, không cần chọn learning rate</td><td>Chậm khi \(n\) lớn (>10,000 features)</td></tr>
+<tr><td>Gradient Descent</td><td>\(O(mn \cdot \text{iter})\)</td><td>Tốt cho \(n\) rất lớn, linh hoạt</td><td>Cần tune learning rate, nhiều iteration</td></tr>
+<tr><td>SVD / Pseudoinverse</td><td>\(O(mn^2)\)</td><td>Ổn định số, xử lý rank-deficient</td><td>Phức tạp hơn, không dùng khi \(n\) rất lớn</td></tr>
+</table>
+
+<div class="s-title">4. Gradient Descent</div>
+<p>Cập nhật lặp theo hướng gradient âm:</p>
+<div class="flabel">Update Rule</div>
+<div class="fbox">\[ \boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \alpha \nabla_{\boldsymbol{\theta}} J(\boldsymbol{\theta}) = \boldsymbol{\theta} - \frac{\alpha}{m}\mathbf{X}^T(\mathbf{X}\boldsymbol{\theta} - \mathbf{y}) \]</div>
+
+<p>Với \(\alpha\) là learning rate. Ba biến thể:</p>
+<table class="tbl">
+<tr><th>Biến thể</th><th>Batch size</th><th>Đặc điểm</th></tr>
+<tr><td><strong>Batch GD</strong></td><td>Toàn bộ \(m\)</td><td>Gradient chính xác, chậm/epoch, hội tụ smooth</td></tr>
+<tr><td><strong>Stochastic GD (SGD)</strong></td><td>1 mẫu</td><td>Nhanh, noisy, có thể thoát local min</td></tr>
+<tr><td><strong>Mini-batch GD</strong></td><td>32–256 mẫu</td><td>Cân bằng tốc độ và ổn định; phổ biến nhất</td></tr>
+</table>
+
+<div class="alert al-yellow">
+  <div class="alert-title">Feature Scaling — quan trọng khi dùng GD</div>
+  Nếu feature có scale khác nhau (ví dụ: diện tích nhà 50–500 m² vs. số phòng 1–10), gradient descent hội tụ chậm. Cần chuẩn hóa: <strong>Z-score</strong> \(x' = (x - \mu)/\sigma\) hoặc <strong>Min-max</strong> \(x' = (x - \min)/(\max - \min)\). Normal Equation không cần.
+</div>
+</section>
+
+<hr class="divider">
+
+<!-- ========== GEOMETRIC INTERPRETATION ========== -->
+<section id="geometry">
+<div class="ch-hdr ch-hdr-blue">
+  <div class="lbl"><i class="fas fa-compass"></i> Hình học</div>
+  <h2>5. Ý Nghĩa Hình Học — Chiếu Lên Không Gian Con</h2>
+  <p>Linear regression = chiếu vector \(\mathbf{y}\) lên column space của \(\mathbf{X}\).</p>
+</div>
+
+<p>Column space của \(\mathbf{X}\) là tập hợp tất cả tổ hợp tuyến tính của các cột \(\mathbf{X}\). Nghiệm \(\hat{\mathbf{y}} = \mathbf{X}\boldsymbol{\theta}^*\) là <strong>hình chiếu trực giao</strong> của \(\mathbf{y}\) lên không gian đó — vector residual \(\mathbf{e} = \mathbf{y} - \hat{\mathbf{y}}\) vuông góc với mọi cột của \(\mathbf{X}\).</p>
+
+<div class="fig-wrap">
+  <img src="imgs/linreg_projection.png" alt="Geometric projection interpretation of linear regression">
+  <div class="fig-cap">Trái: \(\hat{\mathbf{y}}\) = projection của \(\mathbf{y}\) lên col(\(\mathbf{X}\)). Residual \(\mathbf{e}\) ⊥ col(\(\mathbf{X}\)). Giữa: điều kiện vuông góc \(\mathbf{X}^T\mathbf{e}=0\) dẫn trực tiếp đến Normal Equation. Phải: 3D view với mặt phẳng col(\(\mathbf{X}\)).</div>
+</div>
+
+<div class="alert al-blue">
+  <div class="alert-title">Điều kiện vuông góc → Normal Equation</div>
+  \(\mathbf{e} \perp \text{col}(\mathbf{X})\) \(\Leftrightarrow\) \(\mathbf{X}^T \mathbf{e} = 0\) \(\Leftrightarrow\) \(\mathbf{X}^T(\mathbf{y} - \mathbf{X}\boldsymbol{\theta}) = 0\) \(\Leftrightarrow\) \(\mathbf{X}^T\mathbf{X}\boldsymbol{\theta} = \mathbf{X}^T\mathbf{y}\). Đây chính là cách <em>hình học</em> dẫn đến Normal Equation mà không cần tính gradient.
+</div>
+
+<div class="s-title">5.1 Projection Matrix (Hat Matrix)</div>
+<p>Ma trận chiếu \(\mathbf{H} = \mathbf{X}(\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\) thoả mãn:</p>
+<ul>
+  <li>\(\hat{\mathbf{y}} = \mathbf{H}\mathbf{y}\) — dự đoán = chiếu y</li>
+  <li>\(\mathbf{H}^2 = \mathbf{H}\) (idempotent) — chiếu hai lần = chiếu một lần</li>
+  <li>\(\mathbf{H}^T = \mathbf{H}\) (symmetric)</li>
+  <li>\(\text{tr}(\mathbf{H}) = n+1\) = rank(\(\mathbf{X}\)) = số tham số</li>
+</ul>
+</section>
+
+<hr class="divider">
+
+<!-- ========== POLYNOMIAL REGRESSION ========== -->
+<section id="poly">
+<div class="ch-hdr ch-hdr-orange">
+  <div class="lbl"><i class="fas fa-wave-square"></i> Mở rộng</div>
+  <h2>6. Polynomial Regression — Hồi Quy Đa Thức</h2>
+  <p>Fit đường cong phi tuyến bằng cách tạo feature mới từ powers của input.</p>
+</div>
+
+<p>Thêm feature \(x^2, x^3, \ldots, x^d\) vào ma trận design:</p>
+<div class="fbox">\[ \phi(x) = [1,\; x,\; x^2,\; \ldots,\; x^d]^T \]</div>
+<p>Mô hình <strong>phi tuyến trong input</strong> nhưng <strong>tuyến tính trong tham số</strong> — vẫn áp dụng được Normal Equation và Gradient Descent.</p>
+
+<div class="fig-wrap">
+  <img src="imgs/linreg_poly.png" alt="Polynomial regression: underfitting, good fit, overfitting">
+  <div class="fig-cap">Ảnh hưởng bậc đa thức d đến fit. d=1: underfitting (high bias). d=4: fit tốt. d=15: overfitting (high variance) — học noise trong training data, test error cao.</div>
+</div>
+
+<div class="alert al-red">
+  <div class="alert-title">Bias-Variance Tradeoff</div>
+  <strong>Tăng độ phức tạp</strong> (tăng d): giảm bias nhưng tăng variance → overfitting.<br>
+  <strong>Giảm độ phức tạp</strong>: giảm variance nhưng tăng bias → underfitting.<br>
+  Cần dùng <em>cross-validation</em> để chọn d tối ưu.
+</div>
+
+<table class="tbl">
+<tr><th>Dấu hiệu</th><th>Underfitting (High Bias)</th><th>Overfitting (High Variance)</th></tr>
+<tr><td>Training error</td><td>Cao</td><td>Thấp (gần 0)</td></tr>
+<tr><td>Validation error</td><td>Cao (≈ training)</td><td>Rất cao (training ≪ val)</td></tr>
+<tr><td>Gap train/val</td><td>Nhỏ</td><td>Lớn</td></tr>
+<tr><td>Giải pháp</td><td>Tăng model complexity, thêm features</td><td>Regularization, thêm data, giảm features</td></tr>
+</table>
+</section>
+
+<hr class="divider">
+
+<!-- ========== REGULARIZATION ========== -->
+<section id="reg">
+<div class="ch-hdr ch-hdr-purple">
+  <div class="lbl"><i class="fas fa-shield-alt"></i> Kiểm soát phức tạp</div>
+  <h2>7. Regularization — Ridge, Lasso &amp; Elastic Net</h2>
+  <p>Thêm penalty vào loss để hạn chế magnitude của weights, giảm overfitting.</p>
+</div>
+
+<div class="s-title">7.1 Ridge Regression (L2)</div>
+<div class="flabel">Ridge Loss</div>
+<div class="fbox">\[ J_{\text{ridge}}(\boldsymbol{\theta}) = \frac{1}{2m}\|\mathbf{X}\boldsymbol{\theta} - \mathbf{y}\|^2 + \lambda\|\boldsymbol{\theta}\|^2 \]</div>
+<p>Nghiệm giải tích: \(\boldsymbol{\theta}^* = (\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I})^{-1}\mathbf{X}^T\mathbf{y}\). Ma trận \(\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I}\) luôn khả nghịch (ngay cả khi \(\mathbf{X}^T\mathbf{X}\) singular) → ổn định số.</p>
+
+<div class="s-title">7.2 Lasso Regression (L1)</div>
+<div class="flabel">Lasso Loss</div>
+<div class="fbox">\[ J_{\text{lasso}}(\boldsymbol{\theta}) = \frac{1}{2m}\|\mathbf{X}\boldsymbol{\theta} - \mathbf{y}\|^2 + \lambda\|\boldsymbol{\theta}\|_1 \]</div>
+<p>Không có nghiệm giải tích (L1 không khả vi tại 0). Dùng coordinate descent hoặc subgradient. Đặc điểm quan trọng: <strong>tự chọn feature</strong> — nhiều weights bị đẩy về đúng 0.</p>
+
+<div class="s-title">7.3 Elastic Net</div>
+<div class="fbox">\[ J_{\text{EN}} = \frac{1}{2m}\|\mathbf{X}\boldsymbol{\theta} - \mathbf{y}\|^2 + \lambda_1\|\boldsymbol{\theta}\|_1 + \lambda_2\|\boldsymbol{\theta}\|^2 \]</div>
+<p>Kết hợp cả L1 (sparse selection) và L2 (shrinkage ổn định). Tốt khi features tương quan cao với nhau.</p>
+
+<div class="fig-wrap">
+  <img src="imgs/linreg_regularization.png" alt="Ridge vs Lasso regularization paths and constraint regions">
+  <div class="fig-cap">Trái: vùng ràng buộc L2 (hình tròn) vs L1 (hình thoi). L1 có góc nhọn trên các trục → nghiệm thường rơi đúng vào trục → sparse solution. Phải trên: regularization path Ridge — tất cả weights co dần về 0. Phải dưới: Lasso path — weights bị đẩy về 0 tuần tự.</div>
+</div>
+
+<table class="tbl">
+<tr><th></th><th>Ridge (L2)</th><th>Lasso (L1)</th><th>Elastic Net</th></tr>
+<tr><td><strong>Penalty</strong></td><td>\(\lambda\sum w_i^2\)</td><td>\(\lambda\sum |w_i|\)</td><td>\(\lambda_1\sum|w_i| + \lambda_2\sum w_i^2\)</td></tr>
+<tr><td><strong>Sparsity</strong></td><td>Không (shrinks, not zero)</td><td>Có (exact zeros)</td><td>Có (ít hơn Lasso)</td></tr>
+<tr><td><strong>Nghiệm giải tích</strong></td><td>Có</td><td>Không</td><td>Không</td></tr>
+<tr><td><strong>Khi nào dùng</strong></td><td>Nhiều features đều có ích</td><td>Feature selection</td><td>Features tương quan cao</td></tr>
+<tr><td><strong>Với multicollinearity</strong></td><td>Xử lý tốt (shrinks group)</td><td>Chọn 1 trong group</td><td>Giữ cả group</td></tr>
+</table>
+
+<div class="alert al-green">
+  <div class="alert-title">Chọn λ như thế nào?</div>
+  Dùng <strong>k-fold cross-validation</strong> trên tập validation. Plot validation error vs log(λ): chọn λ tại điểm "elbow" — trước khi underfitting. Thường thử: λ ∈ {0.001, 0.01, 0.1, 1, 10, 100}.
+</div>
+</section>
+
+<hr class="divider">
+
+<!-- ========== ASSUMPTIONS & DIAGNOSTICS ========== -->
+<section id="assumptions">
+<div class="ch-hdr ch-hdr-blue">
+  <div class="lbl"><i class="fas fa-stethoscope"></i> Kiểm tra mô hình</div>
+  <h2>8. Các Giả Thiết &amp; Chẩn Đoán Mô Hình</h2>
+  <p>OLS unbiased và BLUE khi các giả thiết Gauss-Markov được thỏa.</p>
+</div>
+
+<div class="s-title">8.1 Các giả thiết Gauss-Markov (OLS)</div>
+<table class="tbl">
+<tr><th>#</th><th>Giả thiết</th><th>Ký hiệu</th><th>Vi phạm → hậu quả</th></tr>
+<tr><td>1</td><td>Tuyến tính trong tham số</td><td>\(y = \mathbf{X}\boldsymbol{\theta} + \boldsymbol{\varepsilon}\)</td><td>Misspecification — bias</td></tr>
+<tr><td>2</td><td>Không có multicollinearity hoàn hảo</td><td>rank(\(\mathbf{X}\)) = n+1</td><td>\((\mathbf{X}^T\mathbf{X})\) singular, không nghịch được</td></tr>
+<tr><td>3</td><td>Exogeneity: \(\mathbb{E}[\varepsilon|\mathbf{X}] = 0\)</td><td>Không có omitted variable</td><td>OLS biased, inconsistent</td></tr>
+<tr><td>4</td><td>Homoskedasticity: \(\text{Var}(\varepsilon_i) = \sigma^2\)</td><td>Phương sai không đổi</td><td>OLS không hiệu quả (dùng WLS thay)</td></tr>
+<tr><td>5</td><td>Không tương quan: \(\text{Cov}(\varepsilon_i, \varepsilon_j)=0\)</td><td>i ≠ j</td><td>Phương sai ước lượng sai (dùng GLS)</td></tr>
+</table>
+<p>Nếu 1–5 đúng: OLS là <strong>BLUE</strong> — Best Linear Unbiased Estimator (định lý Gauss-Markov).</p>
+
+<div class="s-title">8.2 Độ đo đánh giá mô hình</div>
+<table class="tbl">
+<tr><th>Độ đo</th><th>Công thức</th><th>Ý nghĩa</th></tr>
+<tr><td><strong>MSE</strong></td><td>\(\frac{1}{m}\sum(y_i - \hat{y}_i)^2\)</td><td>Trung bình bình phương sai số; nhạy với outliers</td></tr>
+<tr><td><strong>RMSE</strong></td><td>\(\sqrt{\text{MSE}}\)</td><td>Cùng đơn vị với y; dễ diễn giải</td></tr>
+<tr><td><strong>MAE</strong></td><td>\(\frac{1}{m}\sum|y_i - \hat{y}_i|\)</td><td>Robust với outliers hơn MSE</td></tr>
+<tr><td><strong>R²</strong></td><td>\(1 - \frac{\sum(y_i-\hat{y}_i)^2}{\sum(y_i-\bar{y})^2}\)</td><td>Tỷ lệ phương sai được giải thích; 1 = perfect</td></tr>
+<tr><td><strong>Adjusted R²</strong></td><td>\(1 - (1-R^2)\frac{m-1}{m-n-1}\)</td><td>R² điều chỉnh cho số features; dùng khi so sánh model</td></tr>
+</table>
+
+<div class="alert al-yellow">
+  <div class="alert-title">R² = 0.8 có nghĩa gì?</div>
+  Mô hình giải thích được 80% phương sai trong y. Phần còn lại 20% do: noise không thể dự đoán, features bị thiếu, hoặc quan hệ phi tuyến chưa capture được. <strong>R² cao không có nghĩa là mô hình tốt</strong> — có thể đang overfit training set.
+</div>
+</section>
+
+<hr class="divider">
+
+<!-- ========== EXAM TIPS ========== -->
+<section id="exam">
+<div class="ch-hdr">
+  <div class="lbl"><i class="fas fa-graduation-cap"></i> Ôn thi</div>
+  <h2>9. Tóm Tắt &amp; Bẫy Thường Gặp</h2>
+  <p>Những điểm hay ra trong đề thi và các lỗi phổ biến.</p>
+</div>
+
+<div class="s-title">Bảng so sánh nhanh</div>
+<table class="tbl">
+<tr><th>Câu hỏi</th><th>Trả lời</th></tr>
+<tr><td>Khi nào Normal Equation không dùng được?</td><td>Khi \(\mathbf{X}^T\mathbf{X}\) singular (multicollinear) hoặc n quá lớn (\(O(n^3)\)). Dùng Ridge hoặc GD thay.</td></tr>
+<tr><td>Ridge vs Lasso: cái nào cho sparse solution?</td><td>Lasso (L1) cho sparse — weights = 0 chính xác. Ridge (L2) shrinks về 0 nhưng không bao giờ = 0 chính xác.</td></tr>
+<tr><td>Feature scaling có cần cho Normal Equation không?</td><td>Không cần. Chỉ cần cho Gradient Descent.</td></tr>
+<tr><td>R² có thể âm không?</td><td>Có — trên test set, nếu model tệ hơn cả dự đoán trung bình \(\bar{y}\). Trên training set với intercept thì R² ≥ 0.</td></tr>
+<tr><td>Thêm một feature không liên quan: R² thay đổi thế nào?</td><td>R² không giảm (luôn ≥). Adjusted R² có thể giảm — dùng Adjusted R² để so sánh model nhiều features.</td></tr>
+<tr><td>Tăng λ trong Ridge: bias và variance thay đổi thế nào?</td><td>Tăng λ → tăng bias, giảm variance. Giảm λ → giảm bias, tăng variance.</td></tr>
+</table>
+
+<div class="alert al-red">
+  <div class="alert-title">Bẫy phổ biến trong đề thi</div>
+  <ul style="margin:.3rem 0;padding-left:1.2rem">
+    <li><strong>Nhầm MSE và RMSE</strong>: MSE = mean of squared errors; RMSE = căn MSE. Đơn vị: MSE = (đơn vị y)², RMSE = đơn vị y.</li>
+    <li><strong>Quên scale features</strong> khi so sánh magnitude của Ridge/Lasso weights.</li>
+    <li><strong>Normal Equation cho Lasso</strong>: KHÔNG tồn tại (L1 không khả vi tại 0).</li>
+    <li><strong>Nhầm \(\boldsymbol{\theta}^* = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}\) với \(\mathbf{X}^{-1}\mathbf{y}\)</strong>: chỉ đúng nếu \(\mathbf{X}\) là ma trận vuông khả nghịch.</li>
+    <li><strong>Ridge penalty trên bias b</strong>: thực tế không regularize bias (chỉ regularize weights). Nhưng trong toán học, đôi khi viết gọn là regularize tất cả \(\boldsymbol{\theta}\).</li>
+  </ul>
+</div>
+</section>
+
+</main>
+
+<a href="#" id="back-top" title="Về đầu trang"><i class="fas fa-arrow-up"></i></a>
+
+<script>
+document.getElementById('back-top').addEventListener('click', function(e) {
+  e.preventDefault();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+});
+</script>
+
+</body>
+</html>
