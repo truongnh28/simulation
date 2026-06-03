@@ -150,7 +150,7 @@ b{ font-weight:700; color:#0f172a; }
 
 <!-- ===== PAGE 1 ===== -->
 <div class="page">
-<div class="pg-hdr">📄 Trang 1/6 — K-Nearest Neighbors · Naive Bayes · K-Means Clustering<span>MLA HK252 | CO5175 — landscape A4</span></div>
+<div class="pg-hdr">📄 Trang 1/7 — K-Nearest Neighbors · Naive Bayes · K-Means Clustering<span>MLA HK252 | CO5175 — landscape A4</span></div>
 <div class="g3">
 
 <!-- COL 1: KNN -->
@@ -300,7 +300,7 @@ GMM thay thế: Soft assignment \(\gamma_{ik}=P(z_k|\mathbf{x}_i)\) → xử lý
 
 <!-- ===== PAGE 2 ===== -->
 <div class="page">
-<div class="pg-hdr">📄 Trang 2/6 — Logistic Regression · Support Vector Machines (SVM)<span>MLA HK252 | CO5175</span></div>
+<div class="pg-hdr">📄 Trang 2/7 — Logistic Regression · Support Vector Machines (SVM)<span>MLA HK252 | CO5175</span></div>
 <div class="g3">
 
 <!-- COL 1: LR -->
@@ -456,7 +456,7 @@ CE: \(\log(1+e^{-m})\) — smooth, gradient \(\neq 0\) mọi lúc → DENSE
 
 <!-- ===== PAGE 3 ===== -->
 <div class="page">
-<div class="pg-hdr">📄 Trang 3/6 — Decision Trees · Neural Networks · Ensemble Methods · HMM<span>MLA HK252 | CO5175</span></div>
+<div class="pg-hdr">📄 Trang 3/7 — Decision Trees · Neural Networks · Ensemble Methods · HMM<span>MLA HK252 | CO5175</span></div>
 <div class="g3">
 
 <!-- COL 1: DT -->
@@ -607,24 +607,32 @@ Split gain: \(\text{Gain}=\tfrac{1}{2}\left[\tfrac{G_L^2}{H_L+\lambda}+\tfrac{G_
 </div></div>
 
 <div class="blk blk-hmm">
-<div class="blk-hdr">🔗 Hidden Markov Models</div>
+<div class="blk-hdr">🔗 Hidden Markov Models — Tóm tắt (→ Trang 7 đầy đủ)</div>
 <div class="blk-body">
 <span class="sec">▶ Tham số \(\lambda=(\boldsymbol{\pi},A,B)\)</span>
 <div class="f">
 \(\pi_i=P(q_1=i)\quad A_{ij}=P(q_t=j|q_{t-1}=i)\quad B_j(o)=P(o_t=o|q_t=j)\)
 </div>
-<span class="sec">▶ Forward & Viterbi</span>
+<span class="sec">▶ Ba bài toán cơ bản</span>
+<table class="tbl">
+<tr><th>Bài toán</th><th>Output</th><th>Thuật toán</th></tr>
+<tr><td><b>1. Đánh giá</b></td><td>\(P(O|\lambda)\)</td><td>Forward \(\alpha\) [SUM]</td></tr>
+<tr><td><b>2. Giải mã</b></td><td>\(Q^*=\arg\max P(Q,O|\lambda)\)</td><td>Viterbi \(\delta\) [MAX]</td></tr>
+<tr><td><b>3. Học</b></td><td>\(\lambda^*=\arg\max P(O|\lambda)\)</td><td>Baum-Welch (EM)</td></tr>
+</table>
+<span class="sec">▶ Forward \(\alpha\) & Viterbi \(\delta\)</span>
 <div class="f">
-Forward: \(\alpha_t(j)=\!\left[\sum_i\alpha_{t-1}(i)A_{ij}\right]\!B_j(o_t)\) [<b>SUM</b>]<br>
-Init: \(\alpha_1(i)=\pi_i B_i(o_1)\), \(P(O|\lambda)=\sum_i\alpha_T(i)\)<br><br>
-Viterbi: \(\delta_t(j)=\!\left[\max_i\delta_{t-1}(i)A_{ij}\right]\!B_j(o_t)\) [<b>MAX</b>]<br>
-\(Q^*=\) backtrack từ \(\arg\max_i\delta_T(i)\)
+\(\alpha_1(i)=\pi_i B_i(o_1)\quad\delta_1(i)=\pi_i B_i(o_1)\)<br>
+\(\alpha_t(j)=\bigl[\sum_i\alpha_{t-1}(i)A_{ij}\bigr]B_j(o_t)\) [SUM]<br>
+\(\delta_t(j)=\bigl[\max_i\delta_{t-1}(i)A_{ij}\bigr]B_j(o_t)\) [MAX]<br>
+\(P(O|\lambda)=\sum_i\alpha_T(i)\quad Q^*=\) backtrack \(\psi\)
 </div>
 <span class="sec">▶ Baum-Welch (EM)</span>
 <div class="f">
-\(\gamma_t(i)=P(q_t=i|O,\lambda)\), \(\xi_t(i,j)=P(q_t=i,q_{t+1}=j|O,\lambda)\)<br>
-\(A_{ij}=\dfrac{\sum_t\xi_t(i,j)}{\sum_t\gamma_t(i)}\quad B_i(k)=\dfrac{\sum_{t:o_t=k}\gamma_t(i)}{\sum_t\gamma_t(i)}\)
+\(\gamma_t(i)=\tfrac{\alpha_t(i)\beta_t(i)}{P(O|\lambda)}\quad\xi_t(i,j)=\tfrac{\alpha_t(i)A_{ij}B_j(o_{t+1})\beta_{t+1}(j)}{P(O|\lambda)}\)<br>
+\(\hat{A}_{ij}=\tfrac{\sum_t\xi_t(i,j)}{\sum_t\gamma_t(i)}\quad\hat{B}_j(k)=\tfrac{\sum_{t:o_t=k}\gamma_t(j)}{\sum_t\gamma_t(j)}\)
 </div>
+<div class="err">⚠️ SUM≠MAX · BW=local max · Underflow khi T lớn → log-space</div>
 </div></div>
 </div><!-- col3 -->
 
@@ -634,7 +642,7 @@ Viterbi: \(\delta_t(j)=\!\left[\max_i\delta_{t-1}(i)A_{ij}\right]\!B_j(o_t)\) [<
 
 <!-- ===== PAGE 4 ===== -->
 <div class="page">
-<div class="pg-hdr">📄 Trang 4/6 — Bẫy Thi · Ví dụ Tính · Siêu Tham Số · Công Thức Nhanh<span>MLA HK252 | CO5175</span></div>
+<div class="pg-hdr">📄 Trang 4/7 — Bẫy Thi · Ví dụ Tính · Siêu Tham Số · Công Thức Nhanh<span>MLA HK252 | CO5175</span></div>
 <div class="g3">
 
 <!-- COL 1: EXAM TRAPS + SVM EXAMPLE -->
@@ -796,7 +804,7 @@ L2↔Gaussian MAP: minimize \(-\log P(w|\text{data})\) = minimize CE+\(\lambda\|
 
 <!-- ===== PAGE 5 ===== -->
 <div class="page">
-<div class="pg-hdr">📄 Trang 5/6 — Tối ưu hóa · Regularization Nâng cao · Nền tảng Toán học<span>MLA HK252 | CO5175</span></div>
+<div class="pg-hdr">📄 Trang 5/7 — Tối ưu hóa · Regularization Nâng cao · Nền tảng Toán học<span>MLA HK252 | CO5175</span></div>
 <div class="g3">
 
 <!-- COL 1: OPTIMIZATION -->
@@ -973,7 +981,7 @@ Cond. indep.: \(A\perp B|C\Leftrightarrow P(A,B|C)=P(A|C)P(B|C)\)
 
 <!-- ===== PAGE 6 ===== -->
 <div class="page">
-<div class="pg-hdr">📄 Trang 6/6 — Giảm chiều (PCA/LDA) · Kiến trúc sâu (CNN/RNN/Attention) · Production ML<span>MLA HK252 | CO5175</span></div>
+<div class="pg-hdr">📄 Trang 6/7 — Giảm chiều (PCA/LDA) · Kiến trúc sâu (CNN/RNN/Attention) · Production ML<span>MLA HK252 | CO5175</span></div>
 <div class="g3">
 
 <!-- COL 1: DIMENSIONALITY REDUCTION -->
@@ -1145,6 +1153,234 @@ Visualizations: force plot (single prediction), beeswarm (global), dependence
 
 </div><!-- g3 -->
 </div><!-- page 6 -->
+
+
+<!-- ===== PAGE 7: HMM DEEP DIVE ===== -->
+<div class="page">
+<div class="pg-hdr">📄 Trang 7/7 — Hidden Markov Models — Toàn bộ lý thuyết &amp; Công thức<span>MLA HK252 | CO5175</span></div>
+<div class="g3">
+
+<!-- COL 1: MODEL + 3 PROBLEMS + FORWARD -->
+<div class="gcol">
+
+<div class="blk blk-hmm">
+<div class="blk-hdr">🔗 Mô hình HMM \(\lambda=(\boldsymbol{\pi},A,B)\)</div>
+<div class="blk-body">
+<span class="sec">▶ Ba thành phần</span>
+<div class="f">
+<b>π</b> — Xác suất trạng thái ban đầu: \(\pi_i=P(q_1=i)\), \(\sum_i\pi_i=1\)<br>
+<b>A</b> — Ma trận chuyển tiếp \(N\times N\): \(A_{ij}=P(q_t=j\mid q_{t-1}=i)\), \(\sum_j A_{ij}=1\)<br>
+<b>B</b> — Ma trận phát xạ \(N\times M\): \(B_j(o)=P(o_t=o\mid q_t=j)\), \(\sum_o B_j(o)=1\)<br>
+\(N\) = số trạng thái ẩn, \(M\) = kích thước bảng chữ quan sát, \(T\) = độ dài chuỗi
+</div>
+<span class="sec">▶ Hai giả thiết nền tảng</span>
+<div class="f">
+<b>Markov bậc 1 (limited horizon):</b><br>
+\(P(q_t\mid q_1,q_2,\ldots,q_{t-1})=P(q_t\mid q_{t-1})\)<br>
+→ Tương lai chỉ phụ thuộc trạng thái <em>hiện tại</em>, không phụ thuộc lịch sử<br><br>
+<b>Output independence (stationary):</b><br>
+\(P(o_t\mid q_1\ldots q_T,o_1\ldots o_T)=P(o_t\mid q_t)\)<br>
+→ Quan sát tại \(t\) chỉ phụ thuộc trạng thái ẩn \(q_t\)
+</div>
+<span class="sec">▶ Xác suất đồng thời đầy đủ</span>
+<div class="f">
+\(P(O,Q\mid\lambda)=\pi_{q_1}\prod_{t=1}^{T-1}A_{q_t q_{t+1}}\cdot\prod_{t=1}^{T}B_{q_t}(o_t)\)<br>
+\(P(O\mid\lambda)=\sum_{Q}P(O,Q\mid\lambda)\) — tổng qua \(N^T\) paths (Brute-force \(O(N^T T)\))
+</div>
+<div class="err">⚠️ Brute-force quá chậm → cần Forward/Viterbi dùng dynamic programming</div>
+</div></div>
+
+<div class="blk blk-hmm">
+<div class="blk-hdr">📋 Ba bài toán cơ bản của HMM</div>
+<div class="blk-body">
+<table class="tbl">
+<tr><th>#</th><th>Bài toán</th><th>Given</th><th>Find</th><th>Giải</th><th>Độ phức tạp</th></tr>
+<tr><td><b>1</b></td><td><b>Evaluation</b><br>(Đánh giá)</td><td>\(\lambda,O\)</td><td>\(P(O|\lambda)\)</td><td>Forward \(\alpha\)</td><td>\(O(N^2T)\)</td></tr>
+<tr><td><b>2</b></td><td><b>Decoding</b><br>(Giải mã)</td><td>\(\lambda,O\)</td><td>\(Q^*=\arg\max_Q P(Q,O|\lambda)\)</td><td>Viterbi \(\delta\)</td><td>\(O(N^2T)\)</td></tr>
+<tr><td><b>3</b></td><td><b>Learning</b><br>(Học)</td><td>\(O\)</td><td>\(\lambda^*=\arg\max_\lambda P(O|\lambda)\)</td><td>Baum-Welch</td><td>\(O(N^2T)\)/iter</td></tr>
+</table>
+<div class="f" style="margin-top:1mm">
+Bài 1 &amp; 2: \(\lambda\) đã biết, chỉ cần suy luận trên chuỗi quan sát \(O\)<br>
+Bài 3: \(\lambda\) chưa biết, học từ dữ liệu \(\mathcal{O}=\{O^{(1)},\ldots,O^{(S)}\}\)
+</div>
+</div></div>
+
+<div class="blk blk-hmm">
+<div class="blk-hdr">➡️ Thuật toán Forward \(\alpha_t(i)\)</div>
+<div class="blk-body">
+<span class="sec">▶ Định nghĩa</span>
+<div class="f">
+\(\alpha_t(i)\triangleq P(o_1,o_2,\ldots,o_t,\,q_t=i\mid\lambda)\)<br>
+= XS chuỗi quan sát \(o_1\ldots o_t\) VÀ ở trạng thái \(i\) tại bước \(t\)
+</div>
+<span class="sec">▶ Khởi tạo \((t=1)\)</span>
+<div class="f">\(\alpha_1(i)=\pi_i\cdot B_i(o_1)\quad i=1\ldots N\)</div>
+<span class="sec">▶ Đệ quy \((t=2\ldots T)\)</span>
+<div class="f">
+\(\alpha_t(j)=\Bigl[\sum_{i=1}^{N}\alpha_{t-1}(i)\cdot A_{ij}\Bigr]\cdot B_j(o_t)\)<br>
+Cộng tất cả paths đến \(j\) × phát xạ \(B_j(o_t)\)
+</div>
+<span class="sec">▶ Kết thúc</span>
+<div class="f">
+\(P(O\mid\lambda)=\sum_{i=1}^{N}\alpha_T(i)\)<br>
+Tổng qua tất cả trạng thái cuối
+</div>
+<div class="ok">✓ Tổng hợp XS qua <b>tất cả</b> \(N^T\) paths ẩn bằng DP \(O(N^2T)\)</div>
+</div></div>
+
+</div><!-- col1 -->
+
+<!-- COL 2: BACKWARD + VITERBI -->
+<div class="gcol">
+
+<div class="blk blk-hmm">
+<div class="blk-hdr">⬅️ Thuật toán Backward \(\beta_t(i)\)</div>
+<div class="blk-body">
+<span class="sec">▶ Định nghĩa</span>
+<div class="f">
+\(\beta_t(i)\triangleq P(o_{t+1},o_{t+2},\ldots,o_T\mid q_t=i,\lambda)\)<br>
+= XS phần quan sát <em>còn lại</em> từ \(t+1\) đến \(T\), biết ở trạng thái \(i\) tại \(t\)
+</div>
+<span class="sec">▶ Khởi tạo \((t=T)\)</span>
+<div class="f">\(\beta_T(i)=1\quad i=1\ldots N\)</div>
+<span class="sec">▶ Đệ quy \((t=T-1\ldots 1)\)</span>
+<div class="f">
+\(\beta_t(i)=\sum_{j=1}^{N}A_{ij}\cdot B_j(o_{t+1})\cdot\beta_{t+1}(j)\)
+</div>
+<span class="sec">▶ Kiểm tra (sanity check)</span>
+<div class="f">
+\(P(O\mid\lambda)=\sum_{i=1}^N\pi_i\cdot B_i(o_1)\cdot\beta_1(i)\quad\text{(phải bằng Forward)}\)
+</div>
+<div class="ok">✓ Backward không tự giải bài toán nào — dùng <em>kết hợp với Forward</em> để tính \(\gamma,\xi\)</div>
+</div></div>
+
+<div class="blk blk-hmm">
+<div class="blk-hdr">🏆 Thuật toán Viterbi \(\delta_t(i)\)</div>
+<div class="blk-body">
+<span class="sec">▶ Định nghĩa</span>
+<div class="f">
+\(\delta_t(i)\triangleq\max_{q_1\ldots q_{t-1}}P(q_1\ldots q_{t-1},q_t=i,o_1\ldots o_t\mid\lambda)\)<br>
+= XS của path <b>tốt nhất</b> kết thúc tại trạng thái \(i\) lúc \(t\)
+</div>
+<span class="sec">▶ Khởi tạo \((t=1)\)</span>
+<div class="f">
+\(\delta_1(i)=\pi_i\cdot B_i(o_1)\quad\psi_1(i)=0\)
+</div>
+<span class="sec">▶ Đệ quy \((t=2\ldots T)\) — dùng MAX thay SUM</span>
+<div class="f">
+\(\delta_t(j)=\Bigl[\max_{i}\delta_{t-1}(i)\cdot A_{ij}\Bigr]\cdot B_j(o_t)\)<br>
+\(\psi_t(j)=\arg\max_{i}\,\delta_{t-1}(i)\cdot A_{ij}\quad\) ← backpointer
+</div>
+<span class="sec">▶ Kết thúc &amp; Backtrack</span>
+<div class="f">
+\(q_T^*=\arg\max_{i}\,\delta_T(i)\)<br>
+\(q_t^*=\psi_{t+1}(q_{t+1}^*)\quad t=T-1,T-2,\ldots,1\)
+</div>
+<div class="ok">✓ Chỉ giữ MAX tại mỗi bước → tìm <b>1 path</b> tối ưu \(Q^*\), không tính \(P(O|\lambda)\)</div>
+<div class="err">⚠️ Forward[SUM] ≠ Viterbi[MAX]: Forward tổng hợp <em>tất cả paths</em>; Viterbi chọn <em>path tốt nhất</em></div>
+</div></div>
+
+<div class="blk blk-hmm">
+<div class="blk-hdr">📊 So sánh Forward vs Viterbi vs Backward</div>
+<div class="blk-body">
+<table class="tbl">
+<tr><th></th><th>Forward \(\alpha\)</th><th>Viterbi \(\delta\)</th><th>Backward \(\beta\)</th></tr>
+<tr><td>Operator</td><td>SUM</td><td>MAX</td><td>SUM</td></tr>
+<tr><td>Hướng</td><td>→ (trái→phải)</td><td>→ + backtrack</td><td>← (phải→trái)</td></tr>
+<tr><td>Output</td><td>\(P(O|\lambda)\)</td><td>\(Q^*\)</td><td>Dùng cùng \(\alpha\)</td></tr>
+<tr><td>Dùng cho</td><td>Bài toán 1</td><td>Bài toán 2</td><td>E-step (Bài toán 3)</td></tr>
+</table>
+</div></div>
+
+</div><!-- col2 -->
+
+<!-- COL 3: BAUM-WELCH + TRICKS + APPLICATIONS -->
+<div class="gcol">
+
+<div class="blk blk-hmm">
+<div class="blk-hdr">🔄 Baum-Welch Algorithm (EM cho HMM)</div>
+<div class="blk-body">
+<span class="sec">▶ Định nghĩa \(\gamma_t(i)\) và \(\xi_t(i,j)\)</span>
+<div class="f">
+\(\gamma_t(i)=P(q_t=i\mid O,\lambda)=\dfrac{\alpha_t(i)\,\beta_t(i)}{\displaystyle\sum_{j=1}^{N}\alpha_t(j)\,\beta_t(j)}\)<br><br>
+\(\xi_t(i,j)=P(q_t=i,q_{t+1}=j\mid O,\lambda)=\dfrac{\alpha_t(i)\,A_{ij}\,B_j(o_{t+1})\,\beta_{t+1}(j)}{\displaystyle P(O\mid\lambda)}\)<br><br>
+Liên hệ: \(\gamma_t(i)=\sum_{j=1}^{N}\xi_t(i,j)\)
+</div>
+<span class="sec">▶ Ý nghĩa thống kê</span>
+<div class="f">
+\(\sum_{t=1}^{T}\gamma_t(i)\) = số lần kỳ vọng ở trạng thái \(i\)<br>
+\(\sum_{t=1}^{T-1}\xi_t(i,j)\) = số lần kỳ vọng chuyển từ \(i\to j\)
+</div>
+<span class="sec">▶ E-step: tính \(\alpha,\beta\to\gamma,\xi\)</span>
+<div class="f">
+Dùng \(\lambda\) hiện tại chạy Forward (\(\alpha\)) và Backward (\(\beta\))
+</div>
+<span class="sec">▶ M-step: Re-estimation</span>
+<div class="f">
+\(\hat{\pi}_i=\gamma_1(i)\)<br><br>
+\(\hat{A}_{ij}=\dfrac{\displaystyle\sum_{t=1}^{T-1}\xi_t(i,j)}{\displaystyle\sum_{t=1}^{T-1}\gamma_t(i)}\)<br><br>
+\(\hat{B}_j(v_k)=\dfrac{\displaystyle\sum_{t=1}^{T}\gamma_t(j)\cdot\mathbf{1}[o_t=v_k]}{\displaystyle\sum_{t=1}^{T}\gamma_t(j)}\)
+</div>
+<div class="ok">✓ Mỗi iteration: \(P(O|\hat{\lambda})\geq P(O|\lambda)\) (đảm bảo tăng đơn điệu)</div>
+<div class="err">⚠️ EM chỉ đảm bảo <b>local maximum</b> — cần nhiều lần khởi tạo ngẫu nhiên (random restarts)</div>
+<span class="sec">▶ Nhiều chuỗi quan sát</span>
+<div class="f">
+\(\hat{A}_{ij}=\dfrac{\displaystyle\sum_s\sum_t\xi_t^{(s)}(i,j)}{\displaystyle\sum_s\sum_t\gamma_t^{(s)}(i)}\)<br>
+Cộng dồn \(\gamma,\xi\) qua tất cả chuỗi quan sát \(O^{(s)}\) độc lập
+</div>
+</div></div>
+
+<div class="blk blk-hmm">
+<div class="blk-hdr">⚙️ Kỹ thuật Scaling &amp; Log-space</div>
+<div class="blk-body">
+<span class="sec">▶ Vấn đề Underflow</span>
+<div class="f">
+\(\alpha_t(i)\to 0\) theo hàm mũ khi \(T\) lớn (mỗi bước × nhiều prob &lt; 1)<br>
+Ví dụ: \(T=100,\;N=5\to\alpha_{100}(i)\sim(0.2)^{100}\approx 10^{-70}\) → underflow float64
+</div>
+<span class="sec">▶ Scaling (Rabiner 1989)</span>
+<div class="f">
+\(\hat{\alpha}_t(i)=\alpha_t(i)\cdot\prod_{\tau=1}^{t}\tfrac{1}{c_\tau}\quad\) với \(c_t=\sum_i\alpha_t(i)\)<br>
+\(\ln P(O|\lambda)=-\sum_{t=1}^{T}\ln c_t\)<br>
+Áp dụng cùng \(c_t\) cho \(\beta\to\hat{\beta}\); tính \(\gamma,\xi\) từ \(\hat{\alpha},\hat{\beta}\)
+</div>
+<span class="sec">▶ Log-Viterbi (thay vì scaling)</span>
+<div class="f">
+\(\ln\delta_t(j)=\ln B_j(o_t)+\max_i\bigl[\ln\delta_{t-1}(i)+\ln A_{ij}\bigr]\)<br>
+Tránh underflow; \(\max\) trong log-space = \(\max\) trong original space
+</div>
+</div></div>
+
+<div class="blk blk-hmm">
+<div class="blk-hdr">💡 Bẫy thi &amp; Insights quan trọng</div>
+<div class="blk-body">
+<div class="f">
+<b>SUM vs MAX:</b> Forward [SUM] tổng hợp XS tất cả paths. Viterbi [MAX] tìm 1 path tốt nhất. Kết quả khác nhau hoàn toàn.<br><br>
+<b>Backward một mình:</b> không trực tiếp giải bài toán nào — chỉ dùng kết hợp với \(\alpha\) trong Baum-Welch.<br><br>
+<b>Baum-Welch ≠ global optimum:</b> EM đảm bảo local max. Cần random restart, chọn init tốt.<br><br>
+<b>Viterbi ≠ marginalization:</b> \(q_t^*\) trong Viterbi có thể khác \(\arg\max_i\gamma_t(i)\) từ Forward-Backward.<br><br>
+<b>Brute force:</b> \(P(O|\lambda)=\sum_Q P(O,Q|\lambda)\) có \(N^T\) paths → \(O(N^T T)\). Forward: \(O(N^2 T)\).<br><br>
+<b>Continuous HMM:</b> thay \(B_j(o)\) bằng Gaussian mixture \(\sum_m c_{jm}\mathcal{N}(o;\mu_{jm},\Sigma_{jm})\)
+</div>
+<span class="sec">▶ Độ phức tạp tổng kết</span>
+<table class="tbl">
+<tr><th>Thuật toán</th><th>Thời gian</th><th>Bộ nhớ</th></tr>
+<tr><td>Brute-force</td><td>\(O(N^T T)\)</td><td>\(O(N^T)\)</td></tr>
+<tr><td>Forward / Backward</td><td>\(O(N^2 T)\)</td><td>\(O(NT)\)</td></tr>
+<tr><td>Viterbi</td><td>\(O(N^2 T)\)</td><td>\(O(NT)\)+backptr</td></tr>
+<tr><td>Baum-Welch/iter</td><td>\(O(N^2 T)\)</td><td>\(O(N^2+NT)\)</td></tr>
+</table>
+<span class="sec">▶ Ứng dụng thực tế</span>
+<div class="f">
+Nhận dạng giọng nói (ASR) · POS tagging · Phân tích gen (CpG islands)<br>
+Phát hiện regime tài chính · Nhận dạng cử chỉ · OCR
+</div>
+</div></div>
+
+</div><!-- col3 -->
+
+</div><!-- g3 -->
+</div><!-- page 7 -->
 
 </body>
 </html>
