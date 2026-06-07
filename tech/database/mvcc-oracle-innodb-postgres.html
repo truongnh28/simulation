@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MVCC: Oracle vs InnoDB vs PostgreSQL</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f8fafc;
+  --accent:#4f46e5; --accent2:#7c3aed; --accent3:#0891b2;
+  --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --green:#059669; --yellow:#d97706; --red:#dc2626;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.75;}
+.hero{
+  background:linear-gradient(135deg,#ede9fe 0%,#dbeafe 50%,#e0f2fe 100%);
+  padding:60px 40px;text-align:center;position:relative;
+  border-bottom:1px solid var(--border);
+}
+.hero h1{
+  font-size:2.4rem;font-weight:800;
+  background:linear-gradient(135deg,#4f46e5,#7c3aed,#0891b2);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:12px;
+}
+.hero .subtitle{color:var(--muted);font-size:1rem;}
+.container{max-width:960px;margin:0 auto;padding:50px 40px;}
+h2{font-size:1.55rem;font-weight:700;color:#3730a3;margin:40px 0 16px;padding-bottom:10px;border-bottom:2px solid #e0e7ff;}
+h3{font-size:1.15rem;font-weight:600;color:#1e40af;margin:28px 0 12px;}
+h4{font-size:1rem;font-weight:600;color:#0891b2;margin:20px 0 8px;}
+p{color:var(--text);margin-bottom:14px;opacity:.95;}
+ul,ol{margin:0 0 14px 24px;color:var(--text);}
+li{margin-bottom:6px;}
+code{
+  background:#ede9fe;color:#4338ca;
+  padding:2px 8px;border-radius:4px;
+  font-family:'JetBrains Mono',monospace;font-size:.85em;
+}
+pre{
+  background:#1e293b;border:1px solid #334155;border-radius:10px;
+  padding:20px;overflow-x:auto;margin:16px 0;
+}
+pre code{background:none;padding:0;color:#e2e8f0;}
+.callout{
+  background:#f8fafc;border:1px solid var(--border);
+  border-left:4px solid var(--accent);border-radius:10px;
+  padding:20px;margin:20px 0;
+}
+.callout.warning{border-left-color:var(--yellow);background:#fffbeb;}
+.callout.danger{border-left-color:var(--red);background:#fef2f2;}
+.callout.success{border-left-color:var(--green);background:#f0fdf4;}
+.callout h4{margin-top:0;color:var(--accent);}
+.callout.warning h4{color:var(--yellow);}
+.callout.danger h4{color:var(--red);}
+.callout.success h4{color:var(--green);}
+.table-wrap{overflow-x:auto;margin:16px 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:#ede9fe;color:#3730a3;padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid #c7d2fe;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);}
+tr:hover td{background:#f5f3ff;}
+.img-placeholder{
+  background:var(--surface2);border:2px dashed #c7d2fe;
+  border-radius:12px;padding:30px;margin:20px 0;text-align:center;color:var(--muted);
+}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin:2px;}
+.badge-blue{background:#eff6ff;color:#1d4ed8;}
+.badge-cyan{background:#ecfeff;color:#0e7490;}
+.badge-purple{background:#f5f3ff;color:#6d28d9;}
+.badge-green{background:#f0fdf4;color:#15803d;}
+.badge-red{background:#fef2f2;color:#b91c1c;}
+.nav{
+  background:#ffffff;border-bottom:1px solid var(--border);
+  padding:14px 40px;display:flex;align-items:center;gap:16px;
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
+}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;}
+.nav a:hover{color:var(--accent);}
+.nav .sep{color:var(--border);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.card-small{
+  background:#ffffff;border:1px solid var(--border);
+  border-radius:10px;padding:18px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);
+}
+.card-small h4{margin-top:0;margin-bottom:8px;}
+.section-title{font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border),transparent);}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:48px;}
+.card{
+  background:#ffffff;border:1px solid var(--border);border-radius:16px;padding:28px;
+  text-decoration:none;color:var(--text);transition:all .3s ease;position:relative;overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,.05);
+}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform .3s ease;}
+.card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 30px rgba(79,70,229,.1);}
+.card:hover::before{transform:scaleX(1);}
+.card-icon{font-size:2rem;margin-bottom:16px;}
+.card h3{font-size:1rem;font-weight:600;margin-bottom:10px;color:var(--text);}
+.card p{color:var(--muted);font-size:.85rem;line-height:1.6;}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin-top:12px;}
+.tag-db{background:#eff6ff;color:#1d4ed8;}
+.tag-dist{background:#ecfeff;color:#0e7490;}
+.tag-prog{background:#f5f3ff;color:#6d28d9;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:60px;}
+.stat{background:#ffffff;border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.stat-num{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-label{color:var(--muted);font-size:.9rem;margin-top:4px;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="../index.html">🏠 Trang chủ</a><span class="sep">/</span><span>Database</span><span class="sep">/</span><span>MVCC So Sánh</span></nav>
+<div class="hero">
+<h1>⚡ MVCC: Oracle vs InnoDB vs PostgreSQL</h1>
+<p class="subtitle">So sánh chuyên sâu ba cách triển khai Multiversion Concurrency Control trong các hệ quản trị cơ sở dữ liệu hàng đầu</p>
+</div>
+<div class="container">
+
+<h2>1. MVCC Là Gì và Tại Sao Cần Nó?</h2>
+<p>MVCC (Multi-Version Concurrency Control) là kỹ thuật cho phép nhiều transactions đọc/ghi dữ liệu đồng thời mà không block lẫn nhau. Thay vì dùng exclusive lock cho mọi thao tác, MVCC duy trì nhiều phiên bản của cùng một dữ liệu.</p>
+<div class="grid2">
+<div class="card-small">
+<h4>Ưu điểm MVCC</h4>
+<ul>
+<li>Đọc không block ghi, ghi không block đọc</li>
+<li>Concurrency cao hơn Lock-Based CC</li>
+<li>OLTP workload 80% đọc → tối ưu</li>
+<li>Snapshot isolation tự nhiên</li>
+</ul>
+</div>
+<div class="card-small">
+<h4>Thách thức MVCC</h4>
+<ul>
+<li>Quản lý phiên bản cũ (garbage collection)</li>
+<li>Tốn thêm không gian lưu trữ</li>
+<li>Overhead khi xác định visibility</li>
+<li>Long-running transactions gây bloat</li>
+</ul>
+</div>
+</div>
+
+<h2>2. Oracle MVCC — Timestamp-Based, Page-Level</h2>
+
+<h3>2.1 Cơ Chế SCN (System Change Number)</h3>
+<p>Oracle dùng SCN — một số nguyên tăng đơn điệu — làm logical timestamp cho toàn hệ thống. SCN mới được tạo ra mỗi khi một transaction commit.</p>
+<ul>
+<li>Format: <code>0xFFFF.FFFFFFF</code> (6 bytes)</li>
+<li>Chuyển đổi: <code>SELECT scn_to_timestamp(SCN) FROM dual</code></li>
+<li>Đảm bảo thứ tự toàn cục của mọi thay đổi</li>
+</ul>
+
+<h3>2.2 Page-Level Multi-Version với Rollback Segment</h3>
+<p>Oracle dùng <strong>page-level versioning</strong>: khi cần đọc phiên bản cũ, Oracle undo toàn bộ page (không phải từng row riêng lẻ) về trạng thái tại SCN cho trước.</p>
+
+<div class="img-placeholder">
+<div class="emoji">📊</div>
+<p><strong>👉 [CHÈN ẢNH: Oracle Data Block Structure]</strong></p>
+<p>Cấu trúc Oracle Data Block gồm 3 layer: Cache layer (20 bytes header: rdba, scn, seq), Transaction layer (Fixed: ITL count, Variable: ITLs), Data layer (Row directory, Row data)</p>
+</div>
+
+<h3>2.3 ITL (Interested Transaction List)</h3>
+<p>Mỗi Oracle data block có một ITL — danh sách các transactions đang/đã thao tác trên block đó:</p>
+<ul>
+<li><code>INITRANS</code>: Số ITL slots ban đầu (mặc định 1 cho data, 2 cho index)</li>
+<li><code>MAXTRANS</code>: Số ITL slots tối đa</li>
+<li>Transaction ID format: <code>xid: 0x0004.00e.0000449b</code> (rollback segment number : slot : wrap count)</li>
+</ul>
+
+<h3>2.4 Block Cleanout</h3>
+<p>Sau khi transaction commit, Oracle phải "làm sạch" block — cập nhật ITL, thiết lập SCN, xóa row lock marks. Có hai cơ chế:</p>
+<ul>
+<li><strong>Fast Block Cleanout</strong>: Commit ngay lập tức làm sạch các blocks đã cache (giới hạn số lượng)</li>
+<li><strong>Deferred Block Cleanout</strong>: Blocks không được làm sạch ngay; khi transaction khác đọc block, nó sẽ làm sạch theo cách lazy</li>
+</ul>
+
+<div class="callout">
+<h4>💡 Tại sao cần Deferred Cleanout?</h4>
+<p>Commit một transaction lớn cần làm sạch hàng ngàn blocks sẽ tốn nhiều thời gian nếu thực hiện đồng bộ. Deferred cleanout trải đều công việc này ra theo thời gian, giảm latency commit. Đây là ví dụ điển hình của trade-off: commit nhanh hơn nhưng read đầu tiên sau commit chậm hơn một chút.</p>
+</div>
+
+<h3>2.5 Ora-01555: Snapshot Too Old</h3>
+<p>Lỗi nổi tiếng nhất của Oracle MVCC: khi undo segments bị overwrite trước khi query hoàn thành việc đọc phiên bản cũ.</p>
+<ul>
+<li>Nguyên nhân: <code>UNDO_RETENTION</code> quá nhỏ, undo tablespace quá nhỏ, hoặc long-running query</li>
+<li>Giải pháp: Tăng <code>undo_retention</code>, dùng Automatic Undo Management</li>
+<li>Oracle hỗ trợ <strong>Flashback Query</strong>: <code>SELECT ... AS OF TIMESTAMP ...</code> — truy vấn dữ liệu tại thời điểm trong quá khứ</li>
+</ul>
+
+<h3>2.6 Phân Tích Ưu/Nhược Điểm Oracle MVCC</h3>
+<div class="grid2">
+<div class="card-small">
+<h4>✅ Ưu điểm</h4>
+<ul>
+<li>Không lưu version info trong record — tiết kiệm row overhead</li>
+<li>Hỗ trợ Flashback Query mạnh mẽ</li>
+<li>CR Block (Consistent Read Block) tái sử dụng được</li>
+</ul>
+</div>
+<div class="card-small">
+<h4>❌ Nhược điểm</h4>
+<ul>
+<li>Page-level undo gây "false violation" — nhiều readers cùng cần undo cùng page</li>
+<li>Ora-01555 trong long-running queries</li>
+<li>Full table scan song song cần hint: <code>SELECT /*+parallel(t 8)*/ ...</code></li>
+</ul>
+</div>
+</div>
+
+<h2>3. InnoDB MVCC — Transaction ID-Based, Row-Level</h2>
+
+<h3>3.1 System Columns Ẩn trong Clustered Index</h3>
+<pre><code>-- Mỗi InnoDB record có các hidden columns:
+DB_TRX_ID (6 bytes)     -- Transaction ID tạo/sửa record
+DB_ROLL_PTR (7 bytes)   -- Con trỏ đến undo record
+-- DB_ROLL_PTR format:
+-- bit[0]: Undo type (Insert=0, Update=1)
+-- bits[1-7]: Rollback Segment ID (128 segments)
+-- bits[8-39]: Undo Page Number
+-- bits[40-55]: Offset trong Undo Page</code></pre>
+
+<h3>3.2 Update/Delete Handling</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Operation</th><th>Clustered Index</th><th>Secondary Index</th></tr>
+<tr><td>DELETE</td><td>Set Delete_Bit, ghi undo với full record</td><td>Set Delete_Bit (không ghi undo)</td></tr>
+<tr><td>UPDATE (key thay đổi)</td><td>In-place update, undo chứa before-image</td><td>Clone mới + Delete_Bit record cũ</td></tr>
+<tr><td>UPDATE (key không đổi)</td><td>In-place update, undo chứa before-image</td><td>Không thay đổi</td></tr>
+</table>
+</div>
+
+<h3>3.3 ReadView Visibility Algorithm</h3>
+<pre><code>-- Pseudocode kiểm tra visibility của record có trx_id:
+function is_visible(trx_id, read_view):
+    if trx_id < read_view.up_limit_id:
+        return TRUE   -- Committed trước snapshot
+    if trx_id >= read_view.low_limit_id:
+        return FALSE  -- Bắt đầu sau snapshot
+    if trx_id in read_view.trx_ids:
+        return FALSE  -- Đang active khi tạo snapshot
+    return TRUE       -- Committed trước snapshot</code></pre>
+
+<h3>3.4 Phân Tích Ưu/Nhược Điểm InnoDB MVCC</h3>
+<div class="grid2">
+<div class="card-small">
+<h4>✅ Ưu điểm</h4>
+<ul>
+<li>Row-level versioning — không có false violation</li>
+<li>Đơn giản hơn Oracle về mặt conceptual</li>
+<li>Purge độc lập với query path</li>
+</ul>
+</div>
+<div class="card-small">
+<h4>❌ Nhược điểm</h4>
+<ul>
+<li>Record overhead tăng (system columns)</li>
+<li>Không thể xóa vật lý ngay (cần purge)</li>
+<li>Undo cần lưu tất cả secondary index columns</li>
+<li>Purge performance kém với heavy write</li>
+<li>Không hỗ trợ Flashback Query</li>
+</ul>
+</div>
+</div>
+
+<h2>4. PostgreSQL MVCC — Row-Level, In-Page Storage</h2>
+
+<h3>4.1 Thiết Kế Độc Đáo: Không Có Rollback Segment</h3>
+<p>PostgreSQL lưu TẤT CẢ phiên bản của record trực tiếp trong heap page, không dùng rollback segment riêng. Một UPDATE tạo ra 2 versions nằm trong cùng (hoặc gần) cùng page.</p>
+
+<h3>4.2 System Columns của PostgreSQL</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Column</th><th>Ý nghĩa</th></tr>
+<tr><td><code>xmin</code></td><td>Transaction ID tạo record (INSERT/UPDATE tạo version mới)</td></tr>
+<tr><td><code>xmax</code></td><td>Transaction ID xóa/thay thế record (DELETE/UPDATE/Row Lock)</td></tr>
+<tr><td><code>cmin</code></td><td>Command ID trong cùng transaction (thứ tự statement)</td></tr>
+<tr><td><code>cmax</code></td><td>Tương tự cmin nhưng cho DELETE — dùng chung column với cmin</td></tr>
+</table>
+</div>
+
+<h3>4.3 Vacuum — Garbage Collection của PostgreSQL</h3>
+<p>PostgreSQL cần VACUUM để thu hồi không gian từ dead tuples:</p>
+<ul>
+<li><strong>Page-level vacuum</strong>: Thu hồi khi page được access</li>
+<li><strong>Table-level autovacuum</strong>: Background process tự động</li>
+<li><strong>Manual VACUUM</strong>: <code>VACUUM ANALYZE table_name</code></li>
+</ul>
+<div class="callout warning">
+<h4>⚠️ Table Bloat — Vấn Đề Kinh Điển của PostgreSQL</h4>
+<p>Nếu autovacuum không đủ nhanh (heavy write workload), dead tuples tích lũy làm table "bloat" — bảng chiếm nhiều disk space hơn dữ liệu thực. Giải pháp: VACUUM FULL (lock table) hoặc dùng pg_repack extension để rebuild không cần lock.</p>
+</div>
+
+<h3>4.4 Phân Tích Ưu/Nhược Điểm PostgreSQL MVCC</h3>
+<div class="grid2">
+<div class="card-small">
+<h4>✅ Ưu điểm</h4>
+<ul>
+<li>Implementation đơn giản (không cần rollback segment infrastructure)</li>
+<li>Phiên bản cũ gần về mặt vật lý → ít random I/O khi rollback</li>
+<li>Visibility check đơn giản hơn</li>
+</ul>
+</div>
+<div class="card-small">
+<h4>❌ Nhược điểm</h4>
+<ul>
+<li>Table bloat nếu vacuum không kịp</li>
+<li>Tốn space: dead tuples chiếm không gian trong page</li>
+<li>Vacuum là performance hotspot</li>
+<li>Không hỗ trợ Flashback Query</li>
+</ul>
+</div>
+</div>
+
+<h2>5. So Sánh Tổng Hợp</h2>
+<div class="table-wrap">
+<table>
+<tr><th>Tiêu chí</th><th>Oracle</th><th>InnoDB</th><th>PostgreSQL</th></tr>
+<tr><td>Versioning method</td><td>Timestamp (SCN)</td><td>Transaction ID</td><td>Transaction ID</td></tr>
+<tr><td>Granularity</td><td>Page-level</td><td>Row-level</td><td>Row-level</td></tr>
+<tr><td>Old version storage</td><td>Rollback Segment</td><td>Undo Tablespace</td><td>Heap Page (in-place)</td></tr>
+<tr><td>Garbage collection</td><td>Block cleanout + Purge</td><td>Purge thread</td><td>Autovacuum</td></tr>
+<tr><td>Flashback Query</td><td>✅ Có</td><td>❌ Không</td><td>❌ Không</td></tr>
+<tr><td>Snapshot Too Old risk</td><td>✅ Có (Ora-01555)</td><td>Thấp hơn</td><td>Thấp hơn</td></tr>
+<tr><td>Write amplification</td><td>Thấp (undo segment)</td><td>Trung bình</td><td>Cao (2x writes)</td></tr>
+</table>
+</div>
+
+<div class="callout success">
+<h4>✅ Kết Luận: Lựa Chọn Phù Hợp</h4>
+<ul>
+<li><strong>Oracle</strong>: Workload enterprise cần Flashback, điểm mạnh với mixed read/write trên large tables</li>
+<li><strong>InnoDB</strong>: Cân bằng tốt nhất cho OLTP, MySQL ecosystem, concurrency cao</li>
+<li><strong>PostgreSQL</strong>: Đơn giản trong implementation, tốt cho read-heavy workload, cần quản lý vacuum cẩn thận</li>
+</ul>
+</div>
+
+</div></body></html>

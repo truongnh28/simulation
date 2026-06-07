@@ -1,0 +1,198 @@
+<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Toi Uu Hoa Query MySQL InnoDB</title><style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f8fafc;
+  --accent:#4f46e5; --accent2:#7c3aed; --accent3:#0891b2;
+  --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --green:#059669; --yellow:#d97706; --red:#dc2626;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.75;}
+.hero{
+  background:linear-gradient(135deg,#ede9fe 0%,#dbeafe 50%,#e0f2fe 100%);
+  padding:60px 40px;text-align:center;position:relative;
+  border-bottom:1px solid var(--border);
+}
+.hero h1{
+  font-size:2.4rem;font-weight:800;
+  background:linear-gradient(135deg,#4f46e5,#7c3aed,#0891b2);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:12px;
+}
+.hero .subtitle{color:var(--muted);font-size:1rem;}
+.container{max-width:960px;margin:0 auto;padding:50px 40px;}
+h2{font-size:1.55rem;font-weight:700;color:#3730a3;margin:40px 0 16px;padding-bottom:10px;border-bottom:2px solid #e0e7ff;}
+h3{font-size:1.15rem;font-weight:600;color:#1e40af;margin:28px 0 12px;}
+h4{font-size:1rem;font-weight:600;color:#0891b2;margin:20px 0 8px;}
+p{color:var(--text);margin-bottom:14px;opacity:.95;}
+ul,ol{margin:0 0 14px 24px;color:var(--text);}
+li{margin-bottom:6px;}
+code{
+  background:#ede9fe;color:#4338ca;
+  padding:2px 8px;border-radius:4px;
+  font-family:'JetBrains Mono',monospace;font-size:.85em;
+}
+pre{
+  background:#1e293b;border:1px solid #334155;border-radius:10px;
+  padding:20px;overflow-x:auto;margin:16px 0;
+}
+pre code{background:none;padding:0;color:#e2e8f0;}
+.callout{
+  background:#f8fafc;border:1px solid var(--border);
+  border-left:4px solid var(--accent);border-radius:10px;
+  padding:20px;margin:20px 0;
+}
+.callout.warning{border-left-color:var(--yellow);background:#fffbeb;}
+.callout.danger{border-left-color:var(--red);background:#fef2f2;}
+.callout.success{border-left-color:var(--green);background:#f0fdf4;}
+.callout h4{margin-top:0;color:var(--accent);}
+.callout.warning h4{color:var(--yellow);}
+.callout.danger h4{color:var(--red);}
+.callout.success h4{color:var(--green);}
+.table-wrap{overflow-x:auto;margin:16px 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:#ede9fe;color:#3730a3;padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid #c7d2fe;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);}
+tr:hover td{background:#f5f3ff;}
+.img-placeholder{
+  background:var(--surface2);border:2px dashed #c7d2fe;
+  border-radius:12px;padding:30px;margin:20px 0;text-align:center;color:var(--muted);
+}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin:2px;}
+.badge-blue{background:#eff6ff;color:#1d4ed8;}
+.badge-cyan{background:#ecfeff;color:#0e7490;}
+.badge-purple{background:#f5f3ff;color:#6d28d9;}
+.badge-green{background:#f0fdf4;color:#15803d;}
+.badge-red{background:#fef2f2;color:#b91c1c;}
+.nav{
+  background:#ffffff;border-bottom:1px solid var(--border);
+  padding:14px 40px;display:flex;align-items:center;gap:16px;
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
+}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;}
+.nav a:hover{color:var(--accent);}
+.nav .sep{color:var(--border);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.card-small{
+  background:#ffffff;border:1px solid var(--border);
+  border-radius:10px;padding:18px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);
+}
+.card-small h4{margin-top:0;margin-bottom:8px;}
+.section-title{font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border),transparent);}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:48px;}
+.card{
+  background:#ffffff;border:1px solid var(--border);border-radius:16px;padding:28px;
+  text-decoration:none;color:var(--text);transition:all .3s ease;position:relative;overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,.05);
+}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform .3s ease;}
+.card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 30px rgba(79,70,229,.1);}
+.card:hover::before{transform:scaleX(1);}
+.card-icon{font-size:2rem;margin-bottom:16px;}
+.card h3{font-size:1rem;font-weight:600;margin-bottom:10px;color:var(--text);}
+.card p{color:var(--muted);font-size:.85rem;line-height:1.6;}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin-top:12px;}
+.tag-db{background:#eff6ff;color:#1d4ed8;}
+.tag-dist{background:#ecfeff;color:#0e7490;}
+.tag-prog{background:#f5f3ff;color:#6d28d9;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:60px;}
+.stat{background:#ffffff;border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.stat-num{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-label{color:var(--muted);font-size:.9rem;margin-top:4px;}
+</style></head><body>
+<nav class="nav"><a href="../index.html">&#127968; Trang chu</a><span class="sep">/</span><span>Query Optimization</span></nav>
+<div class="hero"><h1>&#128640; Toi Uu Hoa Query MySQL InnoDB</h1>
+<p class="subtitle">Cost model, range scan, join optimization, ICP va case studies thuc te tu production</p></div>
+<div class="container">
+
+<h2>1. Cost Model: InnoDB Tinh Toan Nhu The Nao?</h2>
+<p>MySQL Optimizer dung Cost-Based model de chon execution plan toi uu. Chia thanh 2 phan: CPU Cost va IO Cost.</p>
+
+<h3>1.1 IO Cost — Clustered Index</h3>
+<ul>
+<li><strong>Full scan</strong>: IO Cost = so trang la cua clustered index (1 cost = 1 page)</li>
+<li><strong>Range scan</strong>: IO Cost = [(ranges + rows) / total_rows] * full_scan_cost</li>
+</ul>
+
+<h3>1.2 IO Cost — Secondary Index</h3>
+<div class="table-wrap"><table>
+<tr><th>Kieu scan</th><th>Cong thuc</th><th>Ghi chu</th></tr>
+<tr><td>Index Only Scan</td><td>IO = (records + keys_per_block - 1) / keys_per_block</td><td>Chi doc secondary index pages</td></tr>
+<tr><td>Index + Clustered</td><td>IO = ranges + rows</td><td>Moi row = 1 extra random IO</td></tr>
+</table></div>
+
+<div class="callout warning"><h4>&#9888;&#65039; Secondary Index Non-Covering: Cuc Ky Dat!</h4>
+<p>Secondary index non-covering scan co IO cost = ranges + rows vi moi row phai quay lai clustered index (random I/O). Neu rows lon, day co the con dat hon full table scan. MySQL Optimizer nen (va thuong) chon full scan trong truong hop nay — do la optimization dung!</p></div>
+
+<h2>2. Range Query Optimization</h2>
+<p>Quy trinh optimizer chon index cho range query:</p>
+<ol>
+<li><strong>possible_keys</strong>: Tim tat ca indexes co the dung (moi field trong WHERE co the la starting key)</li>
+<li><strong>records_in_range</strong>: Voi moi possible_key, uoc luong so records trong range bang cach lam 2 search_path (tu root den la) de tinh records giua range start va range end</li>
+<li>Chon index co cost nho nhat</li>
+</ol>
+
+<div class="callout"><h4>&#128161; Van De: records_in_range Khong On Dinh</h4>
+<p>records_in_range dua tren thong ke (statistics), co the thay doi khi du lieu thay doi. Ket qua: cung mot query co the chon execution plan khac nhau qua cac lan chay. MySQL 5.6.2+ co Persistent Statistics giu thong ke on dinh hon.</p></div>
+
+<h2>3. Join Query Optimization</h2>
+<ul>
+<li>MySQL dung nested-loop join (BNL/BKA)</li>
+<li>Optimizer thu tat ca hoan vi thu tu join va chon thu tu co cost nho nhat</li>
+<li><code>optimizer_search_depth</code>: Do sau tim kiem (default 62 = global optimal nhung cham voi nhieu bang)</li>
+</ul>
+<div class="callout warning"><h4>&#9888;&#65039; Join Qua Nhieu Bang</h4>
+<p>So hoan vi join order = n! (n bang). Voi n=10, do 10! = 3,628,800 ket hop. Nen giam optimizer_search_depth hoac dung STRAIGHT_JOIN khi biet thu tu join tot. OLTP nen co index tot va tranh join qua nhieu bang trong 1 query.</p></div>
+
+<h2>4. Index Condition Pushdown (ICP)</h2>
+<p>ICP (MySQL 5.6+) cho phep Storage Engine tu filter records tren index truoc khi return len MySQL Server layer:</p>
+<pre><code>-- Khong co ICP:
+-- 1. SE scan index, return tat ca records trong range
+-- 2. MySQL Server filter theo WHERE condition
+-- 3. Apply Table Filter tren clustered index
+
+-- Co ICP:
+-- 1. SE scan index
+-- 2. SE filter Index Filter tren index NGAY TAI Storage Engine
+-- 3. Chi return records pass Index Filter
+-- 4. MySQL Server apply Table Filter</code></pre>
+
+<div class="callout success"><h4>&#10003; ICP va Lock</h4>
+<p>ICP khong chi giam I/O ma con giam so luong locks: trong RR isolation, chi lock records pass Index Filter, khong lock records bi filter out. Loi ich kep: hieu nang + giam lock contention.</p></div>
+
+<h2>5. Case Study: Wrong Execution Plan</h2>
+<pre><code>-- Bang: TB_IMGOUT_Picture(ID PK, UserId, DeleteState, ...)
+-- Index: IDX_UID_ID(UserId, ID)
+-- Query:
+SELECT * FROM TB_IMGOUT_Picture 
+WHERE (2601629 > ID) AND (UserId = 129329421) AND (DeleteState = 0) 
+ORDER BY ID DESC LIMIT 100;
+
+-- Optimizer chon sai: IDX_UID_ID voi 149830 rows estimated
+-- Dung tay: force index
+SELECT * FROM TB_IMGOUT_Picture FORCE INDEX (IDX_UID_ID) 
+WHERE ...;</code></pre>
+<p>Nguyen nhan: records_in_range uoc luong sai do thong ke cu. Giai phap: ANALYZE TABLE hoac Persistent Statistics (5.6.2+).</p>
+
+<h2>6. SQL Where Condition Phan Tich</h2>
+<p>De hieu query dung index nhu the nao, phan tich WHERE thanh 3 phan:</p>
+<div class="grid2">
+<div class="card-small"><h4>Index Key</h4><p>Dieu kien xac dinh scan range tren index. Dung de xac dinh dau/cuoi cua B-Tree scan.</p><pre><code>pubtime > 1 AND pubtime &lt; 20</code></pre></div>
+<div class="card-small"><h4>Index Filter</h4><p>Dieu kien co the check tren index nhung khong la range boundary. Dung boi ICP trong Storage Engine.</p><pre><code>userid = 'hdc'</code></pre></div>
+</div>
+<div class="card-small" style="margin-top:12px"><h4>Table Filter</h4><p>Chi check duoc tren clustered index (full record). Khong the pushdown xuong Storage Engine.</p><pre><code>comment IS NOT NULL</code></pre></div>
+
+<h2>7. Best Practices Toi Uu Query</h2>
+<ul>
+<li>Dung EXPLAIN de hieu execution plan truoc khi optimize</li>
+<li>Uu tien covering index de tranh clustered index lookup (Index Only Scan)</li>
+<li>Giam possible_keys bang cach dat index chinh xac (tranh over-indexing)</li>
+<li>Tranh function tren index column trong WHERE (vi du: <code>WHERE YEAR(created_at) = 2024</code>)</li>
+<li>Dung <code>FORCE INDEX</code> hoac optimizer hints khi biet execution plan tot hon optimizer</li>
+<li>Enable Persistent Statistics (MySQL 5.6+) va chay ANALYZE TABLE dinh ky</li>
+</ul>
+
+</div></body></html>

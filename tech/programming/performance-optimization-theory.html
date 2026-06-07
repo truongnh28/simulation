@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Lý Thuyết Tối Ưu Hiệu Năng & MySQL Evolution</title><style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f8fafc;
+  --accent:#4f46e5; --accent2:#7c3aed; --accent3:#0891b2;
+  --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --green:#059669; --yellow:#d97706; --red:#dc2626;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.75;}
+.hero{background:linear-gradient(135deg,#ede9fe 0%,#dbeafe 50%,#e0f2fe 100%);padding:60px 40px;text-align:center;border-bottom:1px solid var(--border);}
+.hero h1{font-size:2.4rem;font-weight:800;background:linear-gradient(135deg,#4f46e5,#7c3aed,#0891b2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;}
+.hero .subtitle{color:var(--muted);font-size:1rem;}
+.container{max-width:960px;margin:0 auto;padding:50px 40px;}
+h2{font-size:1.55rem;font-weight:700;color:#3730a3;margin:40px 0 16px;padding-bottom:10px;border-bottom:2px solid #e0e7ff;}
+h3{font-size:1.15rem;font-weight:600;color:#1e40af;margin:28px 0 12px;}
+h4{font-size:1rem;font-weight:600;color:#0891b2;margin:20px 0 8px;}
+p{color:var(--text);margin-bottom:14px;}
+ul,ol{margin:0 0 14px 24px;color:var(--text);}
+li{margin-bottom:6px;}
+code{background:#ede9fe;color:#4338ca;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.85em;}
+pre{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;overflow-x:auto;margin:16px 0;}
+pre code{background:none;padding:0;color:#e2e8f0;}
+.callout{background:#f8fafc;border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:20px;margin:20px 0;}
+.callout.warning{border-left-color:var(--yellow);background:#fffbeb;}
+.callout.danger{border-left-color:var(--red);background:#fef2f2;}
+.callout.success{border-left-color:var(--green);background:#f0fdf4;}
+.callout h4{margin-top:0;color:var(--accent);}
+.callout.warning h4{color:var(--yellow);}
+.callout.danger h4{color:var(--red);}
+.callout.success h4{color:var(--green);}
+.table-wrap{overflow-x:auto;margin:16px 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:#ede9fe;color:#3730a3;padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid #c7d2fe;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);}
+tr:hover td{background:#f5f3ff;}
+.img-placeholder{background:var(--surface2);border:2px dashed #c7d2fe;border-radius:12px;padding:30px;margin:20px 0;text-align:center;color:var(--muted);}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin:2px;}
+.badge-blue{background:#eff6ff;color:#1d4ed8;}
+.badge-cyan{background:#ecfeff;color:#0e7490;}
+.badge-purple{background:#f5f3ff;color:#6d28d9;}
+.badge-green{background:#f0fdf4;color:#15803d;}
+.badge-red{background:#fef2f2;color:#b91c1c;}
+.nav{background:#fff;border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;}
+.nav a:hover{color:var(--accent);}
+.nav .sep{color:var(--border);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.card-small{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.card-small h4{margin-top:0;margin-bottom:8px;}
+.section-title{font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border),transparent);}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:48px;}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:28px;text-decoration:none;color:var(--text);transition:all .3s ease;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform .3s ease;}
+.card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 30px rgba(79,70,229,.1);}
+.card:hover::before{transform:scaleX(1);}
+.card-icon{font-size:2rem;margin-bottom:16px;}
+.card h3{font-size:1rem;font-weight:600;margin-bottom:10px;color:var(--text);}
+.card p{color:var(--muted);font-size:.85rem;line-height:1.6;}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin-top:12px;}
+.tag-db{background:#eff6ff;color:#1d4ed8;}
+.tag-dist{background:#ecfeff;color:#0e7490;}
+.tag-prog{background:#f5f3ff;color:#6d28d9;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:60px;}
+.stat{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.stat-num{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-label{color:var(--muted);font-size:.9rem;margin-top:4px;}
+</style></head>
+<body>
+<nav class="nav"><a href="../index.html">🏠 Trang chủ</a><span class="sep">/</span><span>Programming</span><span class="sep">/</span><span>Performance Engineering</span></nav>
+<div class="hero"><h1>📈 Lý Thuyết Tối Ưu Hiệu Năng Hệ Thống</h1>
+<p class="subtitle">Amdahl's Law, Queueing Theory, hardware latency và MySQL performance evolution từ 5.1 đến AliSQL</p></div>
+<div class="container">
+<h2>1. Moore's Law Đã Thay Đổi Hình Thức</h2>
+<p>Trước năm 2005, lập trình viên được miễn phí bữa ăn (free lunch): mỗi năm CPU nhanh hơn, phần mềm tự động chạy nhanh hơn mà không cần sửa code. Nay "bữa ăn miễn phí" đã kết thúc.</p>
+<ul>
+<li>CPU không thể tăng main frequency nữa (giới hạn vật lý: tần số, nhiệt độ)</li>
+<li>Thay vào đó: nhiều cores, nhiều threads, SMT</li>
+<li>Phần mềm cần được viết để khai thác parallelism</li>
+</ul>
+
+<h2>2. Amdahl's Law — Giới Hạn Của Parallel Computing</h2>
+<pre><code>Speedup(N) = 1 / ((1-P) + P/N)
+-- P: tỷ lệ chương trình có thể parallelized
+-- N: số processors
+-- 1-P: tỷ lệ serial (không parallelized được)
+-- Ví dụ: P=90%, N=10 → Speedup = 5.3x (không phải 10x!)
+-- Ví dụ: P=90%, N=∞  → Speedup MAX = 10x</code></pre>
+<div class="callout warning"><h4>⚠️ Ứng Dụng Thực Tế</h4>
+<p>Trong database, lock contention là "serial section": khi tất cả threads đều phải wait cùng lock (ví dụ: InnoDB kernel mutex trong MySQL 5.5-), tăng số threads không giúp gì. Giải pháp: giảm serial section (split mutex, fine-grained locking, lock-free structures).</p></div>
+
+<h2>3. Queueing Theory — Khi Parallelism Gặp Giới Hạn</h2>
+<h3>3.1 Little's Law</h3>
+<pre><code>L = λ × W
+-- L: Số request trung bình trong hệ thống
+-- λ: Throughput (request/giây)
+-- W: Thời gian trung bình mỗi request trong hệ thống (response time)
+
+-- Ví dụ thực tế (iostat output):
+-- r/s = 173.83, w/s = 39.22, await = 11.67ms
+-- avgqu-sz = (173.83 + 39.22) × 11.67 / 1000 = 2.49 (requests in flight)</code></pre>
+
+<h3>3.2 Utilization và Response Time — Quan Hệ Phi Tuyến</h3>
+<div class="table-wrap"><table>
+<tr><th>Utilization</th><th>Response Time</th><th>Nhận xét</th></tr>
+<tr><td>50%</td><td>≈ 2× service time</td><td>Bình thường</td></tr>
+<tr><td>80%</td><td>≈ 5× service time</td><td>Bắt đầu tăng</td></tr>
+<tr><td>90%</td><td>≈ 10× service time</td><td>Xấu đi đáng kể</td></tr>
+<tr><td>99%</td><td>≈ 100× service time</td><td>Thảm họa!</td></tr>
+</table></div>
+<div class="callout"><h4>💡 Nguyên Tắc Capacity Planning</h4>
+<p>Giữ CPU/IO utilization dưới 70-75% để đảm bảo response time ổn định. Khi utilization vượt 80%, hệ thống bắt đầu "queuing" và response time tăng đột ngột. Đây là nguyên tắc cơ bản của capacity planning.</p></div>
+
+<h3>3.3 Kendall Notation — Mô Hình Hóa Hệ Thống</h3>
+<p>Mọi hệ thống hàng đợi có thể biểu diễn bằng ký hiệu <code>A/S/c/K/N/D</code>:</p>
+<ul>
+<li><code>A</code>: Phân phối thời gian đến (M=Markov, D=Deterministic, G=General)</li>
+<li><code>S</code>: Phân phối thời gian phục vụ</li>
+<li><code>c</code>: Số servers (1 đến vô hạn)</li>
+<li><code>K</code>: Độ dài tối đa queue</li>
+<li><code>N</code>: Số requests tối đa</li>
+<li><code>D</code>: Chiến lược scheduling (FCFS, LIFO, SIRO...)</li>
+</ul>
+<pre><code>-- M/M/1: Model đơn giản nhất, phổ biến nhất
+-- Poisson arrivals (M), exponential service (M), 1 server
+-- Công thức:
+-- ρ = λ/μ (utilization, phải < 1)
+-- W = 1/(μ-λ) (average response time)
+-- Wq = ρ/(μ-λ) (average wait time)
+-- L = ρ/(1-ρ) (average queue length)</code></pre>
+
+<h2>4. Hardware Latency — Biết Để Viết Code Tốt Hơn</h2>
+<div class="table-wrap"><table>
+<tr><th>Operation</th><th>Latency</th><th>Tương đương</th></tr>
+<tr><td>L1 cache hit</td><td>~0.5 ns</td><td>1 chu kỳ</td></tr>
+<tr><td>L2 cache hit</td><td>~7 ns</td><td>14 chu kỳ</td></tr>
+<tr><td>L3 cache hit</td><td>~20 ns</td><td>40 chu kỳ</td></tr>
+<tr><td>Main memory read</td><td>~100 ns</td><td>200 chu kỳ</td></tr>
+<tr><td>SSD random read</td><td>~100 µs</td><td>100,000 chu kỳ</td></tr>
+<tr><td>HDD random read</td><td>~10 ms</td><td>10,000,000 chu kỳ</td></tr>
+<tr><td>Network roundtrip (same DC)</td><td>~0.5 ms</td><td>1,000,000 chu kỳ</td></tr>
+</table></div>
+<div class="callout"><h4>💡 Jeff Dean Insight</h4>
+<p>Biết các con số này cho phép ước lượng performance mà không cần chạy code. Ví dụ: quicksort 1GB số nguyên → khoảng 30 giây (tính được từ memory bandwidth và branch misprediction rates). Viết system software mà không biết những con số này giống như thiết kế tòa nhà mà không biết vật liệu có sức chịu tải bao nhiêu.</p></div>
+
+<h2>5. MySQL Performance Evolution</h2>
+<h3>5.1 MySQL 5.1/5.5 — Giai Đoạn 1: Coarse → Fine Grained</h3>
+<ul>
+<li>MySQL 5.1: Single InnoDB kernel mutex bảo vệ nhiều critical sections → severe contention</li>
+<li>MySQL 5.5: Kernel mutex split thành nhiều mutex nhỏ hơn, Multiple Buffer Pool instances, Multiple purge threads</li>
+</ul>
+
+<h3>5.2 MySQL 5.6/5.7 — Giai Đoạn 2: Phần Cứng + Phần Mềm Kết Hợp</h3>
+<div class="grid2">
+<div class="card-small"><h4>SSE Instruction Set</h4>
+<p>SIMD SSE4 cho InnoDB checksum computation. Thay thế software checksum bằng hardware CRC32 instruction → giảm CPU overhead đáng kể cho I/O.</p></div>
+<div class="card-small"><h4>G5 Discovery</h4>
+<p>Per-thread counter với cache line padding cho <code>srv_n_rows_read</code>. Kết quả: &gt;50% scalability improvement trên Sysbench OLTP RO trong MySQL 5.6 labs release.</p></div>
+</div>
+
+<h3>5.3 MySQL 8.0 — Giai Đoạn 3: Kiến Trúc Tương Lai</h3>
+<ul>
+<li>C++11, better support cho ARM64/PPC</li>
+<li>Transactional data dictionary (bỏ .FRM files)</li>
+<li>Cost-based optimizer với table level hints, invisible indexes</li>
+<li>Atomic DDL</li>
+</ul>
+
+<h3>5.4 AliSQL — Cải Tiến Của Alibaba</h3>
+<div class="grid2">
+<div class="card-small"><h4>Enhanced Thread Pool</h4>
+<p>Dựa trên Queueing Theory: với hàng nghìn connections, không tạo hàng nghìn threads. Thread pool giữ số threads tối ưu, tránh context switching overhead. AliSQL với Thread Pool tăng TPS từ ~5,000 lên ~50,000 khi concurrent connections cao.</p></div>
+<div class="card-small"><h4>Hot SKU (Hotspot Update)</h4>
+<p>Tối ưu cho e-commerce: nhiều transactions cùng update một record (VD: inventory count). 3 thế hệ cải tiến: Syntax hints → InnoDB Strict Concurrency → Row Cache + Group Update. Từ 550 TPS lên ~40,000 TPS cho hot row update!</p></div>
+</div>
+
+<h2>6. Tam Đoạn Kiếm Tối Ưu Performance</h2>
+<div class="grid2">
+<div class="card-small"><h4>Bước 1: Đo Lường Trước</h4>
+<p>Không tối ưu "mù quáng". Dùng profiler (perf, Flame Graphs, pprof) để tìm bottleneck thực sự. 80% performance ở 20% code.</p></div>
+<div class="card-small"><h4>Bước 2: Thuật Toán &amp; Data Structure</h4>
+<p>Cải thiện algorithmically (O(n²) → O(n log n)) là tốt hơn bất kỳ hardware upgrade nào. Data structure cache-friendly (B-Tree vs Hash, SoA vs AoS).</p></div>
+</div>
+<div class="card-small" style="margin-top:12px"><h4>Bước 3: Mechanical Sympathy</h4>
+<p>Viết code "thông cảm" với hardware: tối thiểu cache miss, tránh false sharing, dùng SIMD/vectorization, lock-free khi có thể, minimize memory allocation.</p></div>
+
+<div class="callout success"><h4>✅ Flame Graph — Công Cụ Profiling Thực Tế</h4>
+<pre><code>perf record -g -p $(pgrep mysqld) -- sleep 30
+perf script | stackcollapse-perf.pl | flamegraph.pl > mysql.svg</code></pre>
+<p>Nhìn vào SVG để tìm các hàm chiếm nhiều CPU nhất. Trong MySQL, phổ biến là: lock management, buffer pool scan, B-Tree traversal.</p></div>
+</div>
+</body></html>

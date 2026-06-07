@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Phân Tích Deadlock MySQL InnoDB — Phân Tích Chuyên Sâu</title><style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f8fafc;
+  --accent:#4f46e5; --accent2:#7c3aed; --accent3:#0891b2;
+  --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --green:#059669; --yellow:#d97706; --red:#dc2626;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.75;}
+.hero{background:linear-gradient(135deg,#ede9fe 0%,#dbeafe 50%,#e0f2fe 100%);padding:60px 40px;text-align:center;border-bottom:1px solid var(--border);}
+.hero h1{font-size:2.4rem;font-weight:800;background:linear-gradient(135deg,#4f46e5,#7c3aed,#0891b2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;}
+.hero .subtitle{color:var(--muted);font-size:1rem;}
+.container{max-width:960px;margin:0 auto;padding:50px 40px;}
+h2{font-size:1.55rem;font-weight:700;color:#3730a3;margin:40px 0 16px;padding-bottom:10px;border-bottom:2px solid #e0e7ff;}
+h3{font-size:1.15rem;font-weight:600;color:#1e40af;margin:28px 0 12px;}
+h4{font-size:1rem;font-weight:600;color:#0891b2;margin:20px 0 8px;}
+p{color:var(--text);margin-bottom:14px;}
+ul,ol{margin:0 0 14px 24px;color:var(--text);}
+li{margin-bottom:6px;}
+code{background:#ede9fe;color:#4338ca;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.85em;}
+pre{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;overflow-x:auto;margin:16px 0;}
+pre code{background:none;padding:0;color:#e2e8f0;}
+.callout{background:#f8fafc;border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:20px;margin:20px 0;}
+.callout.warning{border-left-color:var(--yellow);background:#fffbeb;}
+.callout.danger{border-left-color:var(--red);background:#fef2f2;}
+.callout.success{border-left-color:var(--green);background:#f0fdf4;}
+.callout h4{margin-top:0;color:var(--accent);}
+.callout.warning h4{color:var(--yellow);}
+.callout.danger h4{color:var(--red);}
+.callout.success h4{color:var(--green);}
+.table-wrap{overflow-x:auto;margin:16px 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:#ede9fe;color:#3730a3;padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid #c7d2fe;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);}
+tr:hover td{background:#f5f3ff;}
+.img-placeholder{background:var(--surface2);border:2px dashed #c7d2fe;border-radius:12px;padding:30px;margin:20px 0;text-align:center;color:var(--muted);}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin:2px;}
+.badge-blue{background:#eff6ff;color:#1d4ed8;}
+.badge-cyan{background:#ecfeff;color:#0e7490;}
+.badge-purple{background:#f5f3ff;color:#6d28d9;}
+.badge-green{background:#f0fdf4;color:#15803d;}
+.badge-red{background:#fef2f2;color:#b91c1c;}
+.nav{background:#fff;border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;}
+.nav a:hover{color:var(--accent);}
+.nav .sep{color:var(--border);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.card-small{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.card-small h4{margin-top:0;margin-bottom:8px;}
+.section-title{font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border),transparent);}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:48px;}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:28px;text-decoration:none;color:var(--text);transition:all .3s ease;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform .3s ease;}
+.card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 30px rgba(79,70,229,.1);}
+.card:hover::before{transform:scaleX(1);}
+.card-icon{font-size:2rem;margin-bottom:16px;}
+.card h3{font-size:1rem;font-weight:600;margin-bottom:10px;color:var(--text);}
+.card p{color:var(--muted);font-size:.85rem;line-height:1.6;}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin-top:12px;}
+.tag-db{background:#eff6ff;color:#1d4ed8;}
+.tag-dist{background:#ecfeff;color:#0e7490;}
+.tag-prog{background:#f5f3ff;color:#6d28d9;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:60px;}
+.stat{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.stat-num{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-label{color:var(--muted);font-size:.9rem;margin-top:4px;}
+</style></head>
+<body>
+<nav class="nav"><a href="../index.html">🏠 Trang chủ</a><span class="sep">/</span><span>Database</span><span class="sep">/</span><span>Deadlock Analysis</span></nav>
+
+<div class="hero"><h1>💀 Nghệ Thuật Phân Tích Deadlock MySQL InnoDB</h1>
+<p class="subtitle">Từ nguyên lý đến thực tiễn: 4 nguyên tắc vàng phân tích deadlock và case studies sản xuất thực tế</p></div>
+<div class="container">
+<h2>1. Tại Sao Deadlock Khó Phân Tích?</h2>
+<p>Deadlock trong MySQL InnoDB khó debug vì: (1) logic khóa phức tạp, khó hiểu hết các loại lock và khi nào chúng được đặt; (2) MySQL mặc định chỉ ghi rất ít thông tin trong deadlock log; (3) deadlock thường xảy ra giao thoa với trạng thái runtime khó tái hiện.</p>
+<div class="callout"><h4>💡 Phương Pháp Phân Tích Cốt Lõi</h4>
+<p>Việc phân tích deadlock bắt buộc phải: (1) hiểu đầy đủ SQL query và transaction logic, (2) biết các loại lock InnoDB có thể đặt, (3) vẽ sơ đồ lock order cho mỗi transaction, (4) tìm chu kỳ trong đồ thị wait-for.</p></div>
+
+<h2>2. Case Study 1: Deadlock Cơ Bản Nhất</h2>
+<pre><code>-- Cấu trúc bảng:
+CREATE TABLE T1 (id INT PRIMARY KEY, name VARCHAR(50));
+-- Dữ liệu: (1,aaa), (2,ccc), (3,aaa), (4,bbb), (5,ccc), (6,zzz)
+
+-- Session 1:
+BEGIN;
+SELECT * FROM t1 WHERE id = 1 FOR UPDATE;   -- (1) Giữ X(id=1)
+UPDATE t1 SET name='qqq' WHERE id = 5;       -- (3) Muốn X(id=5) → wait!
+
+-- Session 2 (đồng thời):
+BEGIN;
+DELETE FROM t1 WHERE id = 5;                 -- (2) Giữ X(id=5)
+DELETE FROM t1 WHERE id = 1;                 -- (4) Muốn X(id=1) → DEADLOCK!</code></pre>
+<div class="callout success"><h4>✅ Nguyên Tắc 1: Hiểu Toàn Bộ Transaction Logic</h4>
+<p>Phải nhìn toàn bộ transaction, không chỉ từng SQL đơn lẻ. Deadlock xảy ra khi HAI transaction giữ lock của nhau và chờ lock của nhau. Trong ví dụ trên: S1 giữ X(1) chờ X(5), S2 giữ X(5) chờ X(1) → chu kỳ.</p></div>
+
+<h2>3. Case Study 2: Deadlock Với Nhiều Index</h2>
+<pre><code>CREATE TABLE tu (id INT PRIMARY KEY, u INT UNIQUE KEY, a INT KEY);
+
+-- Session 1:
+UPDATE tu SET u=4 WHERE a=3;
+-- Thứ tự lock: X(a-index, a=3) → X(primary, id=3)
+
+-- Session 2 (đồng thời):
+UPDATE tu SET a=4 WHERE u=3;
+-- Thứ tự lock: X(u-index, u=3) → X(primary, id=3)
+-- Hai sessions giữ lock đầu tiên và chờ lock thứ hai → DEADLOCK!</code></pre>
+<div class="callout warning"><h4>⚠️ Nguyên Tắc 3: Nhiều Index, Cùng Record = Rủi Ro Cao</h4>
+<p>Khi hai transactions update cùng một record qua các index khác nhau, thứ tự lấy lock trên clustered index có thể ngược nhau → deadlock. Giải pháp: đảm bảo mọi update đến record X luôn đi qua cùng một index (hoặc thêm index hint).</p></div>
+
+<h2>4. Case Study 3: Gap Lock và INSERT Deadlock</h2>
+<pre><code>CREATE TABLE t (c1 INT PRIMARY KEY AUTO_INCREMENT, c2 INT UNIQUE KEY);
+-- Dữ liệu: (1,1), (5,4), (20,20)
+
+-- T2: INSERT INTO t VALUES (null, 10);  -- giữ X(c2=10) + X(primary)
+-- T1: INSERT INTO t VALUES (null, 10);  -- wait: cần S-lock để check unique
+-- T2: INSERT INTO t VALUES (null, 9);   -- cần Gap Lock (4,10) → bị block!
+-- → DEADLOCK!</code></pre>
+<p>Khi INSERT vào giá trị đã tồn tại trong Unique Index, InnoDB cần thêm S-lock với Next-Key semantic để check uniqueness. Điều này có thể gây deadlock phức tạp trong môi trường concurrent.</p>
+<div class="callout danger"><h4>🚨 Nguyên Tắc 4: Gap Lock + Unique Index = Deadlock Bất Ngờ</h4>
+<p>Concurrent inserts vào cùng một unique key value là nguồn gây deadlock khó hiểu nhất trong production MySQL. Luôn add retry logic cho error 1213 (deadlock) ở application layer.</p></div>
+
+<h2>5. Đọc và Hiểu Deadlock Log</h2>
+<pre><code>SHOW ENGINE INNODB STATUS;
+-- Các chuỗi lock mode quan trọng:
+-- "lock_mode X locks rec but not gap"  → Record X Lock
+-- "lock_mode X"                         → Next-Key Lock (Record + Gap)
+-- "lock_mode X locks gap before rec"    → Gap Lock only
+-- "lock_mode X locks gap before rec insert intention" → Insert Intention Lock</code></pre>
+
+<h2>6. 4 Nguyên Tắc Vàng Phòng Tránh Deadlock</h2>
+<div class="grid2">
+<div class="card-small"><h4>⭐ Nguyên Tắc 1: Hiểu Business Logic</h4>
+<p>Phân tích deadlock bắt buộc phải hiểu toàn bộ business transaction. Không thể chỉ nhìn log mà cần biết transaction làm gì.</p></div>
+<div class="card-small"><h4>⭐ Nguyên Tắc 2: Dùng RC Isolation</h4>
+<p>Gap Lock phức tạp và gây nhiều deadlock. Dùng RC isolation + row-based binlog để loại bỏ Gap Lock, giảm deadlock đáng kể.</p></div>
+<div class="card-small"><h4>⭐ Nguyên Tắc 3: Tránh Nhiều Index Trên Cùng Record</h4>
+<p>Khi update record X qua index A, rủi ro deadlock với transaction update X qua index B. Thống nhất index access path nếu có thể.</p></div>
+<div class="card-small"><h4>⭐ Nguyên Tắc 4: Thứ Tự Nhất Quán</h4>
+<p>Đảm bảo các transactions lấy lock theo cùng thứ tự trên các resources. Deadlock chỉ xảy ra khi có 2+ transactions lấy lock theo thứ tự đảo ngược.</p></div>
+</div>
+
+<h2>7. Checklist Khi Gặp Deadlock Production</h2>
+<ol>
+<li>Bật <code>innodb_print_all_deadlocks=ON</code></li>
+<li>Lấy deadlock log từ <code>SHOW ENGINE INNODB STATUS</code> hoặc error log</li>
+<li>Xác định các transactions tham gia và SQL của chúng</li>
+<li>Xác định lock order của từng transaction</li>
+<li>Tìm chu kỳ trong wait-for graph</li>
+<li>Tìm nguồn gốc: Gap Lock? Unique constraint? Multi-index access?</li>
+<li>Đề xuất fix: đổi isolation level, đổi index, đổi lock order, retry logic</li>
+</ol>
+<div class="callout success"><h4>✅ Always Add Retry Logic</h4>
+<p>Deadlock là chuyện bình thường trong concurrent systems — quan trọng là handle nó gracefully. Application luôn cần có retry logic cho error 1213.</p></div>
+</div>
+</body></html>

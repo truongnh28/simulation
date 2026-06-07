@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AliSQL — Nhánh MySQL Của Alibaba: Kiến Trúc & Đột Phá</title><style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f8fafc;
+  --accent:#0ea5e9; --accent2:#f97316; --accent3:#7c3aed;
+  --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --green:#059669; --yellow:#d97706; --red:#dc2626;
+  --ali-orange:#ff6900; --ali-blue:#1890ff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.8;}
+.hero{background:linear-gradient(135deg,#fff7ed 0%,#fff 40%,#eff6ff 100%);padding:60px 40px;text-align:center;border-bottom:1px solid var(--border);}
+.hero h1{font-size:2.4rem;font-weight:800;background:linear-gradient(135deg,#f97316,#ef4444,#1890ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;}
+.hero .subtitle{color:var(--muted);font-size:1rem;max-width:760px;margin:0 auto;}
+.container{max-width:960px;margin:0 auto;padding:50px 40px;}
+h2{font-size:1.55rem;font-weight:700;color:#9a3412;margin:44px 0 16px;padding-bottom:10px;border-bottom:2px solid #fed7aa;}
+h3{font-size:1.15rem;font-weight:600;color:#c2410c;margin:30px 0 12px;}
+h4{font-size:1rem;font-weight:600;color:#ea580c;margin:20px 0 8px;}
+p{color:var(--text);margin-bottom:14px;line-height:1.85;}
+ul,ol{margin:0 0 14px 24px;color:var(--text);}
+li{margin-bottom:7px;line-height:1.75;}
+code{background:#fff7ed;color:#c2410c;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.84em;}
+pre{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:22px;overflow-x:auto;margin:16px 0;line-height:1.65;}
+pre code{background:none;padding:0;color:#e2e8f0;font-size:.85rem;}
+.callout{background:#fff7ed;border:1px solid #fed7aa;border-left:4px solid var(--ali-orange);border-radius:10px;padding:20px 24px;margin:22px 0;}
+.callout.blue{border-left-color:var(--ali-blue);background:#eff6ff;border-color:#bfdbfe;}
+.callout.green{border-left-color:var(--green);background:#f0fdf4;border-color:#bbf7d0;}
+.callout.danger{border-left-color:var(--red);background:#fef2f2;border-color:#fecaca;}
+.callout.purple{border-left-color:var(--accent3);background:#f5f3ff;border-color:#ddd6fe;}
+.callout h4{margin-top:0;color:#9a3412;}
+.callout.blue h4{color:#1d4ed8;}
+.callout.green h4{color:var(--green);}
+.callout.danger h4{color:var(--red);}
+.callout.purple h4{color:#6d28d9;}
+.callout p:last-child,.callout ul:last-child{margin-bottom:0;}
+.table-wrap{overflow-x:auto;margin:18px 0;}
+table{width:100%;border-collapse:collapse;font-size:.88rem;}
+th{background:#fff7ed;color:#9a3412;padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid #fed7aa;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top;}
+tr:hover td{background:#fffbf5;}
+.nav{background:#fff;border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;}
+.nav a:hover{color:var(--ali-orange);}
+.nav .sep{color:#cbd5e1;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px 0;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:18px 0;}
+.card{background:#ffffff;border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.card h4{margin-top:0;margin-bottom:10px;}
+.card p:last-child,.card ul:last-child{margin-bottom:0;}
+.timeline{position:relative;padding-left:32px;margin:20px 0;}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#f97316,#1890ff);}
+.timeline-item{position:relative;margin-bottom:24px;}
+.timeline-item::before{content:'';position:absolute;left:-26px;top:6px;width:12px;height:12px;border-radius:50%;background:#f97316;border:2px solid #fff;box-shadow:0 0 0 2px #f97316;}
+.timeline-year{font-weight:700;color:#f97316;font-size:.9rem;margin-bottom:4px;}
+.timeline-title{font-weight:600;color:var(--text);margin-bottom:6px;}
+.timeline-desc{font-size:.87rem;color:var(--muted);line-height:1.6;}
+.feature-pill{display:inline-block;padding:4px 12px;border-radius:20px;font-size:.78rem;font-weight:500;margin:3px;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;}
+.feature-pill.blue{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe;}
+.feature-pill.green{background:#f0fdf4;color:#166534;border-color:#bbf7d0;}
+.feature-pill.purple{background:#f5f3ff;color:#6d28d9;border-color:#ddd6fe;}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0;}
+.stat-box{background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#f97316,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-label{color:var(--muted);font-size:.85rem;margin-top:4px;}
+.arch-block{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;margin:6px 0;font-size:.88rem;}
+.arch-block strong{color:#9a3412;}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.75rem;font-weight:600;margin:2px;}
+.badge-green{background:#dcfce7;color:#166534;}
+.badge-orange{background:#ffedd5;color:#9a3412;}
+.badge-blue{background:#dbeafe;color:#1e40af;}
+.section-lead{font-size:1.05rem;color:var(--muted);margin-bottom:24px;line-height:1.7;border-left:3px solid #fed7aa;padding-left:16px;}
+.perf-compare{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:16px 0;}
+.perf-before{background:#fef2f2;padding:18px;border-right:1px solid var(--border);}
+.perf-after{background:#f0fdf4;padding:18px;}
+.perf-before h4{color:var(--red);margin-top:0;}
+.perf-after h4{color:var(--green);margin-top:0;}
+.perf-num{font-size:2rem;font-weight:800;margin:8px 0;font-family:'JetBrains Mono',monospace;}
+.flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:16px 0;padding:16px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);}
+.flow-item{background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:.82rem;font-weight:500;text-align:center;}
+.flow-arrow{color:#94a3b8;font-size:1.1rem;}
+</style></head>
+<body>
+<nav class="nav">
+  <a href="../index.html">🏠 Trang chủ</a>
+  <span class="sep">/</span><span>Database</span>
+  <span class="sep">/</span><span>AliSQL</span>
+</nav>
+<div class="hero">
+  <h1>🔥 AliSQL — Nhánh MySQL Của Alibaba</h1>
+  <p class="subtitle">Từ Double 11 đến X-KV và X-Cluster: hành trình 10 năm biến đổi MySQL để phục vụ hàng trăm triệu giao dịch — và những đột phá kỹ thuật mà cộng đồng mã nguồn mở học được từ Alibaba</p>
+</div>
+<div class="container">
+
+<!-- ======================== SECTION 1 ======================== -->
+<h2>1. AliSQL Là Gì Và Tại Sao Cần Nó?</h2>
+<p class="section-lead">AliSQL là nhánh MySQL (MySQL fork) do Alibaba phát triển từ năm 2010, được dẫn dắt bởi nhóm kernel database do kỹ sư He Dengcheng (何登成) đứng đầu. Đây không phải một dự án research thuần túy — nó được sinh ra từ áp lực vận hành thực tế của hệ thống thương mại điện tử lớn nhất thế giới.</p>
+
+<div class="stat-row">
+  <div class="stat-box">
+    <div class="stat-num">40+</div>
+    <div class="stat-label">Bug được phát hiện và báo cáo cho MySQL community</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num">40+</div>
+    <div class="stat-label">Tính năng mới được bổ sung vào MySQL</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num">30+</div>
+    <div class="stat-label">Bottleneck được phát hiện và tối ưu hóa</div>
+  </div>
+</div>
+
+<p>Alibaba không thể chờ đợi upstream MySQL release mới để giải quyết các vấn đề hiệu năng cấp bách. Một sự kiện Double 11 (11.11 — Singles' Day) có thể tạo ra hàng triệu giao dịch mỗi giây trong khung thời gian đỉnh. MySQL "vanilla" không được thiết kế cho kịch bản này — vì vậy Alibaba phải tự xây dựng giải pháp và đó chính là AliSQL.</p>
+
+<div class="grid3">
+  <div class="card">
+    <h4>Hiệu Năng (Performance)</h4>
+    <p>MySQL gốc có nhiều bottleneck khi scale lên hàng chục cores và hàng nghìn connections. AliSQL loại bỏ từng bottleneck một qua thực tiễn production.</p>
+  </div>
+  <div class="card">
+    <h4>Tính Năng (Features)</h4>
+    <p>Các use case của Alibaba đòi hỏi tính năng không có trong MySQL — Hot SKU update, K-V interface, commit hints, flow control...</p>
+  </div>
+  <div class="card">
+    <h4>Vận Hành (Operations)</h4>
+    <p>DBA cần visibility tốt hơn (deadlock info, lock timeout per-SQL), tự động phát hiện và sửa inconsistency, kiểm soát lưu lượng linh hoạt.</p>
+  </div>
+</div>
+
+<h3>1.1 Kiến Trúc AliSQL — Các Điểm Can Thiệp</h3>
+<p>AliSQL can thiệp vào MySQL ở mọi tầng, không chỉ ở storage engine:</p>
+
+<div class="arch-block"><strong>MySQL Server Layer:</strong>
+  <span class="feature-pill">Thread Pool</span>
+  <span class="feature-pill">Flow Control</span>
+  <span class="feature-pill">Online Execute Plan Optimize</span>
+  <span class="feature-pill">Select from Update</span>
+  <span class="feature-pill">High/Low Watermark Protection</span>
+</div>
+<div class="arch-block"><strong>Replication &amp; Binlog:</strong>
+  <span class="feature-pill">Per Table Multi-Thread Slave</span>
+  <span class="feature-pill">Semi-Sync Optimization</span>
+  <span class="feature-pill">Slave Apply Optimization</span>
+  <span class="feature-pill">BINLOG Throttling</span>
+  <span class="feature-pill">Lock_log Split</span>
+  <span class="feature-pill">commit_on_success hints</span>
+</div>
+<div class="arch-block"><strong>InnoDB Engine Layer:</strong>
+  <span class="feature-pill">High Contention Optimization</span>
+  <span class="feature-pill">Insert Optimization</span>
+  <span class="feature-pill">Online DDL Optimization</span>
+  <span class="feature-pill">Group Prepare</span>
+  <span class="feature-pill">Dual Redo Log Buffers</span>
+  <span class="feature-pill">Read View Optimization</span>
+  <span class="feature-pill">PK Access Optimization</span>
+  <span class="feature-pill">Column Compression</span>
+  <span class="feature-pill">Per SQL Lock Timeout</span>
+</div>
+
+<!-- ======================== SECTION 2 ======================== -->
+<h2>2. Lịch Sử Phát Triển — Từ Bug Fix Đến Đột Phá</h2>
+
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="timeline-year">2010–2011 / AliSQL 5.1</div>
+    <div class="timeline-title">Giai Đoạn 1: Bug Fix &amp; Nền Tảng</div>
+    <div class="timeline-desc">Bắt đầu bằng việc sửa các bug nghiêm trọng trong MySQL 5.1 ảnh hưởng đến production Alibaba — DDL bug, race condition. Tất cả được báo cáo ngược lại cho MySQL community. Triết lý: đóng góp lại cho mã nguồn mở.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">2012 / AliSQL 5.5</div>
+    <div class="timeline-title">Giai Đoạn 2: Replication &amp; Hot SKU</div>
+    <div class="timeline-desc">Parallel Replication theo table-level — breakthrough đầu tiên giúp slave theo kịp master khi write throughput cao. Hot SKU Version 1 ra đời — giải quyết vấn đề nhiều transaction cùng update một inventory record.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">2014 / AliSQL 5.6</div>
+    <div class="timeline-title">Giai Đoạn 3: Tính Năng Doanh Nghiệp</div>
+    <div class="timeline-desc">SQL Firewall, Enhanced Thread Pool (từ Queueing Theory — duy trì số thread tối ưu thay vì tạo mới cho mỗi connection), Group Prepare. AliSQL 5.6 bắt đầu được nhiều công ty Trung Quốc khác áp dụng.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">2016 / AliSQL 5.7</div>
+    <div class="timeline-title">Giai Đoạn 4: Group Update &amp; RocksDB</div>
+    <div class="timeline-desc">Hot SKU Group Update — phiên bản cuối cùng đạt đến 100,000 single row update/giây trên một instance. Tích hợp RocksDB storage engine (MyRocks). commit_on_success hints giảm network roundtrip trong replication.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-year">2017 / AliSQL X</div>
+    <div class="timeline-title">Giai Đoạn 5: X-KV &amp; X-Cluster</div>
+    <div class="timeline-desc">X-KV: giao diện Key-Value bypass hoàn toàn SQL layer → 640,000 QPS single get. X-Cluster: giải pháp cluster dựa trên X-Paxos (implementation Paxos của Alibaba). Mã nguồn mở trên GitHub.</div>
+  </div>
+</div>
+
+<!-- ======================== SECTION 3 ======================== -->
+<h2>3. Hot SKU — Bài Toán Kinh Điển Và Hành Trình Giải Quyết</h2>
+<p class="section-lead">Hot SKU (Stock Keeping Unit) là vấn đề điển hình nhất của e-commerce: hàng chục nghìn người dùng đồng thời mua cùng một sản phẩm hot, tất cả đều cần UPDATE cùng một row trong database để giảm số lượng tồn kho. Đây là row lock contention ở dạng cực đoan nhất.</p>
+
+<div class="callout danger">
+  <h4>🚨 Vấn Đề: Row Lock Contention Cực Đoan</h4>
+  <p>Với MySQL vanilla, khi 1,000 users đồng thời chạy <code>UPDATE inventory SET qty = qty - 1 WHERE sku_id = 12345</code>: chỉ 1 transaction có thể giữ row lock tại một thời điểm. 999 transactions còn lại phải chờ. Thời gian chờ tăng tuyến tính → throughput giảm mạnh → nhiều deadlock → transaction timeout. Điểm bottleneck: một row database trở thành "điểm nút cổ chai" của toàn hệ thống.</p>
+</div>
+
+<div class="grid3">
+  <div class="card">
+    <h4>Thế Hệ 1: Syntax Hints</h4>
+    <p>Thêm hints vào SQL để InnoDB biết đây là hot row update, xử lý ưu tiên. Cải thiện nhỏ nhưng không giải quyết được gốc rễ — vẫn phải serialize qua lock.</p>
+    <p style="font-size:.83rem;color:var(--muted);">~550 TPS → ~2,000 TPS</p>
+  </div>
+  <div class="card">
+    <h4>Thế Hệ 2: InnoDB Strict Concurrency</h4>
+    <p>Giới hạn số threads đồng thời vào InnoDB kernel để giảm lock contention. Queue ở tầng trên, serialize trước khi vào storage engine.</p>
+    <p style="font-size:.83rem;color:var(--muted);">~2,000 TPS → ~10,000 TPS</p>
+  </div>
+  <div class="card">
+    <h4>Thế Hệ 3: Group Update</h4>
+    <p>Gom nhiều UPDATE cùng một row thành một group update nguyên tử. 1 lock → 1 lần UPDATE thực thi thay cho N lần. Hỗ trợ rollback, không lost update.</p>
+    <p style="font-size:.83rem;color:var(--green);font-weight:600;">~40,000–100,000 TPS 🚀</p>
+  </div>
+</div>
+
+<h3>3.1 Cơ Chế Group Update — Phân Tích Sâu</h3>
+<p>Group Update là một trong những đổi mới thú vị nhất của AliSQL vì nó thay đổi ngữ nghĩa của transaction theo cách tinh tế:</p>
+
+<pre><code>-- Thay vì N transactions riêng lẻ:
+-- T1: UPDATE inventory SET qty = qty - 1 WHERE id = 100; COMMIT;
+-- T2: UPDATE inventory SET qty = qty - 1 WHERE id = 100; COMMIT;
+-- ...Tn: UPDATE inventory SET qty = qty - 1 WHERE id = 100; COMMIT;
+
+-- AliSQL Group Update gom thành:
+-- Detect: nhiều pending updates trên cùng row id=100
+-- Execute: UPDATE inventory SET qty = qty - N WHERE id = 100; COMMIT;
+-- Notify: N transactions được notify thành công/thất bại
+
+-- Binlog ghi 1 operation thay vì N → Slave cũng nhanh hơn!</code></pre>
+
+<div class="callout blue">
+  <h4>💡 Tại Sao Group Update Không Đơn Giản</h4>
+  <p>Thách thức kỹ thuật: nếu một trong N transactions trong group cần rollback (do ràng buộc khác), làm thế nào để rollback đúng? AliSQL giải quyết bằng cách ghi riêng delta của từng transaction trong undo log, nhưng chỉ thực thi một lần ở tầng storage. Nếu group update thành công mà transaction riêng lẻ cần rollback, chỉ rollback delta của transaction đó — không ảnh hưởng các transaction khác trong group.</p>
+</div>
+
+<!-- ======================== SECTION 4 ======================== -->
+<h2>4. Thread Pool — Queueing Theory Trong Thực Tiễn</h2>
+<p>Enhanced Thread Pool của AliSQL là ứng dụng trực tiếp của Queueing Theory (Erlang-C formula) vào database architecture. Thay vì tạo 1 thread cho mỗi connection (mô hình truyền thống của MySQL), Thread Pool duy trì một số lượng thread tối ưu phục vụ N connections (N >> số thread).</p>
+
+<div class="perf-compare">
+  <div class="perf-before">
+    <h4>MySQL Truyền Thống — 1 Thread/Connection</h4>
+    <p>10,000 connections → 10,000 threads</p>
+    <ul style="font-size:.87rem;margin-top:8px;">
+      <li>Context switch overhead: &gt;95% CPU time</li>
+      <li>Memory: ~8MB/thread × 10K = 80GB</li>
+      <li>Cache thrashing: TLB và L1/L2 bị invalidate liên tục</li>
+      <li>Lock contention tăng cấp số nhân</li>
+    </ul>
+    <div class="perf-num" style="color:var(--red);">~5,000 TPS</div>
+    <p style="font-size:.82rem;color:var(--red);">Degradation khi concurrent connections tăng cao</p>
+  </div>
+  <div class="perf-after">
+    <h4>AliSQL Thread Pool — Tối Ưu Theo Erlang-C</h4>
+    <p>10,000 connections → ~128 worker threads</p>
+    <ul style="font-size:.87rem;margin-top:8px;">
+      <li>Context switch tối thiểu (số thread ≈ số core)</li>
+      <li>Memory: 128 × 8MB = 1GB</li>
+      <li>Cache warm: mỗi thread xử lý liên tục cùng loại query</li>
+      <li>Lock granularity cao hơn, ít contention</li>
+    </ul>
+    <div class="perf-num" style="color:var(--green);">~50,000 TPS</div>
+    <p style="font-size:.82rem;color:var(--green);">Tăng 10× khi concurrent connections cao 🚀</p>
+  </div>
+</div>
+
+<!-- ======================== SECTION 5 ======================== -->
+<h2>5. X-KV — Bypass SQL Layer Hoàn Toàn</h2>
+<p class="section-lead">Trong kiến trúc e-commerce, một tỷ lệ lớn queries là simple key-value lookups theo primary key — <code>SELECT * FROM products WHERE id = 12345</code>. Tại sao phải tốn chi phí parse SQL, xây query plan, optimize, rồi mới execute? X-KV là câu trả lời của AliSQL: bypass toàn bộ SQL layer, truy cập InnoDB trực tiếp.</p>
+
+<div class="flow">
+  <div class="flow-item">Application</div>
+  <div class="flow-arrow">→ SQL</div>
+  <div class="flow-item" style="background:#fff7ed;border-color:#fed7aa;">MySQL Server<br><small>Parse → Opt → Execute</small></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-item">Handler API</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-item" style="background:#f0fdf4;border-color:#bbf7d0;">InnoDB<br><small>Storage Engine</small></div>
+</div>
+<div style="text-align:center;color:var(--muted);font-size:.85rem;margin:-8px 0 8px;">↓ X-KV bypass hoàn toàn SQL layer</div>
+<div class="flow">
+  <div class="flow-item">Application</div>
+  <div class="flow-arrow">→ x-protocol</div>
+  <div class="flow-item" style="background:#dbeafe;border-color:#93c5fd;">X-KV<br><small>InnoDB API trực tiếp</small></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-item" style="background:#f0fdf4;border-color:#bbf7d0;">InnoDB<br><small>Storage Engine</small></div>
+</div>
+
+<h3>5.1 Vì Sao InnoDB Memcached Plugin Không Đủ?</h3>
+<p>AliSQL X-KV được phát triển dựa trên InnoDB Memcached Plugin nhưng giải quyết nhiều hạn chế quan trọng:</p>
+
+<div class="table-wrap"><table>
+<tr><th>Vấn Đề</th><th>InnoDB Memcached Plugin</th><th>X-KV</th></tr>
+<tr><td>Data Types</td><td>Chỉ Char/Varchar/Blob</td><td>Float, Double, Integer, Decimal, DateTime, Custom Format, ...</td></tr>
+<tr><td>NULL handling</td><td>Không phân biệt NULL và rỗng</td><td>Meta info protocol tường minh</td></tr>
+<tr><td>Delimiter</td><td>Tự chọn — dễ conflict với data</td><td>Length-based protocol — không cần delimiter</td></tr>
+<tr><td>Multi-table get</td><td>Không hỗ trợ</td><td>Multi-get from multi tables trong 1 request</td></tr>
+<tr><td>Index types</td><td>Chỉ unique index</td><td>Non-unique index, Composite index, Prefix search</td></tr>
+<tr><td>Schema change</td><td>Phải uninstall → reinstall plugin</td><td>Online schema change, không block queries</td></tr>
+</table></div>
+
+<h3>5.2 X-KV Protocol — Thiết Kế Mới</h3>
+<p>InnoDB Memcached Plugin dùng delimiter để phân tách các cột — ví dụ dùng ký tự <code>|</code>. Vấn đề: nếu data chứa ký tự <code>|</code> thì sao? Không có NULL-safe cách nào. X-KV thiết kế protocol mới dựa trên length-encoding:</p>
+
+<pre><code>-- InnoDB Memcached cũ (delimiter-based):
+PK=1 | NAME=He Dengcheng | WORKPLACE=阿里巴巴西溪园区 |
+-- Vấn đề: nếu value chứa | thì protocol bị vỡ
+
+-- X-KV Protocol mới (length-based):
+Field = Meta Info + Data
+
+Meta Info: [Version][Count][Length1][Length2][Length3]...
+Data:      [value1][value2][value3]...
+
+-- Ví dụ:
+[0][3][1][14][10] [1] [He Dengcheng] [阿里巴巴西溪]
+ ^  ^  ^   ^   ^   ^        ^               ^
+Ver Cnt L1  L2  L3  C1       C2              C3
+
+-- Hỗ trợ composite index:
+GET [table_name.]key1 [key2] [key3]</code></pre>
+
+<h3>5.3 X-KV Performance — Số Liệu Thực Tế</h3>
+<p>Bottleneck được phát hiện qua profiling production: efficiency of serialization, allocation of transactions, container info verifying.</p>
+
+<div class="grid2">
+  <div class="card">
+    <h4>Single Get QPS</h4>
+    <div style="display:flex;align-items:center;gap:16px;margin:12px 0;">
+      <div>
+        <div style="font-size:.78rem;color:var(--muted);">Trước tối ưu</div>
+        <div style="font-size:2rem;font-weight:800;color:var(--red);font-family:monospace;">420K</div>
+      </div>
+      <div style="font-size:1.5rem;color:var(--muted);">→</div>
+      <div>
+        <div style="font-size:.78rem;color:var(--muted);">X-KV sau tối ưu</div>
+        <div style="font-size:2rem;font-weight:800;color:var(--green);font-family:monospace;">640K</div>
+      </div>
+      <div style="background:#f0fdf4;color:var(--green);font-weight:700;padding:4px 10px;border-radius:6px;">+52%</div>
+    </div>
+    <p style="font-size:.83rem;color:var(--muted);">Bottleneck sau tối ưu: network card và CPU — không còn software overhead</p>
+  </div>
+  <div class="card">
+    <h4>Multi-get From 4 Tables</h4>
+    <div style="display:flex;align-items:center;gap:16px;margin:12px 0;">
+      <div>
+        <div style="font-size:.78rem;color:var(--muted);">Trước tối ưu</div>
+        <div style="font-size:2rem;font-weight:800;color:var(--red);font-family:monospace;">60K</div>
+      </div>
+      <div style="font-size:1.5rem;color:var(--muted);">→</div>
+      <div>
+        <div style="font-size:.78rem;color:var(--muted);">X-KV sau tối ưu</div>
+        <div style="font-size:2rem;font-weight:800;color:var(--green);font-family:monospace;">180K</div>
+      </div>
+      <div style="background:#f0fdf4;color:var(--green);font-weight:700;padding:4px 10px;border-radius:6px;">+200%</div>
+    </div>
+    <p style="font-size:.83rem;color:var(--muted);">Tính năng hoàn toàn mới — InnoDB Memcached không hỗ trợ multi-table lookup</p>
+  </div>
+</div>
+
+<!-- ======================== SECTION 6 ======================== -->
+<h2>6. commit_on_success — Tối Ưu Replication Không Mất Dữ Liệu</h2>
+<p class="section-lead">Một trong những bottleneck ẩn nhất trong MySQL replication: sau mỗi transaction commit, client phải nhận ACK từ master, rồi master mới ghi binlog để slave replicate. <code>commit_on_success</code> hint của AliSQL loại bỏ một roundtrip network.</p>
+
+<pre><code>-- Query thông thường (2 roundtrips):
+-- Client → Master: BEGIN; UPDATE ...; COMMIT;  [roundtrip 1]
+-- Master → Client: OK                           [roundtrip 2: ACK]
+-- Master → Slave: binlog event                  [async]
+
+-- commit_on_success hint (1 roundtrip):
+INSERT INTO orders VALUES (...) COMMIT_ON_SUCCESS ROLLBACK_ON_FAIL;
+-- Client gửi query kèm hint
+-- Master thực thi + commit + reply trong 1 response
+-- Nếu fail: tự động rollback, thông báo lỗi cho client
+-- Giảm 50% network roundtrip cho write-heavy workloads!</code></pre>
+
+<div class="callout blue">
+  <h4>💡 Ý Nghĩa Đối Với Replication</h4>
+  <p>commit_on_success kết hợp với Enhanced Semi-Sync Replication của AliSQL đảm bảo: transaction chỉ được commit ở master sau khi ít nhất 1 slave đã nhận và ghi binlog. Điều này loại bỏ hoàn toàn tình huống "master commit, slave chưa nhận, master crash" — nguyên nhân của data loss trong setup master-slave truyền thống. AliSQL đạt được strong consistency với minimum overhead.</p>
+</div>
+
+<!-- ======================== SECTION 7 ======================== -->
+<h2>7. X-Cluster — Giải Pháp Cluster Trên X-Paxos</h2>
+<p>X-Cluster là bước tiến xa nhất của AliSQL: không chỉ tối ưu một instance, mà xây dựng distributed consensus cluster. X-Cluster dựa trên <strong>X-Paxos</strong> — implementation Multi-Paxos của Alibaba được tối ưu cho database workloads.</p>
+
+<div class="grid2">
+  <div class="card">
+    <h4>Tại Sao Không Dùng MySQL Group Replication?</h4>
+    <ul>
+      <li>MySQL Group Replication dùng Paxos nhưng implementation chưa đủ mature cho Alibaba scale</li>
+      <li>X-Paxos được tối ưu đặc biệt cho low-latency: pipeline nhiều round Paxos, batch commit</li>
+      <li>Tích hợp sâu với AliSQL engine — không phải plugin ngoài</li>
+      <li>Battle-tested qua nhiều Double 11 trước khi công bố</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>Đảm Bảo Của X-Cluster</h4>
+    <ul>
+      <li><strong>Strong Consistency</strong>: Mỗi write được đa số nodes xác nhận trước khi visible</li>
+      <li><strong>Automatic Failover</strong>: Leader election tự động trong milliseconds khi master fail</li>
+      <li><strong>No Data Loss</strong>: Không bao giờ mất transaction đã commit</li>
+      <li><strong>Linear Scalability</strong>: Read có thể scale bằng cách thêm Follower nodes</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ======================== SECTION 8 ======================== -->
+<h2>8. Select from Update — Đọc Giá Trị Trước Khi Ghi</h2>
+<p>Một tính năng tinh tế nhưng rất hữu ích trong e-commerce: thường cần SELECT xem giá trị hiện tại trước khi UPDATE (để kiểm tra logic). Với MySQL vanilla, cần 2 statements. AliSQL thêm cú pháp:</p>
+
+<pre><code>-- MySQL thông thường: 2 roundtrips
+SELECT price FROM products WHERE id = 100;  -- kiểm tra giá
+UPDATE products SET price = 99 WHERE id = 100 AND price = 100;  -- conditional update
+
+-- AliSQL SELECT_FROM_UPDATE: 1 roundtrip
+UPDATE products SET price = 99
+WHERE id = 100 AND price = 100
+RETURNING price_before, price_after;
+
+-- Hoặc:
+SELECT * FROM (UPDATE inventory SET qty=qty-1 WHERE sku_id=12345) AS old_state;
+-- Trả về giá trị CŨ của row trước khi update — rất hữu ích cho audit log!</code></pre>
+
+<!-- ======================== SECTION 9 ======================== -->
+<h2>9. Tác Động Đến Cộng Đồng Mã Nguồn Mở</h2>
+<div class="callout green">
+  <h4>✅ AliSQL's Contributions to MySQL Community</h4>
+  <p>AliSQL không chỉ là sản phẩm nội bộ — Alibaba báo cáo tất cả 40+ bugs được phát hiện cho MySQL upstream. Nhiều tính năng AliSQL phát triển sau này được port vào MySQL chính thức hoặc MariaDB. Colin Charles (MariaDB) đã viết: "<em>AliSQL and some features that have made it into MariaDB Server</em>". Đây là ví dụ điển hình về vòng lặp mã nguồn mở tích cực: dùng mã nguồn mở → cải tiến → đóng góp lại.</p>
+</div>
+
+<div class="grid2">
+  <div class="card">
+    <h4>Điều AliSQL Dạy Về Database Engineering</h4>
+    <ul>
+      <li><strong>Bottleneck không phải lúc nào cũng ở nơi bạn nghĩ</strong>: <code>srv_n_rows_read++</code> — một dòng code đơn giản gây false sharing, fix nó tăng 50% scalability</li>
+      <li><strong>Theory drives practice</strong>: Thread Pool từ Erlang-C, không phải trial-and-error</li>
+      <li><strong>Measure first</strong>: Mọi optimization đều bắt đầu từ profiling thực tế, không từ assumption</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>Các Công Ty Học Từ AliSQL</h4>
+    <ul>
+      <li><strong>PolarDB</strong>: Thế hệ tiếp theo của Alibaba, xây trên AliSQL experience</li>
+      <li><strong>TiDB</strong>: Học từ Hot SKU solution khi thiết kế row-level conflict detection</li>
+      <li><strong>OceanBase</strong>: X-Paxos experience ảnh hưởng đến Paxos implementation</li>
+      <li><strong>MySQL 8.0</strong>: Nhiều optimizations tương tự AliSQL xuất hiện trong MySQL 8.0</li>
+    </ul>
+  </div>
+</div>
+
+<div class="callout purple">
+  <h4>🔗 Liên Kết Đa Lĩnh Vực</h4>
+  <p>AliSQL là điểm hội tụ của tất cả các lý thuyết trong bộ tài liệu này:</p>
+  <ul>
+    <li><strong>Queueing Theory</strong> → Thread Pool (Erlang-C optimal threads), Hot SKU queue/batch</li>
+    <li><strong>CPU Cache Coherence</strong> → G5 Discovery (false sharing fix trong <code>srv_n_rows_read</code>), per-thread counters</li>
+    <li><strong>Amdahl's Law</strong> → Split kernel mutex (InnoDB 5.5), multiple buffer pool instances → giảm serial section</li>
+    <li><strong>Paxos/Raft</strong> → X-Cluster dựa trên X-Paxos, Enhanced Semi-Sync tương tự 2PC nhẹ</li>
+    <li><strong>Memory Model</strong> → Dual redo log buffers cần memory barriers chính xác để thread-safe</li>
+  </ul>
+  <p>AliSQL không phải collection của các tính năng ngẫu nhiên — đó là ứng dụng có hệ thống của lý thuyết máy tính hiện đại vào một bài toán thực tế cực đoan.</p>
+</div>
+
+</div>
+</body></html>

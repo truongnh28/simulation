@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Oracle RAC & Cache Fusion: Shared-Disk Distributed Database</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f8fafc;
+  --accent:#dc2626; --accent2:#b91c1c; --accent3:#991b1b;
+  --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --green:#059669; --yellow:#d97706; --blue:#1d4ed8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.75;}
+.nav{background:#fff;border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;}
+.nav a:hover{color:var(--accent);}
+.nav .sep{color:var(--border);}
+.hero{background:linear-gradient(135deg,#fef2f2 0%,#fee2e2 50%,#fecaca 100%);padding:60px 40px;text-align:center;border-bottom:1px solid var(--border);}
+.hero h1{font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#dc2626,#b91c1c,#991b1b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;}
+.hero .subtitle{color:var(--muted);font-size:1rem;max-width:700px;margin:0 auto;}
+.container{max-width:960px;margin:0 auto;padding:50px 40px;}
+h2{font-size:1.55rem;font-weight:700;color:#b91c1c;margin:40px 0 16px;padding-bottom:10px;border-bottom:2px solid #fecaca;}
+h3{font-size:1.15rem;font-weight:600;color:#dc2626;margin:28px 0 12px;}
+h4{font-size:1rem;font-weight:600;color:#991b1b;margin:20px 0 8px;}
+p{color:var(--text);margin-bottom:14px;}
+ul,ol{margin:0 0 14px 24px;color:var(--text);}
+li{margin-bottom:6px;}
+code{background:#fef2f2;color:#b91c1c;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.85em;}
+pre{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;overflow-x:auto;margin:16px 0;}
+pre code{background:none;padding:0;color:#e2e8f0;font-size:.88rem;}
+.callout{background:#f8fafc;border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:20px;margin:20px 0;}
+.callout.warning{border-left-color:var(--yellow);background:#fffbeb;}
+.callout.danger{border-left-color:var(--accent);background:#fef2f2;}
+.callout.success{border-left-color:var(--green);background:#f0fdf4;}
+.callout.info{border-left-color:var(--blue);background:#eff6ff;}
+.callout h4{margin-top:0;color:var(--accent);}
+.callout.warning h4{color:var(--yellow);}
+.callout.danger h4{color:var(--accent);}
+.callout.success h4{color:var(--green);}
+.callout.info h4{color:var(--blue);}
+.table-wrap{overflow-x:auto;margin:16px 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:#fef2f2;color:#b91c1c;padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid #fecaca;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);}
+tr:hover td{background:#fff5f5;}
+.img-placeholder{background:var(--surface2);border:2px dashed #fecaca;border-radius:12px;padding:30px;margin:20px 0;text-align:center;color:var(--muted);font-size:.95rem;}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin:2px;}
+.badge-blue{background:#eff6ff;color:#1d4ed8;}
+.badge-red{background:#fef2f2;color:#b91c1c;}
+.badge-green{background:#f0fdf4;color:#15803d;}
+.badge-yellow{background:#fffbeb;color:#92400e;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:16px 0;}
+.card-small{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.card-small h4{margin-top:0;margin-bottom:8px;color:#dc2626;}
+.stat-box{background:linear-gradient(135deg,#fef2f2,#fee2e2);border:1px solid #fecaca;border-radius:12px;padding:24px;text-align:center;}
+.stat-num{font-size:2.2rem;font-weight:800;color:#dc2626;}
+.stat-label{color:var(--muted);font-size:.85rem;margin-top:4px;}
+.node-box{background:#fff;border:2px solid #fecaca;border-radius:12px;padding:20px;text-align:center;position:relative;}
+.node-box .node-label{font-weight:700;color:#dc2626;font-size:1.1rem;}
+.node-box .node-sub{color:var(--muted);font-size:.85rem;margin-top:4px;}
+.interconnect{background:linear-gradient(90deg,#fecaca,#fca5a5,#fecaca);height:4px;border-radius:2px;margin:8px 20px;}
+.resource-row{background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:6px 0;display:flex;align-items:center;gap:16px;}
+.resource-row .res-name{font-weight:600;color:#dc2626;min-width:120px;}
+.resource-row .res-desc{color:var(--text);font-size:.9rem;}
+.flow-step{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;margin:8px 0;position:relative;padding-left:56px;}
+.flow-step::before{content:attr(data-step);position:absolute;left:16px;top:50%;transform:translateY(-50%);background:var(--accent);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html">← Trang Chủ</a>
+  <span class="sep">›</span>
+  <a href="#">Database</a>
+  <span class="sep">›</span>
+  <span>Oracle RAC & Cache Fusion</span>
+</nav>
+<div class="hero">
+  <h1>🏛️ Oracle RAC & Cache Fusion</h1>
+  <p class="subtitle">Real Application Cluster — kiến trúc shared-disk distributed database, Cache Fusion protocol, Split-Brain detection và Resource Distribution Algorithm</p>
+</div>
+<div class="container">
+
+<h2>1. Oracle RAC: Khái Niệm Cốt Lõi</h2>
+
+<p>Oracle Real Application Clusters (RAC) là kiến trúc cho phép nhiều Oracle database instances (nodes) cùng chia sẻ một storage vật lý và hoạt động như một database thống nhất với tên gọi duy nhất. Đây là triết lý <strong>shared-disk</strong> — hoàn toàn khác với shared-nothing của MySQL Cluster hay Distributed SQL (CockroachDB, TiDB).</p>
+
+<div class="callout info">
+  <h4>💡 Shared-Disk vs Shared-Nothing</h4>
+  <p><strong>Shared-Disk (RAC)</strong>: Tất cả nodes đọc/ghi cùng một storage. Ưu điểm: không cần sharding data, dễ scale-up và add nodes. Nhược điểm: cần high-speed interconnect giữa nodes để đồng bộ cache, phức tạp hơn khi nodes fail đồng thời.<br><strong>Shared-Nothing (MySQL Cluster, TiDB)</strong>: Mỗi node sở hữu partition dữ liệu riêng. Scale tốt hơn về storage, nhưng phức tạp hơn khi cross-shard queries.</p>
+</div>
+
+<div class="grid3">
+  <div class="stat-box"><div class="stat-num">100</div><div class="stat-label">Nodes tối đa trong 1 RAC cluster</div></div>
+  <div class="stat-box"><div class="stat-num">128</div><div class="stat-label">Hash buckets cho Resource Distribution</div></div>
+  <div class="stat-box"><div class="stat-num">&lt;1ms</div><div class="stat-label">Interconnect latency yêu cầu (InfiniBand)</div></div>
+</div>
+
+<h3>1.1 Kiến Trúc Tổng Quan</h3>
+
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:20px 0;">
+  <div class="node-box">
+    <div class="node-label">Node 1</div>
+    <div class="node-sub">Instance 1<br>SGA (Buffer Cache)<br>LGWR, DBWR, CKPT<br>LMD, LMS (GCS)</div>
+  </div>
+  <div class="node-box">
+    <div class="node-label">Node 2</div>
+    <div class="node-sub">Instance 2<br>SGA (Buffer Cache)<br>LGWR, DBWR, CKPT<br>LMD, LMS (GCS)</div>
+  </div>
+  <div class="node-box">
+    <div class="node-label">Node N</div>
+    <div class="node-sub">Instance N<br>SGA (Buffer Cache)<br>LGWR, DBWR, CKPT<br>LMD, LMS (GCS)</div>
+  </div>
+</div>
+<div class="interconnect"></div>
+<div style="background:#fff;border:2px solid #fecaca;border-radius:12px;padding:20px;text-align:center;margin-bottom:16px;">
+  <div style="font-weight:700;color:#dc2626;font-size:1.1rem;">Private Interconnect (InfiniBand / 10GbE)</div>
+  <div style="color:var(--muted);font-size:.85rem;margin-top:4px;">Cache Fusion traffic, GCS/GES messages, Cluster heartbeat</div>
+</div>
+<div style="background:#fff;border:2px solid #d1d5db;border-radius:12px;padding:20px;text-align:center;">
+  <div style="font-weight:700;color:#374151;font-size:1.1rem;">Shared Storage (ASM / SAN / NFS)</div>
+  <div style="color:var(--muted);font-size:.85rem;margin-top:4px;">Datafiles, Redo logs, Control files — accessible by ALL nodes simultaneously</div>
+</div>
+
+<h3>1.2 Các Thành Phần Chính</h3>
+
+<div class="grid2">
+  <div class="card-small">
+    <h4>GCS — Global Cache Service</h4>
+    <p>Quản lý cache coherency giữa các nodes. Biết block nào đang được hold bởi node nào, ở trạng thái nào (read/write/exclusive). Được implement bởi LMD (Lock Monitor Daemon) và LMS (Lock Manager Server) processes.</p>
+  </div>
+  <div class="card-small">
+    <h4>GES — Global Enqueue Service</h4>
+    <p>Quản lý distributed locks (enqueues) — row locks, table locks, DDL locks. Tương đương với lock manager trong InnoDB nhưng ở cấp cluster. Dùng PCM (Parallel Cache Management) resources.</p>
+  </div>
+  <div class="card-small">
+    <h4>CSS — Cluster Synchronization Services</h4>
+    <p>Duy trì cluster membership. Quản lý heartbeat giữa các nodes. Phát hiện node failure và trigger reconfiguration. Dùng Voting Disk để resolve split-brain.</p>
+  </div>
+  <div class="card-small">
+    <h4>ASM — Automatic Storage Management</h4>
+    <p>Volume manager và file system của Oracle. Phân phối data files trên nhiều disks tự động (striping), mirroring, và quản lý failover khi disk fail.</p>
+  </div>
+</div>
+
+<h2>2. Cache Fusion: Trái Tim Của RAC</h2>
+
+<p>Cache Fusion là cơ chế cho phép một node đọc block dữ liệu từ buffer cache của node khác qua interconnect, thay vì phải đọc từ disk. Đây là innovation cốt lõi biến RAC từ một cluster nhiều nodes thành một database duy nhất với "global buffer cache" ảo.</p>
+
+<div class="callout">
+  <h4>⚡ Tại Sao Cache Fusion Quan Trọng?</h4>
+  <p>Không có Cache Fusion, khi Node 1 muốn sửa block X đang được Node 2 cache, Node 2 phải <em>flush block X xuống disk</em>, rồi Node 1 mới có thể đọc từ disk. Với Cache Fusion, Node 2 truyền block X trực tiếp cho Node 1 qua interconnect — nhanh hơn 10-100x so với disk I/O. Cache Fusion biến interconnect latency (microseconds) thành chi phí thay vì disk latency (milliseconds).</p>
+</div>
+
+<h3>2.1 Block States Trong Cache Fusion</h3>
+
+<p>Mỗi block trong GCS có thể ở nhiều trạng thái khác nhau, tương tự MESI protocol của CPU cache coherence:</p>
+
+<div class="table-wrap">
+<table>
+  <tr>
+    <th>State</th>
+    <th>Ý Nghĩa</th>
+    <th>Cho Phép</th>
+    <th>Số Nodes</th>
+  </tr>
+  <tr>
+    <td><code>SHARED (S)</code></td>
+    <td>Block được cache ở nhiều nodes, chỉ đọc</td>
+    <td>Read only</td>
+    <td>Multiple</td>
+  </tr>
+  <tr>
+    <td><code>EXCLUSIVE (X)</code></td>
+    <td>Chỉ một node giữ block, có quyền write</td>
+    <td>Read + Write</td>
+    <td>Exactly 1</td>
+  </tr>
+  <tr>
+    <td><code>NULL (N)</code></td>
+    <td>Block không được cache hoặc đã invalidated</td>
+    <td>Không có quyền gì</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td><code>SHARED-CURRENT</code></td>
+    <td>Block đang được read consistent nhưng chưa committed</td>
+    <td>Read với CR read</td>
+    <td>Multiple</td>
+  </tr>
+</table>
+</div>
+
+<h3>2.2 Cache Fusion Flow: Read Scenario</h3>
+
+<div class="flow-step" data-step="1">
+  <strong>Node 2 muốn đọc Block 42</strong> — Gửi request đến GCS Master của Block 42 (được xác định bởi Resource Distribution Algorithm dựa trên hash)
+</div>
+<div class="flow-step" data-step="2">
+  <strong>GCS Master kiểm tra trạng thái Block 42</strong> — Nếu Block 42 đang ở EXCLUSIVE trên Node 1, GCS gửi "downgrade" message đến Node 1
+</div>
+<div class="flow-step" data-step="3">
+  <strong>Node 1 downgrade Block 42 từ EXCLUSIVE → SHARED</strong> — Gửi block image trực tiếp đến Node 2 qua interconnect (không qua disk!)
+</div>
+<div class="flow-step" data-step="4">
+  <strong>Node 2 nhận block image</strong> — Load vào buffer cache của mình với trạng thái SHARED. Bắt đầu đọc.
+</div>
+<div class="flow-step" data-step="5">
+  <strong>GCS cập nhật directory</strong> — Record rằng Block 42 giờ ở SHARED tại cả Node 1 và Node 2
+</div>
+
+<div class="img-placeholder">👉 [CHÈN ẢNH: Cache Fusion read flow — Node 2 request → GCS → Node 1 transfer → Node 2 receives, với thời gian ở mỗi bước]</div>
+
+<h3>2.3 Cache Fusion Flow: Write Scenario (Conflict)</h3>
+
+<div class="flow-step" data-step="1">
+  <strong>Node 3 muốn ghi vào Block 42</strong> — Block 42 đang ở SHARED trên Node 1 và Node 2. Node 3 gửi request EXCLUSIVE cho GCS Master.
+</div>
+<div class="flow-step" data-step="2">
+  <strong>GCS gửi "invalidate" đến Node 1 và Node 2</strong> — Cả hai phải invalidate cached copy của Block 42 (chuyển về NULL state)
+</div>
+<div class="flow-step" data-step="3">
+  <strong>Node 1 và Node 2 ACK invalidation</strong> — Nếu block đã bị modify (dirty), phải flush dirty version lên shared storage hoặc ship current SCN đến GCS
+</div>
+<div class="flow-step" data-step="4">
+  <strong>GCS grant EXCLUSIVE cho Node 3</strong> — Ship block image từ holder cuối cùng (node có dirty version mới nhất) đến Node 3 qua interconnect
+</div>
+<div class="flow-step" data-step="5">
+  <strong>Node 3 write vào block, tạo redo log</strong> — Block giờ ở EXCLUSIVE state chỉ trên Node 3. GCS directory update.
+</div>
+
+<div class="callout warning">
+  <h4>⚠️ Cache Fusion Overhead: "Hot Block" Problem</h4>
+  <p>Khi cùng một block bị tranh chấp liên tục giữa nhiều nodes (ví dụ: sequence generator, index root block), mỗi write đều phải thực hiện cache fusion protocol — nhiều round trips qua interconnect. Đây gọi là "hot block contention" và là performance bottleneck chính trong RAC. Giải pháp: Sequence Cache (cache sequence values per-node), Hash-based partitioning để giảm cross-node conflicts.</p>
+</div>
+
+<h2>3. Resource Distribution Algorithm</h2>
+
+<p>Khi cluster có N nodes, cần quyết định node nào là "master" (hay "owner") cho mỗi resource (block, lock, etc.). Oracle dùng thuật toán phân phối tĩnh dựa trên hashing.</p>
+
+<h3>3.1 Hash-Based Resource Ownership</h3>
+
+<pre><code>-- Thuật toán xác định GCS Master cho một block:
+resource_id = (file_number × 32 + block_number) MOD total_resources
+node_id = resource_id MOD num_nodes
+
+-- Với 128 hash buckets (typical):
+bucket = hash(resource_id) MOD 128
+master_node = bucket_to_node_mapping[bucket]</code></pre>
+
+<p>Thiết kế 128 hash buckets cho phép phân phối đều resources giữa các nodes, đồng thời có thể re-map buckets khi nodes join/leave cluster mà không cần rehash tất cả resources.</p>
+
+<h3>3.2 Logical vs Physical Node Mapping</h3>
+
+<p>RAC tách biệt <strong>Logical Node ID</strong> (0-127, các bucket) và <strong>Physical Node ID</strong> (node instance thực sự). Điều này cho phép:</p>
+
+<div class="grid2">
+  <div class="card-small">
+    <h4>Partial Failure Handling</h4>
+    <p>Khi Node 2 fail, các buckets thuộc về Node 2 được re-assign đến các surviving nodes. Logical mapping thay đổi, không cần rebuild data structures.</p>
+  </div>
+  <div class="card-small">
+    <h4>Reconfiguration</h4>
+    <p>Add node mới: một số buckets từ existing nodes được chuyển sang node mới. Gradual rebalancing, không disruptive.</p>
+  </div>
+</div>
+
+<div class="img-placeholder">👉 [CHÈN ẢNH: 128 buckets phân phối cho 4 nodes — bucket 0-31 → Node1, 32-63 → Node2, 64-95 → Node3, 96-127 → Node4, sau đó re-map khi Node3 fail]</div>
+
+<h2>4. Voting Disk và Split-Brain Detection</h2>
+
+<p>Split-brain là tình huống nguy hiểm nhất trong distributed systems: cluster bị phân tách thành hai phần, mỗi phần nghĩ mình là "toàn bộ cluster" và tiếp tục write vào shared storage. Kết quả là data corruption không thể recover.</p>
+
+<h3>4.1 Voting Disk: Cơ Chế Tiebreaker</h3>
+
+<div class="callout danger">
+  <h4>🔴 Split-Brain Scenario</h4>
+  <p>Network interconnect bị cắt: Node 1, 2 không thể liên lạc với Node 3, 4. Từ góc độ của Node 1-2, Node 3-4 đã "chết" và ngược lại. Nếu cả hai nhóm tiếp tục hoạt động, chúng sẽ write conflicting data vào shared storage → data corruption thảm khốc.</p>
+</div>
+
+<p>Voting Disk là một file đặc biệt trên shared storage (thường đặt trên 3+ disks riêng biệt). Mỗi node phải đọc/ghi được Voting Disk để có quyền tham gia cluster. Khi split-brain xảy ra:</p>
+
+<ol>
+  <li>Cluster Synchronization Services (CSS) phát hiện không thể liên lạc với một số nodes</li>
+  <li>Tất cả nodes đua nhau ghi "fence" vào Voting Disk</li>
+  <li>Nhóm chiếm được quorum (majority) Voting Disks tồn tại</li>
+  <li>Nhóm còn lại bị forced-evicted — node tự kill mình (<code>reboot</code>) để tránh data corruption</li>
+</ol>
+
+<div class="callout info">
+  <h4>💡 Quy Tắc Quorum Voting Disk</h4>
+  <p>Oracle khuyến nghị dùng <strong>số lẻ Voting Disks</strong> (3 hoặc 5) để luôn có majority rõ ràng. Với 3 Voting Disks: cluster yêu cầu ≥ 2 disks available. Nếu 2 trong 3 voting disks mất kết nối, cluster shutdown toàn bộ để tránh split-brain. Đây là "fail-safe" design — thà cluster down còn hơn data corruption.</p>
+</div>
+
+<h3>4.2 Node Eviction Process</h3>
+
+<div class="flow-step" data-step="1">
+  <strong>Missed Heartbeat Detection</strong> — CSS phát hiện không nhận được heartbeat từ Node X trong <code>misscount</code> giây (default 30s). CSS bắt đầu eviction protocol.
+</div>
+<div class="flow-step" data-step="2">
+  <strong>Voting Disk Contest</strong> — Tất cả surviving nodes race để ghi vào Voting Disk với timestamp. Winner = node ghi trước.
+</div>
+<div class="flow-step" data-step="3">
+  <strong>STONITH (Shoot The Other Node In The Head)</strong> — Bên thắng ghi vào Voting Disk một "fence message" cho Node X. Khi Node X đọc Voting Disk và thấy mình bị fence, tự reboot.
+</div>
+<div class="flow-step" data-step="4">
+  <strong>Cluster Reconfiguration</strong> — Surviving nodes trigger GCS/GES reconfiguration. Resources của Node X được phân phối lại cho surviving nodes theo Resource Distribution Algorithm.
+</div>
+<div class="flow-step" data-step="5">
+  <strong>Buffer Cache Recovery</strong> — GCS rollback các transactions chưa commit của Node X. Dirty blocks của Node X cần được recovered — nếu chưa flush lên storage, có thể đọc từ Node X's redo log (nếu accessible) hoặc từ undo tablespace.
+</div>
+
+<h2>5. PCM Resources và Global Lock Manager</h2>
+
+<p>PCM (Parallel Cache Management) resources là đơn vị quản lý trong GCS. Thay vì lock từng block riêng lẻ (quá nhiều), Oracle gộp nhiều blocks vào cùng một PCM resource.</p>
+
+<h3>5.1 Coarse-Grained vs Fine-Grained PCM</h3>
+
+<div class="table-wrap">
+<table>
+  <tr>
+    <th>Loại PCM</th>
+    <th>Mô Tả</th>
+    <th>Ưu Điểm</th>
+    <th>Nhược Điểm</th>
+  </tr>
+  <tr>
+    <td>Coarse-Grained</td>
+    <td>Nhiều blocks share một PCM resource (N:1)</td>
+    <td>Ít lock overhead, GCS directory nhỏ hơn</td>
+    <td>False sharing — lock conflict dù không cùng block</td>
+  </tr>
+  <tr>
+    <td>Fine-Grained</td>
+    <td>Mỗi block có PCM resource riêng (1:1)</td>
+    <td>Không false sharing, conflict chính xác hơn</td>
+    <td>Nhiều GCS resources, memory overhead cao</td>
+  </tr>
+</table>
+</div>
+
+<p>Oracle tự động chuyển từ coarse-grained sang fine-grained (PCM "re-mastering") cho các blocks bị tranh chấp nhiều. Đây là adaptive optimization — hot blocks tự nhiên được quản lý tốt hơn.</p>
+
+<h3>5.2 Lock Mastering và Dynamic Remastering</h3>
+
+<p>PCM resource master có thể được di chuyển (<strong>dynamic remastering</strong>) để đặt gần node thường access nhất. Nếu Node 2 liên tục request resource R, GCS có thể chuyển master của R từ Node 1 sang Node 2 — giảm round trip từ 2 messages xuống 1.</p>
+
+<div class="img-placeholder">👉 [CHÈN ẢNH: Dynamic remastering flow — initial state (master ở Node1), high access từ Node2, remaster request, new state (master ở Node2)]</div>
+
+<h2>6. RAC vs Alternatives: Khi Nào Dùng RAC?</h2>
+
+<div class="table-wrap">
+<table>
+  <tr>
+    <th>Khía Cạnh</th>
+    <th>Oracle RAC</th>
+    <th>MySQL InnoDB Cluster</th>
+    <th>CockroachDB / TiDB</th>
+  </tr>
+  <tr>
+    <td>Architecture</td>
+    <td>Shared-disk</td>
+    <td>Shared-nothing replication</td>
+    <td>Shared-nothing distributed</td>
+  </tr>
+  <tr>
+    <td>Consistency</td>
+    <td>Strong (synchronous)</td>
+    <td>Semi-sync / async</td>
+    <td>Serializable (Raft)</td>
+  </tr>
+  <tr>
+    <td>Cross-node query</td>
+    <td>Transparent (SQL)</td>
+    <td>Limited (ProxySQL routing)</td>
+    <td>Distributed SQL</td>
+  </tr>
+  <tr>
+    <td>Node failure</td>
+    <td>Automatic (30s-120s)</td>
+    <td>Failover (seconds-minutes)</td>
+    <td>Automatic (seconds)</td>
+  </tr>
+  <tr>
+    <td>Scale-out write</td>
+    <td>Limited (interconnect bottleneck)</td>
+    <td>Scale writes via sharding</td>
+    <td>Native horizontal write scale</td>
+  </tr>
+  <tr>
+    <td>Cost</td>
+    <td>Rất cao (license + hardware)</td>
+    <td>Open source</td>
+    <td>Open source / cloud</td>
+  </tr>
+  <tr>
+    <td>Best for</td>
+    <td>High-availability OLTP, Oracle workloads</td>
+    <td>MySQL workloads with HA</td>
+    <td>Scale-out new workloads</td>
+  </tr>
+</table>
+</div>
+
+<div class="callout warning">
+  <h4>⚠️ RAC Không Phải Silver Bullet</h4>
+  <p>RAC giải quyết <strong>high availability</strong> và <strong>node-level scale-up</strong>, nhưng không thực sự giải quyết <strong>write scale-out</strong>. Khi write hotspot xuất hiện (cùng block bị nhiều nodes tranh giành), Cache Fusion traffic tăng cao và interconnect trở thành bottleneck. Nhiều tổ chức nhầm lẫn rằng thêm nodes vào RAC sẽ tăng throughput tuyến tính — điều này không đúng trong write-heavy workloads.</p>
+</div>
+
+<h2>7. Kết Luận: Giá Trị Và Giới Hạn</h2>
+
+<p>Oracle RAC đại diện cho đỉnh cao của <strong>shared-disk distributed database engineering</strong> — một kiến trúc phức tạp được tối ưu qua hàng thập kỷ. Cache Fusion protocol, dynamic remastering, và split-brain prevention qua Voting Disk là những innovations thực sự ấn tượng.</p>
+
+<div class="grid2">
+  <div class="card-small">
+    <h4>Điểm Mạnh Thực Sự</h4>
+    <ul>
+      <li><strong>High Availability</strong>: Active-active, không có single point of failure ở node level</li>
+      <li><strong>Transparent Failover</strong>: Application không cần biết node nào chạy query</li>
+      <li><strong>Oracle Ecosystem</strong>: Integration hoàn hảo với Oracle DB features (Partitioning, Advanced Analytics, etc.)</li>
+      <li><strong>Mature và proven</strong>: 20+ năm production experience ở các bank, telecom lớn</li>
+    </ul>
+  </div>
+  <div class="card-small">
+    <h4>Giới Hạn Cần Nhận Thức</h4>
+    <ul>
+      <li><strong>Cost cực cao</strong>: Oracle RAC license + InfiniBand interconnect + SAN storage</li>
+      <li><strong>Write scalability limited</strong>: Cache Fusion overhead tăng theo số nodes</li>
+      <li><strong>Complexity</strong>: DBA cần expertise cao về GCS/GES tuning, interconnect sizing</li>
+      <li><strong>Vendor lock-in</strong>: Migration ra khỏi Oracle cực kỳ khó khăn</li>
+    </ul>
+  </div>
+</div>
+
+<div class="callout success">
+  <h4>✅ Bài Học Kiến Trúc Từ RAC</h4>
+  <p>Dù không dùng Oracle RAC, các kỹ sư hệ thống vẫn có thể học nhiều từ kiến trúc này: (1) Cache coherence protocol giữa nhiều nodes là vấn đề khó — MESI ở CPU và Cache Fusion ở database solve cùng một dạng vấn đề theo cách khác nhau. (2) Split-brain detection cần tiebreaker bên ngoài (Voting Disk, etcd, ZooKeeper) — không thể giải quyết bằng majority vote thuần túy nếu network partition xảy ra. (3) Resource ownership distribution bằng hashing là pattern phổ biến trong distributed systems — Consistent Hashing của DynamoDB hay slot-based của Redis Cluster đều cùng tư tưởng.</p>
+</div>
+
+</div>
+</body>
+</html>

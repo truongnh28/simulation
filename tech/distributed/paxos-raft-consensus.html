@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Paxos & Raft: Phân Tích Chuyên Sâu</title><style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f8fafc;
+  --accent:#4f46e5; --accent2:#7c3aed; --accent3:#0891b2;
+  --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --green:#059669; --yellow:#d97706; --red:#dc2626;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.75;}
+.hero{background:linear-gradient(135deg,#ede9fe 0%,#dbeafe 50%,#e0f2fe 100%);padding:60px 40px;text-align:center;border-bottom:1px solid var(--border);}
+.hero h1{font-size:2.4rem;font-weight:800;background:linear-gradient(135deg,#4f46e5,#7c3aed,#0891b2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;}
+.hero .subtitle{color:var(--muted);font-size:1rem;}
+.container{max-width:960px;margin:0 auto;padding:50px 40px;}
+h2{font-size:1.55rem;font-weight:700;color:#3730a3;margin:40px 0 16px;padding-bottom:10px;border-bottom:2px solid #e0e7ff;}
+h3{font-size:1.15rem;font-weight:600;color:#1e40af;margin:28px 0 12px;}
+h4{font-size:1rem;font-weight:600;color:#0891b2;margin:20px 0 8px;}
+p{color:var(--text);margin-bottom:14px;}
+ul,ol{margin:0 0 14px 24px;color:var(--text);}
+li{margin-bottom:6px;}
+code{background:#ede9fe;color:#4338ca;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.85em;}
+pre{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;overflow-x:auto;margin:16px 0;}
+pre code{background:none;padding:0;color:#e2e8f0;}
+.callout{background:#f8fafc;border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:20px;margin:20px 0;}
+.callout.warning{border-left-color:var(--yellow);background:#fffbeb;}
+.callout.danger{border-left-color:var(--red);background:#fef2f2;}
+.callout.success{border-left-color:var(--green);background:#f0fdf4;}
+.callout h4{margin-top:0;color:var(--accent);}
+.callout.warning h4{color:var(--yellow);}
+.callout.danger h4{color:var(--red);}
+.callout.success h4{color:var(--green);}
+.table-wrap{overflow-x:auto;margin:16px 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:#ede9fe;color:#3730a3;padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid #c7d2fe;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);}
+tr:hover td{background:#f5f3ff;}
+.img-placeholder{background:var(--surface2);border:2px dashed #c7d2fe;border-radius:12px;padding:30px;margin:20px 0;text-align:center;color:var(--muted);}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin:2px;}
+.badge-blue{background:#eff6ff;color:#1d4ed8;}
+.badge-cyan{background:#ecfeff;color:#0e7490;}
+.badge-purple{background:#f5f3ff;color:#6d28d9;}
+.badge-green{background:#f0fdf4;color:#15803d;}
+.badge-red{background:#fef2f2;color:#b91c1c;}
+.nav{background:#fff;border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;}
+.nav a:hover{color:var(--accent);}
+.nav .sep{color:var(--border);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.card-small{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.card-small h4{margin-top:0;margin-bottom:8px;}
+.section-title{font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border),transparent);}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:48px;}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:28px;text-decoration:none;color:var(--text);transition:all .3s ease;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform .3s ease;}
+.card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 30px rgba(79,70,229,.1);}
+.card:hover::before{transform:scaleX(1);}
+.card-icon{font-size:2rem;margin-bottom:16px;}
+.card h3{font-size:1rem;font-weight:600;margin-bottom:10px;color:var(--text);}
+.card p{color:var(--muted);font-size:.85rem;line-height:1.6;}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin-top:12px;}
+.tag-db{background:#eff6ff;color:#1d4ed8;}
+.tag-dist{background:#ecfeff;color:#0e7490;}
+.tag-prog{background:#f5f3ff;color:#6d28d9;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:60px;}
+.stat{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.stat-num{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-label{color:var(--muted);font-size:.9rem;margin-top:4px;}
+</style></head>
+<body>
+<nav class="nav"><a href="../index.html">🏠 Trang chủ</a><span class="sep">/</span><span>Distributed</span><span class="sep">/</span><span>Paxos &amp; Raft</span></nav>
+<div class="hero"><h1>🤝 Paxos &amp; Raft: Phân Tích Chuyên Sâu</h1>
+<p class="subtitle">Từ Basic Paxos đến Multi-Paxos, Raft và ứng dụng thực tế trong hệ thống phân tán quy mô lớn</p></div>
+<div class="container">
+<h2>1. Bài Toán Consensus: Tại Sao Khó?</h2>
+<p>Consensus (đồng thuận) là bài toán nền tảng của distributed systems: làm thế nào để N nodes độc lập có thể thống nhất về một giá trị, ngay cả khi có một số nodes bị lỗi hoặc mất mạng?</p>
+<ul>
+<li><strong>Không có đồng hồ chung</strong>: Mỗi node có clock riêng, không thể dựa vào timestamp</li>
+<li><strong>Message có thể bị mất</strong>: Mạng không đảm bảo delivery, order, hoặc exactly-once</li>
+<li><strong>Node có thể crash</strong>: Bất kỳ lúc nào, bất kỳ node nào có thể ngừng hoạt động</li>
+</ul>
+<div class="callout"><h4>💡 FLP Impossibility (1985)</h4>
+<p>Fischer, Lynch, Paterson chứng minh: trong hệ thống bất đồng bộ (asynchronous) với ngay cả 1 node có thể crash, không có thuật toán deterministic nào có thể đảm bảo consensus trong thời gian hữu hạn. Đây là lý do tại sao Paxos/Raft sử dụng timeout và randomization — để thoát khỏi giới hạn lý thuyết này trong thực tế.</p></div>
+
+<h2>2. Basic Paxos: Nền Tảng Của Mọi Thứ</h2>
+<h3>2.1 Ba Vai Trò</h3>
+<div class="grid2">
+<div class="card-small"><h4>Proposer</h4><ul>
+<li>Tạo Proposal ID: <code>round_number * MAX_SERVERS + server_id</code></li>
+<li>Đảm bảo Proposal ID global unique và tăng đơn điệu</li>
+<li>Gửi Prepare và Accept RPC</li></ul></div>
+<div class="card-small"><h4>Acceptor</h4><ul>
+<li>Lưu trạng thái trên stable storage (tránh mất khi crash)</li>
+<li>Lưu: <code>minProposal</code>, <code>acceptedProposal</code>, <code>acceptedValue</code></li>
+<li>Quyết định thực sự nằm ở đây</li></ul></div>
+</div>
+
+<h3>2.2 Phase 1: Prepare — "Xin Phép Trước"</h3>
+<div class="table-wrap"><table>
+<tr><th>Acceptor nhận Prepare(n)</th><th>Hành động</th><th>Lý do</th></tr>
+<tr><td>n > minProposal</td><td>Cập nhật minProposal = n<br>Trả về (acceptedProposal, acceptedValue)</td><td>Cam kết sẽ không chấp nhận proposal cũ hơn n</td></tr>
+<tr><td>n &lt;= minProposal</td><td>Từ chối</td><td>Đã cam kết với proposal cao hơn rồi</td></tr>
+</table></div>
+
+<h3>2.3 Phase 2: Accept — "Chính Thức Đề Xuất"</h3>
+<p>Proposer nhận majority response từ Prepare:</p>
+<ul>
+<li><strong>Nếu có acceptedValue</strong>: Chọn value của acceptedProposal cao nhất (không được tự ý chọn value khác!)</li>
+<li><strong>Nếu không có acceptedValue</strong>: Tự chọn value bất kỳ</li>
+</ul>
+<div class="callout warning"><h4>⚠️ Quy Tắc Quan Trọng Nhất Của Paxos</h4>
+<p>Proposer PHẢI chọn value từ acceptedValue có acceptedProposal cao nhất (nếu có). Quy tắc này đảm bảo safety: nếu một value V đã được accepted bởi majority trên proposal P, thì bất kỳ proposal tương lai P' > P cũng phải chọn V. Nhờ quy tắc này, Paxos đảm bảo một lần đã quyết định thì không thể thay đổi.</p></div>
+
+<h3>2.4 Livelock — Điểm Yếu Lý Thuyết</h3>
+<pre><code>-- Livelock scenario:
+P1 gửi Prepare(n=5) → thành công
+P2 gửi Prepare(n=6) → block P1's Accept(5)
+P1 gửi Prepare(n=7) → block P2's Accept(6)
+P2 gửi Prepare(n=8) → block P1's Accept(7)
+... (vô hạn)</code></pre>
+<p>Giải pháp thực tế: <strong>random exponential backoff</strong> hoặc chỉ định <strong>distinguished proposer</strong>. Raft giải quyết triệt để bằng Leader-based design.</p>
+
+<h2>3. Multi-Paxos: Từ Một Giá Trị Đến Một Log</h2>
+<h3>3.1 Vấn Đề Của Basic Paxos</h3>
+<p>Basic Paxos chỉ quyết định một giá trị. Hệ thống thực tế cần quyết định một chuỗi giá trị có thứ tự (replicated log). Nếu chạy Basic Paxos cho mỗi entry → tốn 2 RTTs (Prepare + Accept) mỗi entry.</p>
+<h3>3.2 Leader Optimization</h3>
+<p>Multi-Paxos tối ưu bằng cách chọn một Leader (Distinguished Proposer):</p>
+<ol>
+<li>Leader chạy Prepare cho một loạt entries cùng một lúc</li>
+<li>Sau đó: chỉ cần 1 RPC (Accept) cho mỗi entry mới → giảm 50% RTT</li>
+</ol>
+<div class="callout danger"><h4>🚨 "Paxos Made Live" — Google (2007)</h4>
+<p>Google xây dựng Chubby trên Paxos và viết bài báo nổi tiếng: "Despite the existing literature on the subject, building a production system turned out to be a non-trivial task." Họ phát hiện hàng chục edge cases không được mô tả trong paper gốc. Đây là động lực chính để Diego Ongaro thiết kế Raft.</p></div>
+
+<h2>4. Raft: Paxos Dễ Hiểu Hơn</h2>
+<h3>4.1 Server States và Term</h3>
+<div class="table-wrap"><table>
+<tr><th>State</th><th>Mô tả</th><th>Chuyển sang state khác khi</th></tr>
+<tr><td><span class="badge badge-blue">Follower</span></td><td>Completely passive. Chỉ nhận và phản hồi messages.</td><td>Election timeout → Candidate</td></tr>
+<tr><td><span class="badge badge-purple">Candidate</span></td><td>Đang trong quá trình bầu cử. Gửi RequestVote.</td><td>Win election → Leader; Lose/timeout → Follower</td></tr>
+<tr><td><span class="badge badge-green">Leader</span></td><td>Xử lý tất cả client requests. Gửi heartbeats.</td><td>Nhận term cao hơn → Follower</td></tr>
+</table></div>
+
+<h3>4.2 Leader Election</h3>
+<ol>
+<li>Follower không nhận heartbeat trong <strong>election timeout</strong> (randomized 150-300ms) → tăng term, chuyển sang Candidate</li>
+<li>Candidate gửi <code>RequestVote(term, lastLogIndex, lastLogTerm)</code> đến tất cả servers</li>
+<li>Server vote "yes" khi: (a) chưa vote trong term này, (b) candidate's log ít nhất "up-to-date" như log của mình</li>
+<li>Candidate nhận majority votes → trở thành Leader</li>
+</ol>
+<div class="callout"><h4>💡 So sánh "Up-to-date" Log</h4>
+<p>Raft so sánh log để xác định ai có log mới hơn: (1) So sánh lastLogTerm trước: term cao hơn là mới hơn. (2) Nếu bằng nhau: so sánh lastLogIndex — index cao hơn là mới hơn. Quy tắc này đảm bảo chỉ node có log đầy đủ mới được bầu làm Leader.</p></div>
+
+<h3>4.3 Log Replication: Normal Operation</h3>
+<pre><code>1. Client gửi Command → Leader
+2. Leader thêm entry vào local log: (term, index, command)
+3. Leader gửi AppendEntries đến tất cả Followers (song song)
+4. Follower kiểm tra prevLogIndex/prevLogTerm match
+   → nếu match: thêm entries, trả về success
+   → nếu không match: trả về failure (Leader sẽ retry với entries trước đó)
+5. Leader nhận majority success → cập nhật commitIndex
+6. Leader apply entry vào state machine, trả lời client
+7. Heartbeat tiếp theo thông báo leaderCommit đến Followers</code></pre>
+
+<h3>4.4 Leader Crash Recovery — Điều Thắc Mắc Nhất</h3>
+<div class="callout warning"><h4>⚠️ Quy Tắc "Chỉ Commit Entry Của Term Hiện Tại"</h4>
+<p>Đây là một trong những quy tắc tinh tế nhất của Raft. Nếu Leader mới cố gắng commit entry từ term cũ, có thể dẫn đến inconsistency. Entry từ term cũ được commit "ngầm" khi entry từ current term được commit — đảm bảo safety.</p></div>
+
+<h3>4.5 Pre-Vote — Chống Term Inflation</h3>
+<p>Vấn đề: Node bị network partition không ngừng tăng term khi timeout. Khi re-join, term cao của nó làm Leader hiện tại step down, gây disruption.</p>
+<p>Giải pháp: <strong>Pre-Vote</strong> — trước khi thật sự tăng term, gửi Pre-Vote RPC hỏi "Nếu tôi bắt đầu election với term+1, có ai bầu cho tôi không?". Chỉ bắt đầu election thật sự khi nhận majority pre-vote. Node bị partition không thể nhận majority pre-vote → term không tăng.</p>
+
+<h2>5. Raft vs Multi-Paxos: So Sánh Chi Tiết</h2>
+<div class="table-wrap"><table>
+<tr><th>Tiêu chí</th><th>Multi-Paxos</th><th>Raft</th></tr>
+<tr><td>Log gaps</td><td>Cho phép (phức tạp hơn)</td><td>Không cho phép (sequential)</td></tr>
+<tr><td>Leader election</td><td>Bất kỳ node nào</td><td>Chỉ node có log đầy đủ</td></tr>
+<tr><td>Leader crash recovery</td><td>Phải chạy Paxos cho từng gap</td><td>Log của Leader là chuẩn, overwrite Followers</td></tr>
+<tr><td>Complexity</td><td>Cao (nhiều edge cases)</td><td>Thấp hơn (rõ ràng hơn)</td></tr>
+<tr><td>Production use</td><td>Google Chubby, Spanner</td><td>etcd, TiKV, CockroachDB</td></tr>
+</table></div>
+
+<h2>6. Ứng Dụng Thực Tế</h2>
+<h3>etcd — Raft trong Kubernetes</h3>
+<p>etcd là distributed key-value store sử dụng Raft, là backbone của Kubernetes. Lưu trữ toàn bộ cluster state: pods, services, configs. Khi etcd unavailable, Kubernetes control plane ngừng hoạt động.</p>
+<h3>TiKV — Multi-Raft</h3>
+<pre><code>-- TiKV Multi-Raft: phân data thành nhiều Regions (128MB mỗi Region)
+-- Mỗi Region có Raft group riêng → scale horizontal
+Region 1 [1-100]:  Leader(TiKV-1), Follower(TiKV-2), Follower(TiKV-3)
+Region 2 [101-200]: Leader(TiKV-2), Follower(TiKV-1), Follower(TiKV-3)
+Region 3 [201-300]: Leader(TiKV-3), Follower(TiKV-1), Follower(TiKV-2)</code></pre>
+</div>
+</body></html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>InnoDB: Redo Log, Undo & Crash Recovery</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f8fafc;
+  --accent:#4f46e5; --accent2:#7c3aed; --accent3:#0891b2;
+  --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --green:#059669; --yellow:#d97706; --red:#dc2626;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.75;}
+.hero{
+  background:linear-gradient(135deg,#ede9fe 0%,#dbeafe 50%,#e0f2fe 100%);
+  padding:60px 40px;text-align:center;position:relative;
+  border-bottom:1px solid var(--border);
+}
+.hero h1{
+  font-size:2.4rem;font-weight:800;
+  background:linear-gradient(135deg,#4f46e5,#7c3aed,#0891b2);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:12px;
+}
+.hero .subtitle{color:var(--muted);font-size:1rem;}
+.container{max-width:960px;margin:0 auto;padding:50px 40px;}
+h2{font-size:1.55rem;font-weight:700;color:#3730a3;margin:40px 0 16px;padding-bottom:10px;border-bottom:2px solid #e0e7ff;}
+h3{font-size:1.15rem;font-weight:600;color:#1e40af;margin:28px 0 12px;}
+h4{font-size:1rem;font-weight:600;color:#0891b2;margin:20px 0 8px;}
+p{color:var(--text);margin-bottom:14px;opacity:.95;}
+ul,ol{margin:0 0 14px 24px;color:var(--text);}
+li{margin-bottom:6px;}
+code{
+  background:#ede9fe;color:#4338ca;
+  padding:2px 8px;border-radius:4px;
+  font-family:'JetBrains Mono',monospace;font-size:.85em;
+}
+pre{
+  background:#1e293b;border:1px solid #334155;border-radius:10px;
+  padding:20px;overflow-x:auto;margin:16px 0;
+}
+pre code{background:none;padding:0;color:#e2e8f0;}
+.callout{
+  background:#f8fafc;border:1px solid var(--border);
+  border-left:4px solid var(--accent);border-radius:10px;
+  padding:20px;margin:20px 0;
+}
+.callout.warning{border-left-color:var(--yellow);background:#fffbeb;}
+.callout.danger{border-left-color:var(--red);background:#fef2f2;}
+.callout.success{border-left-color:var(--green);background:#f0fdf4;}
+.callout h4{margin-top:0;color:var(--accent);}
+.callout.warning h4{color:var(--yellow);}
+.callout.danger h4{color:var(--red);}
+.callout.success h4{color:var(--green);}
+.table-wrap{overflow-x:auto;margin:16px 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:#ede9fe;color:#3730a3;padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid #c7d2fe;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);}
+tr:hover td{background:#f5f3ff;}
+.img-placeholder{
+  background:var(--surface2);border:2px dashed #c7d2fe;
+  border-radius:12px;padding:30px;margin:20px 0;text-align:center;color:var(--muted);
+}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin:2px;}
+.badge-blue{background:#eff6ff;color:#1d4ed8;}
+.badge-cyan{background:#ecfeff;color:#0e7490;}
+.badge-purple{background:#f5f3ff;color:#6d28d9;}
+.badge-green{background:#f0fdf4;color:#15803d;}
+.badge-red{background:#fef2f2;color:#b91c1c;}
+.nav{
+  background:#ffffff;border-bottom:1px solid var(--border);
+  padding:14px 40px;display:flex;align-items:center;gap:16px;
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
+}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;}
+.nav a:hover{color:var(--accent);}
+.nav .sep{color:var(--border);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.card-small{
+  background:#ffffff;border:1px solid var(--border);
+  border-radius:10px;padding:18px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);
+}
+.card-small h4{margin-top:0;margin-bottom:8px;}
+.section-title{font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border),transparent);}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:48px;}
+.card{
+  background:#ffffff;border:1px solid var(--border);border-radius:16px;padding:28px;
+  text-decoration:none;color:var(--text);transition:all .3s ease;position:relative;overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,.05);
+}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform .3s ease;}
+.card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 30px rgba(79,70,229,.1);}
+.card:hover::before{transform:scaleX(1);}
+.card-icon{font-size:2rem;margin-bottom:16px;}
+.card h3{font-size:1rem;font-weight:600;margin-bottom:10px;color:var(--text);}
+.card p{color:var(--muted);font-size:.85rem;line-height:1.6;}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin-top:12px;}
+.tag-db{background:#eff6ff;color:#1d4ed8;}
+.tag-dist{background:#ecfeff;color:#0e7490;}
+.tag-prog{background:#f5f3ff;color:#6d28d9;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:60px;}
+.stat{background:#ffffff;border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.stat-num{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-label{color:var(--muted);font-size:.9rem;margin-top:4px;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="../index.html">&#127968; Trang chu</a><span class="sep">/</span><span>Database</span><span class="sep">/</span><span>InnoDB Log &amp; Recovery</span></nav>
+<div class="hero">
+<h1>&#128190; InnoDB: Redo Log, Undo &amp; Crash Recovery</h1>
+<p class="subtitle">Phan tich sau co che WAL, Rollback Segment, Purge va Crash Recovery trong MySQL InnoDB</p>
+</div>
+<div class="container">
+
+<h2>1. Tong Quan: WAL va ACID</h2>
+<p>InnoDB dam bao ACID thong qua hai co che co ban: <strong>Redo Log</strong> (dam bao Durability va Atomicity khi commit) va <strong>Undo Log</strong> (dam bao Atomicity khi rollback va MVCC). Ca hai tuan theo nguyen tac WAL (Write-Ahead Logging): log phai duoc ghi truoc khi du lieu thay doi tren disk.</p>
+
+<div class="callout">
+<h4>&#128161; Tai sao WAL?</h4>
+<p>Ghi sequential vao log file nhanh hon ghi random vao data files (vi du: HDD sequential ~100MB/s, random ~1MB/s). WAL cho phep commit nhanh bang cach chi can fsync log, de actual data pages duoc flush sau. Day la nen tang cua moi database engine hien dai.</p>
+</div>
+
+<h2>2. Redo Log — Dam Bao Durability</h2>
+
+<h3>2.1 Redo Log Block Structure</h3>
+<p>Redo log duoc to chuc thanh cac blocks 512 bytes (bang voi OS sector size de tranh partial write):</p>
+<ul>
+<li>Log Block Header (12 bytes): block number, data length, first record offset, checkpoint number</li>
+<li>Log Block Body: chua cac redo records</li>
+<li>Log Block Trailer (4 bytes): checksum</li>
+</ul>
+
+<h3>2.2 LSN (Log Sequence Number)</h3>
+<p>LSN la monotonically increasing 8-byte number danh dau vi tri trong redo log stream. Moi byte cua redo log co mot LSN duy nhat. LSN duoc dung de:</p>
+<ul>
+<li>Xac dinh Checkpoint position (diem bat dau Crash Recovery)</li>
+<li>So sanh page LSN voi checkpoint LSN de quyet dinh can Redo hay khong</li>
+<li>Kiem soat flush pressure (Modified age = current LSN - oldest dirty page LSN)</li>
+</ul>
+
+<h3>2.3 Redo Log Durability Parameters</h3>
+<div class="table-wrap">
+<table>
+<tr><th>innodb_flush_log_at_trx_commit</th><th>Hanh dong khi Commit</th><th>Du lieu mat khi Crash</th><th>Performance</th></tr>
+<tr><td>0</td><td>Ghi vao log buffer, flush moi 1s</td><td>Toi da 1 giay data</td><td>Cao nhat</td></tr>
+<tr><td>1 (default)</td><td>Ghi va fsync log file</td><td>Khong mat data</td><td>Thap nhat</td></tr>
+<tr><td>2</td><td>Ghi vao OS cache, flush moi 1s</td><td>Mat neu OS crash</td><td>Trung binh</td></tr>
+</table>
+</div>
+
+<div class="callout warning">
+<h4>&#9888;&#65039; Production Recommendation</h4>
+<p>Dung <code>innodb_flush_log_at_trx_commit=1</code> ket hop <code>sync_binlog=1</code> cho full durability. Neu can tang performance, dung battery-backed write cache (BBWC) tren RAID controller thay vi giam durability level.</p>
+</div>
+
+<h2>3. Rollback Segment va Undo Log</h2>
+
+<h3>3.1 To Chuc Rollback Segment</h3>
+<p>InnoDB co toi da 128 Rollback Segments. Moi Rollback Segment co:</p>
+<ul>
+<li><strong>Rollback Segment Header Page</strong>: Chua 1024 Undo Slots, moi slot tro den mot Undo Log</li>
+<li><strong>Undo Log Header Page</strong>: Thong tin ve undo log cua mot transaction</li>
+<li><strong>Normal Undo Pages</strong>: Chua actual undo records</li>
+</ul>
+
+<h3>3.2 Insert Undo vs Update Undo</h3>
+<div class="grid2">
+<div class="card-small">
+<h4>Insert Undo</h4>
+<ul>
+<li>Chi dung cho ROLLBACK (xoa record vua insert)</li>
+<li>Transaction commit → co the thu hoi ngay</li>
+<li>Khong can Purge thread xu ly</li>
+</ul>
+</div>
+<div class="card-small">
+<h4>Update Undo</h4>
+<ul>
+<li>Dung cho ROLLBACK va MVCC</li>
+<li>Transaction commit → KHONG thu hoi ngay</li>
+<li>Phai doi Purge thread xu ly sau</li>
+<li>Luu du lieu before-image day du</li>
+</ul>
+</div>
+</div>
+
+<h3>3.3 ROLLBACK_PTR — Lien Ket Undo Chain</h3>
+<p>Moi record co <code>ROLLBACK_PTR</code> (7 bytes) tro den undo record cua version truoc:</p>
+<ul>
+<li>Bits [0-15]: Offset cua undo record trong Undo Page</li>
+<li>Bits [16-47]: Page number cua Undo Page</li>
+<li>Bits [48-54]: Rollback Segment ID (0-127)</li>
+<li>Bit [55]: Undo type (0=Insert, 1=Update)</li>
+</ul>
+
+<h2>4. Purge — Thu Hoi Phien Ban Cu</h2>
+
+<h3>4.1 Purge Flow</h3>
+<p>Purge thread chon transaction commit cu nhat trong tat ca Rollback Segments, duyet forward qua Update_Undo records, xoa cac records co <code>DEL_BIT=1</code> khong con visible voi bat ky transaction nao:</p>
+<pre><code>1. Chon oldest committed transaction
+2. Forward traverse Update_Undo records
+3. Voi moi undo record: kiem tra visibility
+4. Neu khong con ai thay: xoa clustered index record, xoa secondary index records
+5. Thu hoi Undo Page neu day du</code></pre>
+
+<h3>4.2 Purge Configuration</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Parameter</th><th>Y nghia</th><th>Default</th></tr>
+<tr><td><code>innodb_purge_threads</code></td><td>So luong purge threads (5.5.4+)</td><td>4</td></tr>
+<tr><td><code>innodb_purge_batch_size</code></td><td>So transactions purge moi batch</td><td>300</td></tr>
+<tr><td><code>innodb_max_purge_lag</code></td><td>Throttle DML khi history list qua dai</td><td>0 (disabled)</td></tr>
+<tr><td><code>innodb_max_purge_lag_delay</code></td><td>Max delay khi throttling (ms)</td><td>0</td></tr>
+</table>
+</div>
+
+<h2>5. Crash Recovery</h2>
+
+<h3>5.1 Cac Cau Hoi Co Ban</h3>
+<div class="callout">
+<h4>&#127891; 5 Cau Hoi Chinh Cua Crash Recovery</h4>
+<ul>
+<li><strong>Q1</strong>: Checkpoint LSN (diem bat dau Recovery) duoc luu o dau?</li>
+<li><strong>Q2</strong>: InnoDB Redo nhu the nao?</li>
+<li><strong>Q3</strong>: Xac dinh transactions nao can Rollback?</li>
+<li><strong>Q4</strong>: Crash Recovery co phai doi Rollback hoan thanh?</li>
+<li><strong>Q5</strong>: Cac version InnoDB da toi uu Crash Recovery nhu the nao?</li>
+</ul>
+</div>
+
+<h3>5.2 Doc Checkpoint LSN</h3>
+<p>Checkpoint LSN duoc luu tai 2 vi tri trong log group dau tien, file log dau tien:</p>
+<ul>
+<li><code>LOG_CHECKPOINT_1</code> = offset 512 bytes (1 OS sector)</li>
+<li><code>LOG_CHECKPOINT_2</code> = offset 1536 bytes (3 OS sectors)</li>
+</ul>
+<p>Luu 2 ban du phong de phong truong hop ghi partial: InnoDB chon ban co Checkpoint LSN lon hon va hop le.</p>
+
+<h3>5.3 Redo Phase — Batch Apply</h3>
+<p>InnoDB doc redo log tu Checkpoint LSN den cuoi, ap dung theo co che Batch Apply:</p>
+<ol>
+<li>Doc redo records, nhom theo page (hash table: key = [space_id, page_no])</li>
+<li>Khi hash table day → duyet tung page, apply tat ca redo cua page do theo thu tu</li>
+<li>Red-Black Tree duy tri dirty pages theo oldest_modification de sort hieu qua</li>
+</ol>
+
+<h3>5.4 Undo Phase — Tai Tao Transactions</h3>
+<ol>
+<li>Duyet tat ca Rollback Segment Header Pages</li>
+<li>Doc Undo Log Headers → khoi phuc cac transactions theo trang thai:
+<ul>
+<li><strong>ACTIVE transactions</strong>: Rollback ngay</li>
+<li><strong>PREPARED transactions</strong>: Giao cho MySQL Server quyet dinh commit/rollback (XA recovery)</li>
+<li><strong>COMMITTED transactions</strong>: Chi can cho Purge thu hoi</li>
+</ul>
+</li>
+<li>Rollback ACTIVE transactions → chay <strong>bat dong bo</strong> trong background thread</li>
+</ol>
+
+<div class="callout success">
+<h4>&#10003; Key Insight: Rollback Khong Chan Crash Recovery</h4>
+<p>InnoDB tao background thread de rollback cac active transactions, khong block viec hoan thanh crash recovery. He thong co the phuc vu requests moi trong khi rollback van dang chay. Day la dieu chinh khac so voi mot so database don gian hon.</p>
+</div>
+
+<h3>5.5 Cai Tien Crash Recovery Qua Cac Phien Ban</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Phien ban</th><th>Cai tien</th><th>Y nghia</th></tr>
+<tr><td>MySQL 5.5</td><td>Bug #49535: Kiem soat Hash Table size</td><td>Giam memory usage khi recovery</td></tr>
+<tr><td>MySQL 5.5</td><td>Bug #29847: Red-Black Tree cho Flush List</td><td>Tang toc sort dirty pages trong recovery</td></tr>
+<tr><td>MySQL 5.6</td><td>Multi-threaded Purge</td><td>Purge nhanh hon sau recovery</td></tr>
+<tr><td>MySQL 5.7</td><td>Parallel Redo Apply</td><td>Redo phase nhanh hon dang ke</td></tr>
+</table>
+</div>
+
+<h2>6. Checkpoint Mechanism</h2>
+
+<h3>6.1 Incremental Checkpoint (InnoDB)</h3>
+<p>InnoDB chi dung Incremental Checkpoint (khac voi Full Checkpoint qua cham). Quy tac:</p>
+<ul>
+<li><code>Checkpoint age</code> = current LSN - last_checkpoint_LSN</li>
+<li><code>Modified age</code> = current LSN - oldest dirty page LSN</li>
+<li>Checkpoint age phai nho hon tong dung luong log files</li>
+</ul>
+
+<h3>6.2 Checkpoint Triggers</h3>
+<ul>
+<li>Vuot qua <code>max_modified_age_async</code> → async flush dirty pages</li>
+<li>Vuot qua <code>max_modified_age_sync</code> → sync flush (block DML!)</li>
+<li>Vuot qua <code>max_checkpoint_age_async</code> → async checkpoint</li>
+<li>Vuot qua <code>max_checkpoint_age</code> → sync checkpoint (block DML!)</li>
+</ul>
+
+<div class="callout danger">
+<h4>&#128680; Loi "InnoDB: page cleaner: 1000ms intended loop..."</h4>
+<p>Log nay xuat hien khi page cleaner thread khong theo kip toc do ghi. Nguyen nhan: innodb_log_file_size qua nho, I/O throughput khong du, hoac too many dirty pages. Giai phap: tang innodb_log_file_size, tang innodb_io_capacity, hoac giam burst write workload.</p>
+</div>
+
+</div></body></html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MySQL 5.6 InnoDB: Cải Tiến Sâu Trong Engine</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f8fafc;
+  --accent:#2563eb; --accent2:#1d4ed8; --accent3:#1e40af;
+  --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --green:#059669; --yellow:#d97706; --red:#dc2626;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.75;}
+.nav{background:#fff;border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;}
+.nav a:hover{color:var(--accent);}
+.nav .sep{color:var(--border);}
+.hero{background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 50%,#bfdbfe 100%);padding:60px 40px;text-align:center;border-bottom:1px solid var(--border);}
+.hero h1{font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#2563eb,#1d4ed8,#1e40af);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;}
+.hero .subtitle{color:var(--muted);font-size:1rem;max-width:700px;margin:0 auto;}
+.container{max-width:960px;margin:0 auto;padding:50px 40px;}
+h2{font-size:1.55rem;font-weight:700;color:#1d4ed8;margin:40px 0 16px;padding-bottom:10px;border-bottom:2px solid #bfdbfe;}
+h3{font-size:1.15rem;font-weight:600;color:#2563eb;margin:28px 0 12px;}
+h4{font-size:1rem;font-weight:600;color:#1e40af;margin:20px 0 8px;}
+p{color:var(--text);margin-bottom:14px;}
+ul,ol{margin:0 0 14px 24px;color:var(--text);}
+li{margin-bottom:6px;}
+code{background:#eff6ff;color:#1d4ed8;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.85em;}
+pre{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;overflow-x:auto;margin:16px 0;}
+pre code{background:none;padding:0;color:#e2e8f0;font-size:.88rem;}
+.callout{background:#f8fafc;border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:20px;margin:20px 0;}
+.callout.warning{border-left-color:var(--yellow);background:#fffbeb;}
+.callout.danger{border-left-color:var(--red);background:#fef2f2;}
+.callout.success{border-left-color:var(--green);background:#f0fdf4;}
+.callout.info{border-left-color:#7c3aed;background:#f5f3ff;}
+.callout h4{margin-top:0;color:var(--accent);}
+.callout.warning h4{color:var(--yellow);}
+.callout.danger h4{color:var(--red);}
+.callout.success h4{color:var(--green);}
+.callout.info h4{color:#7c3aed;}
+.table-wrap{overflow-x:auto;margin:16px 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:#eff6ff;color:#1d4ed8;padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid #bfdbfe;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);}
+tr:hover td{background:#f0f7ff;}
+.img-placeholder{background:var(--surface2);border:2px dashed #bfdbfe;border-radius:12px;padding:30px;margin:20px 0;text-align:center;color:var(--muted);font-size:.95rem;}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin:2px;}
+.badge-blue{background:#eff6ff;color:#1d4ed8;}
+.badge-green{background:#f0fdf4;color:#15803d;}
+.badge-red{background:#fef2f2;color:#b91c1c;}
+.badge-yellow{background:#fffbeb;color:#92400e;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:16px 0;}
+.card-small{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.card-small h4{margin-top:0;margin-bottom:8px;color:#2563eb;}
+.stat-box{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:12px;padding:24px;text-align:center;}
+.stat-num{font-size:2.2rem;font-weight:800;color:#2563eb;}
+.stat-label{color:var(--muted);font-size:.85rem;margin-top:4px;}
+.flow-step{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;margin:8px 0;position:relative;padding-left:56px;}
+.flow-step::before{content:attr(data-step);position:absolute;left:16px;top:50%;transform:translateY(-50%);background:var(--accent);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;}
+.improvement-bar{display:flex;align-items:center;gap:12px;margin:8px 0;}
+.improvement-bar .label{min-width:180px;font-size:.9rem;color:var(--text);}
+.improvement-bar .bar-before{background:#fee2e2;border-radius:4px;height:24px;display:flex;align-items:center;padding:0 8px;font-size:.8rem;color:#b91c1c;}
+.improvement-bar .bar-after{background:#dcfce7;border-radius:4px;height:24px;display:flex;align-items:center;padding:0 8px;font-size:.8rem;color:#15803d;}
+.improvement-bar .arrow{color:var(--muted);}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html">← Trang Chủ</a>
+  <span class="sep">›</span>
+  <a href="#">Database</a>
+  <span class="sep">›</span>
+  <span>MySQL 5.6 InnoDB Deep Dive</span>
+</nav>
+<div class="hero">
+  <h1>🔬 MySQL 5.6 InnoDB: Cải Tiến Sâu</h1>
+  <p class="subtitle">Read-Only Transaction optimization, Buffer Pool Flushing algorithm mới, Page Cleaner thread, Multi-Purge, và CRC32 qua SSE4.2 — phân tích kỹ thuật từ bên trong InnoDB</p>
+</div>
+<div class="container">
+
+<h2>1. Bối Cảnh: Tại Sao MySQL 5.6 Là Bước Ngoặt?</h2>
+
+<p>MySQL 5.6 (released 2013) đánh dấu giai đoạn InnoDB chuyển đổi từ "single-server monolith" sang "multi-core optimized engine". Các phiên bản trước (5.1, 5.5) có nhiều <strong>global mutexes và shared data structures</strong> khiến performance không scale theo số CPU cores. MySQL 5.6 attack các bottleneck này một cách có hệ thống.</p>
+
+<div class="grid3">
+  <div class="stat-box"><div class="stat-num">~3x</div><div class="stat-label">Read-only TPS tăng (trên 48 cores)</div></div>
+  <div class="stat-box"><div class="stat-num">4</div><div class="stat-label">Page Cleaner threads (từ 1)</div></div>
+  <div class="stat-box"><div class="stat-num">32x</div><div class="stat-label">Nhanh hơn CRC32 với SSE4.2</div></div>
+</div>
+
+<h2>2. Read-Only Transaction Optimization</h2>
+
+<p>Trong MySQL 5.5, <em>mọi</em> transaction — dù chỉ đọc — đều phải cấp phát Transaction ID và được thêm vào global transaction list. Điều này gây contention nặng trên các shared structures khi có nhiều concurrent readers.</p>
+
+<h3>2.1 Vấn Đề Trong MySQL 5.5</h3>
+
+<pre><code>// MySQL 5.5: Mọi transaction đều:
+1. Lấy trx_sys->mutex (global mutex!)
+2. Cấp phát transaction ID từ trx_sys->max_trx_id
+3. Thêm vào trx_sys->trx_list (global read-write list)
+4. Tạo Read View
+5. Khi commit: xóa khỏi trx_list, release mutex
+
+// Với 100 concurrent readers, 100 threads tranh nhau 1 mutex
+// → Linear scalability không đạt được trên multi-core</code></pre>
+
+<h3>2.2 Giải Pháp Trong MySQL 5.6</h3>
+
+<p>MySQL 5.6 phân loại transactions thành <strong>Read-Only (RO)</strong> và <strong>Read-Write (RW)</strong>:</p>
+
+<div class="callout info">
+  <h4>💡 Phân Loại Read-Only Transaction</h4>
+  <p>Transaction được auto-detected là RO nếu: (1) không có bất kỳ <code>INSERT/UPDATE/DELETE</code> nào, hoặc (2) explicit <code>START TRANSACTION READ ONLY</code>. Nếu sau đó có write, InnoDB dynamically upgrade lên RW transaction.</p>
+</div>
+
+<div class="grid2">
+  <div class="card-small">
+    <h4>RO Transaction: Không Cần Transaction ID</h4>
+    <p>RO transactions không cần global Transaction ID vì chúng không tạo undo log và không visible trong MVCC history. Chỉ cần snapshot timestamp (Global SCN) để tạo Read View.</p>
+  </div>
+  <div class="card-small">
+    <h4>Separate RO Transaction List</h4>
+    <p>RO transactions được thêm vào <code>ro_trx_list</code> riêng biệt. RW transactions dùng <code>rw_trx_list</code>. Purge chỉ cần scan <code>rw_trx_list</code> — giảm contention đáng kể.</p>
+  </div>
+</div>
+
+<h3>2.3 CACHE_LINE_SIZE Padding: Tránh False Sharing</h3>
+
+<p>Một tối ưu tinh tế khác là padding các counters để mỗi counter nằm trên cache line riêng (64 bytes):</p>
+
+<pre><code>// MySQL 5.5 — counters liền kề nhau → false sharing
+struct trx_sys_t {
+    ulint  n_ro_trx;   // offset 0
+    ulint  n_rw_trx;   // offset 8 → cùng cache line với n_ro_trx!
+    ...
+};
+
+// MySQL 5.6 — pad ra để mỗi counter trên cache line riêng
+struct trx_sys_t {
+    ulint  n_ro_trx;
+    char   pad1[CACHE_LINE_SIZE - sizeof(ulint)];  // fill to 64 bytes
+    ulint  n_rw_trx;
+    char   pad2[CACHE_LINE_SIZE - sizeof(ulint)];
+    ...
+};</code></pre>
+
+<div class="callout">
+  <h4>⚡ Tại Sao False Sharing Nguy Hiểm?</h4>
+  <p>Cache line là đơn vị transfer nhỏ nhất giữa CPU và cache (64 bytes). Nếu <code>n_ro_trx</code> (được update bởi Thread A) và <code>n_rw_trx</code> (được update bởi Thread B) nằm trên cùng cache line, mỗi khi Thread A update <code>n_ro_trx</code>, cache line đó bị invalidated trên CPU của Thread B — dù Thread B không quan tâm đến <code>n_ro_trx</code>. Padding giải quyết triệt để bằng cách đảm bảo chúng ở cache lines khác nhau. Kỹ thuật này còn gọi là "cache line isolation" hay "padding to cache line boundary".</p>
+</div>
+
+<h2>3. Buffer Pool Flushing: Thuật Toán Mới</h2>
+
+<p>InnoDB Buffer Pool chứa dirty pages (pages đã sửa nhưng chưa ghi xuống disk). Flushing dirty pages phải cân bằng: flush quá ít → disk checkpoint lag sau WAL, flush quá nhiều → I/O spike gây latency tăng đột ngột.</p>
+
+<h3>3.1 Vấn Đề Với Adaptive Flushing Cũ</h3>
+
+<p>MySQL 5.5 dùng <strong>Adaptive Flushing</strong> nhưng algorithm đơn giản: chỉ dựa trên <em>số dirty pages hiện tại</em>. Khi dirty page ratio vượt ngưỡng, flush tăng đột ngột. Kết quả là I/O pattern "burst" — yên tĩnh rồi đột ngột flush nhiều — gây latency spike không mong muốn.</p>
+
+<h3>3.2 avg_page_rate Algorithm Trong MySQL 5.6</h3>
+
+<p>MySQL 5.6 giới thiệu thuật toán mới dựa trên <strong>rate of dirty page generation</strong> thay vì absolute count:</p>
+
+<pre><code>// Tính rate dirty pages mới được tạo trong Δt giây
+avg_page_rate = (dirty_pages_current - dirty_pages_prev) / delta_t;
+
+// Tính LSN advancement rate (WAL generation rate)
+lsn_rate = (current_lsn - prev_lsn) / delta_t;
+
+// Target flush rate để checkpoint lag không quá lớn
+target_flush_rate = max(
+    avg_page_rate,           // ít nhất bằng tốc độ dirty tạo mới
+    lsn_rate / max_modified_age  // đảm bảo checkpoint không lag quá xa
+);
+
+// Nếu target > actual flush rate → tăng tốc flush
+// Nếu target < actual flush rate → giảm tốc flush (giảm I/O pressure)</code></pre>
+
+<div class="callout success">
+  <h4>✅ Kết Quả: Smooth I/O Pattern</h4>
+  <p>Thay vì flush "bursty", algorithm mới tạo ra flush pattern đều đặn, ổn định. Latency percentile (p99, p999) giảm đáng kể vì không có I/O spike đột ngột. Đây là tư duy "control theory" áp dụng vào database engineering — điều chỉnh rate liên tục để maintain steady state.</p>
+</div>
+
+<h3>3.3 Checkpoint Age và Redo Log Pressure</h3>
+
+<p>InnoDB có redo log với kích thước cố định (vòng lặp). Checkpoint LSN phải tiến đủ nhanh để tránh overwrite redo log chưa được flushed. MySQL 5.6 thêm metric <code>checkpoint_age_async</code> và <code>checkpoint_age_sync</code>:</p>
+
+<div class="table-wrap">
+<table>
+  <tr>
+    <th>Checkpoint State</th>
+    <th>Điều Kiện</th>
+    <th>Hành Động</th>
+    <th>Ảnh Hưởng</th>
+  </tr>
+  <tr>
+    <td>Normal</td>
+    <td>checkpoint_age &lt; async_water_mark</td>
+    <td>Flush theo target rate bình thường</td>
+    <td>Không có impact</td>
+  </tr>
+  <tr>
+    <td>Async Flush</td>
+    <td>async_water_mark ≤ age &lt; sync_water_mark</td>
+    <td>Tăng flush rate thêm</td>
+    <td>I/O tăng nhẹ</td>
+  </tr>
+  <tr>
+    <td>Sync Flush</td>
+    <td>age ≥ sync_water_mark</td>
+    <td>Block user transactions, force flush</td>
+    <td><span class="badge badge-red">Latency spike nghiêm trọng</span></td>
+  </tr>
+</table>
+</div>
+
+<div class="callout warning">
+  <h4>⚠️ Ngăn Ngừa Sync Flush</h4>
+  <p>Sync Flush (blocking user transactions) là tình huống tệ nhất cần tránh. Để ngăn: (1) <code>innodb_io_capacity</code> đủ cao để flush bắt kịp write rate; (2) <code>innodb_log_file_size</code> đủ lớn để có room cho redo log; (3) Monitor <code>Innodb_checkpoint_age</code> và alert khi &gt;80% của <code>innodb_log_file_size</code>.</p>
+</div>
+
+<h2>4. Page Cleaner Thread: Từ 1 Lên 4</h2>
+
+<p>Trong MySQL 5.5, chỉ có <strong>một</strong> Page Cleaner thread duy nhất chịu trách nhiệm flush tất cả dirty pages từ tất cả buffer pool instances. Đây là bottleneck rõ ràng khi innodb_buffer_pool_instances > 1.</p>
+
+<h3>4.1 Multi-Threaded Page Cleaner</h3>
+
+<p>MySQL 5.6 giới thiệu <code>innodb_page_cleaners</code> (default: 4, max: 64). Mỗi Page Cleaner thread phụ trách một số buffer pool instances nhất định:</p>
+
+<pre><code>-- MySQL 5.5: 1 page cleaner → tất cả buffer pool instances
+-- MySQL 5.6:
+innodb_page_cleaners = 4
+innodb_buffer_pool_instances = 8
+
+-- Thread 0: BP instance 0, 1
+-- Thread 1: BP instance 2, 3
+-- Thread 2: BP instance 4, 5
+-- Thread 3: BP instance 6, 7</code></pre>
+
+<div class="callout info">
+  <h4>💡 Tại Sao innodb_page_cleaners ≤ innodb_buffer_pool_instances?</h4>
+  <p>Mỗi Page Cleaner cần ít nhất một buffer pool instance để work on. Setting <code>page_cleaners > buffer_pool_instances</code> vô nghĩa — các extra threads sẽ idle. Best practice: set chúng bằng nhau, hoặc page_cleaners = buffer_pool_instances / 2 nếu I/O bandwidth không đủ.</p>
+</div>
+
+<h3>4.2 Coordinator Thread</h3>
+
+<p>Một trong N Page Cleaner threads đóng vai trò "Coordinator": tính toán flush targets, distribute work cho các worker threads, và handle synchronization với Checkpoint mechanism.</p>
+
+<div class="img-placeholder">👉 [CHÈN ẢNH: Page Cleaner architecture — Coordinator thread phân phối flush targets cho 3 Worker threads, mỗi worker flush từ buffer pool instances riêng]</div>
+
+<h2>5. Multi-Purge Threads</h2>
+
+<p>Purge là quá trình dọn dẹp undo log records không còn cần thiết (không có active transaction nào cần đọc version cũ nữa). MySQL 5.5 dùng <strong>1 purge thread</strong> — bottle neck khi write throughput cao.</p>
+
+<h3>5.1 Vấn Đề Với Single Purge Thread</h3>
+
+<p>Single purge thread phải xử lý tuần tự: scan history list → identify purgeable records → remove from undo logs → remove secondary index entries (đây là bước chậm nhất). Khi write throughput cao, purge lag sau và undo log space tăng không ngừng → disk space leak, và MVCC visibility check chậm hơn.</p>
+
+<h3>5.2 Multi-Purge trong MySQL 5.6</h3>
+
+<pre><code>-- Cấu hình:
+innodb_purge_threads = 4  -- default 4, max 32
+
+-- Architecture:
+-- 1 Coordinator Thread: scan history list, identify work
+-- N-1 Worker Threads: thực hiện purge records song song
+
+-- Coordinator phân công theo table/tablespace để tránh conflict</code></pre>
+
+<div class="grid2">
+  <div class="card-small">
+    <h4>Coordinator Thread</h4>
+    <p>Scan <code>trx_sys→history_list</code> theo thứ tự commit. Xác định records nào có thể purge (không còn trong snapshot của bất kỳ active transaction nào). Tạo "purge tasks" và distribute cho workers.</p>
+  </div>
+  <div class="card-small">
+    <h4>Worker Threads</h4>
+    <p>Nhận tasks từ coordinator qua work queue. Thực hiện purge undo log records và update secondary indexes. Parallel execution → tăng throughput 3-4x so với single thread.</p>
+  </div>
+</div>
+
+<div class="callout">
+  <h4>⚡ Tương Quan Với InnoDB MVCC</h4>
+  <p>Purge thread chỉ xóa records khi chúng "below low water mark" — tức là không có active Read View nào cần đọc version đó. <code>low_limit_id</code> trong Read View xác định ngưỡng này. Nếu có long-running transactions (nhiều giờ), purge bị block và undo log space bloat. Đây là lý do <strong>luôn commit/rollback transactions sớm nhất có thể</strong> trong production.</p>
+</div>
+
+<h2>6. CRC32 Qua SSE4.2: Hardware Acceleration</h2>
+
+<p>InnoDB dùng checksum để phát hiện data corruption (bit flips, partial writes). Checksum được tính cho mỗi page (16KB) khi write và verify khi read. Với Buffer Pool lớn và nhiều I/O, checksum computation có thể là CPU bottleneck.</p>
+
+<h3>6.1 Từ CRC32 Software Đến Hardware Instruction</h3>
+
+<div class="table-wrap">
+<table>
+  <tr>
+    <th>Method</th>
+    <th>Throughput</th>
+    <th>CPU Cycles / byte</th>
+    <th>Ghi Chú</th>
+  </tr>
+  <tr>
+    <td>InnoDB legacy checksum</td>
+    <td>~0.5 GB/s</td>
+    <td>~8</td>
+    <td>Pure software, complex algorithm</td>
+  </tr>
+  <tr>
+    <td>CRC32 software (table lookup)</td>
+    <td>~1 GB/s</td>
+    <td>~4</td>
+    <td>Lookup table, better than legacy</td>
+  </tr>
+  <tr>
+    <td><strong>CRC32 SSE4.2 hardware</strong></td>
+    <td><strong>~16 GB/s</strong></td>
+    <td><strong>~0.25</strong></td>
+    <td><span class="badge badge-green">32x nhanh hơn legacy</span></td>
+  </tr>
+</table>
+</div>
+
+<h3>6.2 SSE4.2 CRC32 Instruction</h3>
+
+<pre><code>// Intel SSE4.2 cung cấp instruction CRC32:
+// _mm_crc32_u64(crc, data) — tính CRC32 cho 8 bytes trong 1 clock cycle
+
+// InnoDB implementation:
+uint32_t crc32_hardware(const unsigned char *buf, uint32_t len) {
+    uint32_t crc = 0xFFFFFFFF;
+
+    // Process 8 bytes at a time using SSE4.2
+    while (len >= 8) {
+        crc = _mm_crc32_u64(crc, *(uint64_t*)buf);
+        buf += 8;
+        len -= 8;
+    }
+    // Handle remaining bytes
+    while (len--) {
+        crc = _mm_crc32_u8(crc, *buf++);
+    }
+    return ~crc;
+}
+
+// Kiểm tra CPU support tại startup:
+if (cpuid_flags & CPUID_SSE42) {
+    innodb_checksum_algorithm = CRC32;
+} else {
+    innodb_checksum_algorithm = INNODB;  // fallback
+}</code></pre>
+
+<div class="callout info">
+  <h4>💡 Liên Kết Với CPU Architecture</h4>
+  <p>SSE4.2 CRC32 instruction là ví dụ hoàn hảo của <strong>hardware-software co-design</strong>: CPU manufacturers nhận thấy CRC32 là common operation trong storage và networking, nên built-in dedicated circuit. InnoDB exploit điều này để giảm CPU overhead từ 8 cycles/byte xuống 0.25 cycles/byte — improvement 32x chỉ bằng cách dùng đúng instruction. Tương tự: AES-NI cho encryption, AVX-512 cho ML inference, SHA-NI cho hash computation.</p>
+</div>
+
+<h3>6.3 Checksum Algorithm Migration</h3>
+
+<p>MySQL 5.6 hỗ trợ 3 checksum algorithms: <code>INNODB</code> (legacy), <code>CRC32</code> (mới, hardware-accelerated), <code>NONE</code> (không dùng). Vấn đề: tablespace files cũ dùng INNODB checksum, files mới dùng CRC32 → không thể đọc lẫn nhau nếu set sai.</p>
+
+<pre><code>-- Kiểm tra algorithm đang dùng:
+SHOW VARIABLES LIKE 'innodb_checksum_algorithm';
+
+-- Migration sang CRC32:
+SET GLOBAL innodb_checksum_algorithm = 'strict_crc32';
+-- Sau đó restart và rebuild tablespaces (ALTER TABLE ... FORCE)</code></pre>
+
+<h2>7. Tổng Hợp: Bức Tranh Toàn Diện MySQL 5.6</h2>
+
+<div class="table-wrap">
+<table>
+  <tr>
+    <th>Cải Tiến</th>
+    <th>Vấn Đề Giải Quyết</th>
+    <th>Cơ Chế</th>
+    <th>Lợi Ích</th>
+  </tr>
+  <tr>
+    <td>RO Transaction</td>
+    <td>Global mutex contention khi nhiều readers</td>
+    <td>Separate ro_trx_list, no Transaction ID</td>
+    <td>3x scale-up trên 48 cores</td>
+  </tr>
+  <tr>
+    <td>Cache Line Padding</td>
+    <td>False sharing trên multi-core CPU</td>
+    <td>CACHE_LINE_SIZE padding cho counters</td>
+    <td>Giảm cache coherence traffic</td>
+  </tr>
+  <tr>
+    <td>avg_page_rate Flush</td>
+    <td>Bursty I/O → latency spikes</td>
+    <td>Rate-based flushing, not threshold-based</td>
+    <td>Smooth I/O, lower p99 latency</td>
+  </tr>
+  <tr>
+    <td>Multi Page Cleaner</td>
+    <td>Single cleaner bottleneck</td>
+    <td>1 coordinator + N-1 workers</td>
+    <td>Parallel flush, higher I/O utilization</td>
+  </tr>
+  <tr>
+    <td>Multi Purge</td>
+    <td>Single purge thread lag</td>
+    <td>1 coordinator + N-1 worker purge threads</td>
+    <td>Reduce undo log bloat</td>
+  </tr>
+  <tr>
+    <td>SSE4.2 CRC32</td>
+    <td>Checksum CPU overhead</td>
+    <td>Hardware CRC32 instruction</td>
+    <td>32x faster checksum</td>
+  </tr>
+</table>
+</div>
+
+<div class="callout success">
+  <h4>✅ Bài Học Kiến Trúc Từ MySQL 5.6</h4>
+  <p>MySQL 5.6 là case study xuất sắc về <strong>systematic scalability engineering</strong>. Không phải một single big rewrite, mà là nhiều targeted optimizations: (1) Giảm global mutex scope bằng fine-grained structures; (2) Eliminate false sharing qua cache line alignment; (3) Chuyển từ threshold-based sang rate-based control; (4) Parallelize serial bottlenecks (cleaner, purge); (5) Exploit hardware instructions. Mỗi cải tiến độc lập nhưng cùng hướng về một mục tiêu: multi-core scalability. Đây là cách tiếp cận đúng đắn khi performance engineering một system phức tạp.</p>
+</div>
+
+</div>
+</body>
+</html>

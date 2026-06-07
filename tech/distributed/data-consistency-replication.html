@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Nhất Quán Dữ Liệu & Multi-Replica</title><style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f8fafc;
+  --accent:#4f46e5; --accent2:#7c3aed; --accent3:#0891b2;
+  --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --green:#059669; --yellow:#d97706; --red:#dc2626;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.75;}
+.hero{background:linear-gradient(135deg,#ede9fe 0%,#dbeafe 50%,#e0f2fe 100%);padding:60px 40px;text-align:center;border-bottom:1px solid var(--border);}
+.hero h1{font-size:2.4rem;font-weight:800;background:linear-gradient(135deg,#4f46e5,#7c3aed,#0891b2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;}
+.hero .subtitle{color:var(--muted);font-size:1rem;}
+.container{max-width:960px;margin:0 auto;padding:50px 40px;}
+h2{font-size:1.55rem;font-weight:700;color:#3730a3;margin:40px 0 16px;padding-bottom:10px;border-bottom:2px solid #e0e7ff;}
+h3{font-size:1.15rem;font-weight:600;color:#1e40af;margin:28px 0 12px;}
+h4{font-size:1rem;font-weight:600;color:#0891b2;margin:20px 0 8px;}
+p{color:var(--text);margin-bottom:14px;}
+ul,ol{margin:0 0 14px 24px;color:var(--text);}
+li{margin-bottom:6px;}
+code{background:#ede9fe;color:#4338ca;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.85em;}
+pre{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;overflow-x:auto;margin:16px 0;}
+pre code{background:none;padding:0;color:#e2e8f0;}
+.callout{background:#f8fafc;border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:20px;margin:20px 0;}
+.callout.warning{border-left-color:var(--yellow);background:#fffbeb;}
+.callout.danger{border-left-color:var(--red);background:#fef2f2;}
+.callout.success{border-left-color:var(--green);background:#f0fdf4;}
+.callout h4{margin-top:0;color:var(--accent);}
+.callout.warning h4{color:var(--yellow);}
+.callout.danger h4{color:var(--red);}
+.callout.success h4{color:var(--green);}
+.table-wrap{overflow-x:auto;margin:16px 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:#ede9fe;color:#3730a3;padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid #c7d2fe;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);}
+tr:hover td{background:#f5f3ff;}
+.img-placeholder{background:var(--surface2);border:2px dashed #c7d2fe;border-radius:12px;padding:30px;margin:20px 0;text-align:center;color:var(--muted);}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin:2px;}
+.badge-blue{background:#eff6ff;color:#1d4ed8;}
+.badge-cyan{background:#ecfeff;color:#0e7490;}
+.badge-purple{background:#f5f3ff;color:#6d28d9;}
+.badge-green{background:#f0fdf4;color:#15803d;}
+.badge-red{background:#fef2f2;color:#b91c1c;}
+.nav{background:#fff;border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;}
+.nav a:hover{color:var(--accent);}
+.nav .sep{color:var(--border);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.card-small{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.card-small h4{margin-top:0;margin-bottom:8px;}
+.section-title{font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border),transparent);}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:48px;}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:28px;text-decoration:none;color:var(--text);transition:all .3s ease;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform .3s ease;}
+.card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 30px rgba(79,70,229,.1);}
+.card:hover::before{transform:scaleX(1);}
+.card-icon{font-size:2rem;margin-bottom:16px;}
+.card h3{font-size:1rem;font-weight:600;margin-bottom:10px;color:var(--text);}
+.card p{color:var(--muted);font-size:.85rem;line-height:1.6;}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin-top:12px;}
+.tag-db{background:#eff6ff;color:#1d4ed8;}
+.tag-dist{background:#ecfeff;color:#0e7490;}
+.tag-prog{background:#f5f3ff;color:#6d28d9;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:60px;}
+.stat{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.stat-num{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-label{color:var(--muted);font-size:.9rem;margin-top:4px;}
+</style></head>
+<body>
+<nav class="nav"><a href="../index.html">🏠 Trang chủ</a><span class="sep">/</span><span>Distributed</span><span class="sep">/</span><span>Consistency &amp; Replication</span></nav>
+<div class="hero"><h1>⚖️ Nhất Quán Dữ Liệu, Phân Vùng Khả Dụng &amp; Hiệu Năng</h1>
+<p class="subtitle">Phân tích sâu CAP theorem, các mô hình nhất quán, thiết kế multi-replica database và các trade-off thực tế</p></div>
+<div class="container">
+<h2>1. CAP Theorem: Hiểu Đúng và Hiểu Sâu</h2>
+<div class="grid2">
+<div class="card-small"><h4>C — Consistency (Nhất Quán)</h4>
+<p>Mỗi read nhận được giá trị mới nhất (hoặc lỗi). Tất cả nodes thấy cùng data tại cùng thời điểm. Đây là <strong>Linearizability</strong> trong thuật ngữ consistency models.</p></div>
+<div class="card-small"><h4>A — Availability (Khả Dụng)</h4>
+<p>Mỗi request đến node chưa lỗi nhận được response (không phải lỗi), dù có thể không phải mới nhất. Hệ thống tiếp tục phục vụ ngay cả khi một số nodes bị lỗi.</p></div>
+</div>
+<div class="card-small" style="margin-top:12px"><h4>P — Partition Tolerance (Dung Sai Phân Vùng)</h4>
+<p>Hệ thống tiếp tục hoạt động dù có network partition. Trong distributed systems thực tế, P KHÔNG thể từ bỏ — mạng luôn có khả năng partition. Do đó, lựa chọn thực sự là giữa CP và AP.</p></div>
+<div class="callout warning"><h4>⚠️ CAP Không Phải "Chọn 2 Trong 3"</h4>
+<p>Cách hiểu đúng: khi không có Partition (bình thường), hệ thống có cả C và A. Khi có Partition, phải chọn: (CP) từ chối request để giữ consistency, hoặc (AP) phục vụ request với possible stale data. PACELC mở rộng thêm trade-off ngay cả khi không có partition: Latency vs Consistency.</p></div>
+
+<h2>2. PACELC — Mô Hình Đầy Đủ Hơn CAP</h2>
+<div class="table-wrap"><table>
+<tr><th>Hệ thống</th><th>Khi có Partition</th><th>Khi bình thường (Else)</th></tr>
+<tr><td>MySQL (sync replication)</td><td>CP</td><td>CL (Consistent, High Latency)</td></tr>
+<tr><td>MySQL (async replication)</td><td>AP</td><td>EL (Low Latency)</td></tr>
+<tr><td>Cassandra</td><td>AP</td><td>EL (Tunable)</td></tr>
+<tr><td>Spanner (Google)</td><td>CP</td><td>EC (High Latency)</td></tr>
+<tr><td>etcd/ZooKeeper</td><td>CP</td><td>EC</td></tr>
+</table></div>
+
+<h2>3. Các Mô Hình Nhất Quán (Consistency Models)</h2>
+<h3>3.1 Linearizability — Mạnh Nhất</h3>
+<p>Mỗi operation có hiệu lực tại một điểm duy nhất trong khoảng thời gian thực tế của nó. Tất cả processes thấy cùng thứ tự linearize của các operations.</p>
+<pre><code>-- Ví dụ:
+T=5: Write(x=1) hoàn thành
+T=7: Read(x) bắt đầu và kết thúc → PHẢI trả về 1</code></pre>
+<div class="callout"><h4>💡 Tại Sao Linearizability Quan Trọng?</h4>
+<p>Linearizability là nền tảng của: distributed locks, leader election, unique ID generation, Compare-And-Swap operations. Nếu hệ thống không linearizable, các abstractions này có thể bị broken. etcd, ZooKeeper đảm bảo linearizability — đó là lý do chúng được dùng làm nền tảng.</p></div>
+
+<h3>3.2 Eventual Consistency — Yếu Nhất Phổ Biến</h3>
+<p>Nếu không có writes mới, cuối cùng tất cả replicas sẽ đồng ý. Không có đảm bảo về thời gian hoặc thứ tự observed.</p>
+<ul>
+<li><strong>Read-your-own-writes</strong>: Sau khi write, đọc lại của cùng user thấy giá trị mới</li>
+<li><strong>Monotonic reads</strong>: Không bao giờ đọc giá trị "cũ hơn" giá trị đã đọc trước</li>
+<li><strong>Bounded staleness</strong>: Tối đa k versions hoặc t giây sau primary</li>
+</ul>
+
+<h2>4. Master Lease — Phòng Tránh Split-Brain</h2>
+<p>Vấn đề: Khi Master bị partition khỏi Slaves, HA system có thể bầu Slave mới làm Master. Nhưng Master cũ vẫn còn sống và đang nhận writes từ clients → <strong>split-brain</strong>: 2 Masters cùng nhận writes!</p>
+<pre><code>-- Master Lease flow:
+Master nhận lease (valid 10s) từ HA Master
+Client gửi write → Master xử lý (lease còn hạn)
+Network partition xảy ra
+HA Master không thấy Master → đợi 10 giây
+Sau 10 giây: HA bầu Slave thành Master mới
+Master cũ: lease hết hạn → tự chối phục vụ
+Kết quả: chỉ có 1 Master tại bất kỳ thời điểm nào</code></pre>
+
+<h2>5. Hiệu Năng: Giữ Sync Nhưng Vẫn Nhanh</h2>
+<h3>5.1 Nghịch Lý Hiệu Năng</h3>
+<p>Sync replication thêm latency cho mỗi transaction: ít nhất 1 network RTT (Master→Slave) + 1 disk sync trên Slave. Nhưng đối với throughput tổng thể, không nhất thiết giảm:</p>
+<ul>
+<li>Network RTT và Slave disk sync không tiêu thụ CPU của Master</li>
+<li>Nếu async hóa tốt, throughput của Master không giảm</li>
+<li>Chỉ RT của từng transaction tăng, không phải throughput tổng thể</li>
+</ul>
+
+<h3>5.2 MySQL Semi-Sync Replication</h3>
+<pre><code>-- Trên Master:
+INSTALL PLUGIN rpl_semi_sync_master SONAME 'semisync_master.so';
+SET GLOBAL rpl_semi_sync_master_enabled = 1;
+SET GLOBAL rpl_semi_sync_master_timeout = 1000; -- 1000ms timeout
+
+-- Trên Slave:
+INSTALL PLUGIN rpl_semi_sync_slave SONAME 'semisync_slave.so';
+SET GLOBAL rpl_semi_sync_slave_enabled = 1;</code></pre>
+<div class="callout warning"><h4>⚠️ Cạm Bẫy: Fallback to Async</h4>
+<p>Nếu Slave không xác nhận trong timeout (mặc định 10s), MySQL tự động chuyển về async mode! Điều này có thể dẫn đến data loss. Trong production, đặt timeout = 0 (đợi mãi mãi) hoặc thêm monitoring cảnh báo khi fallback xảy ra.</p></div>
+
+<h2>6. Tình Huống Biên: Master Crash Giữa Chừng</h2>
+<pre><code>1. Client gửi Commit
+2. Master gửi log đến Slave → Slave flush thành công
+3. Slave gửi acknowledgment cho Master
+4. Master flush log cục bộ
+5. *** MASTER CRASH BEFORE REPLYING TO CLIENT ***
+6. Client nhận lỗi network/timeout</code></pre>
+<p><strong>Vấn đề</strong>: Transaction đã commit trên DB (cả Master và Slave), nhưng Client không biết có thành công hay không.</p>
+<p><strong>Giải pháp</strong>: Client retry với <strong>idempotency key</strong> — mỗi transaction có unique ID, retry an toàn. Đây là vấn đề application-level, không giải quyết được hoàn toàn ở database layer.</p>
+
+<div class="callout success"><h4>✅ Nguyên Tắc Vàng Thiết Kế</h4>
+<p>Không có giải pháp nào phù hợp tất cả. Key: hiểu rõ business requirements (RPO/RTO), chọn consistency level phù hợp từng operation, và implement retry/idempotency ở application layer để xử lý edge cases mà database không thể đảm bảo.</p></div>
+</div>
+</body></html>

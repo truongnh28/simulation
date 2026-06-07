@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RocksDB & MyRocks: LSM Tree, Kiến Trúc & Sản Xuất</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f8fafc;
+  --accent:#0891b2; --accent2:#0e7490; --accent3:#155e75;
+  --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --green:#059669; --yellow:#d97706; --red:#dc2626;
+  --orange:#ea580c;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.75;}
+.nav{background:#fff;border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;}
+.nav a:hover{color:var(--accent);}
+.nav .sep{color:var(--border);}
+.hero{background:linear-gradient(135deg,#ecfeff 0%,#cffafe 50%,#e0f2fe 100%);padding:60px 40px;text-align:center;border-bottom:1px solid var(--border);}
+.hero h1{font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#0891b2,#0e7490,#155e75);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;}
+.hero .subtitle{color:var(--muted);font-size:1rem;max-width:700px;margin:0 auto;}
+.container{max-width:960px;margin:0 auto;padding:50px 40px;}
+h2{font-size:1.55rem;font-weight:700;color:#0e7490;margin:40px 0 16px;padding-bottom:10px;border-bottom:2px solid #cffafe;}
+h3{font-size:1.15rem;font-weight:600;color:#0891b2;margin:28px 0 12px;}
+h4{font-size:1rem;font-weight:600;color:#155e75;margin:20px 0 8px;}
+p{color:var(--text);margin-bottom:14px;}
+ul,ol{margin:0 0 14px 24px;color:var(--text);}
+li{margin-bottom:6px;}
+code{background:#ecfeff;color:#0e7490;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.85em;}
+pre{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;overflow-x:auto;margin:16px 0;}
+pre code{background:none;padding:0;color:#e2e8f0;font-size:.88rem;}
+.callout{background:#f8fafc;border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:20px;margin:20px 0;}
+.callout.warning{border-left-color:var(--yellow);background:#fffbeb;}
+.callout.danger{border-left-color:var(--red);background:#fef2f2;}
+.callout.success{border-left-color:var(--green);background:#f0fdf4;}
+.callout.info{border-left-color:var(--accent3);background:#ecfeff;}
+.callout h4{margin-top:0;color:var(--accent);}
+.callout.warning h4{color:var(--yellow);}
+.callout.danger h4{color:var(--red);}
+.callout.success h4{color:var(--green);}
+.callout.info h4{color:var(--accent3);}
+.table-wrap{overflow-x:auto;margin:16px 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:#ecfeff;color:#0e7490;padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid #a5f3fc;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);}
+tr:hover td{background:#f0fdff;}
+.img-placeholder{background:var(--surface2);border:2px dashed #a5f3fc;border-radius:12px;padding:30px;margin:20px 0;text-align:center;color:var(--muted);font-size:.95rem;}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin:2px;}
+.badge-blue{background:#eff6ff;color:#1d4ed8;}
+.badge-cyan{background:#ecfeff;color:#0e7490;}
+.badge-green{background:#f0fdf4;color:#15803d;}
+.badge-red{background:#fef2f2;color:#b91c1c;}
+.badge-orange{background:#fff7ed;color:#c2410c;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:16px 0;}
+.card-small{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.card-small h4{margin-top:0;margin-bottom:8px;color:#0891b2;}
+.stat-box{background:linear-gradient(135deg,#ecfeff,#cffafe);border:1px solid #a5f3fc;border-radius:12px;padding:24px;text-align:center;}
+.stat-num{font-size:2.2rem;font-weight:800;color:#0891b2;}
+.stat-label{color:var(--muted);font-size:.85rem;margin-top:4px;}
+.flow-step{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;margin:8px 0;position:relative;padding-left:56px;}
+.flow-step::before{content:attr(data-step);position:absolute;left:16px;top:50%;transform:translateY(-50%);background:var(--accent);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;}
+.lsm-level{background:#fff;border:2px solid var(--border);border-radius:8px;padding:12px 16px;margin:6px 0;display:flex;align-items:center;justify-content:space-between;}
+.lsm-level .level-label{font-weight:600;color:#0891b2;}
+.lsm-level .level-size{color:var(--muted);font-size:.85rem;}
+.lsm-level .level-bar{height:12px;background:linear-gradient(90deg,#0891b2,#0e7490);border-radius:6px;}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html">← Trang Chủ</a>
+  <span class="sep">›</span>
+  <a href="#">Database</a>
+  <span class="sep">›</span>
+  <span>RocksDB & MyRocks</span>
+</nav>
+<div class="hero">
+  <h1>⚡ RocksDB & MyRocks</h1>
+  <p class="subtitle">LSM Tree Architecture, Write/Read Path, MVCC qua Sequence Numbers, và kinh nghiệm production tại Alibaba — từ 506.8TB InnoDB xuống 76.2TB MyRocks</p>
+</div>
+<div class="container">
+
+<h2>1. Tổng Quan: Tại Sao Cần LSM Tree?</h2>
+
+<p>RocksDB, được Facebook phát triển và open-source từ năm 2013 (fork từ Google LevelDB), đại diện cho một triết lý thiết kế hoàn toàn khác với B-Tree của InnoDB. Câu hỏi cốt lõi là: <em>tại sao lại cần một storage engine khác khi InnoDB đã hoạt động tốt?</em></p>
+
+<div class="callout info">
+  <h4>⚡ Vấn đề cơ bản của B-Tree với SSD</h4>
+  <p>B-Tree tối ưu cho <strong>random read</strong> (tìm kiếm O(log n)), nhưng <strong>random write</strong> trên SSD có vấn đề: SSD phải erase cả block (128KB-4MB) trước khi write, gây ra Write Amplification (WA) rất cao. Mỗi logical write của user có thể dẫn đến hàng chục physical write thực sự lên SSD. LSM Tree giải quyết vấn đề này bằng cách chuyển tất cả write thành <strong>sequential append</strong> — hiệu quả nhất trên cả HDD lẫn SSD.</p>
+</div>
+
+<div class="grid3">
+  <div class="stat-box"><div class="stat-num">6.6x</div><div class="stat-label">Nén storage (506.8TB → 76.2TB)</div></div>
+  <div class="stat-box"><div class="stat-num">3</div><div class="stat-label">Tầng LSM điển hình (L0-L2)</div></div>
+  <div class="stat-box"><div class="stat-num">10:1</div><div class="stat-label">Size ratio giữa các level</div></div>
+</div>
+
+<h3>1.1 LSM Tree: Ý Tưởng Căn Bản</h3>
+
+<p>Log-Structured Merge-tree (LSM Tree) được Patrick O'Neil đề xuất năm 1996. Thay vì sửa dữ liệu tại chỗ (in-place update) như B-Tree, LSM Tree <strong>luôn ghi thêm vào cuối</strong> (append-only). Dữ liệu ban đầu nằm trong memory (Memtable), sau đó được flush xuống disk thành các file bất biến (SST files), và định kỳ merge lại thành file lớn hơn qua quá trình Compaction.</p>
+
+<div class="img-placeholder">👉 [CHÈN ẢNH: LSM Tree tổng quan — Memtable → L0 SST → L1 → L2, với mũi tên flush và compaction]</div>
+
+<h2>2. Kiến Trúc RocksDB: Các Tầng Lưu Trữ</h2>
+
+<p>RocksDB tổ chức dữ liệu thành nhiều tầng (levels), mỗi tầng lớn hơn tầng trước theo một tỉ lệ cố định (thường là 10x). Đây là thiết kế cốt lõi quyết định toàn bộ tradeoff của hệ thống.</p>
+
+<h3>2.1 Cấu Trúc Tầng (Level Structure)</h3>
+
+<div style="margin:20px 0;">
+  <div class="lsm-level">
+    <span class="level-label">Memtable (RAM)</span>
+    <div class="lsm-level-bar" style="width:30px;height:12px;background:linear-gradient(90deg,#0891b2,#0e7490);border-radius:6px;"></div>
+    <span class="level-size">~64MB, sorted, writable</span>
+  </div>
+  <div class="lsm-level">
+    <span class="level-label">Level 0 (L0)</span>
+    <div class="lsm-level-bar" style="width:60px;height:12px;background:linear-gradient(90deg,#0891b2,#0e7490);border-radius:6px;"></div>
+    <span class="level-size">4-8 SST files, overlapping keys</span>
+  </div>
+  <div class="lsm-level">
+    <span class="level-label">Level 1 (L1)</span>
+    <div class="lsm-level-bar" style="width:120px;height:12px;background:linear-gradient(90deg,#0891b2,#0e7490);border-radius:6px;"></div>
+    <span class="level-size">~256MB, non-overlapping, sorted</span>
+  </div>
+  <div class="lsm-level">
+    <span class="level-label">Level 2 (L2)</span>
+    <div class="lsm-level-bar" style="width:240px;height:12px;background:linear-gradient(90deg,#0891b2,#0e7490);border-radius:6px;"></div>
+    <span class="level-size">~2.5GB, non-overlapping</span>
+  </div>
+  <div class="lsm-level">
+    <span class="level-label">Level N (Lmax)</span>
+    <div class="lsm-level-bar" style="width:480px;height:12px;background:linear-gradient(90deg,#0891b2,#0e7490);border-radius:6px;"></div>
+    <span class="level-size">Phần lớn dữ liệu, target size = Lmax_size</span>
+  </div>
+</div>
+
+<div class="callout">
+  <h4>⚡ Tính chất quan trọng của từng tầng</h4>
+  <ul>
+    <li><strong>L0</strong>: Các SST file <em>có thể có key range chồng lên nhau</em> (overlapping). Đây là điểm đặc biệt — khi read phải check TẤT CẢ L0 files. Khi L0 đầy (>4 files mặc định), compaction được trigger.</li>
+    <li><strong>L1 trở đi</strong>: SST files được sắp xếp và <em>không chồng nhau</em> (non-overlapping). Mỗi key chỉ xuất hiện trong đúng một SST file ở mỗi level. Binary search có thể được dùng để tìm đúng file.</li>
+    <li><strong>Compaction</strong>: Khi Ln đầy, merge với Ln+1 để tạo ra file mới, xóa version cũ. Đây là quá trình "trả nợ" write amplification.</li>
+  </ul>
+</div>
+
+<h3>2.2 SST File (Sorted String Table)</h3>
+
+<p>Mỗi SST file là một file bất biến (immutable) chứa dữ liệu đã được sắp xếp theo key. Cấu trúc nội bộ của SST file gồm nhiều lớp để tối ưu read:</p>
+
+<div class="grid2">
+  <div class="card-small">
+    <h4>Data Blocks</h4>
+    <p>Chứa key-value pairs thực sự, được nén (Snappy/LZ4/Zstd). Mỗi block ~4KB, có checksum riêng.</p>
+  </div>
+  <div class="card-small">
+    <h4>Index Blocks</h4>
+    <p>Chứa last key của mỗi data block → binary search để tìm đúng block khi lookup. Được cache trong Block Cache.</p>
+  </div>
+  <div class="card-small">
+    <h4>Filter Blocks (Bloom Filter)</h4>
+    <p>Probabilistic data structure, 10-bit per key, false positive ~1%. Giúp skip SST files không chứa key cần tìm — quan trọng cho read performance.</p>
+  </div>
+  <div class="card-small">
+    <h4>Metadata Blocks</h4>
+    <p>Statistics, compression dictionary, range deletion tombstones. Footer chứa pointer đến các block khác.</p>
+  </div>
+</div>
+
+<div class="img-placeholder">👉 [CHÈN ẢNH: Cấu trúc nội bộ SST file — Data Blocks, Index Block, Filter Block, Metadata Block, Footer]</div>
+
+<h2>3. Write Path: Từ Client Đến Disk</h2>
+
+<p>Write path của RocksDB được thiết kế để đạt throughput cao nhất có thể. Hiểu rõ từng bước giúp giải thích tại sao RocksDB vượt trội về write performance.</p>
+
+<div class="flow-step" data-step="1">
+  <strong>Client gọi DB::Put(key, value)</strong> — Tạo <code>WriteBatch</code> chứa một hoặc nhiều operations (Put/Delete/Merge)
+</div>
+<div class="flow-step" data-step="2">
+  <strong>WAL (Write Ahead Log)</strong> — WriteBatch được append vào WAL trước. WAL là sequential log file trên disk. Đảm bảo durability — nếu crash, có thể replay WAL để recover Memtable.
+</div>
+<div class="flow-step" data-step="3">
+  <strong>Memtable Insert</strong> — Sau khi WAL write thành công, dữ liệu được insert vào Active Memtable (SkipList hoặc HashSkipList). Memtable hoàn toàn trong RAM → write cực nhanh.
+</div>
+<div class="flow-step" data-step="4">
+  <strong>Memtable Full → Immutable Memtable</strong> — Khi Active Memtable đầy (~64MB), nó trở thành Immutable Memtable (read-only). Active Memtable mới được tạo ngay lập tức để không block writes.
+</div>
+<div class="flow-step" data-step="5">
+  <strong>Flush: Immutable → L0 SST</strong> — Background thread flush Immutable Memtable xuống disk thành L0 SST file. File này immutable — không bao giờ bị sửa đổi.
+</div>
+<div class="flow-step" data-step="6">
+  <strong>Compaction: L0 → L1 → ... → Lmax</strong> — Background compaction threads merge SST files từ tầng này sang tầng kế tiếp. Xóa duplicate keys và tombstones, đảm bảo dữ liệu sorted và không chồng nhau ở L1+.
+</div>
+
+<h3>3.1 Write Stall và Backpressure</h3>
+
+<div class="callout warning">
+  <h4>⚠️ Write Stall: Kẻ Thù Ngầm của RocksDB</h4>
+  <p>Khi compaction không theo kịp write rate, L0 file count tăng vượt ngưỡng. RocksDB sẽ kích hoạt <strong>write stall</strong> — làm chậm writes của application để compaction có thể bắt kịp. Nếu vẫn không đủ, RocksDB <strong>block writes hoàn toàn</strong>. Đây là "hidden cost" quan trọng khi vận hành RocksDB trong production — cần monitor <code>rocksdb.stall-time</code> và <code>l0-file-count</code> liên tục.</p>
+</div>
+
+<pre><code>// Cấu hình để giảm write stall
+options.level0_slowdown_writes_trigger = 20;  // default: 20
+options.level0_stop_writes_trigger = 36;      // default: 36
+options.max_background_jobs = 8;              // tăng compaction threads
+options.write_buffer_size = 128 * 1024 * 1024; // 128MB memtable</code></pre>
+
+<h3>3.2 Group Commit trong Write Path</h3>
+
+<p>RocksDB triển khai cơ chế tương tự Group Commit của MySQL để tăng throughput WAL write. Khi nhiều threads cùng muốn write, RocksDB gộp chúng thành một "write group" — một thread leader viết WAL cho cả nhóm, các threads follower đợi. Điều này giảm số lần fsync và tăng throughput đáng kể khi có nhiều concurrent writers.</p>
+
+<h2>4. Read Path: Point Lookup và Range Scan</h2>
+
+<p>Read path phức tạp hơn write path vì dữ liệu có thể nằm ở nhiều tầng khác nhau — thậm chí cùng một key có thể xuất hiện ở Memtable, L0, L1, L2 với các version khác nhau. RocksDB phải tìm version mới nhất với sequence number cao nhất.</p>
+
+<h3>4.1 Point Lookup (Tìm Một Key)</h3>
+
+<div class="img-placeholder">👉 [CHÈN ẢNH: Read path diagram — từ Memtable xuống L0, L1, L2, với Bloom Filter check ở mỗi bước]</div>
+
+<div class="flow-step" data-step="1">
+  <strong>Active Memtable</strong> — Check SkipList. O(log n). Nếu tìm thấy và là version mới nhất, return ngay.
+</div>
+<div class="flow-step" data-step="2">
+  <strong>Immutable Memtables</strong> — Check từng Immutable Memtable theo thứ tự mới → cũ. Thường chỉ 1-2 Immutable Memtables.
+</div>
+<div class="flow-step" data-step="3">
+  <strong>L0 SST Files</strong> — Check TẤT CẢ L0 files (vì keys có thể chồng nhau). Bloom Filter được check trước để skip files không chứa key. Bloom Filter miss rate ~1%.
+</div>
+<div class="flow-step" data-step="4">
+  <strong>L1, L2, ... Lmax</strong> — Vì non-overlapping, chỉ cần binary search để tìm đúng 1 SST file ở mỗi level. Bloom Filter kiểm tra → nếu có, load data block từ Block Cache hoặc disk.
+</div>
+<div class="flow-step" data-step="5">
+  <strong>Block Cache</strong> — Data blocks được cache trong RAM (Block Cache, thường 1-8GB). Cache hit = không cần disk I/O. LRU eviction policy.
+</div>
+
+<div class="callout danger">
+  <h4>❌ Write Amplification vs Read Amplification: Tradeoff Cơ Bản</h4>
+  <p>LSM Tree có <strong>Read Amplification</strong> cao hơn B-Tree: một point lookup có thể phải check nhiều levels. Với Bloom Filter tốt, thực tế thường chỉ đọc 1-2 files. Nhưng worst case (key không tồn tại) phải check tất cả levels. Đây là tradeoff căn bản: LSM Tree đổi <em>write efficiency cao</em> lấy <em>read efficiency thấp hơn một chút</em>.</p>
+</div>
+
+<h3>4.2 Range Scan (Iterator)</h3>
+
+<p>Range scan phức tạp hơn point lookup vì phải merge kết quả từ nhiều sources khác nhau theo thứ tự key.</p>
+
+<h4>Iterator Hierarchy</h4>
+
+<div class="grid2">
+  <div class="card-small">
+    <h4>DBIter (Top Level)</h4>
+    <p>Interface bên ngoài. Ẩn MVCC — chỉ return version visible cho snapshot hiện tại. Gọi MergingIterator bên dưới.</p>
+  </div>
+  <div class="card-small">
+    <h4>MergingIterator</h4>
+    <p>Merge nhiều sorted streams lại. Dùng <strong>min-heap</strong> để luôn return key nhỏ nhất tiếp theo. O(log k) mỗi next() call, k = số iterators.</p>
+  </div>
+  <div class="card-small">
+    <h4>MemtableIterator</h4>
+    <p>Iterator trên SkipList của Memtable. Forward scan rất nhanh nhờ linked list structure của SkipList.</p>
+  </div>
+  <div class="card-small">
+    <h4>TwoLevelIterator (SST)</h4>
+    <p>Index block → data block. Khi reach cuối một data block, đọc next block. Lazy loading — chỉ load block khi cần.</p>
+  </div>
+</div>
+
+<h4>Fractional Cascading — Tối Ưu Range Scan</h4>
+
+<p>Fractional Cascading là kỹ thuật từ computational geometry giúp tăng tốc binary search khi tìm cùng một key trong nhiều sorted lists. Thay vì binary search độc lập trong từng level (O(k log n)), Fractional Cascading giảm xuống O(log n + k) bằng cách "cascade" thông tin vị trí từ level này sang level kế tiếp.</p>
+
+<div class="callout info">
+  <h4>💡 Tại Sao Fractional Cascading Quan Trọng Cho Range Scan?</h4>
+  <p>Trong range scan, khi ta đã tìm thấy key K ở Level 1 tại vị trí p1, thì ở Level 2 key K phải nằm trong một range có thể suy ra từ p1. Không cần binary search lại từ đầu. Điều này đặc biệt có lợi khi scan qua nhiều keys liên tiếp — hầu hết các lần seek kế tiếp chỉ cần một vài comparisons thay vì log(n).</p>
+</div>
+
+<h2>5. MVCC Qua Sequence Numbers</h2>
+
+<p>RocksDB triển khai MVCC theo cách đơn giản và thanh lịch hơn InnoDB: mỗi key-value pair được gắn một <strong>Sequence Number</strong> — một số nguyên tăng dần, global, monotonic.</p>
+
+<h3>5.1 Internal Key Format</h3>
+
+<pre><code>// Mỗi entry trong RocksDB thực sự có dạng:
+Internal Key = user_key + sequence_number + value_type
+// value_type: kTypeValue (put) hoặc kTypeDeletion (tombstone)
+
+// Ví dụ:
+user_key="alice" seq=100 type=kTypeValue   → value="alice@corp.com"
+user_key="alice" seq=50  type=kTypeValue   → value="alice@gmail.com"
+user_key="alice" seq=10  type=kTypeDeletion → (deleted)</code></pre>
+
+<p>Các entries được sắp xếp theo thứ tự: <code>user_key ASC, sequence_number DESC</code>. Nghĩa là với cùng một user_key, version mới nhất (sequence number cao nhất) luôn xuất hiện trước. Khi read, RocksDB tìm version đầu tiên có sequence number ≤ snapshot's sequence number.</p>
+
+<h3>5.2 Snapshot Isolation</h3>
+
+<div class="grid2">
+  <div class="card-small">
+    <h4>Snapshot Creation</h4>
+    <p>Gọi <code>DB::GetSnapshot()</code> → return current sequence number. Chi phí O(1), không copy data.</p>
+  </div>
+  <div class="card-small">
+    <h4>Read With Snapshot</h4>
+    <p>Iterator chỉ thấy entries với seq ≤ snapshot_seq. Đảm bảo consistent read tại một thời điểm.</p>
+  </div>
+  <div class="card-small">
+    <h4>Garbage Collection</h4>
+    <p>Compaction xóa versions không còn cần thiết — versions cũ hơn oldest snapshot. Đây là lý do phải monitor <code>snapshot count</code>.</p>
+  </div>
+  <div class="card-small">
+    <h4>No Undo Log</h4>
+    <p>Khác InnoDB, RocksDB không có undo log riêng. Old versions nằm ngay trong data files — đơn giản hơn nhưng GC phụ thuộc vào compaction schedule.</p>
+  </div>
+</div>
+
+<div class="callout warning">
+  <h4>⚠️ Snapshot Leak: Vấn Đề Phổ Biến Trong Production</h4>
+  <p>Nếu application giữ một snapshot lâu (quên release), compaction không thể xóa old versions. Dữ liệu tích lũy ngày càng nhiều. Monitor <code>rocksdb.num-snapshots</code> và <code>rocksdb.oldest-snapshot-time</code>. Đây là nguồn gốc phổ biến của hiện tượng "RocksDB grow without bound" trong production.</p>
+</div>
+
+<h2>6. MyRocks: RocksDB Làm Storage Engine Cho MySQL</h2>
+
+<p>MyRocks là dự án tích hợp RocksDB làm storage engine thay thế InnoDB trong MySQL. Được phát triển bởi Facebook và sau đó được Alibaba adopt vào AliSQL/PolarDB-X.</p>
+
+<h3>6.1 Kiến Trúc MyRocks</h3>
+
+<div class="img-placeholder">👉 [CHÈN ẢNH: MySQL layer → MySQL SE API → MyRocks handler → RocksDB library → SST files trên disk]</div>
+
+<p>MyRocks implement MySQL Storage Engine API — cùng interface mà InnoDB dùng. MySQL server (parser, optimizer, replication) không cần thay đổi. Chỉ tầng storage engine được swap.</p>
+
+<h3>6.2 Key Encoding trong MyRocks</h3>
+
+<p>Một thách thức lớn khi dùng RocksDB (key-value store) làm backend cho MySQL (relational database) là encoding dữ liệu. MyRocks phải encode cả clustered index và secondary indexes vào format key-value.</p>
+
+<pre><code>-- InnoDB: clustered index key = primary key
+-- MyRocks: clustered index key = table_id + primary_key_columns
+-- Encoded theo Memcomparable format để sort đúng
+
+-- Secondary index trong MyRocks:
+-- Key   = table_id + index_id + index_columns + primary_key
+-- Value = (rỗng, vì primary key đã trong key)
+
+-- Ví dụ: table users(id INT, name VARCHAR, email VARCHAR), PK=id, INDEX(name)
+-- Clustered: key="\x00\x01" + encode(id), value=encode(name)+encode(email)
+-- Secondary: key="\x00\x02" + encode(name) + encode(id), value=""</code></pre>
+
+<div class="callout info">
+  <h4>💡 Memcomparable Encoding</h4>
+  <p>MySQL có nhiều kiểu dữ liệu với sort order phức tạp (VARCHAR có collation, DECIMAL có dấu). MyRocks phải encode chúng thành byte sequences mà khi so sánh byte-by-byte sẽ cho kết quả đúng. Đây gọi là "memcomparable format" — encode một lần để RocksDB's natural byte comparison tự động xử lý sort order đúng.</p>
+</div>
+
+<h3>6.3 Transaction Support</h3>
+
+<p>MyRocks dùng RocksDB's <code>OptimisticTransaction</code> hoặc <code>PessimisticTransaction</code> để implement MySQL transactions. Optimistic transactions không hold locks khi read, chỉ validate at commit time — phù hợp với workload ít conflicts.</p>
+
+<h2>7. Kinh Nghiệm Production Tại Alibaba</h2>
+
+<p>Alibaba deploy MyRocks cho một số workloads quan trọng, với kết quả ấn tượng nhưng cũng nhiều bài học đắt giá.</p>
+
+<h3>7.1 Kết Quả Nén Storage</h3>
+
+<div class="table-wrap">
+<table>
+  <tr>
+    <th>Metric</th>
+    <th>InnoDB</th>
+    <th>MyRocks</th>
+    <th>Cải thiện</th>
+  </tr>
+  <tr>
+    <td>Storage dùng</td>
+    <td>506.8 TB</td>
+    <td>76.2 TB</td>
+    <td><span class="badge badge-green">6.6x nhỏ hơn</span></td>
+  </tr>
+  <tr>
+    <td>Compression ratio</td>
+    <td>~1.3x (InnoDB compressed)</td>
+    <td>~8.5x</td>
+    <td><span class="badge badge-green">Vượt trội</span></td>
+  </tr>
+  <tr>
+    <td>Write throughput</td>
+    <td>Baseline</td>
+    <td>+30-50%</td>
+    <td><span class="badge badge-green">Tốt hơn</span></td>
+  </tr>
+  <tr>
+    <td>Read throughput (point)</td>
+    <td>Baseline</td>
+    <td>-20 đến -40%</td>
+    <td><span class="badge badge-red">Kém hơn</span></td>
+  </tr>
+  <tr>
+    <td>Read throughput (range)</td>
+    <td>Baseline</td>
+    <td>-30 đến -60%</td>
+    <td><span class="badge badge-red">Kém hơn đáng kể</span></td>
+  </tr>
+  <tr>
+    <td>CPU usage</td>
+    <td>Baseline</td>
+    <td>+10-20% (compaction)</td>
+    <td><span class="badge badge-orange">Cao hơn một chút</span></td>
+  </tr>
+</table>
+</div>
+
+<div class="callout success">
+  <h4>✅ Workload Phù Hợp Với MyRocks</h4>
+  <ul>
+    <li><strong>Write-heavy workloads</strong>: Logging, event streaming, time-series data</li>
+    <li><strong>High compression ratio</strong>: Data có tính lặp cao (user events, transactions history)</li>
+    <li><strong>Cost-sensitive</strong>: Storage cost chiếm phần lớn OPEX, sẵn sàng đánh đổi read performance</li>
+    <li><strong>Cold data</strong>: Data ít được read nhưng cần lưu lâu dài</li>
+  </ul>
+</div>
+
+<div class="callout danger">
+  <h4>❌ Workload Không Phù Hợp</h4>
+  <ul>
+    <li><strong>OLTP read-heavy</strong>: E-commerce product catalog, user profile lookup — read latency quan trọng hơn storage cost</li>
+    <li><strong>Complex joins với range scans</strong>: MyRocks range scan kém InnoDB đáng kể</li>
+    <li><strong>Full-text search</strong>: Không được optimize cho MyRocks</li>
+    <li><strong>Latency-sensitive</strong>: Write stall có thể gây latency spike không chấp nhận được</li>
+  </ul>
+</div>
+
+<h3>7.2 Bài Học Production Quan Trọng</h3>
+
+<h4>Bài Học 1: Compaction Tuning Rất Phức Tạp</h4>
+<p>Compaction có hàng chục parameters và không có "one size fits all". Alibaba phải điều chỉnh <code>compaction_readahead_size</code>, <code>max_background_compactions</code>, <code>target_file_size_base</code>, <code>max_bytes_for_level_base</code> cho từng cluster riêng. Sai một tham số có thể gây write stall hoặc read amplification tăng đột ngột.</p>
+
+<h4>Bài Học 2: Monitoring Khác InnoDB Hoàn Toàn</h4>
+<p>Các metrics quan trọng cần monitor trong MyRocks khác hoàn toàn InnoDB:</p>
+<pre><code>-- RocksDB metrics cần monitor:
+rocksdb.block-cache-hit-count     -- Block cache effectiveness
+rocksdb.bloom-filter-useful       -- Bloom filter tỉ lệ skip
+rocksdb.compaction-pending        -- Compaction queue depth
+rocksdb.num-files-at-level{N}    -- L0 file count (write stall indicator)
+rocksdb.stall-time               -- Tổng thời gian bị write stall
+rocksdb.write-amplification      -- WA = bytes_written_to_disk / bytes_from_client</code></pre>
+
+<h4>Bài Học 3: Backup Phức Tạp Hơn</h4>
+<p>InnoDB có <code>--backup</code> mode với Percona XtraBackup. MyRocks cần <code>myrocks_hotbackup</code> — backup logic khác hoàn toàn vì SST files immutable. Checkpoint API giúp tạo snapshot nhất quán, nhưng tooling ecosystem chưa mature bằng InnoDB.</p>
+
+<h4>Bài Học 4: DDL Operations Chậm Hơn</h4>
+<p>ALTER TABLE trên MyRocks thường chậm hơn InnoDB vì phải rebuild toàn bộ SST files. Online DDL support còn hạn chế. Cần lên kế hoạch schema changes kỹ lưỡng hơn.</p>
+
+<h2>8. So Sánh LSM Tree vs B-Tree: Tradeoff Toàn Diện</h2>
+
+<div class="table-wrap">
+<table>
+  <tr>
+    <th>Dimension</th>
+    <th>B-Tree (InnoDB)</th>
+    <th>LSM Tree (RocksDB)</th>
+    <th>Ghi Chú</th>
+  </tr>
+  <tr>
+    <td>Write Amplification</td>
+    <td>3-10x (B-Tree update)</td>
+    <td>10-30x (Compaction)</td>
+    <td>LSM WA phụ thuộc nhiều vào workload</td>
+  </tr>
+  <tr>
+    <td>Read Amplification</td>
+    <td>2-4x (buffer pool miss)</td>
+    <td>3-10x (multi-level check)</td>
+    <td>Bloom filter giảm đáng kể</td>
+  </tr>
+  <tr>
+    <td>Space Amplification</td>
+    <td>2-3x (page fragmentation)</td>
+    <td>1.1-1.5x (sau compaction)</td>
+    <td>LSM vượt trội về space</td>
+  </tr>
+  <tr>
+    <td>Write Latency</td>
+    <td>Predictable</td>
+    <td>Variable (write stall risk)</td>
+    <td>InnoDB ổn định hơn</td>
+  </tr>
+  <tr>
+    <td>Compression</td>
+    <td>Trung bình (per-page)</td>
+    <td>Tốt (per-block, dictionary)</td>
+    <td>LSM compress tốt hơn nhiều</td>
+  </tr>
+  <tr>
+    <td>SSD Friendliness</td>
+    <td>Trung bình (random write)</td>
+    <td>Tốt (sequential write)</td>
+    <td>LSM tốt hơn cho SSD longevity</td>
+  </tr>
+  <tr>
+    <td>Range Scan</td>
+    <td>Tốt (sequential read)</td>
+    <td>Trung bình (merge overhead)</td>
+    <td>InnoDB tốt hơn cho OLAP</td>
+  </tr>
+  <tr>
+    <td>Backup Complexity</td>
+    <td>Thấp (XtraBackup)</td>
+    <td>Cao (custom tooling)</td>
+    <td>InnoDB ecosystem mature hơn</td>
+  </tr>
+</table>
+</div>
+
+<h2>9. Kết Luận: Khi Nào Chọn MyRocks?</h2>
+
+<p>MyRocks/RocksDB không phải "InnoDB tốt hơn" — đó là một tradeoff khác. Để quyết định đúng:</p>
+
+<div class="grid2">
+  <div class="card-small">
+    <h4>Chọn MyRocks khi:</h4>
+    <ul>
+      <li>Write throughput > Read throughput trong workload</li>
+      <li>Storage cost là vấn đề lớn (6x savings đáng kể)</li>
+      <li>Data cold/warm ratio cao (nhiều data ít được đọc)</li>
+      <li>SSD longevity quan trọng (ít random write hơn)</li>
+    </ul>
+  </div>
+  <div class="card-small">
+    <h4>Giữ InnoDB khi:</h4>
+    <ul>
+      <li>Read-heavy OLTP (point lookups chiếm đa số)</li>
+      <li>Latency SLA nghiêm ngặt (write stall không chấp nhận)</li>
+      <li>Complex queries với range scans và joins</li>
+      <li>Team chưa có kinh nghiệm RocksDB tuning</li>
+    </ul>
+  </div>
+</div>
+
+<div class="callout success">
+  <h4>✅ Kết Luận Thực Tiễn Từ Alibaba</h4>
+  <p>Alibaba sử dụng cả hai song song: InnoDB cho OLTP hot data (đơn hàng, inventory, user sessions), MyRocks cho cold data (lịch sử giao dịch, logs, audit trails). Chiến lược "tiered storage" này tối ưu cả performance lẫn cost. Không phải "all-in" vào một engine — biết rõ tradeoffs của từng engine và dùng đúng tool cho đúng job là chìa khóa.</p>
+</div>
+
+</div>
+</body>
+</html>

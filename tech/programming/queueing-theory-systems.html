@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Lý Thuyết Hàng Đợi & Thiết Kế Hệ Thống</title>
+<!-- KaTeX -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+  integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV"
+  crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+  integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8"
+  crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+  crossorigin="anonymous"
+  onload="renderMathInElement(document.body,{
+    delimiters:[
+      {left:'$$',right:'$$',display:true},
+      {left:'\\[',right:'\\]',display:true},
+      {left:'\\(',right:'\\)',display:false}
+    ],
+    ignoredTags:['script','noscript','style','textarea','pre','code']
+  });"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f8fafc;
+  --accent:#0891b2; --accent2:#0e7490; --accent3:#155e75;
+  --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --green:#059669; --yellow:#d97706; --red:#dc2626; --purple:#7c3aed;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.8;}
+.nav{background:#fff;border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;}
+.nav a:hover{color:var(--accent);}
+.nav .sep{color:#cbd5e1;}
+.hero{background:linear-gradient(135deg,#ecfeff 0%,#cffafe 40%,#e0f2fe 100%);padding:64px 40px;text-align:center;border-bottom:1px solid var(--border);}
+.hero h1{font-size:2.4rem;font-weight:800;background:linear-gradient(135deg,#0891b2,#0e7490,#155e75);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:14px;}
+.hero .subtitle{color:var(--muted);font-size:1rem;max-width:740px;margin:0 auto;line-height:1.7;}
+.container{max-width:980px;margin:0 auto;padding:50px 40px;}
+
+/* Typography */
+h2{font-size:1.55rem;font-weight:700;color:#0e7490;margin:48px 0 16px;padding-bottom:10px;border-bottom:2px solid #a5f3fc;}
+h3{font-size:1.15rem;font-weight:600;color:#0891b2;margin:32px 0 12px;}
+h4{font-size:1rem;font-weight:600;color:#155e75;margin:22px 0 8px;}
+p{color:var(--text);margin-bottom:14px;line-height:1.85;}
+ul,ol{margin:0 0 14px 24px;color:var(--text);}
+li{margin-bottom:7px;line-height:1.75;}
+code{background:#ecfeff;color:#0e7490;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.84em;}
+pre{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:22px;overflow-x:auto;margin:16px 0;line-height:1.65;}
+pre code{background:none;padding:0;color:#e2e8f0;font-size:.85rem;}
+.section-lead{font-size:1.05rem;color:var(--muted);margin-bottom:24px;line-height:1.75;border-left:3px solid #a5f3fc;padding-left:16px;}
+
+/* Callouts */
+.callout{background:#ecfeff;border:1px solid #a5f3fc;border-left:4px solid var(--accent);border-radius:10px;padding:20px 24px;margin:22px 0;}
+.callout.warning{border-left-color:var(--yellow);background:#fffbeb;border-color:#fde68a;}
+.callout.danger{border-left-color:var(--red);background:#fef2f2;border-color:#fecaca;}
+.callout.success{border-left-color:var(--green);background:#f0fdf4;border-color:#bbf7d0;}
+.callout.purple{border-left-color:var(--purple);background:#f5f3ff;border-color:#ddd6fe;}
+.callout h4{margin-top:0;color:#0e7490;}
+.callout.warning h4{color:#b45309;}
+.callout.danger h4{color:var(--red);}
+.callout.success h4{color:var(--green);}
+.callout.purple h4{color:var(--purple);}
+.callout p:last-child,.callout ul:last-child,.callout ol:last-child{margin-bottom:0;}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:18px 0;}
+table{width:100%;border-collapse:collapse;font-size:.88rem;}
+th{background:#ecfeff;color:#0e7490;padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid #7dd3fc;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top;}
+tr:hover td{background:#f0fdff;}
+
+/* Grid layouts */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px 0;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:18px 0;}
+.card{background:#ffffff;border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.card h4{margin-top:0;margin-bottom:10px;color:#0891b2;}
+.card p:last-child,.card ul:last-child,.card pre:last-child{margin-bottom:0;}
+
+/* Formula boxes — KaTeX renders inside here */
+.formula-box{background:linear-gradient(135deg,#ecfeff,#e0f2fe);border:2px solid #7dd3fc;border-radius:14px;padding:28px 32px;margin:22px 0;text-align:center;}
+.formula-box .katex-display{margin:.4em 0;}
+.formula-desc{color:var(--muted);font-size:.9rem;margin-top:10px;line-height:1.6;}
+
+/* Aligned formula panels */
+.formula-panel{background:linear-gradient(135deg,#ecfeff,#e0f2fe);border:2px solid #7dd3fc;border-radius:14px;padding:28px 36px;margin:22px 0;}
+.formula-panel .katex-display{margin:.5em 0;text-align:left;}
+
+/* Erlang formula block */
+.erlang-box{background:#fff;border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:10px 0;}
+.erlang-box h4{margin-top:0;color:#0891b2;margin-bottom:12px;}
+.erlang-box .katex-display{margin:.5em 0;}
+
+/* Utilization bars */
+.util-bar-row{border-radius:8px;padding:10px 14px;margin:5px 0;display:flex;align-items:center;gap:14px;font-size:.88rem;}
+.util-label{width:100px;font-weight:700;flex-shrink:0;}
+.util-track{flex:1;background:#e2e8f0;border-radius:4px;height:10px;overflow:hidden;}
+.util-fill{height:100%;border-radius:4px;}
+.util-value{width:200px;text-align:right;font-weight:600;font-size:.85rem;flex-shrink:0;}
+
+/* Images */
+.img-wrap{margin:22px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.07);}
+.img-wrap img{width:100%;display:block;}
+.img-caption{background:var(--surface2);padding:10px 16px;font-size:.82rem;color:var(--muted);border-top:1px solid var(--border);line-height:1.5;}
+.img-wrap.half{max-width:560px;}
+.img-row{display:grid;gap:16px;margin:22px 0;}
+.img-row.two{grid-template-columns:1fr 1fr;}
+.img-row .img-wrap{margin:0;}
+
+/* Param table */
+.param-table{width:100%;border-collapse:collapse;}
+.param-table td{padding:10px 12px;border-bottom:1px solid var(--border);}
+.param-table tr:last-child td{border-bottom:none;}
+.param-sym{font-size:1.05rem;white-space:nowrap;}
+
+/* Insight box */
+.insight-box{background:linear-gradient(135deg,#fefce8,#fffbeb);border:1px solid #fde68a;border-left:4px solid #f59e0b;border-radius:10px;padding:18px 22px;margin:16px 0;}
+.insight-box h4{margin-top:0;color:#b45309;}
+
+/* Knee table */
+.knee-table th{background:#f0fdf4;color:#15803d;}
+.knee-table tr:hover td{background:#f7fef9;}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html">← Trang Chủ</a>
+  <span class="sep">/</span>
+  <a href="#">Programming</a>
+  <span class="sep">/</span>
+  <span>Lý Thuyết Hàng Đợi</span>
+</nav>
+
+<div class="hero">
+  <h1>📊 Lý Thuyết Hàng Đợi & Thiết Kế Hệ Thống</h1>
+  <p class="subtitle">Từ bài toán điện thoại của A.K. Erlang năm 1909 đến Thread Pool của AliSQL — Queueing Theory là ngôn ngữ toán học chung để hiểu mọi hệ thống hiệu năng cao: \(\lambda,\, \mu,\, \rho\), Little's Law, M/M/1, M/M/c, Erlang-B/C và Capacity Planning</p>
+</div>
+
+<div class="container">
+
+<!-- ============================= SECTION 1 ============================= -->
+<h2>1. Hàng Đợi — Bài Toán Phổ Quát Của Mọi Hệ Thống</h2>
+
+<p class="section-lead">Hàng đợi xuất hiện ở khắp nơi — từ siêu thị, bệnh viện đến CPU scheduler, I/O queue và database connection pool. Điều đáng kinh ngạc: tất cả đều có thể phân tích bằng cùng một framework toán học.</p>
+
+<div class="img-row two">
+  <div class="img-wrap">
+    <img src="images/queue-theory/01-crowd-queue-real-world.png" alt="Đám đông xếp hàng">
+    <div class="img-caption">Hàng đợi thực tế: khi arrival rate vượt service capacity (\(\lambda \geq \mu\)), queue tăng vô hạn — trạng thái \(\rho \geq 1\), hệ thống mất kiểm soát.</div>
+  </div>
+  <div class="img-wrap">
+    <img src="images/queue-theory/03-shoes-queue-thailand.png" alt="Dép xếp hàng thay người">
+    <div class="img-caption">Giải pháp sáng tạo: dùng dép để "giữ chỗ" — minh họa nhu cầu quản lý hàng đợi khi tài nguyên khan hiếm. Queue tồn tại bất kể medium nào.</div>
+  </div>
+</div>
+
+<div class="grid2">
+  <div class="card">
+    <h4>Trong Cuộc Sống Hàng Ngày</h4>
+    <ul>
+      <li>Siêu thị: bao nhiêu quầy thu ngân cần mở?</li>
+      <li>Bệnh viện: khi nào thì bệnh nhân bỏ về vì chờ quá lâu?</li>
+      <li>Ngân hàng: bố trí bao nhiêu giao dịch viên?</li>
+      <li>Sân bay: lên lịch check-in để tránh tắc nghẽn?</li>
+      <li>Call center: cần bao nhiêu agents để SLA ≤ 30s wait?</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>Trong Hệ Thống Máy Tính</h4>
+    <ul>
+      <li><strong>OS Scheduler</strong>: CPU ready queue — process nào chạy tiếp?</li>
+      <li><strong>I/O Subsystem</strong>: disk I/O queue — request nào được phục vụ?</li>
+      <li><strong>Network Stack</strong>: packet queueing discipline (FIFO, WFQ, RED)</li>
+      <li><strong>Database</strong>: connection pool, thread pool, lock wait queue</li>
+      <li><strong>Microservices</strong>: request queue, circuit breaker, rate limiter</li>
+    </ul>
+  </div>
+</div>
+
+<div class="img-row two">
+  <div class="img-wrap">
+    <img src="images/queue-theory/04-os-process-queues-diagram.png" alt="OS Process Queue Diagram">
+    <div class="img-caption">OS Process Queues: ready queue cho CPU, I/O queue cho mỗi device. Mỗi queue là một M/M/1 hay M/M/c system. Process di chuyển giữa các queues theo state transitions.</div>
+  </div>
+  <div class="img-wrap">
+    <img src="images/queue-theory/05-network-packet-queueing-linux.png" alt="Linux Network Packet Queueing">
+    <div class="img-caption">Linux Network Stack: App → IP Stack → Queueing Discipline (tc qdisc) → Driver Queue → NIC. Linux tc hỗ trợ hàng chục queueing disciplines: pfifo, tbf, htb, fq_codel.</div>
+  </div>
+</div>
+
+<!-- ============================= SECTION 2 ============================= -->
+<h2>2. Lịch Sử — A.K. Erlang & Bài Toán Điện Thoại (1909–1920)</h2>
+
+<p>Lý thuyết hàng đợi ra đời không phải trong phòng thí nghiệm máy tính mà tại tổng đài điện thoại Copenhagen đầu thế kỷ 20. Kỹ sư điện người Đan Mạch <strong>Agner Krarup Erlang (1878–1929)</strong> đối mặt với bài toán thực tế cấp bách: cần bao nhiêu đường dây điện thoại để phục vụ một thành phố mà không lãng phí và không từ chối quá nhiều cuộc gọi?</p>
+
+<div class="grid2">
+  <div class="card">
+    <h4>Bài Toán Của Erlang</h4>
+    <p>Đặt <em>quá nhiều</em> đường dây — lãng phí chi phí hạ tầng. Đặt <em>quá ít</em> — người gọi nhận busy signal, công ty mất khách. Erlang cần tìm <strong>điểm cân bằng tối ưu</strong> giữa chi phí và chất lượng dịch vụ.</p>
+    <p>Từ 1909 đến 1920, ông dùng xác suất để mô hình hóa lưu lượng điện thoại, sáng lập ngành <em>teletraffic engineering</em>. Đơn vị lưu lượng viễn thông quốc tế được đặt theo tên ông: <strong>Erlang (E)</strong>.</p>
+  </div>
+  <div class="card">
+    <h4>Hai Công Thức Nền Tảng</h4>
+    <p>Erlang giải hai câu hỏi căn bản mà mọi hệ thống queueing đều gặp:</p>
+    <ul>
+      <li><strong>Erlang-B (Loss System)</strong>: Với \(c\) đường dây và lưu lượng \(A\) Erlang, xác suất một cuộc gọi bị từ chối là bao nhiêu?</li>
+      <li><strong>Erlang-C (Delay System)</strong>: Với \(c\) agents và lưu lượng \(A\), xác suất phải chờ và thời gian chờ trung bình \(W_q\)?</li>
+    </ul>
+    <p>Hai công thức này vẫn dùng đến ngày nay trong call center, network capacity và database connection pool tuning.</p>
+  </div>
+</div>
+
+<!-- ============================= SECTION 3 ============================= -->
+<h2>3. Hình Thức Hóa — Các Thành Phần & Tham Số Cốt Lõi</h2>
+
+<p class="section-lead">Bất kỳ hệ thống xếp hàng nào cũng có thể mô tả đầy đủ bởi một bộ tham số. Hiểu các thành phần này là bước đầu tiên để phân tích định lượng.</p>
+
+<div class="img-wrap">
+  <img src="images/queue-theory/09-queueing-system-components.png" alt="Các thành phần của hệ thống hàng đợi">
+  <div class="img-caption">Cấu trúc tổng quát: Customer Population → Arrival Process (\(\lambda\)) → Waiting Positions (queue, \(L_q\) items) → Service Discipline → \(c\) Servers (\(\mu\) mỗi server) → Exit. Mỗi thành phần có thể được tune độc lập.</div>
+</div>
+
+<h3>3.1 Arrival Process — Thời Gian Giữa Các Lần Đến</h3>
+
+<div class="img-row two">
+  <div class="img-wrap">
+    <img src="images/queue-theory/06-interarrival-service-time-timeline.png" alt="Inter-arrival và service time timeline">
+    <div class="img-caption">Timeline: \(1/\lambda\) = inter-arrival time (khoảng cách giữa 2 requests), \(1/\mu\) = service time. Khi \(1/\mu > 1/\lambda\) (tức \(\lambda > \mu\)), queue tăng vô hạn.</div>
+  </div>
+  <div class="img-wrap">
+    <img src="images/queue-theory/10-interarrival-time-bursty.png" alt="Bursty inter-arrival times">
+    <div class="img-caption">Bursty arrivals: inter-arrival times không đều. Một số requests đến gần nhau tạo "burst" — queue tăng đột ngột dù utilization trung bình thấp. Đây là lý do cần buffer capacity.</div>
+  </div>
+</div>
+
+<div class="img-wrap half">
+  <img src="images/queue-theory/11-poisson-exponential-distribution.png" alt="Poisson và Exponential distribution">
+  <div class="img-caption">Trái: Exponential distribution — phân phối inter-arrival time trong Poisson process với \(\lambda = 0.5,\, 1.0,\, 1.5\). Phải: Poisson PMF — số events trong khoảng thời gian cố định. Hai phân phối là hai mặt của cùng một process.</div>
+</div>
+
+<h3>3.2 Các Tham Số Cốt Lõi</h3>
+
+<div class="img-wrap">
+  <img src="images/queue-theory/12-mm1-parameters-lq-ls-w-s-r.png" alt="M/M/1 parameters diagram">
+  <div class="img-caption">Sơ đồ tham số M/M/1: \(\lambda\) vào queue (\(L_q\) items chờ), rồi vào server \(\mu\) (\(L_s\) items đang phục vụ). \(W\) = wait time, \(S = 1/\mu\) = service time, \(R = W+S\) = total response time. \(L = L_q + L_s\).</div>
+</div>
+
+<div class="table-wrap">
+  <table class="param-table">
+    <tr><th style="width:110px">Ký Hiệu</th><th>Tên</th><th style="width:100px">Đơn Vị</th><th>Ý Nghĩa & Ví Dụ Thực Tế</th></tr>
+    <tr>
+      <td class="param-sym">\(\lambda\)</td>
+      <td>Arrival Rate</td>
+      <td>req/giây</td>
+      <td>Tốc độ requests đến. Ví dụ: 1000 HTTP requests/s. Đo bằng <code>rate(http_requests_total[1m])</code> trong Prometheus.</td>
+    </tr>
+    <tr>
+      <td class="param-sym">\(\mu\)</td>
+      <td>Service Rate</td>
+      <td>req/giây</td>
+      <td>Số requests một server hoàn thành trong 1 giây. \(S = 1/\mu\) = service time trung bình. Tối ưu code = tăng \(\mu\).</td>
+    </tr>
+    <tr>
+      <td class="param-sym">\(\rho\)</td>
+      <td>Utilization</td>
+      <td>\([0,\,1)\)</td>
+      <td>\(\rho = \lambda/(c\mu)\). Tỷ lệ thời gian server bận. Hệ thống ổn định khi \(\rho < 1\). Khi \(\rho \to 1\), queue \(\to \infty\).</td>
+    </tr>
+    <tr>
+      <td class="param-sym">\(L\)</td>
+      <td>Mean # in system</td>
+      <td>requests</td>
+      <td>Số requests trung bình trong hệ thống — gồm cả đang chờ và đang phục vụ. \(L = L_q + L_s\). Trong iostat: <code>avgqu-sz</code>.</td>
+    </tr>
+    <tr>
+      <td class="param-sym">\(L_q\)</td>
+      <td>Mean queue length</td>
+      <td>requests</td>
+      <td>Số requests trung bình <em>chỉ đang chờ</em>. \(L_q = L - \rho\) trong M/M/1. Khi \(L_q\) tăng → người dùng cảm nhận latency tăng.</td>
+    </tr>
+    <tr>
+      <td class="param-sym">\(W\) hay \(R\)</td>
+      <td>Response Time</td>
+      <td>giây</td>
+      <td>Thời gian từ request đến → hoàn thành (chờ + phục vụ). \(W = W_q + S\). Trong iostat: <code>await</code>.</td>
+    </tr>
+    <tr>
+      <td class="param-sym">\(W_q\)</td>
+      <td>Wait Time</td>
+      <td>giây</td>
+      <td>Thời gian chỉ chờ trước khi được phục vụ. \(W_q = W - 1/\mu\). Trong M/M/1: \(W_q = \rho/(\mu-\lambda)\).</td>
+    </tr>
+    <tr>
+      <td class="param-sym">\(S = 1/\mu\)</td>
+      <td>Service Time</td>
+      <td>giây</td>
+      <td>Thời gian phục vụ thuần túy không tính chờ. Trong iostat: <code>svctm</code>.</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ============================= SECTION 4 ============================= -->
+<h2>4. Utilization Law & Quan Hệ Phi Tuyến — Điểm Mấu Chốt</h2>
+
+<p class="section-lead">Đây là insight quan trọng nhất mà nhiều kỹ sư bỏ qua: response time không tăng tuyến tính theo utilization — nó tăng theo hàm \(1/(1-\rho)\) và bùng phát khi \(\rho \to 1\).</p>
+
+<div class="formula-box">
+  $$U = \frac{\lambda}{c \cdot \mu} = \rho$$
+  <div class="formula-desc">
+    \(U\): Utilization &nbsp;|&nbsp; \(\lambda\): Arrival rate &nbsp;|&nbsp; \(c\): Số servers &nbsp;|&nbsp; \(\mu\): Service rate mỗi server<br>
+    M/M/1: &nbsp;\(\displaystyle W = \frac{1}{\mu - \lambda} = \frac{S}{1-\rho}\) &nbsp; — &nbsp; khi \(\rho \to 1\): mẫu số \(\to 0\), \(W \to \infty\)
+  </div>
+</div>
+
+<div class="img-row two">
+  <div class="img-wrap">
+    <img src="images/queue-theory/14-mm1-response-time-nonlinear-rho.png" alt="M/M/1 R/S vs rho nonlinear">
+    <div class="img-caption">M/M/1: \(R/S\) (response time / service time) vs \(\rho\). Đường cong tuyến tính ở \(\rho\) thấp, bùng phát khi \(\rho > 0.7\). Đây là "knee of the curve" — điểm bạn không muốn vượt qua trong production.</div>
+  </div>
+  <div class="img-wrap">
+    <img src="images/queue-theory/29-mmm-knee-utilization-curve-table.png" alt="M/M/m knee utilization">
+    <div class="img-caption">Knee utilization cho M/M/m — điểm mà \(R/S\) bắt đầu tăng mạnh. Càng nhiều servers, knee càng cao: đây chính là lợi ích ẩn của pooling (không chỉ về throughput mà còn nâng knee).</div>
+  </div>
+</div>
+
+<div class="callout warning">
+  <h4>⚠️ Quan Hệ Phi Tuyến: Tại Sao 90% Utilization Là Nguy Hiểm</h4>
+  <div style="margin:16px 0;">
+    <div class="util-bar-row" style="background:#f0fdf4;">
+      <span class="util-label" style="color:#166534;">\(\rho = 50\%\)</span>
+      <div class="util-track"><div class="util-fill" style="width:50%;background:#22c55e;"></div></div>
+      <span class="util-value" style="color:#166534;">\(W \approx 2S\) ✅</span>
+    </div>
+    <div class="util-bar-row" style="background:#fefce8;">
+      <span class="util-label" style="color:#854d0e;">\(\rho = 70\%\)</span>
+      <div class="util-track"><div class="util-fill" style="width:70%;background:#eab308;"></div></div>
+      <span class="util-value" style="color:#854d0e;">\(W \approx 3.3S\) ⚠️</span>
+    </div>
+    <div class="util-bar-row" style="background:#fff7ed;">
+      <span class="util-label" style="color:#9a3412;">\(\rho = 80\%\)</span>
+      <div class="util-track"><div class="util-fill" style="width:80%;background:#f97316;"></div></div>
+      <span class="util-value" style="color:#9a3412;">\(W \approx 5S\) ⚠️⚠️</span>
+    </div>
+    <div class="util-bar-row" style="background:#fef2f2;">
+      <span class="util-label" style="color:#991b1b;">\(\rho = 90\%\)</span>
+      <div class="util-track"><div class="util-fill" style="width:90%;background:#ef4444;"></div></div>
+      <span class="util-value" style="color:#991b1b;">\(W \approx 10S\) 🚨</span>
+    </div>
+    <div class="util-bar-row" style="background:#fef2f2;">
+      <span class="util-label" style="color:#7f1d1d;">\(\rho = 99\%\)</span>
+      <div class="util-track"><div class="util-fill" style="width:99%;background:#b91c1c;"></div></div>
+      <span class="util-value" style="color:#7f1d1d;">\(W \approx 100S\) 💀</span>
+    </div>
+  </div>
+  <p>Từ công thức M/M/1 \(W = S/(1-\rho)\): khi \(\rho = 0.99\), \((1-\rho) = 0.01\) → \(W = 100S\). Hàng đợi tăng theo cấp số nhân, <strong>không phải tuyến tính</strong>. Capacity planning phải giữ \(\rho \leq 70\text{–}75\%\) — không phải vì lãng phí, mà vì cần buffer trước điểm bùng phát.</p>
+</div>
+
+<div class="table-wrap">
+  <table class="knee-table">
+    <tr><th>Số Servers \(c\)</th><th>Knee Utilization</th><th>Ý Nghĩa Thực Tế</th></tr>
+    <tr><td>1 (M/M/1)</td><td><strong>50%</strong></td><td>Server đơn: target \(\rho \leq 50\%\) để response time ổn định</td></tr>
+    <tr><td>2</td><td>57%</td><td>Pooling đã nâng knee thêm 7%</td></tr>
+    <tr><td>4</td><td>66%</td><td>Thread pool 4: có thể chạy 66% an toàn</td></tr>
+    <tr><td>8</td><td>74%</td><td>Knee &gt; 70% — pooling hiệu quả rõ rệt</td></tr>
+    <tr><td>16</td><td>81%</td><td>AliSQL với 16 cores, target \(\rho \leq 80\%\)</td></tr>
+    <tr><td>32</td><td>86%</td><td>Large cluster: có thể push lên 86%</td></tr>
+    <tr><td>64+</td><td>89–92%</td><td>Pooling hiệu quả cao: gần hết capacity mà vẫn ổn</td></tr>
+  </table>
+</div>
+
+<div class="insight-box">
+  <h4>💡 Tại Sao Pooling Nâng Knee? — Lý Giải Toán Học</h4>
+  <p>Với \(c\) servers pooled (M/M/c), utilization per server \(\rho = \lambda/(c\mu)\). Để \(W \leq kS\) ta cần \(\rho \leq 1 - 1/(c(k-1))\cdot f(c)\), trong đó \(f(c)\) tăng theo \(c\). Càng nhiều servers trong pool, hệ thống càng tolerant với high utilization — vì fluctuations được "trung bình hóa" qua nhiều servers. Đây là lý do <strong>pooling luôn tốt hơn fragmentation</strong>, ngay cả khi total capacity giữ nguyên.</p>
+</div>
+
+<!-- ============================= SECTION 5 ============================= -->
+<h2>5. Little's Law — Định Luật Vàng Của Queueing Theory</h2>
+
+<p class="section-lead">Được J.D.C. Little chứng minh chính thức năm 1961, Little's Law đúng cho <em>bất kỳ hệ thống ổn định nào</em> — không cần giả thiết về distribution. Nó là bridge giữa lý thuyết và monitoring thực tế.</p>
+
+<div class="formula-box">
+  $$L = \lambda \cdot W$$
+  <div class="formula-desc">
+    \(L\): Số items trung bình trong hệ thống &nbsp;|&nbsp; \(\lambda\): Arrival rate &nbsp;|&nbsp; \(W\): Response time trung bình<br><br>
+    Biến thể: &nbsp;\(L_q = \lambda \cdot W_q\) &nbsp;·&nbsp; \(L_s = \lambda \cdot S\) &nbsp;·&nbsp; Biết 2 biến → tính biến thứ 3
+  </div>
+</div>
+
+<div class="img-wrap">
+  <img src="images/queue-theory/07-littles-law-supermarket-w-s-r.png" alt="Little's Law siêu thị">
+  <div class="img-caption">Little's Law qua siêu thị: khách vào với rate \(\lambda\) → chờ thời gian \(W\) (wait) → được phục vụ thời gian \(S\) (service, tại server \(\mu\)) → tổng \(R = W + S\). Số khách trong hệ thống: \(L = \lambda \cdot R\).</div>
+</div>
+
+<h3>5.1 Ba Ví Dụ Thực Tế</h3>
+
+<div class="card" style="margin:16px 0;">
+  <h4>Ví Dụ 1 — Quán Bar: Kiểm Tra Trực Giác</h4>
+  <p>Quán bar có \(\lambda = 40\) khách/giờ vào, mỗi khách ở lại \(W = 15\) phút:</p>
+  $$L = \lambda \cdot W = \frac{40}{60} \,\text{khách/phút} \times 15\,\text{phút} = 10\,\text{khách}$$
+  <p style="margin-top:12px;">Nếu quán chứa được tối đa 8 người → sẽ thường xuyên từ chối khách. Muốn giảm \(L\) xuống 8 mà giữ \(\lambda = 40\) → phải giảm \(W\) (phục vụ nhanh hơn, tức tăng \(\mu\)).</p>
+</div>
+
+<div class="card" style="margin:16px 0;">
+  <h4>Ví Dụ 2 — Công Ty Chứng Khoán: Phát Hiện Vấn Đề Hiệu Năng</h4>
+  <p>Giờ cao điểm: \(L = 20{,}000\) users online, \(3.6\) triệu giao dịch/giờ:</p>
+  $$\lambda = \frac{3{,}600{,}000}{3600} = 1{,}000 \;\text{giao dịch/giây}$$
+  $$W = \frac{L}{\lambda} = \frac{20{,}000}{1{,}000} = 20\;\text{giây} \;\;\longleftarrow\;\text{THẢM HỌA!}$$
+  <p style="margin-top:8px;">Little's Law vừa biến dữ liệu monitoring thô thành insight hành động: cần tăng \(\mu\) lên 10× (giảm \(W\) xuống dưới 2s) hoặc giảm \(L\) qua caching/sharding.</p>
+</div>
+
+<div class="card" style="margin:16px 0;">
+  <h4>Ví Dụ 3 — Đọc iostat: Little's Law Bên Trong Linux Kernel</h4>
+  <div class="img-wrap" style="margin:12px 0;">
+    <img src="images/queue-theory/08-iostat-annotated-littles-law.png" alt="iostat annotated với Little's Law">
+    <div class="img-caption">iostat output được annotate: \(\lambda = \text{r/s} + \text{w/s}\), \(L = \text{avgqu-sz}\), \(W = \text{await}\), \(S = \text{svctm} = 1/\mu\), \(\rho = \text{\%util}\). Các vòng tròn đỏ highlight mapping giữa iostat columns và Queueing Theory parameters.</div>
+  </div>
+<pre><code># iostat -xm 60 10 — trích dẫn một dòng:
+Device:   r/s    w/s    await  svctm  %util
+sdb      173.83  39.22  11.67   0.28   6.00%
+
+# Giải mã bằng Little's Law:
+λ = r/s + w/s  = 173.83 + 39.22 = 213.05  I/O/s
+W = await      = 11.67 ms = 0.01167 s       ← response time
+S = svctm      = 0.28  ms = 0.00028 s       ← 1/μ (service time)
+
+# Verify Little's Law:
+L = λ × W = 213.05 × 0.01167 = 2.49        ← phải = avgqu-sz = 2.49 ✓
+# Verify Utilization Law:
+U = λ × S = 213.05 × 0.00028 = 0.060 ≈ 6% ← phải = %util = 6.00% ✓</code></pre>
+  <p>Little's Law là công thức <strong>bên trong kernel Linux</strong> để tính <code>avgqu-sz</code> và <code>%util</code>. Khi biết điều này, iostat output không còn là "số liệu bí ẩn" mà là một hệ phương trình queueing có thể giải ngược để diagnose vấn đề.</p>
+</div>
+
+<div class="img-wrap">
+  <img src="images/queue-theory/22-iostat-full-output.png" alt="Full iostat output nhiều snapshots">
+  <div class="img-caption">Full iostat qua nhiều intervals: khi \(\lambda\) (r/s) tăng → \(L\) (avgqu-sz) tăng → \(W\) (await) tăng. Little's Law \(L = \lambda \cdot W\) hoạt động thời gian thực — mọi số trên màn hình đều liên kết toán học với nhau.</div>
+</div>
+
+<h3>5.2 Little's Law Trong Performance Engineering Thực Tế</h3>
+
+<div class="img-row two">
+  <div class="img-wrap">
+    <img src="images/queue-theory/24-google-023s-response-time.png" alt="Google search 0.23s">
+    <div class="img-caption">Google search: \(W = 0.23\text{s}\). Với \(\lambda\) hàng triệu queries/giây, Little's Law cho biết \(L = \lambda \times 0.23\) = hàng trăm nghìn concurrent queries trong hệ thống mọi lúc.</div>
+  </div>
+  <div class="img-wrap">
+    <img src="images/queue-theory/25-slow-task-browser-server-db.png" alt="Slow task sequence diagram">
+    <div class="img-caption">Slow task: browser gửi request → app server bị block bởi DB execute() (ô đen rất dài) → trả về. \(W\) của user = toàn bộ thời gian đó. Một slow query làm tăng \(L\) toàn hệ thống theo Little's Law.</div>
+  </div>
+</div>
+
+<div class="img-wrap">
+  <img src="images/queue-theory/26-oracle-awr-top5-events.png" alt="Oracle AWR Top 5 Foreground Events">
+  <div class="img-caption">Oracle AWR "Top 5 Timed Foreground Events": phân rã \(W\) (response time) theo từng thành phần. DB CPU chiếm 53.81%, log file sync 9.15%, db file sequential read 3.85%... Đây là profile để tìm đúng bottleneck cần optimize — component nào chiếm \(W_i/W_{total}\) lớn nhất.</div>
+</div>
+
+<!-- ============================= SECTION 6 ============================= -->
+<h2>6. Ký Hiệu Kendall — Phân Loại Mọi Hệ Thống Hàng Đợi</h2>
+
+<p>D.G. Kendall đề xuất ký hiệu chuẩn hóa \(A/S/c/K/N/D\) mô tả mọi hệ thống hàng đợi:</p>
+
+<div class="table-wrap"><table>
+<tr><th style="width:60px">Vị Trí</th><th>Ký Hiệu</th><th>Ý Nghĩa</th><th>Giá Trị Phổ Biến</th></tr>
+<tr><td>\(A\)</td><td>Arrival distribution</td><td>Phân phối inter-arrival time</td><td><strong>M</strong> = Markovian/Poisson, <strong>D</strong> = Deterministic, <strong>G</strong> = General</td></tr>
+<tr><td>\(S\)</td><td>Service distribution</td><td>Phân phối service time</td><td><strong>M</strong> = Exponential, <strong>D</strong> = Fixed, <strong>G</strong> = General</td></tr>
+<tr><td>\(c\)</td><td># Servers</td><td>Số servers song song</td><td>1, 4, 8, \(\infty\)</td></tr>
+<tr><td>\(K\)</td><td>Queue capacity</td><td>Số chỗ chờ tối đa</td><td>\(\infty\) (mặc định), hữu hạn (ring buffer)</td></tr>
+<tr><td>\(N\)</td><td>Population</td><td>Dân số nguồn requests</td><td>\(\infty\) (mặc định), hữu hạn (closed network)</td></tr>
+<tr><td>\(D\)</td><td>Discipline</td><td>Chiến lược scheduling</td><td>FCFS (mặc định), LIFO, Priority</td></tr>
+</table></div>
+
+<div class="grid2">
+  <div class="card">
+    <h4>M/M/1 — Web Server Đơn</h4>
+    <p>Poisson arrivals, Exponential service, 1 server. Đơn giản nhất nhưng capture được bản chất của hầu hết single-server systems. Mọi formula có closed form.</p>
+  </div>
+  <div class="card">
+    <h4>M/M/c — Thread Pool / Connection Pool</h4>
+    <p>Poisson arrivals, Exponential service, \(c\) servers, single queue. Mô hình của database connection pool (<code>max_connections = c</code>), web server thread pool.</p>
+  </div>
+  <div class="card">
+    <h4>M/G/1 — Mixed Workload</h4>
+    <p>Poisson arrivals, General service time distribution. Khi service time không exponential — web requests với mixture of fast (CSS) và slow (DB-heavy) endpoints.</p>
+  </div>
+  <div class="card">
+    <h4>M/M/1/K — Bounded Queue</h4>
+    <p>Queue giới hạn \(K\) items. Khi đầy, requests bị reject (Erlang-B behavior). Áp dụng cho: ring buffers, bounded channels, backpressure systems.</p>
+  </div>
+</div>
+
+<!-- ============================= SECTION 7 ============================= -->
+<h2>7. M/M/1 — Phân Tích Chi Tiết</h2>
+
+<p>M/M/1 là mô hình đơn giản nhất nhưng chứa đựng mọi insight quan trọng. Hiểu sâu M/M/1 là nền tảng để hiểu tất cả các mô hình phức tạp hơn.</p>
+
+<div class="img-row two">
+  <div class="img-wrap">
+    <img src="images/queue-theory/16-mm1-birth-death-chain.png" alt="M/M/1 birth-death chain">
+    <div class="img-caption">M/M/1 Markov chain (birth-death process): state \(n\) = số items trong hệ thống. "Birth" (arrival) với rate \(\lambda\) tăng state lên 1; "Death" (departure) với rate \(\mu\) giảm state xuống 1. Steady-state: \(P(n) = (1-\rho)\,\rho^n\).</div>
+  </div>
+  <div class="img-wrap">
+    <img src="images/queue-theory/13-mm1-markov-chain-state-transition.png" alt="M/M/1 state transition chi tiết">
+    <div class="img-caption">State transitions chi tiết: từ state \(j\), rate chuyển lên \(j{+}1\) là \(\lambda\), rate chuyển xuống \(j{-}1\) là \(\mu\). Balance equations: \(\lambda P_j = \mu P_{j+1}\) → giải ra \(P_j = \rho^j(1-\rho)\).</div>
+  </div>
+</div>
+
+<h3>7.1 Closed-Form Formulas M/M/1</h3>
+
+<div class="formula-panel">
+  $$\begin{aligned}
+  \rho &= \frac{\lambda}{\mu} \qquad (\text{điều kiện ổn định: } \rho < 1) \\[10pt]
+  L &= \frac{\rho}{1-\rho} \qquad \left(L = 1 \text{ khi } \rho=0.5;\quad L = 9 \text{ khi } \rho=0.9\right) \\[10pt]
+  L_q &= \frac{\rho^2}{1-\rho} = L - \rho \\[10pt]
+  W &= \frac{1}{\mu - \lambda} = \frac{S}{1-\rho} \qquad \text{(tăng vô hạn khi } \lambda \to \mu\text{)} \\[10pt]
+  W_q &= \frac{\rho}{\mu - \lambda} = W - \frac{1}{\mu} \\[10pt]
+  P_0 &= 1 - \rho \qquad \text{(xác suất server rảnh)}
+  \end{aligned}$$
+</div>
+
+<div class="img-wrap half">
+  <img src="images/queue-theory/15-mm1-mmd1-dd1-response-time-comparison.png" alt="M/M/1 vs M/D/1 vs D/D/1">
+  <div class="img-caption">So sánh 3 mô hình: M/M/1 (cả arrivals và service đều ngẫu nhiên) xấu nhất; M/D/1 (deterministic service) tốt hơn 2× vì không có service variance; D/D/1 (cả hai deterministic) hoàn hảo — \(R = S\) cho đến \(\rho = 1\). <strong>Variability là kẻ thù của queueing systems.</strong></div>
+</div>
+
+<div class="callout purple">
+  <h4>💜 Pollaczek–Khinchine: Variance Tăng Queue</h4>
+  <p>Công thức P-K cho M/G/1 (general service time distribution):</p>
+  $$L_q = \frac{\rho^2}{1-\rho} \cdot \frac{1 + C_s^2}{2}$$
+  <p style="margin-top:10px;">Trong đó \(C_s^2 = \sigma_s^2/\bar{s}^2\) là coefficient of variation bình phương của service time. M/M/1: \(C_s^2 = 1\) (exponential). M/D/1: \(C_s^2 = 0\) (deterministic) → \(L_q\) giảm 2×. Kết luận: <strong>giảm variance của service time (không chỉ mean) trực tiếp giảm queue length</strong>. Đây là lý do cần tránh "slow outlier requests".</p>
+</div>
+
+<!-- ============================= SECTION 8 ============================= -->
+<h2>8. M/M/c — Nhiều Servers Song Song & Bài Toán Pooling</h2>
+
+<p class="section-lead">M/M/c là mô hình của thread pool, connection pool, và multi-core processing. Hiểu M/M/c giải thích tại sao pooling vượt trội so với multiple independent queues.</p>
+
+<div class="img-wrap">
+  <img src="images/queue-theory/17-mmc-single-queue-multiserver-diagram.png" alt="M/M/c diagram">
+  <div class="img-caption">M/M/c: một queue duy nhất (\(\lambda\) arrivals) → dispatching discipline → \(c\) servers song song (mỗi server nhận tải \(\lambda/c\)). Utilization per server: \(\rho = \lambda/(c\mu)\). Thread pool: request queue → worker threads.</div>
+</div>
+
+<div class="img-wrap half">
+  <img src="images/queue-theory/18-mmc-state-transition-rates.png" alt="M/M/c state transition rates">
+  <div class="img-caption">M/M/c state transitions: khi có \(j < c\) items, service rate = \(j\mu\) (mỗi server phục vụ). Khi \(j \geq c\), service rate = \(c\mu\) (tất cả \(c\) servers bận, queue bắt đầu hình thành). Đây là lý do M/M/c phức tạp hơn M/M/1.</div>
+</div>
+
+<h3>8.1 M Queues vs 1 Queue — Tại Sao Ngân Hàng Hiện Đại Dùng Một Hàng Chung?</h3>
+
+<div class="img-row two">
+  <div class="img-wrap">
+    <img src="images/queue-theory/19-m-queues-vs-1-queue-people.png" alt="M servers M queues vs 1 queue">
+    <div class="img-caption">\(c\) servers với \(c\) queues độc lập (trái) vs \(c\) servers với 1 queue chung (phải). Với \(c\) queues riêng: nếu server A phục vụ khách chậm, hàng A kẹt trong khi server B rảnh. Với 1 queue: người tiếp theo luôn đến server rảnh trước.</div>
+  </div>
+  <div class="img-wrap">
+    <img src="images/queue-theory/02-two-independent-queues-stuck.png" alt="Hai queue độc lập bị kẹt">
+    <div class="img-caption">Minh họa: 2 queues với 4 items mỗi queue. Queue phải có "slow customer" (gấu đỏ) → queue trái xong, queue phải kẹt. Nếu là 1 shared queue: người tiếp theo sẽ đến server trái ngay — tổng wait time giảm.</div>
+  </div>
+</div>
+
+<div class="img-row two">
+  <div class="img-wrap">
+    <img src="images/queue-theory/20-response-time-multiple-vs-single-queue-graph.png" alt="Response time: multiple vs single queue">
+    <div class="img-caption">Graph định lượng: Multiple queue lines (\(c \times\)M/M/1) vs Single-queue multiserver (M/M/c). Ở \(\rho = 80\%\), single queue tốt hơn gần 3×. Gap tăng theo \(\rho\) — chứng minh toán học: M/M/c luôn tốt hơn \(c\times\)M/M/1.</div>
+  </div>
+  <div class="img-wrap">
+    <img src="images/queue-theory/21-mm1-vs-mm2-delay-graph.png" alt="M/M/1 vs M/M/2 delay">
+    <div class="img-caption">M/M/1 (1 server rate \(2\mu\)) vs M/M/2 (2 servers rate \(\mu\) mỗi cái). Total capacity giống nhau nhưng M/M/2 có delay thấp hơn M/M/1 ở mọi utilization. <em>Pooling win ngay cả khi total throughput không đổi.</em></div>
+  </div>
+</div>
+
+<div class="img-wrap">
+  <img src="images/queue-theory/23-mm1-mmc-comparison-slide.png" alt="M/M/1 vs M/M/m comparison slide">
+  <div class="img-caption">Summary: \(m \times\)M/M/1 (m queues riêng) &lt; M/M/1 (1 server capacity \(c\mu\)) &lt; M/M/c (c servers, 1 queue). Thứ tự hiệu năng tăng dần. Luôn pool servers vào chung một queue khi có thể.</div>
+</div>
+
+<h3>8.2 Formulas M/M/c</h3>
+
+<div class="formula-panel">
+  <p style="color:var(--muted);font-size:.88rem;margin-bottom:12px;">Traffic intensity: \(a = \lambda/\mu\) (Erlang load), utilization per server: \(\rho = a/c\), điều kiện ổn định: \(\rho < 1\)</p>
+
+  $$P_0 = \left[\sum_{k=0}^{c-1} \frac{a^k}{k!} + \frac{a^c}{c!} \cdot \frac{1}{1-\rho}\right]^{-1}$$
+
+  <p style="color:var(--muted);font-size:.88rem;margin:12px 0;">Erlang-C function — xác suất tất cả \(c\) servers đều bận (arriving customer must wait):</p>
+
+  $$C(c,\,a) = \frac{\dfrac{a^c}{c!} \cdot \dfrac{1}{1-\rho}}{\displaystyle\sum_{k=0}^{c-1} \dfrac{a^k}{k!} + \dfrac{a^c}{c!} \cdot \dfrac{1}{1-\rho}}$$
+
+  <p style="color:var(--muted);font-size:.88rem;margin:12px 0;">Wait time và response time:</p>
+
+  $$W_q = \frac{C(c,\,a)}{c\mu - \lambda} \qquad\qquad W = W_q + \frac{1}{\mu} \qquad\qquad L_q = \lambda \cdot W_q$$
+</div>
+
+<!-- ============================= SECTION 9 ============================= -->
+<h2>9. Erlang-B & Erlang-C — Hai Công Thức Của Teletraffic</h2>
+
+<div class="grid2">
+  <div class="erlang-box">
+    <h4>Erlang-B — Loss System (Không Có Queue)</h4>
+    <p style="font-size:.9rem;color:var(--muted);margin-bottom:12px;">Áp dụng khi requests bị từ chối ngay nếu tất cả servers bận — không có chỗ chờ. Ví dụ: database với hard reject khi max_connections đầy, cellular network circuits.</p>
+    $$P_B = \frac{\dfrac{A^c}{c!}}{\displaystyle\sum_{k=0}^{c} \dfrac{A^k}{k!}}$$
+    <p style="font-size:.9rem;color:var(--muted);margin-top:10px;">\(A = \lambda/\mu\) (traffic intensity, Erlang), \(c\) = số servers. Với connection pool size = 20 và peak load 15 Erlang → \(P_B \approx 6.3\%\) requests bị reject.</p>
+  </div>
+  <div class="erlang-box">
+    <h4>Erlang-C — Delay System (Có Queue)</h4>
+    <p style="font-size:.9rem;color:var(--muted);margin-bottom:12px;">Áp dụng khi requests chờ nếu servers bận. Ví dụ: thread pool với queue, call center với hold queue.</p>
+    $$P_W = \frac{\dfrac{A^c}{c!} \cdot \dfrac{c}{c - A}}{\displaystyle\sum_{k=0}^{c-1} \dfrac{A^k}{k!} + \dfrac{A^c}{c!} \cdot \dfrac{c}{c-A}}$$
+    $$W_q = \frac{P_W}{c\mu - \lambda}$$
+    <p style="font-size:.9rem;color:var(--muted);margin-top:10px;">\(P_W\) = xác suất phải chờ. Call center sizing: với SLA "95% calls answered within 30s", Erlang-C cho biết số agents cần thiết.</p>
+  </div>
+</div>
+
+<div class="callout">
+  <h4>⚡ Erlang-B vs Erlang-C: Khi Nào Dùng Cái Nào?</h4>
+  <ul>
+    <li><strong>Erlang-B</strong>: System từ chối requests vượt capacity → database hard reject, network no-buffer. Optimize: giảm \(P_B < 1\%\).</li>
+    <li><strong>Erlang-C</strong>: System cho phép chờ (có queue) → thread pool, connection pool with queue. Optimize: \(P_W \times W_q \leq \text{SLA}\).</li>
+    <li><strong>Thực tế</strong>: Hầu hết systems có cả hai — M/M/c/K: chờ nếu queue chưa đầy, reject nếu queue đầy. Cần cả \(P_B\) lẫn \(P_W\).</li>
+  </ul>
+</div>
+
+<!-- ============================= SECTION 10 ============================= -->
+<h2>10. Capacity Planning — Từ Lý Thuyết Đến Quyết Định</h2>
+
+<div class="img-wrap half">
+  <img src="images/queue-theory/30-capacity-planning-triangle.png" alt="Capacity Planning Triangle">
+  <div class="img-caption">Tam giác Capacity Planning: Capacity (Processors, I/O, Network) ↔ Demand (Workload) ↔ QoS (Performance, Availability, Cost). Biết 2 → tính 1. Thay đổi 1 → ảnh hưởng 2 còn lại.</div>
+</div>
+
+<h3>10.1 Bài Toán: Cần Bao Nhiêu CPU Cores?</h3>
+
+<p>SLA: \(W \leq 200\text{ms}\). Peak load: \(\lambda = 5{,}000\;\text{req/s}\). Service time: \(S = 1/\mu = 20\text{ms}\):</p>
+
+<div class="formula-panel">
+  $$\text{Traffic intensity:}\quad a = \frac{\lambda}{\mu} = 5000 \times 0.020 = 100\;\text{Erlang}$$
+  $$\text{Min cores để ổn định:}\quad c_{\min} = \lceil a \rceil = 101\;\text{cores}\quad(\rho = 99\%\;\Rightarrow\;W \to \infty!)$$
+  $$\text{Target }\rho = 70\%:\quad c = \left\lceil \frac{a}{\rho_{\text{target}}} \right\rceil = \left\lceil \frac{100}{0.70} \right\rceil = 144\;\text{cores}$$
+  $$\text{Verify:}\quad W = \frac{S}{1-\rho} \approx \frac{20\,\text{ms}}{1 - 0.694} = 65\,\text{ms} \;\checkmark\; (<200\,\text{ms SLA})$$
+</div>
+
+<div class="insight-box">
+  <h4>💡 Tại Sao Không Thể Chạy Ở 99% Utilization?</h4>
+  <p>Với 101 cores và \(\rho = 99\%\): khi \(\lambda\) tăng chút ít do traffic spike, \(\mu - \lambda/c \to 0\) → \(W \to \infty\). Với 144 cores và \(\rho = 70\%\), traffic có thể tăng thêm 30% mà \(W\) chỉ tăng ~2× — vẫn trong SLA. <strong>Buffer capacity = bảo hiểm chống traffic spike.</strong> 43 cores "extra" không phải là lãng phí — đó là chi phí SLA compliance.</p>
+</div>
+
+<div class="img-wrap">
+  <img src="images/queue-theory/27-bottleneck-cost-improvement-table.png" alt="Bottleneck improvement cost table">
+  <div class="img-caption">Phân tích bottleneck: 5 components với \(W_i/W_\text{total}\). Component 1 chiếm 70.8% thời gian nhưng "super expensive" để optimize. Component 2 chỉ 13.7% nhưng "dirt cheap". Tradeoff điển hình: optimize bottleneck lớn nhất không phải lúc nào cũng cost-effective nhất.</div>
+</div>
+
+<!-- ============================= SECTION 11 ============================= -->
+<h2>11. AliSQL Thread Pool — Queueing Theory Trong Database Production</h2>
+
+<p>Alibaba đối mặt với bài toán kinh điển: Double 11 tạo ra hàng chục nghìn concurrent connections vào MySQL. Tạo 10,000 threads cho 10,000 connections thì sao?</p>
+
+<div class="img-wrap half">
+  <img src="images/queue-theory/28-computer-architecture-io-bus.png" alt="Computer Architecture">
+  <div class="img-caption">Hardware reality: số CPU cores cố định, chia sẻ Memory-I/O Bus. 10,000 threads tranh nhau CPU → context switch overhead &gt; useful work. Queueing Theory: số threads optimal \(\neq\) số concurrent connections.</div>
+</div>
+
+<div class="grid2">
+  <div class="card">
+    <h4>Vấn Đề: Thread-Per-Connection Antipattern</h4>
+    <ul>
+      <li><strong>Context switch storm</strong>: 10,000 threads trên 32 cores → mỗi time slice ~3μs, CPU dành đa số thời gian switching</li>
+      <li><strong>Cache thrashing</strong>: mỗi context switch flush TLB và L1/L2 cache</li>
+      <li><strong>Memory</strong>: 10,000 stacks × 8MB = 80GB RAM chỉ cho stacks!</li>
+      <li><strong>Lock contention</strong>: nhiều threads → M/M/1 queue ẩn ở mỗi lock</li>
+    </ul>
+    <div style="background:#fef2f2;padding:10px;border-radius:8px;font-size:.87rem;color:#991b1b;font-weight:600;margin-top:12px;">Thực đo: 10,000 connections → TPS giảm 50K → 5K (−90%!)</div>
+  </div>
+  <div class="card">
+    <h4>Giải Pháp: Thread Pool Từ Queueing Theory</h4>
+    <p>Optimal thread count từ Little's Law: để CPU luôn có việc làm (utilization = 1), cần \(c\) threads "in-flight" sao cho luôn có ≥ 1 thread trên CPU:</p>
+    $$c^* = n_{\text{cores}} \times \left(1 + \frac{W_{\text{io}}}{W_{\text{cpu}}}\right)$$
+    <p style="margin-top:8px;">Database OLTP: \(W_{\text{io}} \gg W_{\text{cpu}}\) → ratio ≈ 3–7 → \(c^* \approx 4\text{–}8 \times n_{\text{cores}}\). Với 32 cores: \(c^* \approx 128\) threads phục vụ 10,000 connections.</p>
+    <div style="background:#f0fdf4;padding:10px;border-radius:8px;font-size:.87rem;color:#166534;font-weight:600;margin-top:8px;">Kết quả: ~5K TPS → ~50K TPS. Tăng 10×!</div>
+  </div>
+</div>
+
+<div class="callout success">
+  <h4>✅ Bài Học: Công Thức Optimal Thread Pool Size</h4>
+  <p>Derivation từ Little's Law: mỗi request mất \(W_\text{cpu}\) trên CPU và \(W_\text{io}\) chờ I/O, tổng \(W = W_\text{cpu} + W_\text{io}\). CPU utilization = 1 khi số threads in-flight \(\geq W/W_\text{cpu} = 1 + W_\text{io}/W_\text{cpu}\). Nhân với số cores:</p>
+  $$c^* = n_\text{cores} \cdot \frac{W_\text{cpu} + W_\text{io}}{W_\text{cpu}} = n_\text{cores} \cdot \left(1 + \frac{W_\text{io}}{W_\text{cpu}}\right)$$
+  <p style="margin-top:10px;">Đây là công thức tính thread pool size tối ưu cho mọi I/O-bound workload. Monitor \(W_\text{io}/W_\text{cpu}\) ratio bằng profiler để calibrate đúng \(c^*\) cho từng environment.</p>
+</div>
+
+<!-- ============================= SECTION 12 ============================= -->
+<h2>12. Liên Kết Đa Lĩnh Vực — Framework Tư Duy Hiệu Năng</h2>
+
+<p class="section-lead">Queueing Theory kết nối sâu sắc với Amdahl's Law, hardware latency, memory model và distributed systems để tạo ra một framework hoàn chỉnh.</p>
+
+<div class="grid2">
+  <div class="card">
+    <h4>Queueing Theory + Amdahl's Law</h4>
+    <p>Amdahl: speedup bị giới hạn bởi serial section \(p\): \(S(N) = 1/((1-p)+p/N)\). Queueing Theory tinh tế hơn: ngay cả phần parallel cũng bị queuing delay khi có lock contention. Lock là M/M/1 queue — \(c\) threads tranh lock → arrival rate \(c\lambda_\text{lock}\) → response time tăng theo \(1/(1-\rho_\text{lock})\). Thêm threads đôi khi <em>làm chậm</em> hệ thống vì tạo ra M/M/1 queue ở lock.</p>
+  </div>
+  <div class="card">
+    <h4>Queueing Theory + Hardware Latency</h4>
+    <p>Service time \(S = 1/\mu\) được quyết định bởi hardware: L1 hit = 0.5ns, DRAM = 100ns, SSD = 100μs, HDD = 10ms. InnoDB buffer pool là cache để tăng \(\mu\) — cache hit: \(S \approx 0.1\text{ms}\); disk miss: \(S \approx 10\text{ms}\), tức \(\mu\) giảm 100×. Sizing buffer pool đúng → tăng \(\mu\) → giảm \(\rho\) → giảm \(W\) theo \(W = S/(1-\rho)\).</p>
+  </div>
+  <div class="card">
+    <h4>Queueing Theory + False Sharing</h4>
+    <p>False sharing (cache line invalidation) giảm effective \(\mu\) của "cache service" — mỗi write gây MESI invalidation, buộc cores khác serialize. Per-thread counters (MySQL 5.6) là \(N\times\)M/M/1 thay vì M/M/1 shared → giảm \(\rho\) per queue → giảm \(W\). False sharing tạo ra M/M/1 bottleneck ẩn không thể thấy từ CPU utilization metric.</p>
+  </div>
+  <div class="card">
+    <h4>Queueing Theory + Distributed Systems</h4>
+    <p>Microservices chain: mỗi service call là một queue với \(W_i\). Total: \(W_\text{total} = \sum W_i\) (serial path) hoặc \(\max W_i\) (parallel). Little's Law cho whole chain: nếu một service slow (\(W_i\) cao), \(L_i = \lambda \cdot W_i\) tích lũy → cascading slowdown. Distributed tracing visualizes \(W_i\) per service để tìm bottleneck.</p>
+  </div>
+</div>
+
+<div class="callout success">
+  <h4>✅ Framework Tư Duy Hiệu Năng 4 Lớp</h4>
+  <ol>
+    <li><strong>Hardware Latency \((1/\mu)\)</strong>: Floor của mọi optimization. Biết L1/DRAM/SSD/HDD latency để estimate service time.</li>
+    <li><strong>Amdahl's Law</strong>: Ceiling lý thuyết của parallelization. Serial section \(\to\) absolute bottleneck, không thể vượt qua dù thêm bao nhiêu servers.</li>
+    <li><strong>Queueing Theory \((\rho,\, L,\, W)\)</strong>: Hành vi thực tế dưới tải — nonlinear explosion tại knee, pooling benefits, capacity planning với số liệu cụ thể.</li>
+    <li><strong>Memory Model (correctness)</strong>: Volatile, atomic, happens-before. Ba lớp trên về <em>performance</em>, lớp này về <em>correctness</em>. Hệ thống nhanh nhưng sai là vô dụng.</li>
+  </ol>
+  <p style="margin-top:12px;">Tối ưu lớp 3 mà bỏ qua lớp 1 sẽ không bao giờ đạt kết quả tốt. Bỏ qua lớp 4 sẽ tạo race conditions không tái hiện được. Production-grade system cần cả bốn lớp.</p>
+</div>
+
+</div>
+</body>
+</html>

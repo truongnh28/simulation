@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>InnoDB MVCC Visibility: Cơ Chế Nhìn Thấy Dữ Liệu</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f8fafc;
+  --accent:#0891b2; --accent2:#0e7490; --accent3:#155e75;
+  --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --green:#059669; --yellow:#d97706; --red:#dc2626;
+  --purple:#7c3aed;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.75;}
+.nav{background:#fff;border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;}
+.nav a:hover{color:var(--accent);}
+.nav .sep{color:var(--border);}
+.hero{background:linear-gradient(135deg,#ecfeff 0%,#cffafe 50%,#a5f3fc 100%);padding:60px 40px;text-align:center;border-bottom:1px solid var(--border);}
+.hero h1{font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#0891b2,#0e7490,#155e75);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;}
+.hero .subtitle{color:var(--muted);font-size:1rem;max-width:700px;margin:0 auto;}
+.container{max-width:960px;margin:0 auto;padding:50px 40px;}
+h2{font-size:1.55rem;font-weight:700;color:#0e7490;margin:40px 0 16px;padding-bottom:10px;border-bottom:2px solid #a5f3fc;}
+h3{font-size:1.15rem;font-weight:600;color:#0891b2;margin:28px 0 12px;}
+h4{font-size:1rem;font-weight:600;color:#155e75;margin:20px 0 8px;}
+p{color:var(--text);margin-bottom:14px;}
+ul,ol{margin:0 0 14px 24px;color:var(--text);}
+li{margin-bottom:6px;}
+code{background:#ecfeff;color:#0e7490;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.85em;}
+pre{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;overflow-x:auto;margin:16px 0;}
+pre code{background:none;padding:0;color:#e2e8f0;font-size:.88rem;}
+.callout{background:#f8fafc;border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:20px;margin:20px 0;}
+.callout.warning{border-left-color:var(--yellow);background:#fffbeb;}
+.callout.danger{border-left-color:var(--red);background:#fef2f2;}
+.callout.success{border-left-color:var(--green);background:#f0fdf4;}
+.callout.info{border-left-color:var(--purple);background:#f5f3ff;}
+.callout h4{margin-top:0;color:var(--accent);}
+.callout.warning h4{color:var(--yellow);}
+.callout.danger h4{color:var(--red);}
+.callout.success h4{color:var(--green);}
+.callout.info h4{color:var(--purple);}
+.table-wrap{overflow-x:auto;margin:16px 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:#ecfeff;color:#0e7490;padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid #a5f3fc;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);}
+tr:hover td{background:#f0fdff;}
+.img-placeholder{background:var(--surface2);border:2px dashed #a5f3fc;border-radius:12px;padding:30px;margin:20px 0;text-align:center;color:var(--muted);font-size:.95rem;}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin:2px;}
+.badge-cyan{background:#ecfeff;color:#0e7490;}
+.badge-blue{background:#eff6ff;color:#1d4ed8;}
+.badge-green{background:#f0fdf4;color:#15803d;}
+.badge-red{background:#fef2f2;color:#b91c1c;}
+.badge-yellow{background:#fffbeb;color:#92400e;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.card-small{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.card-small h4{margin-top:0;margin-bottom:8px;color:#0891b2;}
+.stat-box{background:linear-gradient(135deg,#ecfeff,#cffafe);border:1px solid #a5f3fc;border-radius:12px;padding:24px;text-align:center;}
+.stat-num{font-size:2.2rem;font-weight:800;color:#0891b2;}
+.stat-label{color:var(--muted);font-size:.85rem;margin-top:4px;}
+.row-visual{background:#fff;border:2px solid #a5f3fc;border-radius:10px;padding:16px;margin:12px 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;}
+.row-visual .row-header{font-weight:700;color:#0891b2;margin-bottom:8px;font-family:'Inter',sans-serif;}
+.row-visual .field{display:inline-block;background:#ecfeff;border-radius:4px;padding:4px 10px;margin:3px;color:#0e7490;}
+.row-visual .field.hidden{background:#fee2e2;color:#b91c1c;}
+.flow-step{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;margin:8px 0;position:relative;padding-left:56px;}
+.flow-step::before{content:attr(data-step);position:absolute;left:16px;top:50%;transform:translateY(-50%);background:var(--accent);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;}
+.timeline{display:flex;align-items:flex-start;gap:0;margin:20px 0;overflow-x:auto;}
+.timeline-event{background:#fff;border:1px solid #a5f3fc;border-radius:8px;padding:10px 14px;min-width:130px;font-size:.82rem;text-align:center;}
+.timeline-event .evt-time{font-weight:700;color:#0891b2;}
+.timeline-event .evt-desc{color:var(--text);margin-top:4px;}
+.timeline-arrow{color:#a5f3fc;font-size:1.5rem;padding:24px 4px;}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html">← Trang Chủ</a>
+  <span class="sep">›</span>
+  <a href="#">Database</a>
+  <span class="sep">›</span>
+  <span>InnoDB MVCC Visibility</span>
+</nav>
+<div class="hero">
+  <h1>👁️ InnoDB MVCC Visibility</h1>
+  <p class="subtitle">Cơ chế nhìn thấy dữ liệu trong InnoDB: row structure, DATA_TRX_ID, ROLL_PTR, Read View (low_limit_id / up_limit_id / trx_ids), clustered vs secondary index visibility, và Purge flow</p>
+</div>
+<div class="container">
+
+<h2>1. MVCC Là Gì Và Tại Sao Cần Nó?</h2>
+
+<p>Multi-Version Concurrency Control (MVCC) là kỹ thuật cho phép nhiều transactions đọc và ghi dữ liệu đồng thời mà không cần block lẫn nhau. Thay vì "chỉ có một version của mỗi row", MVCC duy trì <strong>nhiều versions của cùng một row</strong> — mỗi transaction thấy version phù hợp với thời điểm nó bắt đầu.</p>
+
+<div class="callout info">
+  <h4>💡 Tại Sao Không Dùng Lock Đơn Giản?</h4>
+  <p>Lock-based concurrency: Reader phải đợi Writer hoàn thành (S lock conflicts with X lock). Với MVCC: Reader đọc version cũ hơn — <strong>không bao giờ block Writer và ngược lại</strong>. InnoDB's MVCC đảm bảo: SELECT không bao giờ block INSERT/UPDATE/DELETE và ngược lại (trừ khi dùng SELECT FOR UPDATE/SHARE). Đây là nền tảng của "high concurrency" trong MySQL.</p>
+</div>
+
+<div class="grid2">
+  <div class="stat-box"><div class="stat-num">6</div><div class="stat-label">Bytes cho DATA_TRX_ID (trx id)</div></div>
+  <div class="stat-box"><div class="stat-num">7</div><div class="stat-label">Bytes cho DATA_ROLL_PTR (undo pointer)</div></div>
+</div>
+
+<h2>2. Cấu Trúc Row Trong InnoDB</h2>
+
+<p>Mỗi row trong InnoDB clustered index (B-Tree page) chứa không chỉ data columns của user mà còn thêm các system columns mà người dùng không thấy trực tiếp.</p>
+
+<h3>2.1 System Columns Ẩn</h3>
+
+<div class="row-visual">
+  <div class="row-header">Physical row trong InnoDB clustered index page:</div>
+  <span class="field">user_col_1</span>
+  <span class="field">user_col_2</span>
+  <span class="field">...</span>
+  <span class="field">user_col_N</span>
+  <span class="field">DB_ROW_ID (6B)</span>
+  <span class="field">DB_TRX_ID (6B)</span>
+  <span class="field">DB_ROLL_PTR (7B)</span>
+</div>
+
+<div class="table-wrap">
+<table>
+  <tr>
+    <th>Column</th>
+    <th>Size</th>
+    <th>Ý Nghĩa</th>
+    <th>Ghi Chú</th>
+  </tr>
+  <tr>
+    <td><code>DB_ROW_ID</code></td>
+    <td>6 bytes</td>
+    <td>Auto-generated row ID nếu không có PK</td>
+    <td>Chỉ tồn tại khi không có explicit PK</td>
+  </tr>
+  <tr>
+    <td><code>DB_TRX_ID</code></td>
+    <td>6 bytes</td>
+    <td>Transaction ID của lần cuối cùng tạo/sửa row</td>
+    <td>Luôn tồn tại, key cho MVCC visibility</td>
+  </tr>
+  <tr>
+    <td><code>DB_ROLL_PTR</code></td>
+    <td>7 bytes</td>
+    <td>Pointer vào undo log — chứa version trước của row</td>
+    <td>Tạo thành linked list versions</td>
+  </tr>
+</table>
+</div>
+
+<h3>2.2 Undo Log Chain (Version Chain)</h3>
+
+<p>Mỗi khi một row bị UPDATE, InnoDB:</p>
+<ol>
+  <li>Copy version hiện tại vào undo log (rollback segment)</li>
+  <li>Cập nhật <code>DB_TRX_ID</code> của row thành transaction ID hiện tại</li>
+  <li>Set <code>DB_ROLL_PTR</code> trỏ vào undo log entry vừa tạo</li>
+</ol>
+
+<div class="img-placeholder">👉 [CHÈN ẢNH: Version chain — current row với TRX_ID=100, ROLL_PTR → undo_entry(TRX_ID=80) → undo_entry(TRX_ID=50) → undo_entry(TRX_ID=20) → NULL (original insert)]</div>
+
+<pre><code>-- Giả sử row "Alice" bị update 3 lần:
+
+-- Current (in B-Tree page):
+-- user_id=1, name='Alice', salary=90000
+-- DB_TRX_ID=100, DB_ROLL_PTR → undo[100]
+
+-- undo[100]: (được tạo khi trx 100 update)
+-- name='Alice', salary=80000  (giá trị TRƯỚC khi trx 100 update)
+-- DB_TRX_ID=80, DB_ROLL_PTR → undo[80]
+
+-- undo[80]:
+-- name='Alice', salary=70000
+-- DB_TRX_ID=50, DB_ROLL_PTR → undo[50]
+
+-- undo[50]:
+-- name='Alice', salary=60000
+-- DB_TRX_ID=20, DB_ROLL_PTR → NULL  (insert gốc)</code></pre>
+
+<h2>3. Read View: Quy Tắc Nhìn Thấy</h2>
+
+<p>Read View là snapshot của trạng thái transaction system tại thời điểm SELECT bắt đầu (hoặc transaction bắt đầu với REPEATABLE READ). Read View chứa 3 thông tin cốt lõi:</p>
+
+<div class="grid2">
+  <div class="card-small">
+    <h4>low_limit_id (aka m_low_limit_id)</h4>
+    <p>Transaction ID tiếp theo sẽ được cấp phát = max_trx_id + 1. Mọi row với <code>DB_TRX_ID ≥ low_limit_id</code> KHÔNG ĐƯỢC THẤY — transaction đó bắt đầu sau khi Read View được tạo.</p>
+  </div>
+  <div class="card-small">
+    <h4>up_limit_id (aka m_up_limit_id)</h4>
+    <p>Transaction ID nhỏ nhất trong list active transactions. Mọi row với <code>DB_TRX_ID &lt; up_limit_id</code> ĐƯỢC THẤY — transaction đó đã commit trước khi Read View được tạo.</p>
+  </div>
+  <div class="card-small">
+    <h4>trx_ids (aka m_ids)</h4>
+    <p>List tất cả transaction IDs đang active (chưa commit) lúc Read View được tạo. Rows được tạo bởi các transactions này KHÔNG ĐƯỢC THẤY.</p>
+  </div>
+  <div class="card-small">
+    <h4>creator_trx_id</h4>
+    <p>Transaction ID của transaction tạo Read View này. Rows được tạo bởi chính transaction này LUÔN ĐƯỢC THẤY (transaction thấy changes của chính mình).</p>
+  </div>
+</div>
+
+<h3>3.1 Thuật Toán Visibility Check</h3>
+
+<pre><code>// Cho một row với DB_TRX_ID = trx_id:
+function is_visible(trx_id, read_view):
+
+    // Rule 1: Chính mình luôn thấy
+    if trx_id == read_view.creator_trx_id:
+        return VISIBLE
+
+    // Rule 2: Trước tất cả active transactions → đã commit → thấy
+    if trx_id < read_view.up_limit_id:
+        return VISIBLE
+
+    // Rule 3: Sau khi Read View được tạo → chưa bắt đầu → không thấy
+    if trx_id >= read_view.low_limit_id:
+        return NOT_VISIBLE
+
+    // Rule 4: Trong range [up_limit_id, low_limit_id):
+    // Kiểm tra có trong active list không
+    if trx_id in read_view.trx_ids:
+        return NOT_VISIBLE  // Vẫn đang active lúc Read View được tạo
+    else:
+        return VISIBLE      // Đã commit trước Read View được tạo</code></pre>
+
+<h3>3.2 Ví Dụ Minh Họa</h3>
+
+<div style="background:#fff;border:1px solid #a5f3fc;border-radius:12px;padding:20px;margin:20px 0;">
+  <p><strong>Timeline:</strong></p>
+  <div class="timeline">
+    <div class="timeline-event"><div class="evt-time">t=1</div><div class="evt-desc">Trx 10 START</div></div>
+    <div class="timeline-arrow">→</div>
+    <div class="timeline-event"><div class="evt-time">t=2</div><div class="evt-desc">Trx 20 START<br>UPDATE Alice salary=90K</div></div>
+    <div class="timeline-arrow">→</div>
+    <div class="timeline-event"><div class="evt-time">t=3</div><div class="evt-desc">Trx 10 SELECT Alice<br><strong>Read View created</strong></div></div>
+    <div class="timeline-arrow">→</div>
+    <div class="timeline-event"><div class="evt-time">t=4</div><div class="evt-desc">Trx 20 COMMIT</div></div>
+    <div class="timeline-arrow">→</div>
+    <div class="timeline-event"><div class="evt-time">t=5</div><div class="evt-desc">Trx 10 SELECT Alice<br>(REPEATABLE READ)</div></div>
+  </div>
+  <p style="margin-top:16px;"><strong>Read View của Trx 10 tại t=3:</strong></p>
+  <ul>
+    <li><code>up_limit_id = 10</code> (Trx 10 là active transaction nhỏ nhất)</li>
+    <li><code>low_limit_id = 21</code> (next trx ID sẽ cấp phát)</li>
+    <li><code>trx_ids = {20}</code> (Trx 20 đang active lúc Read View được tạo)</li>
+    <li><code>creator_trx_id = 10</code></li>
+  </ul>
+  <p><strong>Visibility check cho row Alice (DB_TRX_ID = 20, salary = 90K):</strong></p>
+  <ul>
+    <li>trx_id(20) ≥ up_limit_id(10) → không thể apply Rule 2</li>
+    <li>trx_id(20) &lt; low_limit_id(21) → không apply Rule 3</li>
+    <li>trx_id(20) ∈ trx_ids{20} → <strong>NOT VISIBLE</strong></li>
+  </ul>
+  <p><strong>→ InnoDB follow ROLL_PTR xuống undo log để tìm version trước đó (salary = 80K, DB_TRX_ID = old_trx). Nếu old_trx &lt; 10 → VISIBLE → return salary=80K.</strong></p>
+  <p><em>Tại t=5 (REPEATABLE READ): cùng Read View! Dù Trx 20 đã commit, Trx 10 vẫn thấy salary=80K.</em></p>
+</div>
+
+<h2>4. Clustered Index vs Secondary Index Visibility</h2>
+
+<p>Clustered index và secondary index có cơ chế visibility khác nhau — đây là một trong những điểm tinh tế nhất của InnoDB MVCC.</p>
+
+<h3>4.1 Clustered Index: Full Information</h3>
+
+<p>Mỗi row trong clustered index có đầy đủ <code>DB_TRX_ID</code> và <code>DB_ROLL_PTR</code>. Visibility check trực tiếp và traverse undo chain nếu cần.</p>
+
+<h3>4.2 Secondary Index: Chỉ Có MAX_TRX_ID</h3>
+
+<p>Secondary index pages không có DB_TRX_ID per-row. Thay vào đó, mỗi secondary index page có một <code>PAGE_MAX_TRX_ID</code> — transaction ID cao nhất đã modify bất kỳ row nào trên page đó.</p>
+
+<div class="callout warning">
+  <h4>⚠️ Secondary Index Visibility: Phức Tạp Hơn</h4>
+  <p>Khi đọc từ secondary index, InnoDB phải:</p>
+  <ol>
+    <li>Check <code>PAGE_MAX_TRX_ID</code>. Nếu <code>PAGE_MAX_TRX_ID &lt; up_limit_id</code> → tất cả rows trên page đều visible → không cần lookup clustered index</li>
+    <li>Nếu <code>PAGE_MAX_TRX_ID ≥ up_limit_id</code> → không chắc → phải lookup clustered index để verify visibility</li>
+  </ol>
+  <p>Điều này tạo ra overhead: covering index scan vẫn có thể phải lookup clustered index (ngăn "covering index optimization" trong trường hợp này).</p>
+</div>
+
+<pre><code>-- Ví dụ: Table users(id, name, email), INDEX(name)
+-- Query: SELECT name, email FROM users WHERE name = 'Alice'
+--        (name + email không cover all columns → phải lookup clustered)
+
+-- Nhưng dù có covering index:
+-- SELECT name FROM users WHERE name = 'Alice'
+-- Nếu PAGE_MAX_TRX_ID >= read_view.up_limit_id → vẫn phải lookup clustered!
+-- Đây là "secondary index visibility check" overhead
+
+-- Đây là lý do tại sao trong MVCC heavy workloads,
+-- covering index không luôn luôn "cover" như expected</code></pre>
+
+<h3>4.3 Purge và Index Cleaning</h3>
+
+<p>Khi purge thread dọn dẹp undo log records, nó cũng phải clean secondary index entries cho delete-marked rows. Quá trình:</p>
+
+<ol>
+  <li>Purge coordinator xác định undo log records có thể xóa (below low water mark)</li>
+  <li>Với mỗi DELETE record: tìm secondary index entries tương ứng và remove delete marks</li>
+  <li>Update <code>PAGE_MAX_TRX_ID</code> nếu row bị purge là row mới nhất trên page</li>
+</ol>
+
+<div class="img-placeholder">👉 [CHÈN ẢNH: Secondary index page với PAGE_MAX_TRX_ID, và clustered index lookup flow khi MAX_TRX_ID cao]</div>
+
+<h2>5. Read View Trong REPEATABLE READ vs READ COMMITTED</h2>
+
+<div class="table-wrap">
+<table>
+  <tr>
+    <th>Isolation Level</th>
+    <th>Read View Được Tạo Khi Nào?</th>
+    <th>Hệ Quả</th>
+  </tr>
+  <tr>
+    <td><strong>REPEATABLE READ</strong> (default)</td>
+    <td>Khi transaction thực hiện <strong>SELECT đầu tiên</strong></td>
+    <td>Tất cả SELECTs trong transaction dùng cùng một Read View → không thấy changes commit từ transactions khác sau đó</td>
+  </tr>
+  <tr>
+    <td><strong>READ COMMITTED</strong></td>
+    <td>Mỗi <strong>SELECT statement</strong></td>
+    <td>Mỗi SELECT tạo Read View mới → thấy changes đã committed ngay trước SELECT đó (non-repeatable reads có thể xảy ra)</td>
+  </tr>
+</table>
+</div>
+
+<div class="callout info">
+  <h4>💡 REPEATABLE READ Không Ngăn Hoàn Toàn Phantom Reads?</h4>
+  <p>MVCC REPEATABLE READ ngăn Non-Repeatable Reads (cùng row đọc lại thấy giá trị khác). Nhưng trong InnoDB, nó cũng ngăn Phantom Reads cho SELECT ... (snapshot read) — bạn không thấy rows mới được insert bởi transactions khác. Tuy nhiên, SELECT FOR UPDATE / SELECT FOR SHARE là <strong>current read</strong> (locking read) — không dùng Read View, đọc version mới nhất và có thể thấy phantoms. Đây là điểm mà nhiều developer nhầm lẫn.</p>
+</div>
+
+<h2>6. Current Read vs Snapshot Read</h2>
+
+<p>Đây là phân biệt quan trọng nhất để hiểu đầy đủ InnoDB MVCC:</p>
+
+<div class="grid2">
+  <div class="card-small">
+    <h4>Snapshot Read (Non-Locking)</h4>
+    <ul>
+      <li><code>SELECT ... FROM ...</code></li>
+      <li>Dùng Read View → thấy version tương ứng với thời điểm Read View được tạo</li>
+      <li>Không lấy lock</li>
+      <li>Không block writes</li>
+      <li>MVCC provides isolation</li>
+    </ul>
+  </div>
+  <div class="card-small">
+    <h4>Current Read (Locking)</h4>
+    <ul>
+      <li><code>SELECT ... FOR UPDATE</code></li>
+      <li><code>SELECT ... FOR SHARE</code></li>
+      <li><code>INSERT / UPDATE / DELETE</code></li>
+      <li>Đọc version HIỆN TẠI (mới nhất)</li>
+      <li>Lấy lock (S hoặc X)</li>
+      <li>Có thể thấy phantom rows</li>
+    </ul>
+  </div>
+</div>
+
+<pre><code>-- Kịch bản minh họa (REPEATABLE READ):
+-- Session A bắt đầu transaction, đọc users count = 100
+BEGIN;
+SELECT COUNT(*) FROM users;  -- snapshot read → 100
+
+-- Session B insert 5 users và commit
+INSERT INTO users ... ; COMMIT;
+
+-- Session A đọc lại với snapshot read → vẫn 100 (MVCC!)
+SELECT COUNT(*) FROM users;  -- 100 (không thấy Session B's inserts)
+
+-- Session A đọc với current read → 105!
+SELECT COUNT(*) FROM users FOR UPDATE;  -- 105 (thấy committed changes)</code></pre>
+
+<h2>7. Purge: Dọn Dẹp Undo Log</h2>
+
+<p>Purge là quá trình background dọn dẹp undo log records và secondary index entries không còn cần thiết nữa. Đây là critical process ảnh hưởng đến performance và disk space.</p>
+
+<h3>7.1 Điều Kiện Purge</h3>
+
+<p>Một undo log record có thể bị purge khi:</p>
+<ul>
+  <li>Transaction tạo ra nó đã committed</li>
+  <li>Không có active Read View nào cần version đó nữa</li>
+  <li>Cụ thể: <code>trx_id ≤ oldest_active_read_view.up_limit_id</code></li>
+</ul>
+
+<h3>7.2 Purge Flow Chi Tiết</h3>
+
+<div class="flow-step" data-step="1">
+  <strong>Purge Coordinator scan history list</strong> — <code>trx_sys→history_list</code> là linked list các undo log segments, sorted theo commit order. Coordinator đọc từ đầu list (oldest committed first).
+</div>
+<div class="flow-step" data-step="2">
+  <strong>Xác định "purge view"</strong> — Tìm <code>low_limit_id</code> của oldest active Read View. Chỉ purge records với <code>commit_trx_id &lt; low_limit_id</code>.
+</div>
+<div class="flow-step" data-step="3">
+  <strong>Phân phối work cho purge workers</strong> — Coordinator gửi undo log records cần purge cho N-1 worker threads. Workers xử lý song song.
+</div>
+<div class="flow-step" data-step="4">
+  <strong>Worker purge undo records</strong> — Với mỗi UPDATE undo record: free undo log entry. Với DELETE undo record: xóa row từ clustered index và clean secondary index entries.
+</div>
+<div class="flow-step" data-step="5">
+  <strong>Update history list</strong> — Sau khi purge xong một undo log segment, coordinator xóa nó khỏi history list. Undo tablespace space được reclaimed.
+</div>
+
+<div class="callout danger">
+  <h4>❌ Long-Running Transactions: Kẻ Thù Của Purge</h4>
+  <p>Nếu có một transaction mở từ 1 giờ trước, Read View của nó có <code>up_limit_id</code> thấp. Purge không thể xóa bất kỳ undo record nào newer hơn thời điểm đó — dù hàng triệu transactions khác đã commit. History list tăng vô tận, disk space cạn, và MVCC visibility check ngày càng chậm (phải traverse undo chain dài hơn). Đây là lý do cần monitor và alert khi có long-running transactions.</p>
+</div>
+
+<h2>8. Monitoring MVCC Health</h2>
+
+<pre><code>-- Kiểm tra history list length (key metric!):
+SHOW ENGINE INNODB STATUS\G
+-- Tìm: "History list length 123456"
+-- > 10000: cảnh báo, purge lag sau
+-- > 100000: nghiêm trọng, cần tìm long-running transactions
+
+-- Tìm long-running transactions:
+SELECT trx_id, trx_started, trx_state, trx_query,
+       TIMESTAMPDIFF(SECOND, trx_started, NOW()) AS age_seconds
+FROM information_schema.INNODB_TRX
+WHERE TIMESTAMPDIFF(SECOND, trx_started, NOW()) > 60
+ORDER BY age_seconds DESC;
+
+-- Monitor purge lag:
+SELECT variable_name, variable_value
+FROM performance_schema.global_status
+WHERE variable_name IN (
+    'Innodb_purge_trx_id_age',
+    'Innodb_history_list_length'
+);</code></pre>
+
+<div class="callout success">
+  <h4>✅ Best Practices Cho MVCC Health</h4>
+  <ul>
+    <li><strong>Commit transactions sớm nhất có thể</strong> — đặc biệt read-only transactions (dùng <code>SET autocommit=1</code> hoặc explicit BEGIN/COMMIT)</li>
+    <li><strong>Monitor history list length</strong> — alert khi &gt;10K, investigate khi &gt;50K</li>
+    <li><strong>Tăng innodb_purge_threads</strong> trên write-heavy servers (4-8 threads)</li>
+    <li><strong>Tránh BEGIN và để transaction "treo"</strong> trong application code — connection timeout hay application crash để lại orphan transactions</li>
+    <li><strong>Read Committed isolation</strong> tốt hơn cho OLAP queries — Read View mới mỗi statement, không giữ old snapshots lâu</li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

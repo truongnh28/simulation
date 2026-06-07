@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>InnoDB Transaction, Lock & MVCC — Phân Tích Chuyên Sâu</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f8fafc;
+  --accent:#4f46e5; --accent2:#7c3aed; --accent3:#0891b2;
+  --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --green:#059669; --yellow:#d97706; --red:#dc2626;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.75;}
+.hero{background:linear-gradient(135deg,#ede9fe 0%,#dbeafe 50%,#e0f2fe 100%);padding:60px 40px;text-align:center;border-bottom:1px solid var(--border);}
+.hero h1{font-size:2.4rem;font-weight:800;background:linear-gradient(135deg,#4f46e5,#7c3aed,#0891b2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;}
+.hero .subtitle{color:var(--muted);font-size:1rem;}
+.container{max-width:960px;margin:0 auto;padding:50px 40px;}
+h2{font-size:1.55rem;font-weight:700;color:#3730a3;margin:40px 0 16px;padding-bottom:10px;border-bottom:2px solid #e0e7ff;}
+h3{font-size:1.15rem;font-weight:600;color:#1e40af;margin:28px 0 12px;}
+h4{font-size:1rem;font-weight:600;color:#0891b2;margin:20px 0 8px;}
+p{color:var(--text);margin-bottom:14px;}
+ul,ol{margin:0 0 14px 24px;color:var(--text);}
+li{margin-bottom:6px;}
+code{background:#ede9fe;color:#4338ca;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.85em;}
+pre{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;overflow-x:auto;margin:16px 0;}
+pre code{background:none;padding:0;color:#e2e8f0;}
+.callout{background:#f8fafc;border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:20px;margin:20px 0;}
+.callout.warning{border-left-color:var(--yellow);background:#fffbeb;}
+.callout.danger{border-left-color:var(--red);background:#fef2f2;}
+.callout.success{border-left-color:var(--green);background:#f0fdf4;}
+.callout h4{margin-top:0;color:var(--accent);}
+.callout.warning h4{color:var(--yellow);}
+.callout.danger h4{color:var(--red);}
+.callout.success h4{color:var(--green);}
+.table-wrap{overflow-x:auto;margin:16px 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:#ede9fe;color:#3730a3;padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid #c7d2fe;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);}
+tr:hover td{background:#f5f3ff;}
+.img-placeholder{background:var(--surface2);border:2px dashed #c7d2fe;border-radius:12px;padding:30px;margin:20px 0;text-align:center;color:var(--muted);}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin:2px;}
+.badge-blue{background:#eff6ff;color:#1d4ed8;}
+.badge-cyan{background:#ecfeff;color:#0e7490;}
+.badge-purple{background:#f5f3ff;color:#6d28d9;}
+.badge-green{background:#f0fdf4;color:#15803d;}
+.badge-red{background:#fef2f2;color:#b91c1c;}
+.nav{background:#fff;border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;}
+.nav a:hover{color:var(--accent);}
+.nav .sep{color:var(--border);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.card-small{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.card-small h4{margin-top:0;margin-bottom:8px;}
+.section-title{font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border),transparent);}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:48px;}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:28px;text-decoration:none;color:var(--text);transition:all .3s ease;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform .3s ease;}
+.card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 30px rgba(79,70,229,.1);}
+.card:hover::before{transform:scaleX(1);}
+.card-icon{font-size:2rem;margin-bottom:16px;}
+.card h3{font-size:1rem;font-weight:600;margin-bottom:10px;color:var(--text);}
+.card p{color:var(--muted);font-size:.85rem;line-height:1.6;}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin-top:12px;}
+.tag-db{background:#eff6ff;color:#1d4ed8;}
+.tag-dist{background:#ecfeff;color:#0e7490;}
+.tag-prog{background:#f5f3ff;color:#6d28d9;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:60px;}
+.stat{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.stat-num{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-label{color:var(--muted);font-size:.9rem;margin-top:4px;}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="../index.html">🏠 Trang chủ</a><span class="sep">/</span><span>Database</span><span class="sep">/</span><span>InnoDB Transaction, Lock & MVCC</span></nav>
+
+<div class="hero">
+  <h1>🔒 InnoDB Transaction, Lock &amp; MVCC</h1>
+  <p class="subtitle">Phân tích toàn diện cơ chế giao dịch, hệ thống khóa và kiểm soát đồng thời đa phiên bản trong MySQL InnoDB</p>
+</div>
+<div class="container">
+
+<h2>1. Tổng Quan Kiến Trúc InnoDB</h2>
+<p>InnoDB là storage engine mặc định của MySQL, được thiết kế theo kiến trúc module hóa cao. Toàn bộ engine chia thành nhiều tầng: OS layer (tương tác với hệ điều hành), Lock (quản lý khóa), Transaction (quản lý giao dịch), Multiversion (MVCC), Log/Recovery (redo/undo), Index (B+Tree), Buffer Pool và Handler layer.</p>
+
+<div class="callout">
+<h4>💡 Tại sao kiến trúc module hóa quan trọng?</h4>
+<p>Việc tách biệt các module giúp mỗi thành phần có thể được tối ưu độc lập. Ví dụ: Alibaba đã tối ưu riêng module Lock để cải thiện throughput trong AliSQL mà không ảnh hưởng đến logic Transaction.</p>
+</div>
+
+<h2>2. Giao Dịch InnoDB (Transaction)</h2>
+
+<h3>2.1 Cấu Trúc Giao Dịch</h3>
+<p>InnoDB duy trì hai cấu trúc toàn cục và per-transaction để quản lý giao dịch:</p>
+<div class="grid2">
+<div class="card-small">
+<h4>trx_sys (Global)</h4>
+<ul>
+<li><code>mutex</code>: Kiểm soát critical section cho phân bổ/commit/rollback</li>
+<li><code>max_trx_id</code>: Transaction ID tối đa hiện tại</li>
+<li><code>trx_list</code>: Danh sách tất cả active transactions</li>
+<li><code>view_list</code>: Danh sách tất cả ReadView hiện hành</li>
+</ul>
+</div>
+<div class="card-small">
+<h4>trx_struct (Per-Transaction)</h4>
+<ul>
+<li><code>id/no</code>: Transaction ID (id người dùng thấy, no ẩn)</li>
+<li><code>xid</code>: XA transaction identifier</li>
+<li><code>read_view</code>: ReadView của transaction này</li>
+<li><code>trx_locks</code>: Tất cả locks transaction đang giữ</li>
+<li><code>wait_lock</code>: Lock đang chờ hiện tại</li>
+</ul>
+</div>
+</div>
+
+<div class="callout warning">
+<h4>⚠️ Chi tiết quan trọng về max_trx_id</h4>
+<p>Transaction ID được phân bổ 256 lần mới ghi một lần ra file để đảm bảo durability. Đây là trade-off giữa performance (giảm I/O) và correctness — nếu crash xảy ra, InnoDB có thể skip tối đa 256 transaction ID, nhưng điều này không ảnh hưởng đến tính đúng đắn vì ID chỉ cần đơn điệu tăng.</p>
+</div>
+
+<h3>2.2 Hai Chế Độ Đọc Dữ Liệu</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Loại</th><th>Cơ chế</th><th>Sử dụng khi nào</th><th>Ví dụ SQL</th></tr>
+<tr><td><strong>Snapshot Read</strong></td><td>Tạo ReadView, đọc phiên bản MVCC</td><td>SELECT thông thường (RC/RR)</td><td><code>SELECT * FROM t</code></td></tr>
+<tr><td><strong>Current Read</strong></td><td>Đọc phiên bản mới nhất, thêm khóa</td><td>INSERT/UPDATE/DELETE hoặc SELECT FOR UPDATE</td><td><code>SELECT ... FOR UPDATE</code></td></tr>
+</table>
+</div>
+
+<h3>2.3 XA Transaction &amp; Group Commit</h3>
+<p>InnoDB sử dụng XA nội bộ để đảm bảo nhất quán giữa InnoDB redo log và MySQL binlog theo quy trình 2-phase commit:</p>
+<pre><code>InnoDB prepare → Binlog commit → InnoDB commit</code></pre>
+<p>Binlog đóng vai trò Transaction Coordinator (TC). Hai tham số kiểm soát durability:</p>
+<ul>
+<li><code>sync_binlog</code>: Bao nhiêu transaction commit thì fsync binlog (1 = max durability)</li>
+<li><code>innodb_flush_log_at_trx_commit</code>: 0/1/2 — kiểm soát flush redo log</li>
+</ul>
+
+<div class="callout success">
+<h4>✅ Group Commit — Cải tiến quan trọng nhất của MySQL 5.6</h4>
+<p>Group Commit cho phép nhiều transactions cùng flush binlog một lần, tăng throughput đáng kể trong workload commit nặng. Đây là một trong những tối ưu hóa quan trọng nhất của MySQL 5.6.</p>
+</div>
+
+<h3>2.4 Mini-Transaction (MTR)</h3>
+<p>Mini-transaction là đơn vị atomic nhỏ nhất trong InnoDB, <em>không phải</em> là giao dịch người dùng. MTR đảm bảo tính nguyên tử cho mỗi thao tác page:</p>
+<ul>
+<li>Truy cập page → thêm S-latch (đọc) hoặc X-latch (ghi)</li>
+<li>Sửa page → ghi redo log vào local buffer của MTR</li>
+<li>Commit MTR → flush redo log vào log buffer + thêm dirty page vào Flush List + giải phóng latch</li>
+</ul>
+
+<h2>3. Hệ Thống Khóa InnoDB (Lock)</h2>
+
+<h3>3.1 Phân Biệt Lock, Latch, Mutex</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Loại</th><th>Mục đích</th><th>Độ phức tạp</th><th>Deadlock Detection</th><th>Thời gian giữ</th></tr>
+<tr><td><strong>Lock</strong></td><td>Khóa record/bảng người dùng</td><td>Cao</td><td>✅ Có</td><td>Lâu (suốt transaction)</td></tr>
+<tr><td><strong>Latch</strong></td><td>Pin page trong buffer pool</td><td>Trung bình</td><td>❌ Không</td><td>Ngắn (trong MTR)</td></tr>
+<tr><td><strong>Mutex</strong></td><td>Bảo vệ critical section</td><td>Thấp (CAS/TAS)</td><td>❌ Không</td><td>Rất ngắn</td></tr>
+</table>
+</div>
+
+<h3>3.2 Cấu Trúc Row Lock</h3>
+<p>InnoDB quản lý row lock thông qua hash table toàn cục (<code>lock_sys</code>). Hash key được tính từ <code>[space_id, page_no]</code> — tất cả locks trên cùng một page nằm trong cùng một hash bucket.</p>
+
+<div class="callout">
+<h4>💡 Tại sao hash theo page, không phải theo row?</h4>
+<p>Vì một <code>lock_rec_struct</code> đại diện cho <em>tất cả</em> record locks trên một index page, dùng bitmap để biểu diễn. Thiết kế này tiết kiệm bộ nhớ đáng kể khi có nhiều locks trên cùng một page.</p>
+</div>
+
+<h3>3.3 Các Loại Lock và Semantic</h3>
+<ul>
+<li><span class="badge badge-blue">S Lock</span> Shared — nhiều transaction cùng đọc</li>
+<li><span class="badge badge-red">X Lock</span> Exclusive — chỉ một transaction ghi</li>
+<li><span class="badge badge-purple">IS / IX</span> Intention Lock — báo hiệu ý định lock ở tầng thấp hơn</li>
+<li><span class="badge badge-cyan">Gap Lock</span> Khóa khoảng giữa các bản ghi (chỉ RR isolation)</li>
+<li><span class="badge badge-green">Next-Key Lock</span> Record Lock + Gap Lock phía trước</li>
+<li><span class="badge badge-red">Insert Intention Lock</span> Gap lock đặc biệt cho INSERT</li>
+</ul>
+
+<h3>3.4 Semi-Consistent Read &amp; Implicit Lock</h3>
+<div class="callout">
+<h4>💡 Semi-Consistent Read</h4>
+<p>Tính năng đặc biệt giúp giảm lock conflict trong RC isolation: khi UPDATE gặp một locked row, InnoDB đọc committed version của row đó để kiểm tra WHERE condition. Nếu row không thỏa mãn điều kiện, bỏ qua ngay mà không cần chờ lock — tối ưu hóa throughput cho UPDATE với nhiều điều kiện filter.</p>
+</div>
+<p><strong>Implicit Lock</strong>: InnoDB không thực sự tạo lock object cho mọi bản ghi. Với newly inserted record chưa commit, transaction ID trên record chính là "implicit lock". Chỉ khi transaction khác muốn lock record đó, implicit lock mới được chuyển thành explicit lock. Điều này tiết kiệm bộ nhớ đáng kể.</p>
+
+<h2>4. MVCC — Kiểm Soát Đồng Thời Đa Phiên Bản</h2>
+
+<h3>4.1 ReadView và Cơ Chế Visibility</h3>
+<p>Mỗi snapshot read tạo một <code>ReadView</code> chứa:</p>
+<ul>
+<li><code>low_limit_id</code>: Transaction ID ≥ giá trị này → <strong>không thấy</strong> (transaction bắt đầu sau snapshot)</li>
+<li><code>up_limit_id</code>: Transaction ID &lt; giá trị này → <strong>thấy</strong> (transaction đã commit trước snapshot)</li>
+<li><code>trx_ids</code>: Danh sách active transactions khi tạo snapshot → không thấy</li>
+</ul>
+
+<h3>4.2 System Columns Ẩn của InnoDB</h3>
+<p>InnoDB mở rộng mỗi record trong clustered index với các system columns ẩn:</p>
+<ul>
+<li><code>DB_TRX_ID</code> (6 bytes): ID của transaction gần nhất modify record</li>
+<li><code>DB_ROLL_PTR</code> (7 bytes): Con trỏ đến undo record trong rollback segment</li>
+<li><code>DB_ROW_ID</code>: Row ID tự động nếu không có primary key</li>
+</ul>
+
+<h3>4.3 RC vs RR Isolation Level</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Đặc điểm</th><th>Read Committed (RC)</th><th>Repeatable Read (RR)</th></tr>
+<tr><td>Thời điểm tạo ReadView</td><td>Mỗi statement</td><td>Đầu transaction</td></tr>
+<tr><td>Phantom Read</td><td>Có thể xảy ra</td><td>Ngăn chặn bởi Gap Lock</td></tr>
+<tr><td>Gap Lock</td><td>Không dùng</td><td>Dùng cho current read</td></tr>
+<tr><td>Deadlock risk</td><td>Thấp hơn</td><td>Cao hơn</td></tr>
+</table>
+</div>
+
+<div class="callout success">
+<h4>✅ Best Practice: RC + Row-Based Binlog</h4>
+<p>Alibaba và nhiều large-scale MySQL deployments ưa dùng <strong>RC + row-based binlog</strong>. RC giảm thiểu gap locks, giảm deadlock, tăng concurrency. Chỉ cần đảm bảo dùng row-based binlog để tránh replication issues. RR chỉ nên dùng khi ứng dụng thực sự cần repeatable read semantics.</p>
+</div>
+
+<h3>4.4 Purge — Thu Hồi Phiên Bản Cũ</h3>
+<p>Purge thread chạy nền, định kỳ thu hồi records có <code>Delete_Bit = 1</code> mà không còn transaction nào có thể nhìn thấy.</p>
+<div class="callout danger">
+<h4>🚨 Long-running Transaction — Kẻ Thù Của Purge</h4>
+<p>Nếu một transaction mở quá lâu (giữ snapshot cũ), purge thread không thể thu hồi các phiên bản cũ. Điều này dẫn đến: (1) undo tablespace phình to, (2) history list length tăng, (3) query chậm do phải traverse nhiều undo versions. Đây là nguyên nhân phổ biến của "InnoDB undo segment growth" trong production.</p>
+</div>
+
+<h2>5. Tổng Kết và Best Practices</h2>
+<div class="grid2">
+<div class="card-small">
+<h4>✅ Nên làm</h4>
+<ul>
+<li>Giữ transaction ngắn nhất có thể</li>
+<li>Dùng RC isolation + row-based binlog cho high-concurrency</li>
+<li>Monitor <code>SHOW ENGINE INNODB STATUS</code> để theo dõi lock waits</li>
+<li>Dùng covering index để tận dụng Index Only Scan</li>
+<li>Tune <code>innodb_purge_threads</code> nếu heavy delete workload</li>
+</ul>
+</div>
+<div class="card-small">
+<h4>❌ Tránh làm</h4>
+<ul>
+<li>Long-running transactions (ngăn purge, tăng undo size)</li>
+<li>SELECT ... FOR UPDATE trên full table scan</li>
+<li>Bỏ qua deadlock detection trong application code</li>
+<li>Dùng SERIALIZABLE isolation trừ khi thực sự cần</li>
+<li>AUTO_INCREMENT mode 0 trong high-concurrency insert</li>
+</ul>
+</div>
+</div>
+
+</div>
+</body>
+</html>

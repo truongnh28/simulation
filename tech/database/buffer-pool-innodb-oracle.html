@@ -1,0 +1,199 @@
+<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Buffer Pool: InnoDB vs Oracle</title><style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f8fafc;
+  --accent:#4f46e5; --accent2:#7c3aed; --accent3:#0891b2;
+  --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --green:#059669; --yellow:#d97706; --red:#dc2626;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.75;}
+.hero{
+  background:linear-gradient(135deg,#ede9fe 0%,#dbeafe 50%,#e0f2fe 100%);
+  padding:60px 40px;text-align:center;position:relative;
+  border-bottom:1px solid var(--border);
+}
+.hero h1{
+  font-size:2.4rem;font-weight:800;
+  background:linear-gradient(135deg,#4f46e5,#7c3aed,#0891b2);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:12px;
+}
+.hero .subtitle{color:var(--muted);font-size:1rem;}
+.container{max-width:960px;margin:0 auto;padding:50px 40px;}
+h2{font-size:1.55rem;font-weight:700;color:#3730a3;margin:40px 0 16px;padding-bottom:10px;border-bottom:2px solid #e0e7ff;}
+h3{font-size:1.15rem;font-weight:600;color:#1e40af;margin:28px 0 12px;}
+h4{font-size:1rem;font-weight:600;color:#0891b2;margin:20px 0 8px;}
+p{color:var(--text);margin-bottom:14px;opacity:.95;}
+ul,ol{margin:0 0 14px 24px;color:var(--text);}
+li{margin-bottom:6px;}
+code{
+  background:#ede9fe;color:#4338ca;
+  padding:2px 8px;border-radius:4px;
+  font-family:'JetBrains Mono',monospace;font-size:.85em;
+}
+pre{
+  background:#1e293b;border:1px solid #334155;border-radius:10px;
+  padding:20px;overflow-x:auto;margin:16px 0;
+}
+pre code{background:none;padding:0;color:#e2e8f0;}
+.callout{
+  background:#f8fafc;border:1px solid var(--border);
+  border-left:4px solid var(--accent);border-radius:10px;
+  padding:20px;margin:20px 0;
+}
+.callout.warning{border-left-color:var(--yellow);background:#fffbeb;}
+.callout.danger{border-left-color:var(--red);background:#fef2f2;}
+.callout.success{border-left-color:var(--green);background:#f0fdf4;}
+.callout h4{margin-top:0;color:var(--accent);}
+.callout.warning h4{color:var(--yellow);}
+.callout.danger h4{color:var(--red);}
+.callout.success h4{color:var(--green);}
+.table-wrap{overflow-x:auto;margin:16px 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:#ede9fe;color:#3730a3;padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid #c7d2fe;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);}
+tr:hover td{background:#f5f3ff;}
+.img-placeholder{
+  background:var(--surface2);border:2px dashed #c7d2fe;
+  border-radius:12px;padding:30px;margin:20px 0;text-align:center;color:var(--muted);
+}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin:2px;}
+.badge-blue{background:#eff6ff;color:#1d4ed8;}
+.badge-cyan{background:#ecfeff;color:#0e7490;}
+.badge-purple{background:#f5f3ff;color:#6d28d9;}
+.badge-green{background:#f0fdf4;color:#15803d;}
+.badge-red{background:#fef2f2;color:#b91c1c;}
+.nav{
+  background:#ffffff;border-bottom:1px solid var(--border);
+  padding:14px 40px;display:flex;align-items:center;gap:16px;
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
+}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;}
+.nav a:hover{color:var(--accent);}
+.nav .sep{color:var(--border);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.card-small{
+  background:#ffffff;border:1px solid var(--border);
+  border-radius:10px;padding:18px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);
+}
+.card-small h4{margin-top:0;margin-bottom:8px;}
+.section-title{font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border),transparent);}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:48px;}
+.card{
+  background:#ffffff;border:1px solid var(--border);border-radius:16px;padding:28px;
+  text-decoration:none;color:var(--text);transition:all .3s ease;position:relative;overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,.05);
+}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform .3s ease;}
+.card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 30px rgba(79,70,229,.1);}
+.card:hover::before{transform:scaleX(1);}
+.card-icon{font-size:2rem;margin-bottom:16px;}
+.card h3{font-size:1rem;font-weight:600;margin-bottom:10px;color:var(--text);}
+.card p{color:var(--muted);font-size:.85rem;line-height:1.6;}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin-top:12px;}
+.tag-db{background:#eff6ff;color:#1d4ed8;}
+.tag-dist{background:#ecfeff;color:#0e7490;}
+.tag-prog{background:#f5f3ff;color:#6d28d9;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:60px;}
+.stat{background:#ffffff;border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.stat-num{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-label{color:var(--muted);font-size:.9rem;margin-top:4px;}
+</style></head><body>
+<nav class="nav"><a href="../index.html">&#127968; Trang chu</a><span class="sep">/</span><span>Buffer Pool</span></nav>
+<div class="hero"><h1>&#129518; Buffer Pool: InnoDB vs Oracle</h1>
+<p class="subtitle">So sanh kien truc Buffer Pool, LRU variants, Checkpoint va Flush mechanism trong hai he thong database hang dau</p></div>
+<div class="container">
+
+<h2>1. Vai Tro Cua Buffer Pool</h2>
+<p>Buffer Pool la thanh phan quan trong nhat cua bat ky RDBMS nao: cache cac data pages tren disk vao memory de tranh random I/O dat tien. Hieu nang cua database phu thuoc manh vao hit rate cua Buffer Pool.</p>
+<div class="grid2">
+<div class="card-small"><h4>Cac Loai Pages Trong Buffer Pool</h4><ul>
+<li><strong>Data Pages</strong>: B-Tree index pages</li>
+<li><strong>Undo Pages</strong>: Rollback segment pages</li>
+<li><strong>Insert Buffer Pages</strong>: Cho pending secondary index updates</li>
+<li><strong>Adaptive Hash Index</strong>: Hash index tu dong tren hot data</li>
+<li><strong>Lock Info</strong>: Lock bitmap pages</li>
+</ul></div>
+<div class="card-small"><h4>Key Parameters</h4><ul>
+<li><code>innodb_buffer_pool_size</code>: Kich thuoc Buffer Pool (nen 70-80% RAM)</li>
+<li><code>innodb_buffer_pool_instances</code>: So Buffer Pool instances (giam contention)</li>
+<li><code>innodb_buffer_pool_chunk_size</code>: Kich thuoc chunk (5.7.5+)</li>
+</ul></div>
+</div>
+
+<h2>2. InnoDB Buffer Pool Architecture</h2>
+<h3>2.1 LRU List — Toi Uu Voi Midpoint Insertion</h3>
+<p>InnoDB dung Modified LRU (khong phai LRU thuan tuy) de tranh viec full table scan lam mat di hot pages:</p>
+<ul>
+<li>LRU list chia thanh 2 phan: <strong>Young (Hot) list</strong> (37%) o dau va <strong>Old (Cold) list</strong> (63%) o cuoi</li>
+<li>Page moi duoc them vao <strong>midpoint</strong> (dau cua Old list), khong phai dau LRU</li>
+<li>Neu page trong Old list duoc access sau <code>innodb_old_blocks_time</code> (mac dinh 1000ms) → chuyen len Young list</li>
+<li>Full table scan: pages duoc them vao midpoint va nhanh chong bi evict ma khong lam mat Young pages</li>
+</ul>
+<div class="callout"><h4>&#128161; Tai sao Midpoint Insertion?</h4>
+<p>Truong hop dien hinh: large table scan (mysqldump, OLAP query) doc hang trieu pages mot lan nhung sau do khong dung lai. Neu them vao dau LRU, se day het hot data ra. Midpoint insertion cho phep pages moi "chung minh" la hot truoc khi len Young list.</p></div>
+
+<h3>2.2 Flush List — Track Dirty Pages</h3>
+<p>Flush List la doubly-linked list chua tat ca dirty pages, sap xep theo <code>oldest_modification</code> LSN (pages duoc sua dau tien nam cuoi list). Day la basis cua Incremental Checkpoint.</p>
+
+<h3>2.3 Free List — Quan Ly Pages Ranh</h3>
+<p>Free List chua cac pages sach, san sang cho viec allocate. Khi can page moi: lay tu Free List → neu het → evict page cu tu LRU tail.</p>
+
+<h3>2.4 Page Cleaner Thread (MySQL 5.6+)</h3>
+<p>MySQL 5.6 gioi thieu page cleaner thread rieng biet de flush dirty pages ngoai master thread:</p>
+<ul>
+<li>Adaptive flushing: tinh toan rate flush dua tren log generation rate</li>
+<li>Tranh surge flushing (dot ngot flush nhieu) gay I/O spike</li>
+<li>MySQL 5.7+ cho phep multiple page cleaner threads (<code>innodb_page_cleaners</code>)</li>
+</ul>
+
+<h2>3. Oracle Buffer Pool (Database Buffer Cache)</h2>
+<h3>3.1 LRU va REPL List</h3>
+<p>Oracle dung kien truc phuc tap hon InnoDB:</p>
+<ul>
+<li><strong>Main List (MRU/LRU)</strong>: Quan ly hot pages</li>
+<li><strong>Auxiliary List</strong>: Pages dang duoc xem xet evict</li>
+<li><strong>WRITE_MAIN / WRITE_AUX</strong>: Pages cho quan hang doi de write out</li>
+<li><strong>DBWR process</strong>: Database Writer process flush dirty pages (co the co nhieu DBWR)</li>
+</ul>
+
+<h3>3.2 Buffer Pool Phuc Tap Hon InnoDB</h3>
+<ul>
+<li>Oracle ho tro nhieu loai Buffer Pool: Default Pool, Keep Pool (giu cac hot objects), Recycle Pool (cho large one-time scans)</li>
+<li>Cho phep DBA gan bang cu the vao pool cu the: <code>ALTER TABLE t STORAGE (BUFFER_POOL KEEP)</code></li>
+<li>Oracle Exadata co Smart Flash Cache them mot tang caching nua</li>
+</ul>
+
+<h2>4. Checkpoint Comparison</h2>
+<div class="table-wrap"><table>
+<tr><th>Tieu chi</th><th>InnoDB</th><th>Oracle</th></tr>
+<tr><td>Checkpoint type chinh</td><td>Incremental (Fuzzy) only</td><td>Incremental + nhieu loai khac</td></tr>
+<tr><td>Checkpoint info</td><td>LSN trong log file header</td><td>SCN trong Control File</td></tr>
+<tr><td>Full checkpoint</td><td>Khong ho tro (chi khi shutdown)</td><td>Co (Thread checkpoint khi log switch)</td></tr>
+<tr><td>Media recovery</td><td>Khong (XtraBackup can embed InnoDB)</td><td>Co (CKPT process update moi data file)</td></tr>
+<tr><td>Checkpoint trigger</td><td>LSN age thresholds</td><td>CKPT process moi 3 giay</td></tr>
+</table></div>
+
+<h2>5. InnoDB BP Dump/Restore (MySQL 5.6+)</h2>
+<p>Sau khi restart MySQL, Buffer Pool trong rong → warm-up period mat thoi gian. MySQL 5.6+ cho phep:</p>
+<ul>
+<li><strong>Dump</strong>: Ghi danh sach page identifiers (space_id, page_no) tu LRU list ra file</li>
+<li><strong>Restore</strong>: Doc file, sort cac page IDs (de dam bao sequential I/O), load pages vao Buffer Pool</li>
+</ul>
+<div class="callout success"><h4>&#10003; Random I/O → Sequential I/O</h4>
+<p>Viec sort page IDs truoc khi load chuyen warm-up tu random I/O (dat: 100-200 IOPS HDD) thanh sequential I/O (re: 100+ MB/s). Tren he thong lon, warm-up time giam tu hang gio xuong con vai phut.</p></div>
+
+<h2>6. Persistent Statistics (MySQL 5.6+)</h2>
+<p>MySQL 5.6 luu thong ke vao cac bang he thong thay vi chi giu trong memory:</p>
+<ul>
+<li><code>mysql.innodb_table_stats</code>: n_rows, clustered_index_size, sum_of_other_index_sizes</li>
+<li><code>mysql.innodb_index_stats</code>: n_diff, n_leaf_pages, size cua tung index</li>
+</ul>
+<div class="callout"><h4>&#128161; Hack Execution Plan</h4>
+<p>Co the sua truc tiep bang thong ke de "dua" optimizer chon execution plan mong muon (dang biet plan tot hon optimizer). Nguy hiem nhung huu dung trong mot so truong hop khan cap production: <code>UPDATE mysql.innodb_table_stats SET n_rows = ...</code> roi <code>FLUSH TABLE t</code>.</p></div>
+
+</div></body></html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Kho Tàng Kiến Thức Kỹ Thuật</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f8fafc;
+  --accent:#4f46e5; --accent2:#7c3aed; --accent3:#0891b2;
+  --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --green:#059669; --yellow:#d97706; --red:#dc2626;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.75;}
+.hero{background:linear-gradient(135deg,#ede9fe 0%,#dbeafe 50%,#e0f2fe 100%);padding:60px 40px;text-align:center;border-bottom:1px solid var(--border);}
+.hero h1{font-size:2.4rem;font-weight:800;background:linear-gradient(135deg,#4f46e5,#7c3aed,#0891b2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;}
+.hero .subtitle{color:var(--muted);font-size:1rem;}
+.container{max-width:960px;margin:0 auto;padding:50px 40px;}
+h2{font-size:1.55rem;font-weight:700;color:#3730a3;margin:40px 0 16px;padding-bottom:10px;border-bottom:2px solid #e0e7ff;}
+h3{font-size:1.15rem;font-weight:600;color:#1e40af;margin:28px 0 12px;}
+h4{font-size:1rem;font-weight:600;color:#0891b2;margin:20px 0 8px;}
+p{color:var(--text);margin-bottom:14px;}
+ul,ol{margin:0 0 14px 24px;color:var(--text);}
+li{margin-bottom:6px;}
+code{background:#ede9fe;color:#4338ca;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.85em;}
+pre{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;overflow-x:auto;margin:16px 0;}
+pre code{background:none;padding:0;color:#e2e8f0;}
+.callout{background:#f8fafc;border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:20px;margin:20px 0;}
+.callout.warning{border-left-color:var(--yellow);background:#fffbeb;}
+.callout.danger{border-left-color:var(--red);background:#fef2f2;}
+.callout.success{border-left-color:var(--green);background:#f0fdf4;}
+.callout h4{margin-top:0;color:var(--accent);}
+.callout.warning h4{color:var(--yellow);}
+.callout.danger h4{color:var(--red);}
+.callout.success h4{color:var(--green);}
+.table-wrap{overflow-x:auto;margin:16px 0;}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th{background:#ede9fe;color:#3730a3;padding:10px 14px;text-align:left;font-weight:600;border-bottom:2px solid #c7d2fe;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);}
+tr:hover td{background:#f5f3ff;}
+.img-placeholder{background:var(--surface2);border:2px dashed #c7d2fe;border-radius:12px;padding:30px;margin:20px 0;text-align:center;color:var(--muted);}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin:2px;}
+.badge-blue{background:#eff6ff;color:#1d4ed8;}
+.badge-cyan{background:#ecfeff;color:#0e7490;}
+.badge-purple{background:#f5f3ff;color:#6d28d9;}
+.badge-green{background:#f0fdf4;color:#15803d;}
+.badge-red{background:#fef2f2;color:#b91c1c;}
+.nav{background:#fff;border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;}
+.nav a:hover{color:var(--accent);}
+.nav .sep{color:var(--border);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.card-small{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.card-small h4{margin-top:0;margin-bottom:8px;}
+.section-title{font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border),transparent);}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:48px;}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:28px;text-decoration:none;color:var(--text);transition:all .3s ease;position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform .3s ease;}
+.card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 30px rgba(79,70,229,.1);}
+.card:hover::before{transform:scaleX(1);}
+.card-icon{font-size:2rem;margin-bottom:16px;}
+.card h3{font-size:1rem;font-weight:600;margin-bottom:10px;color:var(--text);}
+.card p{color:var(--muted);font-size:.85rem;line-height:1.6;}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:500;margin-top:12px;}
+.tag-db{background:#eff6ff;color:#1d4ed8;}
+.tag-dist{background:#ecfeff;color:#0e7490;}
+.tag-prog{background:#f5f3ff;color:#6d28d9;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:60px;}
+.stat{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.stat-num{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-label{color:var(--muted);font-size:.9rem;margin-top:4px;}
+</style>
+</head>
+<body>
+<div class="hero" style="padding:80px 40px;">
+  <h1>🧠 Kho Tàng Kiến Thức Kỹ Thuật</h1>
+  <p class="subtitle">Tổng hợp &amp; phân tích chuyên sâu các slide kỹ thuật về Database, Distributed Systems và System Programming</p>
+</div>
+<div class="container">
+  <div class="stats">
+    <div class="stat"><div class="stat-num">30+</div><div class="stat-label">Tài liệu PDF được phân tích</div></div>
+    <div class="stat"><div class="stat-num">18</div><div class="stat-label">Tài liệu HTML chuyên sâu</div></div>
+    <div class="stat"><div class="stat-num">200K+</div><div class="stat-label">Từ nội dung chuyên sâu</div></div>
+  </div>
+
+  <div class="section-title">🗄️ Database</div>
+  <div class="cards">
+    <a href="database/mysql-innodb-transaction-lock-mvcc.html" class="card">
+      <div class="card-icon">🔒</div>
+      <h3>InnoDB Transaction, Lock &amp; MVCC</h3>
+      <p>Phân tích toàn diện cơ chế giao dịch, khóa (Lock/Latch/Mutex) và kiểm soát đồng thời đa phiên bản trong InnoDB</p>
+      <span class="tag tag-db">MySQL · InnoDB</span>
+    </a>
+    <a href="database/mvcc-oracle-innodb-postgres.html" class="card">
+      <div class="card-icon">⚡</div>
+      <h3>MVCC: Oracle vs InnoDB vs PostgreSQL</h3>
+      <p>So sánh chi tiết 3 cách triển khai MVCC: timestamp-based, transaction ID-based và row-level versioning</p>
+      <span class="tag tag-db">Oracle · InnoDB · PG</span>
+    </a>
+    <a href="database/innodb-log-undo-crash-recovery.html" class="card">
+      <div class="card-icon">💾</div>
+      <h3>InnoDB: Redo Log, Undo &amp; Crash Recovery</h3>
+      <p>Cơ chế WAL, rollback segment, purge và quy trình phục hồi sau sự cố trong InnoDB</p>
+      <span class="tag tag-db">InnoDB Internals</span>
+    </a>
+    <a href="database/mysql-lock-analysis.html" class="card">
+      <div class="card-icon">🔐</div>
+      <h3>MySQL: Phân Tích Cơ Chế Khóa</h3>
+      <p>Phân tích đầy đủ các loại khóa: Record Lock, Gap Lock, Next-Key Lock, Insert Intention Lock và cách phòng tránh deadlock</p>
+      <span class="tag tag-db">MySQL Locking</span>
+    </a>
+    <a href="database/mysql-deadlock-analysis.html" class="card">
+      <div class="card-icon">💀</div>
+      <h3>Nghệ Thuật Phân Tích Deadlock MySQL</h3>
+      <p>Phương pháp phân tích deadlock từ log, 4 nguyên tắc phòng tránh, case studies thực tế từ production</p>
+      <span class="tag tag-db">Deadlock Analysis</span>
+    </a>
+    <a href="database/mysql-xa-distributed-transactions.html" class="card">
+      <div class="card-icon">🌐</div>
+      <h3>MySQL External XA &amp; Phân Tán Transaction</h3>
+      <p>Giao thức XA, 2-Phase Commit, Group Commit và các vấn đề consistency trong distributed database</p>
+      <span class="tag tag-db">Distributed Tx</span>
+    </a>
+    <a href="database/mysql-query-optimization.html" class="card">
+      <div class="card-icon">🚀</div>
+      <h3>Tối Ưu Hóa Query MySQL InnoDB</h3>
+      <p>Cost model, range scan optimization, join optimization, Index Condition Pushdown và case studies thực tế</p>
+      <span class="tag tag-db">Query Optimization</span>
+    </a>
+    <a href="database/buffer-pool-innodb-oracle.html" class="card">
+      <div class="card-icon">🧮</div>
+      <h3>Buffer Pool: InnoDB vs Oracle</h3>
+      <p>So sánh kiến trúc Buffer Pool, LRU variants, Checkpoint mechanism và Flush List trong InnoDB và Oracle</p>
+      <span class="tag tag-db">Buffer Pool</span>
+    </a>
+    <a href="database/alisql-innovations.html" class="card">
+      <div class="card-icon">🔥</div>
+      <h3>AliSQL: Innovations Của Alibaba</h3>
+      <p>Hot SKU, Thread Pool, X-KV protocol, commit_on_success, X-Cluster/X-Paxos — MySQL fork của Alibaba với 40+ tính năng mới</p>
+      <span class="tag tag-db">AliSQL · Alibaba</span>
+    </a>
+    <a href="database/rocksdb-myrocks.html" class="card">
+      <div class="card-icon">⚡</div>
+      <h3>RocksDB &amp; MyRocks: LSM Tree</h3>
+      <p>LSM Tree architecture, Write/Read path, Bloom Filter, MVCC qua Sequence Numbers, và kinh nghiệm production tại Alibaba (506.8TB → 76.2TB)</p>
+      <span class="tag tag-db">RocksDB · LSM</span>
+    </a>
+    <a href="database/oracle-rac-cache-fusion.html" class="card">
+      <div class="card-icon">🏛️</div>
+      <h3>Oracle RAC &amp; Cache Fusion</h3>
+      <p>Shared-disk cluster architecture, Cache Fusion protocol, Split-Brain detection qua Voting Disk, Resource Distribution Algorithm với 128 hash buckets</p>
+      <span class="tag tag-db">Oracle RAC</span>
+    </a>
+    <a href="database/mysql-5-6-innodb-features.html" class="card">
+      <div class="card-icon">🔬</div>
+      <h3>MySQL 5.6 InnoDB: Cải Tiến Sâu</h3>
+      <p>Read-Only Transaction, Cache Line Padding, avg_page_rate Flushing, Multi Page Cleaner, Multi-Purge threads, và SSE4.2 CRC32 hardware acceleration</p>
+      <span class="tag tag-db">InnoDB Internals</span>
+    </a>
+    <a href="database/learned-index-structures.html" class="card">
+      <div class="card-icon">🧠</div>
+      <h3>Learned Index Structures</h3>
+      <p>Thay thế B-Tree bằng ML model — RM-Index, CDF prediction, p=F(Key)×N, 10x nhanh hơn B-Tree trên read-only workloads (Google/MIT 2018)</p>
+      <span class="tag tag-db">ML Indexes</span>
+    </a>
+    <a href="database/innodb-mvcc-visibility.html" class="card">
+      <div class="card-icon">👁️</div>
+      <h3>InnoDB MVCC Visibility</h3>
+      <p>Row structure (DATA_TRX_ID, ROLL_PTR), Read View (low_limit_id / up_limit_id / trx_ids), clustered vs secondary index visibility, và Purge flow</p>
+      <span class="tag tag-db">MVCC Internals</span>
+    </a>
+  </div>
+
+  <div class="section-title">🌐 Distributed Systems</div>
+  <div class="cards">
+    <a href="distributed/paxos-raft-consensus.html" class="card">
+      <div class="card-icon">🤝</div>
+      <h3>Paxos &amp; Raft: Phân Tích Chuyên Sâu</h3>
+      <p>Basic Paxos từng bước, Multi-Paxos optimization, Raft log replication, Leader crash recovery, Membership Change, Pre-Vote</p>
+      <span class="tag tag-dist">Consensus Algorithm</span>
+    </a>
+    <a href="distributed/data-consistency-replication.html" class="card">
+      <div class="card-icon">⚖️</div>
+      <h3>Nhất Quán Dữ Liệu &amp; Multi-Replica</h3>
+      <p>CAP/PACELC, Linearizability vs Eventual Consistency, Master Lease, Majority Quorum, MySQL semi-sync, Group Replication</p>
+      <span class="tag tag-dist">Consistency · Replication</span>
+    </a>
+    <a href="distributed/paxos-everyday-life.html" class="card">
+      <div class="card-icon">🏠</div>
+      <h3>Paxos Trong Cuộc Sống &amp; Debugging</h3>
+      <p>Hiểu Paxos qua ví dụ đời thường, các lỗi hay gặp trong implementation, batching/pipelining, snapshot, TLA+ verification</p>
+      <span class="tag tag-dist">Practical Paxos</span>
+    </a>
+  </div>
+
+  <div class="section-title">⚙️ System Programming</div>
+  <div class="cards">
+    <a href="programming/cpu-architecture-cache-coherence.html" class="card">
+      <div class="card-icon">🖥️</div>
+      <h3>Kiến Trúc CPU &amp; Cache Coherence</h3>
+      <p>Superscalar, SMT, Out-of-Order Execution, MESI Protocol, Memory Ordering Model và ứng dụng trong database</p>
+      <span class="tag tag-prog">CPU Architecture</span>
+    </a>
+    <a href="programming/performance-optimization-theory.html" class="card">
+      <div class="card-icon">📈</div>
+      <h3>Lý Thuyết Tối Ưu Hiệu Năng &amp; MySQL Evolution</h3>
+      <p>Amdahl's Law, Queueing Theory, hardware latency và MySQL performance evolution từ 5.1 đến AliSQL</p>
+      <span class="tag tag-prog">Performance Engineering</span>
+    </a>
+    <a href="programming/memory-model-volatile-atomics.html" class="card">
+      <div class="card-icon">⚛️</div>
+      <h3>Memory Model, Volatile &amp; Atomic Operations</h3>
+      <p>C++ Memory Model, volatile trong C/C++ vs Java, Store Buffer, Memory Barrier, Lock-Free Programming và Spinlock</p>
+      <span class="tag tag-prog">Concurrency Primitives</span>
+    </a>
+    <a href="programming/queueing-theory-systems.html" class="card">
+      <div class="card-icon">📊</div>
+      <h3>Lý Thuyết Hàng Đợi &amp; Thiết Kế Hệ Thống</h3>
+      <p>Little's Law, M/M/1 Model, Erlang Formula, ứng dụng vào capacity planning, AliSQL Thread Pool và Hot SKU</p>
+      <span class="tag tag-prog">Queueing Theory</span>
+    </a>
+    <a href="programming/dev-career-insights.html" class="card">
+      <div class="card-icon">🚀</div>
+      <h3>Dev → Ops → Dev: 12 Bài Học Production</h3>
+      <p>Monitoring, structured logging, timeout, graceful shutdown, idempotency, SLA/SLO/Error Budget, blameless post-mortem và Production Mindset</p>
+      <span class="tag tag-prog">Engineering Culture</span>
+    </a>
+  </div>
+</div>
+</body>
+</html>
